@@ -1,0 +1,250 @@
+{
+    "key": "group_68fb8b3d9d50c",
+    "title": "Modules",
+    "fields": [
+        {
+            "key": "field_68fb8b3df419d",
+            "label": "Modules",
+            "name": "modules",
+            "aria-label": "",
+            "type": "flexible_content",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layouts": {
+                "layout_68fb8b56a1aa9": {
+                    "key": "layout_68fb8b56a1aa9",
+                    "name": "m01_block_and_title",
+                    "label": "M01 - Block et titre",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c2c82804",
+                            "label": "Block et titre",
+                            "name": "m01_block_and_title",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8b6eeea49"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0011110": {
+                    "key": "layout_68fb8c0011110",
+                    "name": "m02_hero",
+                    "label": "M02 - Hero",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0011120",
+                            "label": "Hero",
+                            "name": "m02_hero",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0011111"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0122220": {
+                    "key": "layout_68fb8c0122220",
+                    "name": "m03_features_grid",
+                    "label": "M03 - Features Grid",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0122230",
+                            "label": "Features Grid",
+                            "name": "m03_features_grid",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0122222"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0233330": {
+                    "key": "layout_68fb8c0233330",
+                    "name": "m04_stats_bar",
+                    "label": "M04 - Stats Bar",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0233340",
+                            "label": "Stats Bar",
+                            "name": "m04_stats_bar",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0233333"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0344440": {
+                    "key": "layout_68fb8c0344440",
+                    "name": "m05_getting_started",
+                    "label": "M05 - Getting Started",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0344450",
+                            "label": "Getting Started",
+                            "name": "m05_getting_started",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0344444"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0455550": {
+                    "key": "layout_68fb8c0455550",
+                    "name": "m06_footer",
+                    "label": "M06 - Footer",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0455560",
+                            "label": "Footer",
+                            "name": "m06_footer",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0455555"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                }
+            },
+            "min": "",
+            "max": "",
+            "button_label": "Ajouter un module"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "revisions",
+        "author",
+        "format",
+        "page_attributes",
+        "featured_image",
+        "categories",
+        "tags"
+    ],
+    "active": false,
+    "description": "",
+    "show_in_rest": 0,
+    "display_title": "",
+    "modified": 1761319854
+}

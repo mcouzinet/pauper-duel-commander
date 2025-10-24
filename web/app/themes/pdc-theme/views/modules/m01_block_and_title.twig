@@ -1,0 +1,43 @@
+{#
+/**
+ * Module M01 - Block and Title
+ *
+ * Variables:
+ * - title (string): Titre du bloc
+ * - content (wysiwyg): Contenu du bloc
+ * - background_color (string): Couleur de fond (optionnel)
+ * - text_color (string): Couleur du texte (optionnel)
+ */
+#}
+
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+                {{ module.title }}
+            </h2>
+            <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                {{ module.desc|raw }}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {% for bloc in module.blocs %}
+                <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign w-8 h-8 text-white">
+                                <line x1="12" x2="12" y1="2" y2="22"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-magic-gold mb-4">{{ bloc.title }}</h3>
+                        <p class="text-card-foreground">
+                            {{ bloc.desc }}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

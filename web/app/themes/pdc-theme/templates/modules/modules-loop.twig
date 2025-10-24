@@ -1,0 +1,9 @@
+{% for key, item in post.get_field('modules') %}
+  {% if ('/templates/modules/' ~ item.acf_fc_layout ~ '.twig') is ondisk %}
+    {% include 'modules/' ~ item.acf_fc_layout ~ '.twig' with {
+      module: item,
+      post: post,
+      key: key
+    }  %}
+  {% endif %}
+{% endfor %}

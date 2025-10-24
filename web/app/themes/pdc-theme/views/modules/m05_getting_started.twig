@@ -1,0 +1,74 @@
+{#
+/**
+ * Module M05 - Getting Started
+ *
+ * Variables:
+ * - title (string): Titre de la section (optionnel)
+ * - subtitle (wysiwyg): Description de la section (optionnel)
+ * - cards (repeater): Liste des cartes (max 2 recommandé)
+ *   - icon_svg (textarea): Code SVG de l'icône
+ *   - icon_gradient (string): Classe de gradient pour l'icône
+ *   - title (string): Titre de la carte
+ *   - description (textarea): Description de la carte
+ *   - button_text (string): Texte du bouton
+ *   - button_link (url): Lien du bouton
+ *   - button_style (string): Style du bouton ('primary' ou 'secondary')
+ */
+#}
+
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        {% if module.title or module.subtitle %}
+            <div class="text-center mb-16">
+                {% if module.title %}
+                    <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+                        {{ module.title }}
+                    </h2>
+                {% endif %}
+                {% if module.subtitle %}
+                    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        {{ module.subtitle|raw }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if module.cards %}
+            <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                {% for card in module.cards %}
+                    <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card hover:shadow-magic transition-all group">
+                        {% if card.icon_svg %}
+                            <div class="w-16 h-16 bg-gradient-to-r {{ card.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                {{ card.icon_svg|raw }}
+                            </div>
+                        {% endif %}
+
+                        {% if card.title %}
+                            <h3 class="text-2xl font-semibold text-magic-gold mb-4">{{ card.title }}</h3>
+                        {% endif %}
+
+                        {% if card.description %}
+                            <p class="text-card-foreground mb-6">
+                                {{ card.description }}
+                            </p>
+                        {% endif %}
+
+                        {% if card.button_text and card.button_link %}
+                            {% if card.button_style == 'primary' %}
+                                <a href="{{ card.button_link }}"
+                                   class="inline-block px-6 py-3 bg-gradient-gold text-white font-semibold rounded-lg shadow-lg hover:shadow-magic transition-all">
+                                    {{ card.button_text }}
+                                </a>
+                            {% else %}
+                                <a href="{{ card.button_link }}"
+                                   class="inline-block px-6 py-3 bg-magic-purple/20 border border-magic-purple/40 text-magic-gold font-semibold rounded-lg hover:bg-magic-purple/30 transition-all">
+                                    {{ card.button_text }}
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>

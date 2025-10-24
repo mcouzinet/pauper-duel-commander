@@ -1,0 +1,59 @@
+{#
+/**
+ * Module M03 - Features Grid
+ *
+ * Variables:
+ * - title (string): Titre de la section (optionnel)
+ * - subtitle (wysiwyg): Description de la section (optionnel)
+ * - features (repeater): Liste des fonctionnalités
+ *   - icon_svg (textarea): Code SVG de l'icône
+ *   - icon_gradient (string): Classe de gradient pour l'icône (ex: 'from-purple-500 to-violet-600')
+ *   - title (string): Titre de la fonctionnalité
+ *   - description (textarea): Description de la fonctionnalité
+ */
+#}
+
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        {% if module.title or module.subtitle %}
+            <div class="text-center mb-16">
+                {% if module.title %}
+                    <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+                        {{ module.title }}
+                    </h2>
+                {% endif %}
+                {% if module.subtitle %}
+                    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        {{ module.subtitle|raw }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if module.features %}
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {% for feature in module.features %}
+                    <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card hover:shadow-magic transition-all group">
+                        <div class="text-center">
+                            {% if feature.icon_svg %}
+                                <div class="w-16 h-16 bg-gradient-to-r {{ feature.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                                    {{ feature.icon_svg|raw }}
+                                </div>
+                            {% endif %}
+
+                            {% if feature.title %}
+                                <h3 class="text-xl font-semibold text-magic-gold mb-4">{{ feature.title }}</h3>
+                            {% endif %}
+
+                            {% if feature.description %}
+                                <p class="text-card-foreground">
+                                    {{ feature.description }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>

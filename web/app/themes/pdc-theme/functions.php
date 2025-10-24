@@ -9,6 +9,11 @@ if (!defined('ABSPATH')) {
 }
 
 /**
+ * Load Composer dependencies
+ */
+require_once __DIR__ . '/vendor/autoload.php';
+
+/**
  * Enqueue scripts and styles
  */
 function pdc_theme_enqueue_assets() {
@@ -59,6 +64,31 @@ function pdc_theme_enqueue_assets() {
 add_action('wp_enqueue_scripts', 'pdc_theme_enqueue_assets');
 
 /**
+ * Initialize Timber
+ */
+// Set Timber directories
+Timber\Timber::$dirname = ['views', 'views/components', 'views/layouts', 'views/modules'];
+
+/**
+ * Timber context
+ */
+function pdc_theme_add_to_context($context) {
+    // Site info
+    $context['site'] = new Timber\Site();
+
+    // Menu
+    $context['menu'] = Timber\Timber::get_menu('primary');
+
+    // Theme options
+    if (function_exists('get_fields')) {
+        $context['options'] = get_fields('option');
+    }
+
+    return $context;
+}
+add_filter('timber/context', 'pdc_theme_add_to_context');
+
+/**
  * Theme setup
  */
 function pdc_theme_setup() {
@@ -95,3 +125,36 @@ function pdc_theme_widgets_init() {
     ]);
 }
 add_action('widgets_init', 'pdc_theme_widgets_init');
+
+/**
+ * Disable Gutenberg Editor
+ */
+// Disable Gutenberg on the back end
+add_filter('use_block_editor_for_post', '__return_false');
+
+// Disable Gutenberg for widgets
+add_filter('use_widgets_block_editor', '__return_false');
+
+// Disable the Gutenberg blocks CSS on the front-end
+function pdc_theme_disable_gutenberg_styles() {
+    wp_dequeue_style('wp-block-library');
+    wp_dequeue_style('wp-block-library-theme');
+    wp_dequeue_style('wc-blocks-style'); // WooCommerce blocks if present
+    wp_dequeue_style('global-styles');
+}
+add_action('wp_enqueue_scripts', 'pdc_theme_disable_gutenberg_styles', 100);
+
+/**
+ * ACF JSON - Save and Load
+ */
+// Save ACF JSON to theme folder
+add_filter('acf/settings/save_json', function($path) {
+    return get_stylesheet_directory() . '/acf-json';
+});
+
+// Load ACF JSON from theme folder
+add_filter('acf/settings/load_json', function($paths) {
+    unset($paths[0]);
+    $paths[] = get_stylesheet_directory() . '/acf-json';
+    return $paths;
+});

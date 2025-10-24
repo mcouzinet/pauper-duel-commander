@@ -1,0 +1,16 @@
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+    <article class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+            <div class="text-gray-600 mb-4">
+                {{ post.date }} par {{ post.author.name }}
+            </div>
+        </header>
+
+        <div class="prose max-w-none">
+            {{ post.content }}
+        </div>
+    </article>
+{% endblock %}

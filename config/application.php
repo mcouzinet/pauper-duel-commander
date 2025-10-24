@@ -99,6 +99,12 @@ Config::define('NONCE_SALT', env('NONCE_SALT'));
 Config::define('ACF_PRO_LICENSE', env('ACF_PRO_KEY'));
 
 /**
+ * Disable Gutenberg Editor
+ */
+Config::define('CLASSIC_EDITOR_REPLACE', true);
+Config::define('CLASSIC_EDITOR_ALLOW_USERS', false);
+
+/**
  * Custom Settings
  */
 Config::define('AUTOMATIC_UPDATER_DISABLED', true);

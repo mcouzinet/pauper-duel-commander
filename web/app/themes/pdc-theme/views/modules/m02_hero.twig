@@ -1,0 +1,69 @@
+{#
+/**
+ * Module M02 - Hero
+ *
+ * Variables:
+ * - badge (string): Badge text au-dessus du titre
+ * - title_line_1 (string): Première ligne du titre
+ * - title_line_2 (string): Deuxième ligne du titre
+ * - subtitle (wysiwyg): Texte de description
+ * - button_1_text (string): Texte du bouton primaire
+ * - button_1_link (url): Lien du bouton primaire
+ * - button_2_text (string): Texte du bouton secondaire
+ * - button_2_link (url): Lien du bouton secondaire
+ * - background_image (image): Image de fond (optionnel)
+ */
+#}
+
+<section class="py-20 bg-gray-800 relative overflow-hidden">
+    {% if module.background_image %}
+        <div class="absolute inset-0 opacity-10">
+            <img src="{{ module.background_image.url }}" alt="{{ module.background_image.alt }}" class="w-full h-full object-cover">
+        </div>
+    {% endif %}
+
+    <div class="container mx-auto px-4 relative z-10">
+        <div class="text-center max-w-6xl mx-auto">
+            {% if module.badge %}
+                <div class="inline-block mb-8">
+                    <span class="px-4 py-2 bg-magic-purple/20 border border-magic-purple/40 rounded-lg text-magic-gold text-sm font-semibold">
+                        {{ module.badge }}
+                    </span>
+                </div>
+            {% endif %}
+
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                {% if module.title_line_1 %}
+                    <span class="block text-white">{{ module.title_line_1 }}</span>
+                {% endif %}
+                {% if module.title_line_2 %}
+                    <span class="block bg-gradient-gold bg-clip-text text-transparent">{{ module.title_line_2 }}</span>
+                {% endif %}
+            </h1>
+
+            {% if module.subtitle %}
+                <div class="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
+                    {{ module.subtitle|raw }}
+                </div>
+            {% endif %}
+
+            {% if module.button_1_text or module.button_2_text %}
+                <div class="flex flex-wrap gap-4 justify-center">
+                    {% if module.button_1_text and module.button_1_link %}
+                        <a href="{{ module.button_1_link }}"
+                           class="inline-block px-8 py-6 bg-gradient-gold text-white font-semibold rounded-lg shadow-lg hover:shadow-magic transition-all">
+                            {{ module.button_1_text }}
+                        </a>
+                    {% endif %}
+
+                    {% if module.button_2_text and module.button_2_link %}
+                        <a href="{{ module.button_2_link }}"
+                           class="inline-block px-8 py-6 bg-magic-purple/20 border border-magic-purple/40 text-magic-gold font-semibold rounded-lg hover:bg-magic-purple/30 transition-all">
+                            {{ module.button_2_text }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

@@ -1,0 +1,7 @@
+{% for key, item in modules %}
+  {% include 'modules/' ~ item.acf_fc_layout ~ '.twig' with {
+    module: item,
+      post: post,
+      key: key
+  } %}
+{% endfor %}

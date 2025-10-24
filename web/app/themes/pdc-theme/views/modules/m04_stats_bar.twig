@@ -1,0 +1,44 @@
+{#
+/**
+ * Module M04 - Stats Bar
+ *
+ * Variables:
+ * - background_color (string): Couleur de fond (optionnel, défaut: bg-magic-purple/10)
+ * - stats (repeater): Liste des statistiques
+ *   - value (string): Valeur de la statistique (ex: "100")
+ *   - label (string): Label de la statistique (ex: "card deck")
+ *   - icon_svg (textarea): Code SVG de l'icône (optionnel)
+ */
+#}
+
+<section class="py-12 {{ module.background_color|default('bg-magic-purple/10') }}">
+    <div class="container mx-auto px-4">
+        {% if module.stats %}
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+                {% for stat in module.stats %}
+                    <div class="text-center">
+                        <div class="flex items-center justify-center gap-3 mb-2">
+                            {% if stat.icon_svg %}
+                                <div class="w-8 h-8 text-magic-gold">
+                                    {{ stat.icon_svg|raw }}
+                                </div>
+                            {% endif %}
+
+                            {% if stat.value %}
+                                <span class="text-3xl md:text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent">
+                                    {{ stat.value }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        {% if stat.label %}
+                            <p class="text-muted-foreground text-sm md:text-base">
+                                {{ stat.label }}
+                            </p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>
