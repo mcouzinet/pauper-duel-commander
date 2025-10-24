@@ -1,0 +1,19 @@
+{
+  "name": "pdc-theme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "bud dev",
+    "build": "bud build",
+    "production": "bud build --mode production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@roots/bud": "^6.24.0",
+    "@roots/bud-tailwindcss": "^6.24.0"
+  }
+}
