@@ -11,6 +11,7 @@ export default {
         'magic-purple': '#8b5cf6',
         'card-foreground': '#1f2937',
         'muted-foreground': '#6b7280',
+        'header-dark': '#0d0e0d',
       },
       backgroundImage: {
         'gradient-gold': 'linear-gradient(to right, #f59e0b, #d97706)',
