@@ -25,7 +25,7 @@
                 {% else %}
                     {# Debug: afficher un message si le menu n'existe pas #}
                     <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
-                        Menu non configuré
+                        {{ __('Menu non configuré') }}
                     </div>
                 {% endif %}
 
@@ -70,7 +70,7 @@
                 {% elseif function('function_exists', 'pll_the_languages') %}
                     {# Polylang installé mais pas configuré #}
                     <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
-                        Langues non configurées
+                        {{ __('Langues non configurées') }}
                     </div>
                 {% endif %}
             </div>

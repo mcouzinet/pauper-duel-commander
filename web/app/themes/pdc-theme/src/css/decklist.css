@@ -84,5 +84,5 @@
 }
 
 .prose a {
-  @apply text-brand-orange hover:text-magic-gold transition-colors;
+  @apply text-brand-orange hover:text-brand-orange-light transition-colors;
 }

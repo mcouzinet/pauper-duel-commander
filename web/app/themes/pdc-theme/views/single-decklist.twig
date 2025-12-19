@@ -64,27 +64,11 @@
                     </div>
 
                     {# Deck Info #}
-                    <div class="md:col-span-8 lg:col-span-9">
-                        {# Title #}
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-magic-gradient mb-4">
-                            {{ post.title }}
-                        </h1>
+                    <div class="md:col-span-8 lg:col-span-9 h-full flex flex-col justify-end">
 
-                        {# Taxonomies #}
+
+                        {# Archetypes #}
                         <div class="flex flex-wrap gap-3 mb-6">
-                            {% if deck_author %}
-                                {% for author in deck_author %}
-                                    <span class="text-sm font-semibold text-text-secondary">
-                                        par {{ author.name }}
-                                    </span>
-                                {% endfor %}
-                            {% endif %}
-
-                            {# Date #}
-                            <span class="text-sm font-semibold text-text-secondary">
-                                · {{ deck_date ? deck_date : post.date|date('d/m/Y') }}
-                            </span>
-
                             {% if deck_archetype %}
                                 {% for archetype in deck_archetype %}
                                     <span class="px-4 py-2 bg-brand-orange/20 border border-brand-orange/40 rounded-lg text-sm font-semibold text-brand-orange">
@@ -102,46 +86,28 @@
                             {% endif %}
                         </div>
 
-                        {# Stats #}
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                            {# CMC Moyen #}
-                            <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
-                                <div class="text-3xl font-heading font-bold text-magic-gradient">
-                                    {{ deck.stats.average_cmc }}
-                                </div>
-                                <div class="text-sm text-text-secondary uppercase tracking-wide">CMC Moyen</div>
-                            </div>
+                        {# Title #}
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-magic-gradient mb-4">
+                            {{ post.title }}
+                        </h1>
 
-                            {# Créatures #}
-                            {% if deck.stats.type_counts.Creature %}
-                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
-                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
-                                        {{ deck.stats.type_counts.Creature }}
-                                    </div>
-                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Créatures</div>
-                                </div>
+                        {# Taxonomies #}
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            {% if deck_author %}
+                                {% for author in deck_author %}
+                                    <span class="text-sm font-semibold text-text-secondary">
+                                        {{ __('par') }} {{ author.name }}
+                                    </span>
+                                {% endfor %}
                             {% endif %}
 
-                            {# Sorts (Instant + Sorcery) #}
-                            {% set spells = (deck.stats.type_counts.Instant|default(0) + deck.stats.type_counts.Sorcery|default(0)) %}
-                            {% if spells > 0 %}
-                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
-                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
-                                        {{ spells }}
-                                    </div>
-                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Sorts</div>
-                                </div>
+                            {# Date #}
+                            {% if deck_date %}
+                                <span class="text-sm font-semibold text-text-secondary">
+                                    {{ __('le') }} {{ deck_date ? deck_date : post.date|date('d/m/Y') }}
+                                </span>
                             {% endif %}
 
-                            {# Terrains #}
-                            {% if deck.stats.type_counts.Land %}
-                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
-                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
-                                        {{ deck.stats.type_counts.Land }}
-                                    </div>
-                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Terrains</div>
-                                </div>
-                            {% endif %}
                         </div>
 
                         {# Description #}
@@ -157,7 +123,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
-                                Exporter la decklist
+                                {{ __('Exporter la decklist') }}
                         </div>
                     </div>
                 </div>
@@ -166,36 +132,34 @@
     </section>
 
     {# Decklist Section #}
-    <section class="py-16">
+    <section class="my-16">
         <div class="container mx-auto px-6">
             <div class="max-w-7xl mx-auto">
                 <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
-                    Decklist
+                    {{ __('Decklist') }}
                 </h2>
 
                 {# Cards grouped by type #}
                 {% for type, cards in deck.cards_by_type %}
-                    <div class="mb-12">
-                        <h3 class="text-2xl font-heading font-semibold text-brand-orange mb-4 flex items-center">
-                            <span class="bg-brand-orange/20 px-4 py-2 rounded-lg">
-                                {{ type }} ({{ cards|length }})
-                            </span>
+                    <div class="mb-10">
+                        <h3 class="text-sm font-heading font-bold text-brand-orange/60 uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/10">
+                            {{ type }} <span class="text-text-muted">({{ cards|length }})</span>
                         </h3>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                        <div class="columns-1 md:columns-2 lg:columns-3 gap-x-4">
                             {% for card in cards %}
-                                <div class="glass-effect border border-magic-purple/20 rounded-lg p-2 hover:border-brand-orange/40 transition-all group relative card-hover-trigger"
+                                <div class="py-1.5 px-2 hover:bg-brand-orange/5 transition-colors group relative card-hover-trigger cursor-pointer break-inside-avoid"
                                      data-card-name="{{ card.name }}"
                                      data-card-image="{{ card.image_url }}">
 
-                                    <div class="flex items-center gap-2">
+                                    <div class="flex items-center gap-3">
                                         {# Quantity #}
-                                        <span class="text-lg font-heading font-bold text-magic-gold w-6 text-center flex-shrink-0">
+                                        <span class="text-sm font-mono text-text-muted w-4 text-right flex-shrink-0">
                                             {{ card.quantity }}
                                         </span>
 
                                         {# Card Name #}
-                                        <span class="text-sm font-semibold text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1">
+                                        <span class="text-sm text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1">
                                             {{ card.name }}
                                         </span>
 
@@ -205,17 +169,193 @@
                                                 {{ function('Deck_Renderer::format_mana_cost', card.mana_cost)|raw }}
                                             </div>
                                         {% endif %}
-
-                                        {# CMC Badge #}
-                                        <span class="inline-flex items-center justify-center w-7 h-7 bg-magic-purple/30 border border-magic-purple/50 rounded-full text-xs font-bold text-magic-gold flex-shrink-0">
-                                            {{ card.cmc }}
-                                        </span>
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# Stats Section Grid #}
+    <section class="my-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-8">
+
+                    {# Mana Curve #}
+                    <div class="md:col-span-3 lg:col-span-1">
+                        <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+                            {{ __('Courbe de Mana') }}
+                        </h2>
+                        <div class="py-6 rounded-lg mt-6">
+                            {% set max_count = max(deck.stats.cmc_distribution) %}
+                            {% set max_height = 192 %} {# 192px = 12rem = h-48 #}
+                            <div class="flex justify-center items-end gap-2" style="height: {{ max_height }}px;">
+                                {% for cmc, count in deck.stats.cmc_distribution %}
+                                    {% set bar_height = ((count / max_count) * (max_height - 36))|round %}
+                                    {% set bar_height_final = count > 0 ? max(bar_height, 8) : 0 %}
+                                    <div class="flex flex-col items-center gap-2 flex-1">
+                                        <div class="relative w-full rounded-t bg-white flex items-center justify-center" style="height: {{ bar_height_final }}px;">
+                                            <span class="text-sm font-bold text-brand-orange absolute -top-6">{{ count }}</span>
+                                        </div>
+                                        <span class="text-lg font-bold text-text-muted">{{ cmc }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Mana Colors #}
+                    <div class="md:col-span-3 lg:col-span-1">
+                        <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+                            {{ __('Couleurs de Mana') }}
+                        </h2>
+                        <div class="flex flex-col items-center gap-6">
+                            {# Color Donut Chart #}
+                            {% set total_colored = 0 %}
+                            {% for color, count in deck.stats.color_counts %}
+                                {% set total_colored = total_colored + count %}
+                            {% endfor %}
+
+                            <div class="relative w-48 h-48">
+                                {# SVG Donut Chart #}
+                                <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+                                    {% set offset = 0 %}
+                                    {% for color, count in deck.stats.color_counts %}
+                                        {% if count > 0 %}
+                                            {% set percent = (count / total_colored * 100) %}
+                                            {% set circumference = 2 * 3.14159 * 35 %}
+                                            {% set segment_length = (percent / 100 * circumference) %}
+                                            {% set color_map = {
+                                                'W': '#FFFCE5',
+                                                'U': '#0E68AB',
+                                                'B': '#211E1F',
+                                                'R': '#E94941',
+                                                'G': '#00A851',
+                                                'C': '#CAC5C0',
+                                                'Multi': '#F4D03F'
+                                            } %}
+                                            <circle
+                                                cx="50" cy="50" r="35"
+                                                fill="none"
+                                                stroke="{{ color_map[color] }}"
+                                                stroke-width="15"
+                                                stroke-dasharray="{{ segment_length }} {{ circumference }}"
+                                                stroke-dashoffset="{{ -offset }}"
+                                            />
+                                            {% set offset = offset + segment_length %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <circle cx="50" cy="50" r="27.5" fill="#0A0E13" />
+                                </svg>
+                            </div>
+
+                            {# Color Legend #}
+                            <div class="grid grid-cols-1 gap-2 text-sm w-full">
+                                {% for color, count in deck.stats.color_counts %}
+                                    {% if count > 0 %}
+                                        {% set color_names = {
+                                            'W': 'Blanc',
+                                            'U': 'Bleu',
+                                            'B': 'Noir',
+                                            'R': 'Rouge',
+                                            'G': 'Vert',
+                                            'C': 'Incolore',
+                                            'Multi': 'Multicolore'
+                                        } %}
+                                        {% set color_classes = {
+                                            'W': 'bg-mana-white',
+                                            'U': 'bg-mana-blue',
+                                            'B': 'bg-mana-black',
+                                            'R': 'bg-mana-red',
+                                            'G': 'bg-mana-green',
+                                            'C': 'bg-mana-colorless',
+                                            'Multi': 'bg-gradient-mana'
+                                        } %}
+                                        <div class="flex items-center gap-2 justify-center">
+                                            <span class="w-4 h-4 rounded {{ color_classes[color] }}"></span>
+                                            <span class="text-text-secondary">{{ color_names[color] }}: {{ count }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Card Types #}
+                    <div class="md:col-span-3 lg:col-span-1">
+                        <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+                            {{ __('Types de Cartes') }}
+                        </h2>
+                        <div class="flex flex-col items-center gap-6">
+                            {# Type Donut Chart #}
+                            {% set total_cards = 0 %}
+                            {% for type, count in deck.stats.type_counts %}
+                                {% set total_cards = total_cards + count %}
+                            {% endfor %}
+
+                            <div class="relative w-48 h-48">
+                                {# SVG Donut Chart #}
+                                <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+                                    {% set offset = 0 %}
+                                    {% for type, count in deck.stats.type_counts %}
+                                        {% if count > 0 %}
+                                            {% set percent = (count / total_cards * 100) %}
+                                            {% set circumference = 2 * 3.14159 * 35 %}
+                                            {% set segment_length = (percent / 100 * circumference) %}
+                                            {% set type_colors = {
+                                                'Creature': '#4FC3F7',
+                                                'Instant': '#9E9E9E',
+                                                'Sorcery': '#FFD54F',
+                                                'Enchantment': '#FF6E40',
+                                                'Artifact': '#4DB6AC',
+                                                'Land': '#A1887F',
+                                                'Planeswalker': '#FFA726',
+                                                'Battle': '#BA68C8'
+                                            } %}
+                                            <circle
+                                                cx="50" cy="50" r="35"
+                                                fill="none"
+                                                stroke="{{ type_colors[type]|default('#BEB9B2') }}"
+                                                stroke-width="15"
+                                                stroke-dasharray="{{ segment_length }} {{ circumference }}"
+                                                stroke-dashoffset="{{ -offset }}"
+                                            />
+                                            {% set offset = offset + segment_length %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    <circle cx="50" cy="50" r="27.5" fill="#0A0E13" />
+                                </svg>
+                            </div>
+
+                            {# Type Legend #}
+                            <div class="grid grid-cols-1 gap-2 text-sm w-full">
+                                {% for type, count in deck.stats.type_counts %}
+                                    {% if count > 0 %}
+                                        {% set type_colors_bg = {
+                                            'Creature': 'bg-[#4FC3F7]',
+                                            'Instant': 'bg-[#9E9E9E]',
+                                            'Sorcery': 'bg-[#FFD54F]',
+                                            'Enchantment': 'bg-[#FF6E40]',
+                                            'Artifact': 'bg-[#4DB6AC]',
+                                            'Land': 'bg-[#A1887F]',
+                                            'Planeswalker': 'bg-[#FFA726]',
+                                            'Battle': 'bg-[#BA68C8]'
+                                        } %}
+                                        <div class="flex items-center gap-2 justify-center">
+                                            <span class="w-4 h-4 rounded {{ type_colors_bg[type]|default('bg-mana-colorless') }}"></span>
+                                            <span class="text-text-secondary">{{ type }}: {{ count }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </section>

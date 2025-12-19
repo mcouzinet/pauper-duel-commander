@@ -9,14 +9,14 @@
                 </a>
             </div>
             <p class="text-text-secondary font-body">
-                Un format Commander accessible et compétitif
+                {{ __('Un format Commander accessible et compétitif') }}
             </p>
             <div class="pt-6 border-t border-card-border/50 mt-8">
                 <p class="text-text-muted text-sm">
-                    &copy; {{ "now"|date('Y') }} {{ site.name }}. Tous droits réservés.
+                    &copy; {{ "now"|date('Y') }} {{ site.name }}. {{ __('Tous droits réservés.') }}
                 </p>
                 <p class="text-text-muted text-xs mt-2">
-                    Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.
+                    {{ __('Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.') }}
                 </p>
             </div>
         </div>

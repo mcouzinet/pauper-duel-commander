@@ -25,6 +25,14 @@ function pdc_theme_enqueue_assets() {
         wp_get_theme()->get('Version')
     );
 
+    // Enqueue Mana Font for Magic mana symbols (via CDN)
+    wp_enqueue_style(
+        'mana-font',
+        'https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.min.css',
+        [],
+        '1.18.0'
+    );
+
     // Enqueue Bud-compiled assets
     $manifest_path = get_template_directory() . '/public/manifest.json';
 
@@ -35,7 +43,7 @@ function pdc_theme_enqueue_assets() {
             wp_enqueue_style(
                 'pdc-theme-app',
                 get_template_directory_uri() . '/public/' . $manifest['app.css'],
-                [],
+                ['mana-font'],
                 null
             );
         }
@@ -89,9 +97,18 @@ function pdc_theme_add_to_context($context) {
 add_filter('timber/context', 'pdc_theme_add_to_context');
 
 /**
+ * Note: Translation functions are already provided by Timber v2
+ * Available in Twig templates: __(text, domain), _e(text, domain), _n(single, plural, number, domain)
+ * No need to register them manually.
+ */
+
+/**
  * Theme setup
  */
 function pdc_theme_setup() {
+    // Load theme text domain for translations
+    load_theme_textdomain('pdc-theme', get_template_directory() . '/languages');
+
     // Add theme support
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
@@ -105,7 +122,7 @@ function pdc_theme_setup() {
 
     // Register navigation menus
     register_nav_menus([
-        'primary' => __('Menu principal', 'pdc-theme'),
+        'primary' => __('Menu principal', 'pdc-theme-admin'),
     ]);
 }
 add_action('after_setup_theme', 'pdc_theme_setup');
@@ -115,9 +132,9 @@ add_action('after_setup_theme', 'pdc_theme_setup');
  */
 function pdc_theme_widgets_init() {
     register_sidebar([
-        'name'          => __('Sidebar', 'pdc-theme'),
+        'name'          => __('Sidebar', 'pdc-theme-admin'),
         'id'            => 'sidebar-1',
-        'description'   => __('Add widgets here.', 'pdc-theme'),
+        'description'   => __('Add widgets here.', 'pdc-theme-admin'),
         'before_widget' => '<section id="%1$s" class="widget %2$s mb-8">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title text-xl font-bold mb-4">',
@@ -200,17 +217,17 @@ function get_scryfall_card($set_code, $collector_number) {
  */
 function pdc_register_decklist_cpt() {
     $labels = array(
-        'name' => __('Decklists', 'pdc-theme'),
-        'singular_name' => __('Decklist', 'pdc-theme'),
-        'menu_name' => __('Decklists', 'pdc-theme'),
-        'add_new' => __('Ajouter une decklist', 'pdc-theme'),
-        'add_new_item' => __('Ajouter une nouvelle decklist', 'pdc-theme'),
-        'edit_item' => __('Modifier la decklist', 'pdc-theme'),
-        'new_item' => __('Nouvelle decklist', 'pdc-theme'),
-        'view_item' => __('Voir la decklist', 'pdc-theme'),
-        'search_items' => __('Rechercher des decklists', 'pdc-theme'),
-        'not_found' => __('Aucune decklist trouvée', 'pdc-theme'),
-        'not_found_in_trash' => __('Aucune decklist dans la corbeille', 'pdc-theme'),
+        'name' => __('Decklists', 'pdc-theme-admin'),
+        'singular_name' => __('Decklist', 'pdc-theme-admin'),
+        'menu_name' => __('Decklists', 'pdc-theme-admin'),
+        'add_new' => __('Ajouter une decklist', 'pdc-theme-admin'),
+        'add_new_item' => __('Ajouter une nouvelle decklist', 'pdc-theme-admin'),
+        'edit_item' => __('Modifier la decklist', 'pdc-theme-admin'),
+        'new_item' => __('Nouvelle decklist', 'pdc-theme-admin'),
+        'view_item' => __('Voir la decklist', 'pdc-theme-admin'),
+        'search_items' => __('Rechercher des decklists', 'pdc-theme-admin'),
+        'not_found' => __('Aucune decklist trouvée', 'pdc-theme-admin'),
+        'not_found_in_trash' => __('Aucune decklist dans la corbeille', 'pdc-theme-admin'),
     );
 
     $args = array(
@@ -243,15 +260,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Author
     register_taxonomy('deck_author', 'decklist', array(
         'labels' => array(
-            'name' => __('Auteurs', 'pdc-theme'),
-            'singular_name' => __('Auteur', 'pdc-theme'),
-            'search_items' => __('Rechercher des auteurs', 'pdc-theme'),
-            'all_items' => __('Tous les auteurs', 'pdc-theme'),
-            'edit_item' => __('Modifier l\'auteur', 'pdc-theme'),
-            'update_item' => __('Mettre à jour l\'auteur', 'pdc-theme'),
-            'add_new_item' => __('Ajouter un auteur', 'pdc-theme'),
-            'new_item_name' => __('Nouveau nom d\'auteur', 'pdc-theme'),
-            'menu_name' => __('Auteurs', 'pdc-theme'),
+            'name' => __('Auteurs', 'pdc-theme-admin'),
+            'singular_name' => __('Auteur', 'pdc-theme-admin'),
+            'search_items' => __('Rechercher des auteurs', 'pdc-theme-admin'),
+            'all_items' => __('Tous les auteurs', 'pdc-theme-admin'),
+            'edit_item' => __('Modifier l\'auteur', 'pdc-theme-admin'),
+            'update_item' => __('Mettre à jour l\'auteur', 'pdc-theme-admin'),
+            'add_new_item' => __('Ajouter un auteur', 'pdc-theme-admin'),
+            'new_item_name' => __('Nouveau nom d\'auteur', 'pdc-theme-admin'),
+            'menu_name' => __('Auteurs', 'pdc-theme-admin'),
         ),
         'public' => true,
         'hierarchical' => false,
@@ -265,15 +282,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Archetype
     register_taxonomy('deck_archetype', 'decklist', array(
         'labels' => array(
-            'name' => __('Archétypes', 'pdc-theme'),
-            'singular_name' => __('Archétype', 'pdc-theme'),
-            'search_items' => __('Rechercher des archétypes', 'pdc-theme'),
-            'all_items' => __('Tous les archétypes', 'pdc-theme'),
-            'edit_item' => __('Modifier l\'archétype', 'pdc-theme'),
-            'update_item' => __('Mettre à jour l\'archétype', 'pdc-theme'),
-            'add_new_item' => __('Ajouter un archétype', 'pdc-theme'),
-            'new_item_name' => __('Nouveau nom d\'archétype', 'pdc-theme'),
-            'menu_name' => __('Archétypes', 'pdc-theme'),
+            'name' => __('Archétypes', 'pdc-theme-admin'),
+            'singular_name' => __('Archétype', 'pdc-theme-admin'),
+            'search_items' => __('Rechercher des archétypes', 'pdc-theme-admin'),
+            'all_items' => __('Tous les archétypes', 'pdc-theme-admin'),
+            'edit_item' => __('Modifier l\'archétype', 'pdc-theme-admin'),
+            'update_item' => __('Mettre à jour l\'archétype', 'pdc-theme-admin'),
+            'add_new_item' => __('Ajouter un archétype', 'pdc-theme-admin'),
+            'new_item_name' => __('Nouveau nom d\'archétype', 'pdc-theme-admin'),
+            'menu_name' => __('Archétypes', 'pdc-theme-admin'),
         ),
         'public' => true,
         'hierarchical' => true,
@@ -287,15 +304,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Color
     register_taxonomy('deck_color', 'decklist', array(
         'labels' => array(
-            'name' => __('Couleurs', 'pdc-theme'),
-            'singular_name' => __('Couleur', 'pdc-theme'),
-            'search_items' => __('Rechercher des couleurs', 'pdc-theme'),
-            'all_items' => __('Toutes les couleurs', 'pdc-theme'),
-            'edit_item' => __('Modifier la couleur', 'pdc-theme'),
-            'update_item' => __('Mettre à jour la couleur', 'pdc-theme'),
-            'add_new_item' => __('Ajouter une couleur', 'pdc-theme'),
-            'new_item_name' => __('Nouveau nom de couleur', 'pdc-theme'),
-            'menu_name' => __('Couleurs', 'pdc-theme'),
+            'name' => __('Couleurs', 'pdc-theme-admin'),
+            'singular_name' => __('Couleur', 'pdc-theme-admin'),
+            'search_items' => __('Rechercher des couleurs', 'pdc-theme-admin'),
+            'all_items' => __('Toutes les couleurs', 'pdc-theme-admin'),
+            'edit_item' => __('Modifier la couleur', 'pdc-theme-admin'),
+            'update_item' => __('Mettre à jour la couleur', 'pdc-theme-admin'),
+            'add_new_item' => __('Ajouter une couleur', 'pdc-theme-admin'),
+            'new_item_name' => __('Nouveau nom de couleur', 'pdc-theme-admin'),
+            'menu_name' => __('Couleurs', 'pdc-theme-admin'),
         ),
         'public' => true,
         'hierarchical' => false,

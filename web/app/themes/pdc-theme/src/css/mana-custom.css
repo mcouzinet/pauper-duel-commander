@@ -1,0 +1,46 @@
+/**
+ * Custom styles for Mana Font icons
+ * Extends the base Mana Font library with theme-specific styles
+ * Font files are loaded via mana.min.css (enqueued separately in functions.php)
+ */
+
+/* Mana cost wrapper */
+.mana-cost-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  line-height: 1;
+}
+
+/* Individual mana symbols */
+.mana-cost-wrapper .ms-cost {
+  font-size: 1.1em;
+  vertical-align: middle;
+  display: inline-block;
+  line-height: 1;
+}
+
+/* Slightly larger mana symbols in card headers/titles */
+.card-header .mana-cost-wrapper .ms-cost {
+  font-size: 1.3em;
+}
+
+/* Ensure mana symbols don't wrap */
+.mana-cost-wrapper {
+  white-space: nowrap;
+}
+
+/* Add subtle shadow to mana symbols for better visibility on light backgrounds */
+.ms-cost {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+/* Ensure consistent sizing in different contexts */
+.decklist-card .mana-cost-wrapper .ms-cost {
+  font-size: 1em;
+}
+
+/* Commander mana cost - larger */
+.commander-info .mana-cost-wrapper .ms-cost {
+  font-size: 1.4em;
+}

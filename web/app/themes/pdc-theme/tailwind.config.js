@@ -3,6 +3,7 @@ export default {
     './*.php',
     './views/**/*.twig',
     './src/**/*.{php,vue,js}',
+    './inc/**/*.php',
   ],
   theme: {
     extend: {

@@ -1,0 +1,174 @@
+# Copyright (C) 2025 PDC Theme - Admin
+# This file is distributed under the same license as the PDC Theme package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PDC Theme Admin 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pdc-theme\n"
+"POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+
+#: functions.php:138
+msgid "Menu principal"
+msgstr ""
+
+#: functions.php:148
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:150
+msgid "Add widgets here."
+msgstr ""
+
+#: functions.php:233
+msgid "Decklists"
+msgstr ""
+
+#: functions.php:234
+msgid "Decklist"
+msgstr ""
+
+#: functions.php:236
+msgid "Ajouter une decklist"
+msgstr ""
+
+#: functions.php:237
+msgid "Ajouter une nouvelle decklist"
+msgstr ""
+
+#: functions.php:238
+msgid "Modifier la decklist"
+msgstr ""
+
+#: functions.php:239
+msgid "Nouvelle decklist"
+msgstr ""
+
+#: functions.php:240
+msgid "Voir la decklist"
+msgstr ""
+
+#: functions.php:241
+msgid "Rechercher des decklists"
+msgstr ""
+
+#: functions.php:242
+msgid "Aucune decklist trouvée"
+msgstr ""
+
+#: functions.php:243
+msgid "Aucune decklist dans la corbeille"
+msgstr ""
+
+#: functions.php:276
+msgid "Auteurs"
+msgstr ""
+
+#: functions.php:277
+msgid "Auteur"
+msgstr ""
+
+#: functions.php:278
+msgid "Rechercher des auteurs"
+msgstr ""
+
+#: functions.php:279
+msgid "Tous les auteurs"
+msgstr ""
+
+#: functions.php:280
+msgid "Modifier l'auteur"
+msgstr ""
+
+#: functions.php:281
+msgid "Mettre à jour l'auteur"
+msgstr ""
+
+#: functions.php:282
+msgid "Ajouter un auteur"
+msgstr ""
+
+#: functions.php:283
+msgid "Nouveau nom d'auteur"
+msgstr ""
+
+#: functions.php:284
+msgid "Auteurs"
+msgstr ""
+
+#: functions.php:298
+msgid "Archétypes"
+msgstr ""
+
+#: functions.php:299
+msgid "Archétype"
+msgstr ""
+
+#: functions.php:300
+msgid "Rechercher des archétypes"
+msgstr ""
+
+#: functions.php:301
+msgid "Tous les archétypes"
+msgstr ""
+
+#: functions.php:302
+msgid "Modifier l'archétype"
+msgstr ""
+
+#: functions.php:303
+msgid "Mettre à jour l'archétype"
+msgstr ""
+
+#: functions.php:304
+msgid "Ajouter un archétype"
+msgstr ""
+
+#: functions.php:305
+msgid "Nouveau nom d'archétype"
+msgstr ""
+
+#: functions.php:306
+msgid "Archétypes"
+msgstr ""
+
+#: functions.php:320
+msgid "Couleurs"
+msgstr ""
+
+#: functions.php:321
+msgid "Couleur"
+msgstr ""
+
+#: functions.php:322
+msgid "Rechercher des couleurs"
+msgstr ""
+
+#: functions.php:323
+msgid "Toutes les couleurs"
+msgstr ""
+
+#: functions.php:324
+msgid "Modifier la couleur"
+msgstr ""
+
+#: functions.php:325
+msgid "Mettre à jour la couleur"
+msgstr ""
+
+#: functions.php:326
+msgid "Ajouter une couleur"
+msgstr ""
+
+#: functions.php:327
+msgid "Nouveau nom de couleur"
+msgstr ""
+
+#: functions.php:328
+msgid "Couleurs"
+msgstr ""

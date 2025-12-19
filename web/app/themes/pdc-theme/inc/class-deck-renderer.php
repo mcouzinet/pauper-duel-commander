@@ -57,6 +57,7 @@ class Deck_Renderer {
                     'type' => Scryfall_Service::get_primary_type($card_data),
                     'type_line' => Scryfall_Service::get_type_line($card_data),
                     'mana_cost' => Scryfall_Service::get_mana_cost($card_data),
+                    'colors' => Scryfall_Service::get_colors($card_data),
                     'image_url' => Scryfall_Service::get_card_image($card_data, 'normal'),
                     'image_url_small' => Scryfall_Service::get_card_image($card_data, 'small'),
                 );
@@ -70,6 +71,7 @@ class Deck_Renderer {
                     'type' => 'Other',
                     'type_line' => 'Unknown',
                     'mana_cost' => '',
+                    'colors' => array(),
                     'image_url' => null,
                     'image_url_small' => null,
                 );
@@ -138,28 +140,43 @@ class Deck_Renderer {
     }
 
     /**
-     * Format mana cost to HTML
+     * Format mana cost with Mana Font icons
      *
-     * Converts Scryfall mana cost string (e.g., "{2}{U}{U}") to HTML with symbols.
+     * Converts Scryfall mana cost string (e.g., "{2}{U}{U}") to HTML with Mana Font icons.
+     * Uses the Mana Font library: https://mana.andrewgioia.com/
      *
      * @param string $mana_cost Mana cost string from Scryfall
-     * @return string HTML formatted mana cost
+     * @return string HTML formatted mana cost with icon fonts
      */
     public static function format_mana_cost($mana_cost) {
         if (empty($mana_cost)) {
             return '';
         }
 
-        // Replace each mana symbol with a span
-        // {W} -> <span class="mana-symbol mana-w">W</span>
+        // Replace each mana symbol with Mana Font icon
+        // {W} -> <i class="ms ms-w ms-cost"></i>
+        // {2} -> <i class="ms ms-2 ms-cost"></i>
+        // {X} -> <i class="ms ms-x ms-cost"></i>
         $formatted = preg_replace_callback('/{([^}]+)}/', function($matches) {
             $symbol = $matches[1];
-            $class = 'mana-' . sanitize_html_class(strtolower(str_replace('/', '', $symbol)));
 
-            return '<span class="mana-symbol ' . esc_attr($class) . '" title="' . esc_attr($symbol) . '">' . esc_html($symbol) . '</span>';
+            // Convert symbol to Mana Font class
+            // Handle special cases: numbers, X/Y/Z, colored mana, hybrid mana
+            $symbol_lower = strtolower($symbol);
+
+            // Handle hybrid mana (e.g., W/U, 2/W, etc.)
+            if (strpos($symbol_lower, '/') !== false) {
+                // Split hybrid symbols: "w/u" becomes "wu"
+                $symbol_lower = str_replace('/', '', $symbol_lower);
+            }
+
+            // Sanitize the class name
+            $mana_class = sanitize_html_class($symbol_lower);
+
+            return '<i class="ms ms-' . esc_attr($mana_class) . ' ms-cost" title="' . esc_attr($symbol) . '"></i>';
         }, $mana_cost);
 
-        return '<span class="mana-cost">' . $formatted . '</span>';
+        return '<span class="mana-cost-wrapper">' . $formatted . '</span>';
     }
 
     /**
@@ -171,9 +188,27 @@ class Deck_Renderer {
     public static function calculate_stats($cards) {
         $total_cards = 0;
         $type_counts = array();
-        $cmc_distribution = array();
+        $cmc_distribution = array(
+            0 => 0,
+            1 => 0,
+            2 => 0,
+            3 => 0,
+            4 => 0,
+            5 => 0,
+            6 => 0,
+            '7+' => 0
+        );
         $total_cmc = 0;
         $non_land_cards = 0;
+        $color_counts = array(
+            'W' => 0,  // White
+            'U' => 0,  // Blue
+            'B' => 0,  // Black
+            'R' => 0,  // Red
+            'G' => 0,  // Green
+            'C' => 0,  // Colorless
+            'Multi' => 0  // Multicolor
+        );
 
         foreach ($cards as $card) {
             $total_cards += $card['quantity'];
@@ -188,14 +223,28 @@ class Deck_Renderer {
             // CMC distribution (excluding lands)
             if ($type !== 'Land') {
                 $cmc = $card['cmc'];
-                if (!isset($cmc_distribution[$cmc])) {
-                    $cmc_distribution[$cmc] = 0;
+                if ($cmc >= 7) {
+                    $cmc_distribution['7+'] += $card['quantity'];
+                } else {
+                    $cmc_distribution[$cmc] += $card['quantity'];
                 }
-                $cmc_distribution[$cmc] += $card['quantity'];
 
                 // Calculate average CMC
                 $total_cmc += $cmc * $card['quantity'];
                 $non_land_cards += $card['quantity'];
+            }
+
+            // Count by color
+            $colors = isset($card['colors']) ? $card['colors'] : array();
+            if (empty($colors)) {
+                $color_counts['C'] += $card['quantity'];
+            } elseif (count($colors) > 1) {
+                $color_counts['Multi'] += $card['quantity'];
+            } else {
+                $color_code = $colors[0];
+                if (isset($color_counts[$color_code])) {
+                    $color_counts[$color_code] += $card['quantity'];
+                }
             }
         }
 
@@ -205,13 +254,51 @@ class Deck_Renderer {
         // Calculate average CMC
         $average_cmc = $non_land_cards > 0 ? round($total_cmc / $non_land_cards, 1) : 0;
 
+        // Remove colors with 0 cards
+        $color_counts = array_filter($color_counts, function($count) {
+            return $count > 0;
+        });
+
         return array(
             'total_cards' => $total_cards,
             'unique_cards' => count($cards),
             'type_counts' => $type_counts,
             'cmc_distribution' => $cmc_distribution,
+            'color_counts' => $color_counts,
             'average_cmc' => $average_cmc,
         );
+    }
+
+    /**
+     * Fetch special card data (commander or partner)
+     *
+     * @param string $card_name Card name to fetch
+     * @param bool $include_art_crop Whether to include art_crop image (for commander background)
+     * @return array|null Card data array or null if not found
+     */
+    private static function fetch_special_card($card_name, $include_art_crop = false) {
+        if (empty($card_name)) {
+            return null;
+        }
+
+        $card_scryfall = Scryfall_Service::get_card_by_name($card_name);
+        if (!$card_scryfall) {
+            return null;
+        }
+
+        $card_data = array(
+            'name' => $card_name,
+            'scryfall_data' => $card_scryfall,
+            'image_url' => Scryfall_Service::get_card_image($card_scryfall, 'normal'),
+            'mana_cost' => Scryfall_Service::get_mana_cost($card_scryfall),
+            'type_line' => Scryfall_Service::get_type_line($card_scryfall),
+        );
+
+        if ($include_art_crop) {
+            $card_data['image_url_art_crop'] = Scryfall_Service::get_card_image($card_scryfall, 'art_crop');
+        }
+
+        return $card_data;
     }
 
     /**
@@ -234,36 +321,11 @@ class Deck_Renderer {
         // Group by type
         $grouped_cards = self::group_by_type($sorted_cards);
 
-        // Get commander data
-        $commander_data = null;
-        if (!empty($commander_name)) {
-            $commander_scryfall = Scryfall_Service::get_card_by_name($commander_name);
-            if ($commander_scryfall) {
-                $commander_data = array(
-                    'name' => $commander_name,
-                    'scryfall_data' => $commander_scryfall,
-                    'image_url' => Scryfall_Service::get_card_image($commander_scryfall, 'normal'),
-                    'image_url_art_crop' => Scryfall_Service::get_card_image($commander_scryfall, 'art_crop'),
-                    'mana_cost' => Scryfall_Service::get_mana_cost($commander_scryfall),
-                    'type_line' => Scryfall_Service::get_type_line($commander_scryfall),
-                );
-            }
-        }
+        // Get commander data (with art_crop for background)
+        $commander_data = self::fetch_special_card($commander_name, true);
 
         // Get partner data
-        $partner_data = null;
-        if (!empty($partner_name)) {
-            $partner_scryfall = Scryfall_Service::get_card_by_name($partner_name);
-            if ($partner_scryfall) {
-                $partner_data = array(
-                    'name' => $partner_name,
-                    'scryfall_data' => $partner_scryfall,
-                    'image_url' => Scryfall_Service::get_card_image($partner_scryfall, 'normal'),
-                    'mana_cost' => Scryfall_Service::get_mana_cost($partner_scryfall),
-                    'type_line' => Scryfall_Service::get_type_line($partner_scryfall),
-                );
-            }
-        }
+        $partner_data = self::fetch_special_card($partner_name, false);
 
         // Calculate stats
         $stats = self::calculate_stats($enriched_cards);

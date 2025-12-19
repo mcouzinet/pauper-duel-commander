@@ -45,6 +45,24 @@
             "append": ""
         },
         {
+            "key": "field_676d8a1b2c3d8",
+            "label": "Date",
+            "name": "deck_date",
+            "aria-label": "",
+            "type": "date_picker",
+            "instructions": "Date de publication du deck (laissez vide pour utiliser la date de publication du post)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "display_format": "d/m/Y",
+            "return_format": "d/m/Y",
+            "first_day": 1
+        },
+        {
             "key": "field_676d8a1b2c3d7",
             "label": "Decklist",
             "name": "decklist",
@@ -95,5 +113,5 @@
     "description": "Champs pour les decklists Pauper Duel Commander",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1766160824
+    "modified": 1766164369
 }

@@ -1,0 +1,54 @@
+# Copyright (C) 2025 PDC Theme - Frontend
+# This file is distributed under the same license as the PDC Theme package.
+msgid ""
+msgstr ""
+"Project-Id-Version: PDC Theme Frontend 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pdc-theme\n"
+"POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+
+#: views/components/footer.twig:12
+msgid "Un format Commander accessible et compétitif"
+msgstr ""
+
+#: views/components/footer.twig:16
+msgid "Tous droits réservés."
+msgstr ""
+
+#: views/components/footer.twig:19
+msgid "Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC."
+msgstr ""
+
+#: views/components/header.twig:28
+msgid "Menu non configuré"
+msgstr ""
+
+#: views/components/header.twig:73
+msgid "Langues non configurées"
+msgstr ""
+
+#: views/single-decklist.twig:78
+msgid "par"
+msgstr ""
+
+#: views/single-decklist.twig:86
+msgid "le"
+msgstr ""
+
+#: views/single-decklist.twig:113
+msgid "Courbe de Mana"
+msgstr ""
+
+#: views/single-decklist.twig:148
+msgid "Exporter la decklist"
+msgstr ""
+
+#: views/single-decklist.twig:161
+msgid "Decklist"
+msgstr ""

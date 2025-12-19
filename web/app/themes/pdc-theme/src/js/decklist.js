@@ -89,10 +89,6 @@ function initCardHoverPreviews() {
       showCardPreview(imageUrl, e);
     });
 
-    card.addEventListener('mousemove', (e) => {
-      updatePreviewPosition(e);
-    });
-
     card.addEventListener('mouseleave', () => {
       hideCardPreview();
     });

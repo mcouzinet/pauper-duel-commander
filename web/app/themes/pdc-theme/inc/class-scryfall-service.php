@@ -58,6 +58,13 @@ class Scryfall_Service {
             return null;
         }
 
+        // Check HTTP status code
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code !== 200) {
+            error_log('Scryfall API returned status ' . $response_code . ' for card "' . $card_name . '"');
+            return null;
+        }
+
         $body = wp_remote_retrieve_body($response);
         $data = json_decode($body);
 
@@ -99,6 +106,14 @@ class Scryfall_Service {
         ));
 
         if (is_wp_error($response)) {
+            error_log('Scryfall API error for card ' . $set_code . '/' . $collector_number . ': ' . $response->get_error_message());
+            return null;
+        }
+
+        // Check HTTP status code
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code !== 200) {
+            error_log('Scryfall API returned status ' . $response_code . ' for card ' . $set_code . '/' . $collector_number);
             return null;
         }
 
@@ -106,6 +121,7 @@ class Scryfall_Service {
         $data = json_decode($body);
 
         if (!$data || (isset($data->object) && $data->object === 'error')) {
+            error_log('Scryfall returned error for card ' . $set_code . '/' . $collector_number);
             return null;
         }
 
@@ -180,6 +196,30 @@ class Scryfall_Service {
     }
 
     /**
+     * Get card colors
+     *
+     * @param object $card_data Scryfall card data object
+     * @return array Array of color codes (e.g., ['W', 'U', 'B', 'R', 'G']) or empty array
+     */
+    public static function get_colors($card_data) {
+        if (!$card_data) {
+            return array();
+        }
+
+        // Single-faced card
+        if (isset($card_data->colors) && is_array($card_data->colors)) {
+            return $card_data->colors;
+        }
+
+        // Double-faced card - use front face
+        if (isset($card_data->card_faces[0]->colors) && is_array($card_data->card_faces[0]->colors)) {
+            return $card_data->card_faces[0]->colors;
+        }
+
+        return array();
+    }
+
+    /**
      * Get card type line
      *
      * @param object $card_data Scryfall card data object
@@ -220,14 +260,15 @@ class Scryfall_Service {
         }
 
         // Check for each type in priority order
+        // Land is first because lands are always lands, even if they're "Artifact Land" etc.
         $types = array(
+            'Land',
             'Creature',
             'Planeswalker',
             'Instant',
             'Sorcery',
             'Artifact',
-            'Enchantment',
-            'Land'
+            'Enchantment'
         );
 
         foreach ($types as $type) {
