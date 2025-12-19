@@ -1,5 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Styles personnalisés */
+/* Decklist styles */
+@import './decklist.css';
+
+@layer base {
+  body {
+    @apply bg-bg-primary text-text-primary font-body antialiased;
+    background-image:
+      linear-gradient(180deg, rgba(255, 87, 34, 0.03) 0%, transparent 100%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading uppercase tracking-tight;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@layer components {
+  /* Card Frame Effect - Style Magic Card */
+  .magic-card {
+    @apply relative overflow-hidden bg-card-bg border-2 border-brand-orange/20 shadow-card transition-all duration-300 rounded-xl;
+    background-image: linear-gradient(145deg, rgba(255, 87, 34, 0.06) 0%, rgba(255, 87, 34, 0.02) 100%);
+  }
+
+  .magic-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 rounded-xl;
+    background: linear-gradient(145deg, rgba(255, 87, 34, 0.12) 0%, rgba(255, 87, 34, 0.06) 100%);
+    pointer-events: none;
+  }
+
+  .magic-card::after {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-300 rounded-xl;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 87, 34, 0.1) 100%);
+    pointer-events: none;
+  }
+
+  .magic-card:hover {
+    @apply border-brand-orange/50 shadow-card-hover;
+  }
+
+  .magic-card:hover::before,
+  .magic-card:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Magic Border Effect */
+  .magic-border {
+    @apply relative;
+  }
+
+  .magic-border::before {
+    content: '';
+    @apply absolute inset-0 opacity-90 rounded-xl;
+    background: linear-gradient(145deg, #E64A19 0%, #FF7043 100%);
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Button Styles - Magic Card inspired */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-white uppercase tracking-wider overflow-hidden transition-all duration-300 rounded-lg;
+    @apply bg-gradient-orange shadow-orange text-base;
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .btn-primary:hover {
+    @apply shadow-orange-intense scale-105;
+    transform: scale(1.05) translateY(-2px);
+  }
+
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center px-8 py-4 font-heading font-bold uppercase tracking-wider overflow-hidden transition-all duration-300 rounded-lg;
+    @apply border-2 border-brand-orange text-brand-orange bg-brand-orange/10 text-base;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-brand-orange/20 border-brand-orange-light shadow-card-hover;
+  }
+
+  /* Text Gradient Effects */
+  .text-magic-gradient {
+    @apply bg-gradient-orange bg-clip-text text-transparent;
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .text-mana-gradient {
+    @apply bg-gradient-mana bg-clip-text text-transparent;
+    background-size: 200% 200%;
+  }
+
+  /* Icon Glow Effect */
+  .icon-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 87, 34, 0.6));
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Section Divider - Strike style */
+  .section-divider {
+    @apply relative h-px my-16;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 87, 34, 0.5) 50%, transparent 100%);
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '⚔';
+    @apply absolute top-1/2 -translate-y-1/2 text-brand-orange text-xs;
+  }
+
+  .section-divider::before {
+    @apply left-[48%];
+  }
+
+  .section-divider::after {
+    @apply right-[48%];
+  }
+}
+
+@layer utilities {
+  /* Backdrop Blur Effects */
+  .glass-effect {
+    @apply backdrop-blur-md bg-brand-black/90 border-b-2 border-brand-orange/20;
+  }
+
+  /* Scroll Animations */
+  .animate-on-scroll {
+    @apply opacity-0 translate-y-8;
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  /* Custom Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-bg-secondary;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-brand-orange rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-orange-light;
+  }
+
+  /* Polylang Language Switcher */
+  .lang-item {
+    @apply block;
+  }
+
+  .lang-item a {
+    @apply block px-3 py-2 text-text-secondary hover:text-brand-orange hover:bg-brand-orange/15 transition-all duration-300 font-heading font-semibold uppercase text-xs tracking-wide rounded-lg;
+  }
+
+  .lang-item.current-lang a {
+    @apply text-brand-orange bg-brand-orange/10 border-l-2 border-brand-orange;
+  }
+
+  .lang-item img {
+    @apply inline-block mr-2 w-4 h-4 rounded;
+  }
+
+  /* Language switcher list styling */
+  ul.lang-item {
+    @apply list-none m-0 p-0;
+  }
+
+  ul li.lang-item {
+    @apply m-0;
+  }
+}

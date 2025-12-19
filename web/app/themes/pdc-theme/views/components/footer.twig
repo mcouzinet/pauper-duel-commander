@@ -1,7 +1,24 @@
-<footer class="bg-gray-800 text-white mt-12">
-    <div class="container mx-auto px-4 py-8">
-        <div class="text-center">
-            <p>&copy; {{ "now"|date('Y') }} {{ site.name }}. Tous droits réservés.</p>
+<footer class="relative mt-20 border-t border-card-border bg-bg-secondary">
+    <div class="container mx-auto px-6 py-12">
+        <div class="text-center space-y-4">
+            <div class="flex justify-center items-center mb-6">
+                <a href="{{ site.url }}" class="block hover:scale-105 transition-transform duration-300">
+                    <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png"
+                         alt="{{ site.name }}"
+                         class="h-24 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]">
+                </a>
+            </div>
+            <p class="text-text-secondary font-body">
+                Un format Commander accessible et compétitif
+            </p>
+            <div class="pt-6 border-t border-card-border/50 mt-8">
+                <p class="text-text-muted text-sm">
+                    &copy; {{ "now"|date('Y') }} {{ site.name }}. Tous droits réservés.
+                </p>
+                <p class="text-text-muted text-xs mt-2">
+                    Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.
+                </p>
+            </div>
         </div>
     </div>
 </footer>

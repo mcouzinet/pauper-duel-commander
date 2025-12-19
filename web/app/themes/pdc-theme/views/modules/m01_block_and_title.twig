@@ -7,32 +7,38 @@
  * - content (wysiwyg): Contenu du bloc
  * - background_color (string): Couleur de fond (optionnel)
  * - text_color (string): Couleur du texte (optionnel)
+ * - key (int): Index du module dans la boucle
  */
 #}
 
-<section class="py-20">
-    <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+<section id="module{{ key }}" class="py-24 relative">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-20">
+            <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
                 {{ module.title }}
             </h2>
-            <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
                 {{ module.desc|raw }}
             </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {% for bloc in module.blocs %}
-                <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card">
+                <div class="p-8 group">
                     <div class="text-center">
-                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign w-8 h-8 text-white">
-                                <line x1="12" x2="12" y1="2" y2="22"></line>
-                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                            </svg>
+                        <div class="relative inline-block mb-8">
+                            <div class="absolute inset-0 bg-gradient-to-r from-mana-green to-emerald-600 opacity-20 blur-xl group-hover:opacity-40 transition-opacity rounded-full"></div>
+                            <div class="relative w-20 h-20 bg-gradient-to-br from-mana-green to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-white">
+                                    <line x1="12" x2="12" y1="2" y2="22"></line>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-magic-gold mb-4">{{ bloc.title }}</h3>
-                        <p class="text-card-foreground">
+                        <h3 class="text-2xl font-heading font-semibold text-magic-gold mb-4 group-hover:text-magic-gold-light transition-colors">
+                            {{ bloc.title }}
+                        </h3>
+                        <p class="text-text-secondary leading-relaxed">
                             {{ bloc.desc }}
                         </p>
                     </div>

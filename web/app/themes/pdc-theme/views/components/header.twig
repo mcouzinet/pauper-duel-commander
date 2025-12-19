@@ -1,25 +1,79 @@
-<header class="bg-header-dark text-white shadow-lg">
-    <nav class="container mx-auto px-4 py-6">
-        <div class="flex justify-between items-center">
-            <div>
-                <a href="{{ site.url }}" class="hover:opacity-80 transition-opacity">
-                    <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png" alt="{{ site.name }}" class="h-12">
+<header class="glass-effect border-b border-card-border fixed top-0 left-0 right-0 z-50">
+    <nav class="container mx-auto px-6">
+        <div class="relative flex justify-between items-center py-8">
+            <div class="w-36">
+                <a href="{{ site.url }}" class="absolute top-0 left-0 block hover:scale-105 transition-transform duration-300">
+                    <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png"
+                         alt="{{ site.name }}"
+                         class="h-36 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]">
                 </a>
             </div>
 
-            {% if menu %}
-                <div class="hidden md:block">
-                    <ul class="flex space-x-6">
+            <div class="flex items-center gap-8">
+                {% if menu and menu.items %}
+                    <ul class="flex items-center space-x-6">
                         {% for item in menu.items %}
                             <li>
-                                <a href="{{ item.url }}" class="hover:text-gray-300 {{ item.current ? 'font-bold' : '' }}">
+                                <a href="{{ item.url }}"
+                                   class="relative font-heading font-bold uppercase text-md text-text-secondary hover:text-brand-orange transition-colors duration-300 group {{ item.current ? 'text-brand-orange' : '' }}">
                                     {{ item.title }}
+                                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-orange group-hover:w-full transition-all duration-300 {{ item.current ? 'w-full' : '' }}"></span>
                                 </a>
                             </li>
                         {% endfor %}
                     </ul>
-                </div>
-            {% endif %}
+                {% else %}
+                    {# Debug: afficher un message si le menu n'existe pas #}
+                    <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
+                        Menu non configuré
+                    </div>
+                {% endif %}
+
+                {# Language Switcher (Polylang) #}
+                {% if function('function_exists', 'pll_the_languages') and function('pll_languages_list') %}
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 px-3 py-2 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 hover:scale-105 rounded-lg">
+                            <span class="font-heading font-bold uppercase text-brand-orange text-xs tracking-wider">
+                                {{ function('pll_current_language', 'slug')|upper }}
+                            </span>
+                            <svg class="w-3 h-3 text-brand-orange transition-transform group-hover:rotate-180 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+
+                        <div class="absolute right-0 mt-3 min-w-[140px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <div class="magic-card p-2">
+                                <ul class="space-y-1">
+                                    {% set languages = function('pll_the_languages', {
+                                        'dropdown': 0,
+                                        'show_flags': 1,
+                                        'show_names': 1,
+                                        'hide_current': 1,
+                                        'hide_if_no_translation': 0,
+                                        'force_home': 0,
+                                        'echo': 0,
+                                        'raw': 1
+                                    }) %}
+                                    {% if languages %}
+                                        {% for lang in languages %}
+                                            <li class="lang-item {{ lang.current_lang ? 'current-lang' : '' }}">
+                                                <a href="{{ lang.url }}" hreflang="{{ lang.slug }}" class="flex items-center">
+                                                    <span>{{ lang.name }}</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% elseif function('function_exists', 'pll_the_languages') %}
+                    {# Polylang installé mais pas configuré #}
+                    <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
+                        Langues non configurées
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </nav>
 </header>

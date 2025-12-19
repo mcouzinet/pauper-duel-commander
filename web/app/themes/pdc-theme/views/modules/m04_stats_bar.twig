@@ -8,31 +8,36 @@
  *   - value (string): Valeur de la statistique (ex: "100")
  *   - label (string): Label de la statistique (ex: "card deck")
  *   - icon_svg (textarea): Code SVG de l'icône (optionnel)
+ * - key (int): Index du module dans la boucle
  */
 #}
 
-<section class="py-12 {{ module.background_color|default('bg-magic-purple/10') }}">
-    <div class="container mx-auto px-4">
+<section id="module{{ key }}" class="relative py-16 {{ module.background_color|default('bg-bg-secondary') }}">
+    {# Decorative Border #}
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-magic-gold/50 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-magic-purple/50 to-transparent"></div>
+
+    <div class="container mx-auto px-6">
         {% if module.stats %}
-            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+            <div class="flex flex-wrap justify-center items-center gap-12 md:gap-20">
                 {% for stat in module.stats %}
-                    <div class="text-center">
-                        <div class="flex items-center justify-center gap-3 mb-2">
+                    <div class="text-center group">
+                        <div class="flex items-center justify-center gap-4 mb-3">
                             {% if stat.icon_svg %}
-                                <div class="w-8 h-8 text-magic-gold">
+                                <div class="w-10 h-10 text-magic-gold icon-glow">
                                     {{ stat.icon_svg|raw }}
                                 </div>
                             {% endif %}
 
                             {% if stat.value %}
-                                <span class="text-3xl md:text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent">
+                                <span class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-magic-gradient">
                                     {{ stat.value }}
                                 </span>
                             {% endif %}
                         </div>
 
                         {% if stat.label %}
-                            <p class="text-muted-foreground text-sm md:text-base">
+                            <p class="text-text-secondary text-base md:text-lg font-body uppercase tracking-wider">
                                 {{ stat.label }}
                             </p>
                         {% endif %}

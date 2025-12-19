@@ -1,0 +1,232 @@
+{#
+/**
+ * Single Decklist Template
+ *
+ * Variables:
+ * - post (Timber\Post): The decklist post
+ * - deck (array): Prepared deck data from Deck_Renderer
+ * - raw_decklist (string): Raw MTGO format for export
+ * - deck_author, deck_archetype, deck_color (array): Taxonomies
+ */
+#}
+
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+<article class="decklist-single">
+    {# Header Section #}
+    <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+        {# Background Layer #}
+        <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+
+        {% if deck.commander and deck.commander.image_url_art_crop %}
+            <div class="absolute inset-0 opacity-5">
+                <img src="{{ deck.commander.image_url_art_crop }}"
+                     alt="{{ deck.commander.name }} artwork"
+                     class="w-full h-full object-cover">
+            </div>
+        {% endif %}
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid md:grid-cols-12 gap-8 items-start">
+                    {# Commander Image #}
+                    <div class="md:col-span-4 lg:col-span-3">
+                        {% if deck.commander and deck.commander.image_url %}
+                            <div class="sticky top-24">
+                                <div class="group">
+                                    <img src="{{ deck.commander.image_url }}"
+                                         alt="{{ deck.commander.name }}"
+                                         class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
+                                         loading="eager">
+                                </div>
+
+                                {# Partner Card #}
+                                {% if deck.partner and deck.partner.image_url %}
+                                    <div class="magic-card group mt-4">
+                                        <img src="{{ deck.partner.image_url }}"
+                                             alt="{{ deck.partner.name }}"
+                                             class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
+                                             loading="eager">
+
+                                        <div class="mt-4 text-center">
+                                            <h3 class="text-lg font-heading font-bold text-magic-gold">
+                                                {{ deck.partner.name }}
+                                            </h3>
+                                            <p class="text-xs text-text-secondary">
+                                                {{ deck.partner.type_line }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    {# Deck Info #}
+                    <div class="md:col-span-8 lg:col-span-9">
+                        {# Title #}
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-magic-gradient mb-4">
+                            {{ post.title }}
+                        </h1>
+
+                        {# Taxonomies #}
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            {% if deck_author %}
+                                {% for author in deck_author %}
+                                    <span class="text-sm font-semibold text-text-secondary">
+                                        par {{ author.name }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+
+                            {# Date #}
+                            <span class="text-sm font-semibold text-text-secondary">
+                                · {{ deck_date ? deck_date : post.date|date('d/m/Y') }}
+                            </span>
+
+                            {% if deck_archetype %}
+                                {% for archetype in deck_archetype %}
+                                    <span class="px-4 py-2 bg-brand-orange/20 border border-brand-orange/40 rounded-lg text-sm font-semibold text-brand-orange">
+                                        {{ archetype.name }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if deck_color %}
+                                {% for color in deck_color %}
+                                    <span class="px-4 py-2 glass-effect border border-magic-gold/40 rounded-lg text-sm font-semibold text-magic-gold">
+                                        {{ color.name }}
+                                    </span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        {# Stats #}
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            {# CMC Moyen #}
+                            <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
+                                <div class="text-3xl font-heading font-bold text-magic-gradient">
+                                    {{ deck.stats.average_cmc }}
+                                </div>
+                                <div class="text-sm text-text-secondary uppercase tracking-wide">CMC Moyen</div>
+                            </div>
+
+                            {# Créatures #}
+                            {% if deck.stats.type_counts.Creature %}
+                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
+                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
+                                        {{ deck.stats.type_counts.Creature }}
+                                    </div>
+                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Créatures</div>
+                                </div>
+                            {% endif %}
+
+                            {# Sorts (Instant + Sorcery) #}
+                            {% set spells = (deck.stats.type_counts.Instant|default(0) + deck.stats.type_counts.Sorcery|default(0)) %}
+                            {% if spells > 0 %}
+                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
+                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
+                                        {{ spells }}
+                                    </div>
+                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Sorts</div>
+                                </div>
+                            {% endif %}
+
+                            {# Terrains #}
+                            {% if deck.stats.type_counts.Land %}
+                                <div class="glass-effect p-4 rounded-lg border border-magic-purple/30 text-center">
+                                    <div class="text-3xl font-heading font-bold text-magic-gradient">
+                                        {{ deck.stats.type_counts.Land }}
+                                    </div>
+                                    <div class="text-sm text-text-secondary uppercase tracking-wide">Terrains</div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {# Description #}
+                        {% if post.content %}
+                            <div class="prose prose-invert max-w-none mb-8">
+                                {{ post.content }}
+                            </div>
+                        {% endif %}
+
+                        {# Export Button #}
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="exportDeckMoxfield()" class="text-sm text-text-secondary hover:text-brand-orange transition-colors flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                Exporter la decklist
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {# Decklist Section #}
+    <section class="py-16">
+        <div class="container mx-auto px-6">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
+                    Decklist
+                </h2>
+
+                {# Cards grouped by type #}
+                {% for type, cards in deck.cards_by_type %}
+                    <div class="mb-12">
+                        <h3 class="text-2xl font-heading font-semibold text-brand-orange mb-4 flex items-center">
+                            <span class="bg-brand-orange/20 px-4 py-2 rounded-lg">
+                                {{ type }} ({{ cards|length }})
+                            </span>
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                            {% for card in cards %}
+                                <div class="glass-effect border border-magic-purple/20 rounded-lg p-2 hover:border-brand-orange/40 transition-all group relative card-hover-trigger"
+                                     data-card-name="{{ card.name }}"
+                                     data-card-image="{{ card.image_url }}">
+
+                                    <div class="flex items-center gap-2">
+                                        {# Quantity #}
+                                        <span class="text-lg font-heading font-bold text-magic-gold w-6 text-center flex-shrink-0">
+                                            {{ card.quantity }}
+                                        </span>
+
+                                        {# Card Name #}
+                                        <span class="text-sm font-semibold text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1">
+                                            {{ card.name }}
+                                        </span>
+
+                                        {# Mana Cost #}
+                                        {% if card.mana_cost %}
+                                            <div class="flex-shrink-0">
+                                                {{ function('Deck_Renderer::format_mana_cost', card.mana_cost)|raw }}
+                                            </div>
+                                        {% endif %}
+
+                                        {# CMC Badge #}
+                                        <span class="inline-flex items-center justify-center w-7 h-7 bg-magic-purple/30 border border-magic-purple/50 rounded-full text-xs font-bold text-magic-gold flex-shrink-0">
+                                            {{ card.cmc }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    {# Hidden data for export #}
+    <script id="deck-export-data" type="application/json">
+        {{ {
+            commander: deck.commander.name|default(''),
+            partner: deck.partner.name|default(''),
+            decklist: raw_decklist
+        }|json_encode|raw }}
+    </script>
+</article>
+{% endblock %}

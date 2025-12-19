@@ -112,8 +112,8 @@
             "label": "Bouton 1 - Lien",
             "name": "button_1_link",
             "aria-label": "",
-            "type": "url",
-            "instructions": "",
+            "type": "text",
+            "instructions": "URL complète (https://...) ou ancre (#module2)",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -122,8 +122,11 @@
                 "id": ""
             },
             "default_value": "",
+            "maxlength": "",
             "allow_in_bindings": 0,
-            "placeholder": ""
+            "placeholder": "#module2 ou https://...",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_68fb8c0011118",
@@ -151,8 +154,8 @@
             "label": "Bouton 2 - Lien",
             "name": "button_2_link",
             "aria-label": "",
-            "type": "url",
-            "instructions": "",
+            "type": "text",
+            "instructions": "URL complète (https://...) ou ancre (#module2)",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -161,8 +164,11 @@
                 "id": ""
             },
             "default_value": "",
+            "maxlength": "",
             "allow_in_bindings": 0,
-            "placeholder": ""
+            "placeholder": "#module2 ou https://...",
+            "prepend": "",
+            "append": ""
         },
         {
             "key": "field_68fb8c001111a",

@@ -158,3 +158,152 @@ add_filter('acf/settings/load_json', function($paths) {
     $paths[] = get_stylesheet_directory() . '/acf-json';
     return $paths;
 });
+
+/**
+ * Add Favicons
+ */
+function pdc_theme_add_favicons() {
+    $theme_uri = get_template_directory_uri();
+    ?>
+    <link rel="icon" type="image/x-icon" href="<?php echo $theme_uri; ?>/public/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $theme_uri; ?>/public/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo $theme_uri; ?>/public/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $theme_uri; ?>/public/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo $theme_uri; ?>/public/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="<?php echo $theme_uri; ?>/public/android-chrome-512x512.png">
+    <link rel="manifest" href="<?php echo $theme_uri; ?>/public/site.webmanifest">
+    <meta name="theme-color" content="#FF5722">
+    <?php
+}
+add_action('wp_head', 'pdc_theme_add_favicons');
+
+/**
+ * Load Decklist Classes
+ */
+require_once get_template_directory() . '/inc/class-scryfall-service.php';
+require_once get_template_directory() . '/inc/class-decklist-parser.php';
+require_once get_template_directory() . '/inc/class-deck-renderer.php';
+
+/**
+ * Wrapper function for Scryfall API (for backward compatibility with M07 module)
+ *
+ * @param string $set_code The set code (e.g., "znr")
+ * @param string $collector_number The collector number
+ * @return array|null Card data from Scryfall API
+ */
+function get_scryfall_card($set_code, $collector_number) {
+    return Scryfall_Service::get_card_by_set($set_code, $collector_number);
+}
+
+/**
+ * Register Decklist Custom Post Type
+ */
+function pdc_register_decklist_cpt() {
+    $labels = array(
+        'name' => __('Decklists', 'pdc-theme'),
+        'singular_name' => __('Decklist', 'pdc-theme'),
+        'menu_name' => __('Decklists', 'pdc-theme'),
+        'add_new' => __('Ajouter une decklist', 'pdc-theme'),
+        'add_new_item' => __('Ajouter une nouvelle decklist', 'pdc-theme'),
+        'edit_item' => __('Modifier la decklist', 'pdc-theme'),
+        'new_item' => __('Nouvelle decklist', 'pdc-theme'),
+        'view_item' => __('Voir la decklist', 'pdc-theme'),
+        'search_items' => __('Rechercher des decklists', 'pdc-theme'),
+        'not_found' => __('Aucune decklist trouvée', 'pdc-theme'),
+        'not_found_in_trash' => __('Aucune decklist dans la corbeille', 'pdc-theme'),
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => false, // Pas d'archive pour le moment
+        'publicly_queryable' => true,
+        'show_ui' => true,
+        'show_in_menu' => true,
+        'show_in_nav_menus' => true,
+        'show_in_rest' => false,
+        'menu_position' => 5,
+        'menu_icon' => 'dashicons-index-card',
+        'supports' => array('title', 'editor', 'thumbnail', 'author'),
+        'rewrite' => array(
+            'slug' => 'decklist',
+            'with_front' => false,
+        ),
+        'capability_type' => 'post',
+    );
+
+    register_post_type('decklist', $args);
+}
+add_action('init', 'pdc_register_decklist_cpt');
+
+/**
+ * Register Decklist Taxonomies
+ */
+function pdc_register_decklist_taxonomies() {
+    // Taxonomy: Deck Author
+    register_taxonomy('deck_author', 'decklist', array(
+        'labels' => array(
+            'name' => __('Auteurs', 'pdc-theme'),
+            'singular_name' => __('Auteur', 'pdc-theme'),
+            'search_items' => __('Rechercher des auteurs', 'pdc-theme'),
+            'all_items' => __('Tous les auteurs', 'pdc-theme'),
+            'edit_item' => __('Modifier l\'auteur', 'pdc-theme'),
+            'update_item' => __('Mettre à jour l\'auteur', 'pdc-theme'),
+            'add_new_item' => __('Ajouter un auteur', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom d\'auteur', 'pdc-theme'),
+            'menu_name' => __('Auteurs', 'pdc-theme'),
+        ),
+        'public' => true,
+        'hierarchical' => false,
+        'show_ui' => true,
+        'show_admin_column' => true,
+        'show_in_nav_menus' => true,
+        'show_in_rest' => false,
+        'rewrite' => array('slug' => 'deck-author'),
+    ));
+
+    // Taxonomy: Deck Archetype
+    register_taxonomy('deck_archetype', 'decklist', array(
+        'labels' => array(
+            'name' => __('Archétypes', 'pdc-theme'),
+            'singular_name' => __('Archétype', 'pdc-theme'),
+            'search_items' => __('Rechercher des archétypes', 'pdc-theme'),
+            'all_items' => __('Tous les archétypes', 'pdc-theme'),
+            'edit_item' => __('Modifier l\'archétype', 'pdc-theme'),
+            'update_item' => __('Mettre à jour l\'archétype', 'pdc-theme'),
+            'add_new_item' => __('Ajouter un archétype', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom d\'archétype', 'pdc-theme'),
+            'menu_name' => __('Archétypes', 'pdc-theme'),
+        ),
+        'public' => true,
+        'hierarchical' => true,
+        'show_ui' => true,
+        'show_admin_column' => true,
+        'show_in_nav_menus' => true,
+        'show_in_rest' => false,
+        'rewrite' => array('slug' => 'deck-archetype'),
+    ));
+
+    // Taxonomy: Deck Color
+    register_taxonomy('deck_color', 'decklist', array(
+        'labels' => array(
+            'name' => __('Couleurs', 'pdc-theme'),
+            'singular_name' => __('Couleur', 'pdc-theme'),
+            'search_items' => __('Rechercher des couleurs', 'pdc-theme'),
+            'all_items' => __('Toutes les couleurs', 'pdc-theme'),
+            'edit_item' => __('Modifier la couleur', 'pdc-theme'),
+            'update_item' => __('Mettre à jour la couleur', 'pdc-theme'),
+            'add_new_item' => __('Ajouter une couleur', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom de couleur', 'pdc-theme'),
+            'menu_name' => __('Couleurs', 'pdc-theme'),
+        ),
+        'public' => true,
+        'hierarchical' => false,
+        'show_ui' => true,
+        'show_admin_column' => true,
+        'show_in_nav_menus' => true,
+        'show_in_rest' => false,
+        'rewrite' => array('slug' => 'deck-color'),
+    ));
+}
+add_action('init', 'pdc_register_decklist_taxonomies');

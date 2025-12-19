@@ -1,0 +1,111 @@
+{
+    "key": "group_676449f0a1b2c",
+    "title": "M07 - Ban List",
+    "fields": [
+        {
+            "key": "field_676449f0a1b2d",
+            "label": "Titre",
+            "name": "title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Titre de la ban list",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Ban List",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_676449f0a1b2e",
+            "label": "Description",
+            "name": "description",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Description de la ban list",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "full",
+            "media_upload": 0,
+            "delay": 0,
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_676449f0a1b2f",
+            "label": "Cartes",
+            "name": "cards",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Ajouter les cartes bannies via leur URL Scryfall",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "field_676449f0a1b30",
+            "button_label": "Ajouter une carte",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_676449f0a1b30",
+                    "label": "URL Scryfall",
+                    "name": "scryfall_url",
+                    "aria-label": "",
+                    "type": "url",
+                    "instructions": "Coller l'URL complète de la carte depuis Scryfall.com (ex: https:\/\/scryfall.com\/card\/mh2\/84\/ragavan-nimble-pilferer)",
+                    "required": 1,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "https:\/\/scryfall.com\/card\/...",
+                    "parent_repeater": "field_676449f0a1b2f"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "page"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": false,
+    "description": "Module pour afficher la liste des cartes bannies avec leurs images depuis Scryfall",
+    "show_in_rest": 0,
+    "display_title": "",
+    "modified": 1766155067
+}

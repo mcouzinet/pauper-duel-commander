@@ -13,20 +13,21 @@
  *   - button_text (string): Texte du bouton
  *   - button_link (url): Lien du bouton
  *   - button_style (string): Style du bouton ('primary' ou 'secondary')
+ * - key (int): Index du module dans la boucle
  */
 #}
 
-<section class="py-20">
-    <div class="container mx-auto px-4">
+<section id="module{{ key }}" class="py-24 relative">
+    <div class="container mx-auto px-6">
         {% if module.title or module.subtitle %}
-            <div class="text-center mb-16">
+            <div class="text-center mb-20">
                 {% if module.title %}
-                    <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+                    <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
                         {{ module.title }}
                     </h2>
                 {% endif %}
                 {% if module.subtitle %}
-                    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
                         {{ module.subtitle|raw }}
                     </p>
                 {% endif %}
@@ -36,36 +37,47 @@
         {% if module.cards %}
             <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 {% for card in module.cards %}
-                    <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card hover:shadow-magic transition-all group">
-                        {% if card.icon_svg %}
-                            <div class="w-16 h-16 bg-gradient-to-r {{ card.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                {{ card.icon_svg|raw }}
-                            </div>
-                        {% endif %}
+                    <div class="magic-card magic-border p-10 group relative overflow-hidden">
+                        {# Decorative Corner #}
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-magic-purple/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-magic-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                        {% if card.title %}
-                            <h3 class="text-2xl font-semibold text-magic-gold mb-4">{{ card.title }}</h3>
-                        {% endif %}
-
-                        {% if card.description %}
-                            <p class="text-card-foreground mb-6">
-                                {{ card.description }}
-                            </p>
-                        {% endif %}
-
-                        {% if card.button_text and card.button_link %}
-                            {% if card.button_style == 'primary' %}
-                                <a href="{{ card.button_link }}"
-                                   class="inline-block px-6 py-3 bg-gradient-gold text-white font-semibold rounded-lg shadow-lg hover:shadow-magic transition-all">
-                                    {{ card.button_text }}
-                                </a>
-                            {% else %}
-                                <a href="{{ card.button_link }}"
-                                   class="inline-block px-6 py-3 bg-magic-purple/20 border border-magic-purple/40 text-magic-gold font-semibold rounded-lg hover:bg-magic-purple/30 transition-all">
-                                    {{ card.button_text }}
-                                </a>
+                        <div class="relative z-10">
+                            {% if card.icon_svg %}
+                                <div class="relative inline-block mb-8">
+                                    <div class="absolute inset-0 bg-gradient-to-r {{ card.icon_gradient|default('from-magic-purple to-magic-gold') }} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity rounded-full"></div>
+                                    <div class="relative w-20 h-20 bg-gradient-to-br {{ card.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-card">
+                                        <div class="text-white w-10 h-10">
+                                            {{ card.icon_svg|raw }}
+                                        </div>
+                                    </div>
+                                </div>
                             {% endif %}
-                        {% endif %}
+
+                            {% if card.title %}
+                                <h3 class="text-3xl font-heading font-bold text-magic-gold mb-6 group-hover:text-magic-gold-light transition-colors">
+                                    {{ card.title }}
+                                </h3>
+                            {% endif %}
+
+                            {% if card.description %}
+                                <p class="text-text-secondary text-lg leading-relaxed mb-8">
+                                    {{ card.description }}
+                                </p>
+                            {% endif %}
+
+                            {% if card.button_text and card.button_link %}
+                                {% if card.button_style == 'primary' %}
+                                    <a href="{{ card.button_link }}" class="btn-primary">
+                                        {{ card.button_text }}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ card.button_link }}" class="btn-secondary">
+                                        {{ card.button_text }}
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>

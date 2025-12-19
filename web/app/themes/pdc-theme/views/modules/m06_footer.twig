@@ -12,10 +12,11 @@
  *   - icon_svg (textarea): Code SVG de l'icône
  *   - url (url): Lien vers le réseau social
  *   - label (string): Label du lien (pour l'accessibilité)
+ * - key (int): Index du module dans la boucle
  */
 #}
 
-<footer class="py-12 {{ module.background_color|default('bg-gray-800') }}">
+<footer id="module{{ key }}" class="py-12 {{ module.background_color|default('bg-gray-800') }}">
     <div class="container mx-auto px-4">
         <div class="text-center max-w-2xl mx-auto">
             {% if module.logo %}

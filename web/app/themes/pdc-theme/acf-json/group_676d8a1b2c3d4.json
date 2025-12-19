@@ -1,0 +1,99 @@
+{
+    "key": "group_676d8a1b2c3d4",
+    "title": "CPT - Decklist Fields",
+    "fields": [
+        {
+            "key": "field_676d8a1b2c3d5",
+            "label": "Commander",
+            "name": "commander",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Nom exact de la carte commandant (en anglais)",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "Fblthp, the Lost",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_676d8a1b2c3d6",
+            "label": "Partner \/ Background",
+            "name": "partner",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Nom du partner ou background (optionnel)",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "Thrasios, Triton Hero",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_676d8a1b2c3d7",
+            "label": "Decklist",
+            "name": "decklist",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Format MTGO : une carte par ligne avec quantité (ex: \"4 Lightning Bolt\")",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "allow_in_bindings": 0,
+            "maxlength": "",
+            "rows": 20,
+            "placeholder": "1 Lightning Boltn4 Mountainn1 Sol Ring",
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "decklist"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "acf_after_title",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": [
+        "the_content",
+        "excerpt",
+        "discussion",
+        "comments",
+        "revisions",
+        "author",
+        "format",
+        "featured_image",
+        "send-trackbacks"
+    ],
+    "active": true,
+    "description": "Champs pour les decklists Pauper Duel Commander",
+    "show_in_rest": 0,
+    "display_title": "",
+    "modified": 1766160824
+}

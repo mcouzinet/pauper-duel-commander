@@ -208,6 +208,38 @@
                     ],
                     "min": "",
                     "max": ""
+                },
+                "layout_676449f0a1b3d": {
+                    "key": "layout_676449f0a1b3d",
+                    "name": "m07_ban_list",
+                    "label": "M07 - Ban List",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_676449f0a1b3e",
+                            "label": "Ban List",
+                            "name": "m07_ban_list",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_676449f0a1b2c"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
                 }
             },
             "min": "",

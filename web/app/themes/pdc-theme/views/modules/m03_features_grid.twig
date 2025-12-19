@@ -10,20 +10,21 @@
  *   - icon_gradient (string): Classe de gradient pour l'icône (ex: 'from-purple-500 to-violet-600')
  *   - title (string): Titre de la fonctionnalité
  *   - description (textarea): Description de la fonctionnalité
+ * - key (int): Index du module dans la boucle
  */
 #}
 
-<section class="py-20">
-    <div class="container mx-auto px-4">
+<section id="module{{ key }}" class="py-24 relative">
+    <div class="container mx-auto px-6">
         {% if module.title or module.subtitle %}
-            <div class="text-center mb-16">
+            <div class="text-center mb-20">
                 {% if module.title %}
-                    <h2 class="text-4xl font-bold bg-gradient-gold bg-clip-text text-transparent mb-4">
+                    <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
                         {{ module.title }}
                     </h2>
                 {% endif %}
                 {% if module.subtitle %}
-                    <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
                         {{ module.subtitle|raw }}
                     </p>
                 {% endif %}
@@ -31,22 +32,29 @@
         {% endif %}
 
         {% if module.features %}
-            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
                 {% for feature in module.features %}
-                    <div class="rounded-lg border text-card-foreground shadow-sm p-8 bg-gradient-card border-magic-purple/20 shadow-card hover:shadow-magic transition-all group">
+                    <div class="magic-card p-8 group">
                         <div class="text-center">
                             {% if feature.icon_svg %}
-                                <div class="w-16 h-16 bg-gradient-to-r {{ feature.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                                    {{ feature.icon_svg|raw }}
+                                <div class="relative inline-block mb-8">
+                                    <div class="absolute inset-0 bg-gradient-to-r {{ feature.icon_gradient|default('from-magic-purple to-magic-gold') }} opacity-20 blur-xl group-hover:opacity-40 transition-opacity rounded-full"></div>
+                                    <div class="relative w-20 h-20 bg-gradient-to-br {{ feature.icon_gradient|default('from-magic-purple to-magic-gold') }} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-card">
+                                        <div class="text-white w-10 h-10">
+                                            {{ feature.icon_svg|raw }}
+                                        </div>
+                                    </div>
                                 </div>
                             {% endif %}
 
                             {% if feature.title %}
-                                <h3 class="text-xl font-semibold text-magic-gold mb-4">{{ feature.title }}</h3>
+                                <h3 class="text-2xl font-heading font-semibold text-magic-gold mb-4 group-hover:text-magic-gold-light transition-colors">
+                                    {{ feature.title }}
+                                </h3>
                             {% endif %}
 
                             {% if feature.description %}
-                                <p class="text-card-foreground">
+                                <p class="text-text-secondary leading-relaxed">
                                     {{ feature.description }}
                                 </p>
                             {% endif %}
