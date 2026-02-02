@@ -1,10 +1,10 @@
 {
-    "key": "group_68fb8b6eeea49",
-    "title": "M01 - Block et titre",
+    "key": "group_68fb8c0666666",
+    "title": "M06 - Liste Numérotée / Steps",
     "fields": [
         {
-            "key": "field_68fb8b6fca73e",
-            "label": "Titre",
+            "key": "field_68fb8c0666001",
+            "label": "Titre de la section",
             "name": "title",
             "aria-label": "",
             "type": "text",
@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Pourquoi jouer au PDC ?",
+            "default_value": "",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -24,12 +24,12 @@
             "append": ""
         },
         {
-            "key": "field_68fb8babca73f",
+            "key": "field_68fb8c0666002",
             "label": "Description",
-            "name": "desc",
+            "name": "description",
             "aria-label": "",
             "type": "textarea",
-            "instructions": "",
+            "instructions": "Description introductive (optionnelle)",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -37,20 +37,20 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "Découvrez les avantages du format Pauper Duel Commander, un format accessible et compétitif.",
+            "default_value": "",
             "maxlength": "",
             "allow_in_bindings": 0,
-            "rows": "",
+            "rows": 3,
             "placeholder": "",
             "new_lines": ""
         },
         {
-            "key": "field_68fb8bbcca740",
-            "label": "Blocs",
-            "name": "blocs",
+            "key": "field_68fb8c0666003",
+            "label": "Étapes",
+            "name": "steps",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "",
+            "instructions": "Ajouter les étapes numérotées",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -58,84 +58,57 @@
                 "class": "",
                 "id": ""
             },
-            "layout": "table",
+            "layout": "block",
             "pagination": 0,
-            "min": 0,
+            "min": 1,
             "max": 0,
-            "collapsed": "",
-            "button_label": "Ajouter un élément",
+            "collapsed": "field_68fb8c0666004",
+            "button_label": "Ajouter une étape",
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_68fb8bc6ca741",
+                    "key": "field_68fb8c0666004",
                     "label": "Titre",
                     "name": "title",
                     "aria-label": "",
                     "type": "text",
                     "instructions": "",
-                    "required": 0,
+                    "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "Accessibilité",
+                    "default_value": "",
                     "maxlength": "",
                     "allow_in_bindings": 0,
                     "placeholder": "",
                     "prepend": "",
                     "append": "",
-                    "parent_repeater": "field_68fb8bbcca740"
+                    "parent_repeater": "field_68fb8c0666003"
                 },
                 {
-                    "key": "field_68fb8bd2ca742",
+                    "key": "field_68fb8c0666005",
                     "label": "Description",
-                    "name": "desc",
+                    "name": "description",
                     "aria-label": "",
                     "type": "textarea",
                     "instructions": "",
-                    "required": 0,
+                    "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
                         "width": "",
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "Un format abordable où seules les cartes rares sont autorisées comme commandants.",
+                    "default_value": "",
                     "maxlength": "",
                     "allow_in_bindings": 0,
-                    "rows": "",
+                    "rows": 3,
                     "placeholder": "",
                     "new_lines": "",
-                    "parent_repeater": "field_68fb8bbcca740"
-                },
-                {
-                    "key": "field_68fb8bdeca743",
-                    "label": "Image",
-                    "name": "image",
-                    "aria-label": "",
-                    "type": "image",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "return_format": "array",
-                    "library": "all",
-                    "min_width": "",
-                    "min_height": "",
-                    "min_size": "",
-                    "max_width": "",
-                    "max_height": "",
-                    "max_size": "",
-                    "mime_types": "",
-                    "allow_in_bindings": 0,
-                    "preview_size": "medium",
-                    "parent_repeater": "field_68fb8bbcca740"
+                    "parent_repeater": "field_68fb8c0666003"
                 }
             ]
         }
@@ -145,7 +118,7 @@
             {
                 "param": "block",
                 "operator": "==",
-                "value": "acf/m01-block-and-title"
+                "value": "acf/m06-steps"
             }
         ]
     ],
@@ -159,5 +132,5 @@
     "description": "",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1770055892
+    "modified": 1738530000
 }

@@ -1,0 +1,115 @@
+{
+    "key": "group_68fb8c0555555",
+    "title": "M05 - Encart Important",
+    "fields": [
+        {
+            "key": "field_68fb8c0555001",
+            "label": "Type",
+            "name": "type",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Type d'encart",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "info": "Information",
+                "warning": "Attention",
+                "tip": "Astuce"
+            },
+            "default_value": "info",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "key": "field_68fb8c0555002",
+            "label": "Titre",
+            "name": "title",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_68fb8c0555003",
+            "label": "Contenu",
+            "name": "content",
+            "aria-label": "",
+            "type": "wysiwyg",
+            "instructions": "Contenu de l'encart",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "tabs": "all",
+            "toolbar": "basic",
+            "media_upload": 0,
+            "delay": 0
+        },
+        {
+            "key": "field_68fb8c0555004",
+            "label": "Icône SVG (optionnel)",
+            "name": "icon_svg",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "Code SVG de l'icône personnalisée",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "rows": 4,
+            "placeholder": "<svg>...</svg>",
+            "new_lines": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "block",
+                "operator": "==",
+                "value": "acf/m05-callout"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "display_title": "",
+    "modified": 1738530000
+}

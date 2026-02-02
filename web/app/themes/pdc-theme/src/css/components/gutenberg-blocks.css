@@ -8,6 +8,9 @@
  * - Reuses: .magic-card, .btn-primary, .btn-secondary
  */
 
+/* Note: Container styles are integrated into each block's styles below
+   to avoid CSS specificity conflicts */
+
 /* ============================================
    TEXT BLOCKS
    Paragraph, Headings, Quotes, Lists, Code
@@ -15,8 +18,9 @@
 
 @layer components {
   /* Paragraph - texte clair sur fond sombre */
-  .wp-block-paragraph {
-    @apply text-text-secondary leading-relaxed mb-4;
+  .wp-block-paragraph,
+  .site-main > p:not([class]) {
+    @apply max-w-screen-xl mx-auto px-6 text-text-secondary leading-relaxed mb-4;
   }
 
   /* Drop cap styling */
@@ -26,14 +30,20 @@
   }
 
   /* Headings - style cohérent avec modules custom */
-  .wp-block-heading {
-    @apply font-heading uppercase tracking-tight text-text-primary mb-6;
+  .wp-block-heading,
+  .site-main > h1:not([class]),
+  .site-main > h2:not([class]),
+  .site-main > h3:not([class]),
+  .site-main > h4:not([class]),
+  .site-main > h5:not([class]),
+  .site-main > h6:not([class]) {
+    @apply max-w-screen-xl mx-auto px-6 font-heading uppercase tracking-tight text-text-primary mb-6;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
 
   /* Quote - bordure gauche orange */
   .wp-block-quote {
-    @apply border-l-4 border-brand-orange pl-6 py-4 mb-6 italic;
+    @apply max-w-screen-xl mx-auto px-6 border-l-4 border-brand-orange pl-6 py-4 mb-6 italic;
   }
 
   .wp-block-quote p {
@@ -46,7 +56,7 @@
 
   /* Pullquote - large centered quote */
   .wp-block-pullquote {
-    @apply mb-8 py-8 px-6 text-center border-t-4 border-b-4 border-brand-orange;
+    @apply max-w-screen-xl mx-auto px-6 mb-8 py-8 text-center border-t-4 border-b-4 border-brand-orange;
   }
 
   .wp-block-pullquote blockquote {
@@ -63,7 +73,7 @@
 
   /* Lists - bullets/numbers orange */
   .wp-block-list {
-    @apply text-text-secondary mb-4 pl-6;
+    @apply max-w-screen-xl mx-auto px-6 text-text-secondary mb-4 pl-6;
   }
 
   .wp-block-list li {
@@ -82,7 +92,7 @@
 
   /* Code block - fond sombre avec bordure orange */
   .wp-block-code {
-    @apply bg-bg-secondary border-2 border-brand-orange/20 rounded-lg p-6 mb-6 overflow-x-auto;
+    @apply max-w-screen-xl mx-auto px-6 bg-bg-secondary border-2 border-brand-orange/20 rounded-lg p-6 mb-6 overflow-x-auto;
   }
 
   .wp-block-code code {
@@ -108,7 +118,15 @@
 
 @layer components {
   /* Image - apply magic-card styling */
-  .wp-block-image {
+  .wp-block-image:not(.alignfull):not(.alignwide) {
+    @apply max-w-screen-xl mx-auto px-6 mb-6;
+  }
+
+  .wp-block-image.alignwide {
+    @apply max-w-screen-2xl mx-auto px-6 mb-6;
+  }
+
+  .wp-block-image.alignfull {
     @apply mb-6;
   }
 
@@ -225,7 +243,7 @@
 @layer components {
   /* Buttons container */
   .wp-block-buttons {
-    @apply flex flex-wrap gap-4 mb-6;
+    @apply max-w-screen-xl mx-auto px-6 flex flex-wrap gap-4 mb-6;
   }
 
   /* Individual button */
@@ -306,7 +324,11 @@
   }
 
   /* Columns - responsive grid */
-  .wp-block-columns {
+  .wp-block-columns:not(.alignfull) {
+    @apply max-w-screen-xl mx-auto px-6 grid gap-8 mb-6;
+  }
+
+  .wp-block-columns.alignfull {
     @apply grid gap-8 mb-6;
   }
 
@@ -339,7 +361,7 @@
 
   /* Table - header orange, striped rows */
   .wp-block-table {
-    @apply mb-6 overflow-x-auto;
+    @apply max-w-screen-xl mx-auto px-6 mb-6 overflow-x-auto;
   }
 
   .wp-block-table table {

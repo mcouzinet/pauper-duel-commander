@@ -136,6 +136,27 @@ function pdc_register_acf_blocks() {
             'keywords'        => ['features', 'grid', 'cards'],
         ],
         [
+            'name'            => 'm04-text-image',
+            'title'           => __('M04 - Texte et Image', 'pdc-theme'),
+            'description'     => __('Layout 2 colonnes avec texte et image', 'pdc-theme'),
+            'icon'            => 'align-pull-left',
+            'keywords'        => ['text', 'image', 'règles', 'content'],
+        ],
+        [
+            'name'            => 'm05-callout',
+            'title'           => __('M05 - Encart Important', 'pdc-theme'),
+            'description'     => __('Bloc pour mettre en avant informations importantes', 'pdc-theme'),
+            'icon'            => 'info',
+            'keywords'        => ['callout', 'warning', 'info', 'attention'],
+        ],
+         [
+            'name'            => 'm06-steps',
+            'title'           => __('M06 - Liste Numérotée', 'pdc-theme'),
+            'description'     => __('Steps verticaux avec numéros stylisés', 'pdc-theme'),
+            'icon'            => 'editor-ol',
+            'keywords'        => ['steps', 'liste', 'numéros', 'étapes'],
+        ],
+        [
             'name'            => 'm07-ban-list',
             'title'           => __('M07 - Ban List', 'pdc-theme'),
             'description'     => __('Liste des cartes bannies', 'pdc-theme'),
@@ -155,7 +176,7 @@ function pdc_register_acf_blocks() {
             'description'     => __('Section communauté', 'pdc-theme'),
             'icon'            => 'groups',
             'keywords'        => ['community', 'social', 'discord'],
-        ],
+        ]
     ];
 
     // Register each block

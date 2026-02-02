@@ -1,0 +1,73 @@
+{#
+/**
+ * Module M06 - Liste Numérotée / Steps
+ *
+ * Steps verticaux avec numéros stylisés et ligne de connexion
+ * Idéal pour règles séquentielles ou instructions étape par étape
+ *
+ * Variables:
+ * - module.title (string): Titre de la section (optionnel)
+ * - module.description (textarea): Description introductive (optionnel)
+ * - module.steps (repeater): Liste des étapes
+ *   - title (string): Titre de l'étape
+ *   - description (textarea): Description de l'étape
+ * - key (int): Unique ID
+ */
+#}
+
+<section id="module{{ key }}" class="py-16 relative">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+            {# Header #}
+            {% if module.title or module.description %}
+                <div class="text-center mb-16">
+                    {% if module.title %}
+                        <h2 class="text-3xl md:text-4xl font-heading font-bold text-magic-gradient mb-6">
+                            {{ module.title }}
+                        </h2>
+                    {% endif %}
+
+                    {% if module.description %}
+                        <p class="text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">
+                            {{ module.description }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {# Steps #}
+            {% if module.steps %}
+                <div class="relative">
+                    {# Vertical connection line #}
+                    <div class="absolute left-8 top-12 bottom-12 w-0.5 bg-gradient-to-b from-brand-orange via-brand-orange/50 to-transparent hidden md:block"></div>
+
+                    {# Steps list #}
+                    <div class="space-y-8">
+                        {% for step in module.steps %}
+                            <div class="relative flex gap-6 group">
+                                {# Step number #}
+                                <div class="flex-shrink-0 relative z-10">
+                                    <div class="w-16 h-16 rounded-full bg-gradient-orange flex items-center justify-center shadow-orange group-hover:shadow-orange-intense transition-all duration-300 group-hover:scale-110">
+                                        <span class="text-2xl font-heading font-bold text-white">
+                                            {{ loop.index }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {# Step content #}
+                                <div class="flex-1 pt-2">
+                                    <h3 class="text-xl md:text-2xl font-heading font-semibold text-magic-gold mb-3 group-hover:text-magic-gold-light transition-colors">
+                                        {{ step.title }}
+                                    </h3>
+                                    <p class="text-text-secondary leading-relaxed">
+                                        {{ step.description|nl2br }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

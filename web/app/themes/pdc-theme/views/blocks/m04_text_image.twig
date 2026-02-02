@@ -1,0 +1,48 @@
+{#
+/**
+ * Module M04 - Texte et Image
+ *
+ * Layout 2 colonnes avec texte et image
+ * Position de l'image configurable (gauche ou droite)
+ *
+ * Variables:
+ * - module.title (string): Titre de la section (optionnel)
+ * - module.content (wysiwyg): Contenu texte
+ * - module.image (image): Image d'illustration
+ * - module.image_position (string): "left" ou "right"
+ * - key (int): Unique ID
+ */
+#}
+
+<section id="module{{ key }}" class="py-16 relative">
+    <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+            {% if module.title %}
+                <h2 class="text-3xl md:text-4xl font-heading font-bold text-magic-gradient mb-12 text-center">
+                    {{ module.title }}
+                </h2>
+            {% endif %}
+
+            {# 2-column layout with responsive order #}
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                {# Image column #}
+                <div class="{% if module.image_position == 'left' %}md:order-1{% else %}md:order-2{% endif %}">
+                    {% if module.image %}
+                        <div class="magic-card overflow-hidden">
+                            <img src="{{ module.image.url }}"
+                                 alt="{{ module.image.alt|default(module.title) }}"
+                                 class="w-full h-auto">
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Text column #}
+                <div class="{% if module.image_position == 'left' %}md:order-2{% else %}md:order-1{% endif %}">
+                    <div class="prose prose-invert max-w-none">
+                        {{ module.content|raw }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

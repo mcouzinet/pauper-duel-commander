@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Format Magic: The Gathering",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -37,7 +37,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Bienvenue sur",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -58,7 +58,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Pauper Duel Commander",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -79,7 +79,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Le format accessible et compétitif où seuls les commandants sont rares !",
             "tabs": "all",
             "toolbar": "basic",
             "media_upload": 0,
@@ -100,7 +100,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Découvrir les règles",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -121,7 +121,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "#regles",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "#module2 ou https://...",
@@ -142,7 +142,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Rejoindre la communauté",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -163,7 +163,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "#communaute",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "#module2 ou https://...",
