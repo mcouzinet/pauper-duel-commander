@@ -1,0 +1,83 @@
+{#
+/**
+ * Module M02 - Hero
+ *
+ * Variables:
+ * - badge (string): Badge text au-dessus du titre
+ * - title_line_1 (string): Première ligne du titre
+ * - title_line_2 (string): Deuxième ligne du titre
+ * - subtitle (wysiwyg): Texte de description
+ * - button_1_text (string): Texte du bouton primaire
+ * - button_1_link (string): Lien ou ancre du bouton primaire
+ * - button_2_text (string): Texte du bouton secondaire
+ * - button_2_link (string): Lien ou ancre du bouton secondaire
+ * - background_image (image): Image de fond (optionnel)
+ * - key (int): Index du module dans la boucle
+ */
+#}
+
+<section id="module{{ key }}" class="relative py-32 overflow-hidden">
+    {# Background Layer #}
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+
+    {% if module.background_image %}
+        <div class="absolute inset-0 opacity-5">
+            <img src="{{ module.background_image.url }}"
+                 alt="{{ module.background_image.alt }}"
+                 class="w-full h-full object-cover">
+        </div>
+    {% endif %}
+
+    {# Decorative Elements #}
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-1/4 left-10 w-64 h-64 bg-magic-purple/20 rounded-full blur-[100px] animate-float"></div>
+        <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+    </div>
+
+    {# Content #}
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center max-w-5xl mx-auto animate-fade-in">
+            {% if module.badge %}
+                <div class="inline-block mb-10">
+                    <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
+                        {{ module.badge }}
+                    </span>
+                </div>
+            {% endif %}
+
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
+                {% if module.title_line_1 %}
+                    <span class="block text-text-primary mb-2">{{ module.title_line_1 }}</span>
+                {% endif %}
+                {% if module.title_line_2 %}
+                    <span class="block text-magic-gradient">{{ module.title_line_2 }}</span>
+                {% endif %}
+            </h1>
+
+            {% if module.subtitle %}
+                <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto leading-relaxed">
+                    {{ module.subtitle|raw }}
+                </div>
+            {% endif %}
+
+            {% if module.button_1_text or module.button_2_text %}
+                <div class="flex flex-wrap gap-6 justify-center items-center">
+                    {% if module.button_1_text and module.button_1_link %}
+                        <a href="{{ module.button_1_link }}" class="btn-secondary">
+                            {{ module.button_1_text }}
+                        </a>
+                    {% endif %}
+
+                    {% if module.button_2_text and module.button_2_link %}
+                        <a href="{{ module.button_2_link }}" class="btn-secondary">
+                            {{ module.button_2_text }}
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Bottom Fade #}
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
+</section>

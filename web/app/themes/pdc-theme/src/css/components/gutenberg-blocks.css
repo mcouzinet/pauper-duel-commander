@@ -1,0 +1,499 @@
+/**
+ * Gutenberg Core Blocks Styling
+ *
+ * Styles all WordPress core blocks to match PDC theme
+ * - Dark theme: #0A0E13 background, #FFFFFF/#B8BEC8 text
+ * - Brand orange #FF5722 accents
+ * - Fonts: Barlow Condensed (headings), Inter (body)
+ * - Reuses: .magic-card, .btn-primary, .btn-secondary
+ */
+
+/* ============================================
+   TEXT BLOCKS
+   Paragraph, Headings, Quotes, Lists, Code
+   ============================================ */
+
+@layer components {
+  /* Paragraph - texte clair sur fond sombre */
+  .wp-block-paragraph {
+    @apply text-text-secondary leading-relaxed mb-4;
+  }
+
+  /* Drop cap styling */
+  .wp-block-paragraph.has-drop-cap:not(:focus)::first-letter {
+    @apply text-brand-orange font-heading text-6xl float-left mr-2 mt-1;
+    line-height: 0.68;
+  }
+
+  /* Headings - style cohérent avec modules custom */
+  .wp-block-heading {
+    @apply font-heading uppercase tracking-tight text-text-primary mb-6;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Quote - bordure gauche orange */
+  .wp-block-quote {
+    @apply border-l-4 border-brand-orange pl-6 py-4 mb-6 italic;
+  }
+
+  .wp-block-quote p {
+    @apply text-text-primary text-lg mb-3;
+  }
+
+  .wp-block-quote cite {
+    @apply text-text-secondary text-sm not-italic font-heading;
+  }
+
+  /* Pullquote - large centered quote */
+  .wp-block-pullquote {
+    @apply mb-8 py-8 px-6 text-center border-t-4 border-b-4 border-brand-orange;
+  }
+
+  .wp-block-pullquote blockquote {
+    @apply mb-0;
+  }
+
+  .wp-block-pullquote p {
+    @apply text-text-primary text-2xl font-heading mb-4;
+  }
+
+  .wp-block-pullquote cite {
+    @apply text-text-secondary text-base uppercase tracking-wider;
+  }
+
+  /* Lists - bullets/numbers orange */
+  .wp-block-list {
+    @apply text-text-secondary mb-4 pl-6;
+  }
+
+  .wp-block-list li {
+    @apply mb-2;
+  }
+
+  /* Custom orange bullets */
+  .wp-block-list li::marker {
+    @apply text-brand-orange;
+  }
+
+  /* Ordered lists - orange numbers */
+  ol.wp-block-list li::marker {
+    @apply text-brand-orange font-semibold;
+  }
+
+  /* Code block - fond sombre avec bordure orange */
+  .wp-block-code {
+    @apply bg-bg-secondary border-2 border-brand-orange/20 rounded-lg p-6 mb-6 overflow-x-auto;
+  }
+
+  .wp-block-code code {
+    @apply text-text-primary font-mono text-sm;
+  }
+
+  /* Preformatted */
+  .wp-block-preformatted {
+    @apply bg-bg-secondary border-2 border-brand-orange/20 rounded-lg p-6 mb-6 text-text-primary font-mono text-sm overflow-x-auto;
+  }
+
+  /* Verse - poetic text */
+  .wp-block-verse {
+    @apply text-text-secondary italic pl-6 mb-6 border-l-2 border-brand-orange/40;
+    font-family: inherit;
+  }
+}
+
+/* ============================================
+   MEDIA BLOCKS
+   Images, Gallery, Video, Cover
+   ============================================ */
+
+@layer components {
+  /* Image - apply magic-card styling */
+  .wp-block-image {
+    @apply mb-6;
+  }
+
+  .wp-block-image img {
+    @apply magic-card w-full h-auto;
+  }
+
+  .wp-block-image figcaption {
+    @apply text-text-secondary text-sm mt-3 text-center italic;
+  }
+
+  /* Image alignments */
+  .wp-block-image.alignleft {
+    @apply float-left mr-6 mb-4;
+    max-width: 50%;
+  }
+
+  .wp-block-image.alignright {
+    @apply float-right ml-6 mb-4;
+    max-width: 50%;
+  }
+
+  .wp-block-image.aligncenter {
+    @apply text-center;
+  }
+
+  .wp-block-image.alignwide,
+  .wp-block-image.alignfull {
+    @apply w-full;
+  }
+
+  /* Gallery - grille responsive */
+  .wp-block-gallery {
+    @apply grid gap-4 mb-6;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .wp-block-gallery .wp-block-image img {
+    @apply magic-card w-full h-full object-cover;
+  }
+
+  .wp-block-gallery figcaption {
+    @apply text-text-secondary text-sm mt-2 text-center italic;
+  }
+
+  /* Video */
+  .wp-block-video {
+    @apply mb-6;
+  }
+
+  .wp-block-video video {
+    @apply w-full rounded-xl border-2 border-brand-orange/20;
+  }
+
+  .wp-block-video figcaption {
+    @apply text-text-secondary text-sm mt-3 text-center italic;
+  }
+
+  /* Audio */
+  .wp-block-audio {
+    @apply mb-6;
+  }
+
+  .wp-block-audio audio {
+    @apply w-full;
+  }
+
+  .wp-block-audio figcaption {
+    @apply text-text-secondary text-sm mt-3 text-center italic;
+  }
+
+  /* Cover - background avec overlay */
+  .wp-block-cover {
+    @apply relative rounded-xl overflow-hidden mb-6;
+    min-height: 400px;
+  }
+
+  .wp-block-cover__inner-container {
+    @apply relative z-10 text-text-primary text-center p-8;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  }
+
+  .wp-block-cover__inner-container h1,
+  .wp-block-cover__inner-container h2,
+  .wp-block-cover__inner-container h3 {
+    @apply text-text-primary;
+  }
+
+  /* Media & Text - combinaison image/texte */
+  .wp-block-media-text {
+    @apply grid gap-8 mb-6 items-center;
+    grid-template-columns: 50% 1fr;
+  }
+
+  .wp-block-media-text__media img {
+    @apply magic-card;
+  }
+
+  .wp-block-media-text__content {
+    @apply p-4;
+  }
+
+  /* Media on right variant */
+  .wp-block-media-text.has-media-on-the-right {
+    grid-template-columns: 1fr 50%;
+  }
+}
+
+/* ============================================
+   INTERACTIVE BLOCKS
+   Buttons, File Download
+   ============================================ */
+
+@layer components {
+  /* Buttons container */
+  .wp-block-buttons {
+    @apply flex flex-wrap gap-4 mb-6;
+  }
+
+  /* Individual button */
+  .wp-block-button {
+    @apply inline-block;
+  }
+
+  /* Primary button style (default) */
+  .wp-block-button__link:not(.is-style-outline) {
+    @apply btn-primary;
+    text-decoration: none !important;
+  }
+
+  /* Secondary/outline button style */
+  .wp-block-button__link.is-style-outline {
+    @apply btn-secondary;
+    text-decoration: none !important;
+  }
+
+  /* File download */
+  .wp-block-file {
+    @apply mb-6 flex flex-wrap items-center gap-4;
+  }
+
+  .wp-block-file__button {
+    @apply btn-primary;
+    text-decoration: none !important;
+  }
+
+  .wp-block-file a:not(.wp-block-file__button) {
+    @apply text-brand-orange hover:text-brand-orange-light transition-colors;
+  }
+}
+
+/* ============================================
+   LAYOUT BLOCKS
+   Columns, Groups, Separators, Tables
+   ============================================ */
+
+@layer components {
+  /* Separator - pattern crossed swords */
+  .wp-block-separator {
+    @apply relative h-px my-16 border-0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 87, 34, 0.5) 50%, transparent 100%);
+  }
+
+  .wp-block-separator::before,
+  .wp-block-separator::after {
+    content: '⚔';
+    @apply absolute top-1/2 -translate-y-1/2 text-brand-orange text-xs;
+  }
+
+  .wp-block-separator::before {
+    @apply left-[48%];
+  }
+
+  .wp-block-separator::after {
+    @apply right-[48%];
+  }
+
+  /* Wide separator */
+  .wp-block-separator.is-style-wide {
+    @apply w-full;
+  }
+
+  /* Dots separator */
+  .wp-block-separator.is-style-dots {
+    background: none;
+  }
+
+  .wp-block-separator.is-style-dots::before {
+    content: '···';
+    @apply left-1/2 -translate-x-1/2 text-brand-orange text-2xl;
+  }
+
+  .wp-block-separator.is-style-dots::after {
+    content: none;
+  }
+
+  /* Columns - responsive grid */
+  .wp-block-columns {
+    @apply grid gap-8 mb-6;
+  }
+
+  .wp-block-column {
+    @apply min-w-0;
+  }
+
+  /* Equal columns (default 2 columns on desktop) */
+  .wp-block-columns:not(.has-background) {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  /* Group */
+  .wp-block-group {
+    @apply mb-6;
+  }
+
+  .wp-block-group.has-background {
+    @apply p-8 rounded-xl;
+  }
+
+  .wp-block-group__inner-container > *:last-child {
+    @apply mb-0;
+  }
+
+  /* Spacer */
+  .wp-block-spacer {
+    @apply block;
+  }
+
+  /* Table - header orange, striped rows */
+  .wp-block-table {
+    @apply mb-6 overflow-x-auto;
+  }
+
+  .wp-block-table table {
+    @apply w-full border-collapse;
+  }
+
+  .wp-block-table thead {
+    @apply bg-bg-secondary border-b-2 border-brand-orange;
+  }
+
+  .wp-block-table th {
+    @apply text-text-primary font-heading uppercase p-4 text-left;
+  }
+
+  .wp-block-table td {
+    @apply text-text-secondary p-4 border-b border-text-muted/20;
+  }
+
+  .wp-block-table tbody tr:hover {
+    @apply bg-bg-secondary/50 transition-colors;
+  }
+
+  /* Striped table style */
+  .wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+    @apply bg-bg-secondary/30;
+  }
+
+  /* Table caption */
+  .wp-block-table figcaption {
+    @apply text-text-secondary text-sm mt-3 text-center italic;
+  }
+}
+
+/* ============================================
+   EMBED BLOCKS
+   YouTube, Twitter, etc.
+   ============================================ */
+
+@layer components {
+  /* Embed wrapper */
+  .wp-block-embed {
+    @apply mb-6;
+  }
+
+  .wp-block-embed__wrapper {
+    @apply relative rounded-xl overflow-hidden border-2 border-brand-orange/20;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  }
+
+  .wp-block-embed__wrapper iframe {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+
+  .wp-block-embed figcaption {
+    @apply text-text-secondary text-sm mt-3 text-center italic;
+  }
+}
+
+/* ============================================
+   ADVANCED BLOCKS
+   Details, Search, etc.
+   ============================================ */
+
+@layer components {
+  /* Details (accordion-like) */
+  .wp-block-details {
+    @apply mb-6 border-2 border-brand-orange/20 rounded-xl overflow-hidden;
+  }
+
+  .wp-block-details summary {
+    @apply px-6 py-4 bg-bg-secondary text-text-primary font-heading cursor-pointer transition-colors;
+  }
+
+  .wp-block-details summary:hover {
+    @apply bg-brand-orange/10;
+  }
+
+  .wp-block-details[open] summary {
+    @apply border-b-2 border-brand-orange/20;
+  }
+
+  .wp-block-details__content {
+    @apply p-6;
+  }
+
+  /* Search */
+  .wp-block-search {
+    @apply mb-6;
+  }
+
+  .wp-block-search__input {
+    @apply bg-bg-secondary border-2 border-brand-orange/20 rounded-lg px-4 py-3 text-text-primary;
+  }
+
+  .wp-block-search__input:focus {
+    @apply outline-none border-brand-orange ring-2 ring-brand-orange/20;
+  }
+
+  .wp-block-search__button {
+    @apply btn-primary;
+  }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   Mobile & Tablet optimizations
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Images - no float on mobile */
+  .wp-block-image.alignleft,
+  .wp-block-image.alignright {
+    @apply float-none mx-auto mb-4;
+    max-width: 100%;
+  }
+
+  /* Gallery - smaller columns on mobile */
+  .wp-block-gallery {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    @apply gap-2;
+  }
+
+  /* Columns - stack on mobile */
+  .wp-block-columns {
+    @apply grid-cols-1;
+  }
+
+  /* Media & Text - stack on mobile */
+  .wp-block-media-text,
+  .wp-block-media-text.has-media-on-the-right {
+    @apply grid-cols-1;
+  }
+
+  /* Buttons - stack on mobile */
+  .wp-block-buttons {
+    @apply flex-col;
+  }
+
+  .wp-block-button {
+    @apply w-full;
+  }
+
+  .wp-block-button__link {
+    @apply w-full text-center;
+  }
+
+  /* Cover - reduce min height on mobile */
+  .wp-block-cover {
+    min-height: 300px;
+  }
+
+  /* Table - smaller padding on mobile */
+  .wp-block-table th,
+  .wp-block-table td {
+    @apply p-2 text-sm;
+  }
+}

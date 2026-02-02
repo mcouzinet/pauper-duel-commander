@@ -1,35 +1,34 @@
 {
-    "key": "group_676449f0a1b2c",
+    "key": "group_68fb8c0566666",
     "title": "M07 - Ban List",
     "fields": [
         {
-            "key": "field_676449f0a1b2d",
+            "key": "field_m07_title",
             "label": "Titre",
             "name": "title",
             "aria-label": "",
             "type": "text",
-            "instructions": "Titre de la ban list",
-            "required": 1,
+            "instructions": "",
+            "required": 0,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "",
                 "class": "",
                 "id": ""
             },
-            "default_value": "Ban List",
+            "default_value": "Liste des cartes bannies",
             "maxlength": "",
-            "allow_in_bindings": 0,
             "placeholder": "",
             "prepend": "",
             "append": ""
         },
         {
-            "key": "field_676449f0a1b2e",
+            "key": "field_m07_description",
             "label": "Description",
             "name": "description",
             "aria-label": "",
             "type": "wysiwyg",
-            "instructions": "Description de la ban list",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -39,18 +38,17 @@
             },
             "default_value": "",
             "tabs": "all",
-            "toolbar": "full",
+            "toolbar": "basic",
             "media_upload": 0,
-            "delay": 0,
-            "allow_in_bindings": 0
+            "delay": 0
         },
         {
-            "key": "field_676449f0a1b2f",
-            "label": "Cartes",
+            "key": "field_m07_cards",
+            "label": "Cartes bannies",
             "name": "cards",
             "aria-label": "",
             "type": "repeater",
-            "instructions": "Ajouter les cartes bannies via leur URL Scryfall",
+            "instructions": "Ajoutez les cartes bannies avec leur URL Scryfall",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -62,17 +60,17 @@
             "pagination": 0,
             "min": 0,
             "max": 0,
-            "collapsed": "field_676449f0a1b30",
+            "collapsed": "",
             "button_label": "Ajouter une carte",
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_676449f0a1b30",
+                    "key": "field_m07_card_scryfall_url",
                     "label": "URL Scryfall",
                     "name": "scryfall_url",
                     "aria-label": "",
                     "type": "url",
-                    "instructions": "Coller l'URL complète de la carte depuis Scryfall.com (ex: https:\/\/scryfall.com\/card\/mh2\/84\/ragavan-nimble-pilferer)",
+                    "instructions": "URL de la carte sur Scryfall (ex: https://scryfall.com/card/set/123/card-name)",
                     "required": 1,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -81,9 +79,8 @@
                         "id": ""
                     },
                     "default_value": "",
-                    "allow_in_bindings": 0,
-                    "placeholder": "https:\/\/scryfall.com\/card\/...",
-                    "parent_repeater": "field_676449f0a1b2f"
+                    "placeholder": "https://scryfall.com/card/...",
+                    "parent_repeater": "field_m07_cards"
                 }
             ]
         }
@@ -91,9 +88,9 @@
     "location": [
         [
             {
-                "param": "post_type",
+                "param": "block",
                 "operator": "==",
-                "value": "page"
+                "value": "acf/m07-ban-list"
             }
         ]
     ],
@@ -103,9 +100,8 @@
     "label_placement": "top",
     "instruction_placement": "label",
     "hide_on_screen": "",
-    "active": false,
-    "description": "Module pour afficher la liste des cartes bannies avec leurs images depuis Scryfall",
-    "show_in_rest": 0,
-    "display_title": "",
-    "modified": 1766155067
+    "active": true,
+    "description": "",
+    "show_in_rest": 1,
+    "modified": 1770055892
 }

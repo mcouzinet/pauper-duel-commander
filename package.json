@@ -1,7 +1,7 @@
 {
-  "name": "pdc-theme",
+  "name": "pdc",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pauper Duel Commander - Site Web",
   "main": "index.js",
   "scripts": {
     "dev": "bud dev",

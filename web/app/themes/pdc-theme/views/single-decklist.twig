@@ -132,7 +132,7 @@
     </section>
 
     {# Decklist Section #}
-    <section class="my-16">
+    <section class="my-8">
         <div class="container mx-auto px-6">
             <div class="max-w-7xl mx-auto">
                 <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
@@ -142,8 +142,14 @@
                 {# Cards grouped by type #}
                 {% for type, cards in deck.cards_by_type %}
                     <div class="mb-10">
-                        <h3 class="text-sm font-heading font-bold text-brand-orange/60 uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/10">
-                            {{ type }} <span class="text-text-muted">({{ cards|length }})</span>
+                        {# Calculate total quantity for this type #}
+                        {% set type_total = 0 %}
+                        {% for card in cards %}
+                            {% set type_total = type_total + card.quantity %}
+                        {% endfor %}
+
+                        <h3 class="text-2xl font-heading font-bold text-magic-gradient uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/10">
+                            {{ type }} <span class="text-text-muted">({{ type_total }})</span>
                         </h3>
 
                         <div class="columns-1 md:columns-2 lg:columns-3 gap-x-4">
@@ -159,7 +165,7 @@
                                         </span>
 
                                         {# Card Name #}
-                                        <span class="text-sm text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1">
+                                        <span class="text-md text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1">
                                             {{ card.name }}
                                         </span>
 
@@ -195,7 +201,7 @@
                             {% set max_height = 192 %} {# 192px = 12rem = h-48 #}
                             <div class="flex justify-center items-end gap-2" style="height: {{ max_height }}px;">
                                 {% for cmc, count in deck.stats.cmc_distribution %}
-                                    {% set bar_height = ((count / max_count) * (max_height - 36))|round %}
+                                    {% set bar_height = max_count > 0 ? ((count / max_count) * (max_height - 36))|round : 0 %}
                                     {% set bar_height_final = count > 0 ? max(bar_height, 8) : 0 %}
                                     <div class="flex flex-col items-center gap-2 flex-1">
                                         <div class="relative w-full rounded-t bg-white flex items-center justify-center" style="height: {{ bar_height_final }}px;">
@@ -226,7 +232,7 @@
                                     {% set offset = 0 %}
                                     {% for color, count in deck.stats.color_counts %}
                                         {% if count > 0 %}
-                                            {% set percent = (count / total_colored * 100) %}
+                                            {% set percent = total_colored > 0 ? (count / total_colored * 100) : 0 %}
                                             {% set circumference = 2 * 3.14159 * 35 %}
                                             {% set segment_length = (percent / 100 * circumference) %}
                                             {% set color_map = {
@@ -303,7 +309,7 @@
                                     {% set offset = 0 %}
                                     {% for type, count in deck.stats.type_counts %}
                                         {% if count > 0 %}
-                                            {% set percent = (count / total_cards * 100) %}
+                                            {% set percent = total_cards > 0 ? (count / total_cards * 100) : 0 %}
                                             {% set circumference = 2 * 3.14159 * 35 %}
                                             {% set segment_length = (percent / 100 * circumference) %}
                                             {% set type_colors = {

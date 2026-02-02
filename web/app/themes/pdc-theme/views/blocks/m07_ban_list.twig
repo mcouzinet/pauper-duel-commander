@@ -1,0 +1,80 @@
+{#
+/**
+ * Module M07 - Ban List
+ *
+ * Variables:
+ * - title (string): Titre du module
+ * - description (wysiwyg): Description de la ban list
+ * - cards (repeater): Liste des cartes bannies
+ *   - scryfall_url (url): URL Scryfall de la carte
+ * - key (int): Index du module dans la boucle
+ */
+#}
+
+<section id="module{{ key }}" class="py-24 relative">
+    <div class="container mx-auto px-6">
+        {% if module.title %}
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+                    {{ module.title }}
+                </h2>
+                {% if module.description %}
+                    <div class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+                        {{ module.description|raw }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if module.cards %}
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 max-w-7xl mx-auto">
+                {% for card_item in module.cards %}
+                    {% if card_item.scryfall_url %}
+                        {# Extract set and collector number from Scryfall URL #}
+                        {# URL format: https://scryfall.com/card/{set}/{collector_number}/{card_name} #}
+                        {% set url_parts = card_item.scryfall_url|split('/card/') %}
+                        {% if url_parts|length > 1 %}
+                            {% set card_parts = url_parts[1]|split('/') %}
+                            {% if card_parts|length >= 2 %}
+                                {% set set_code = card_parts[0] %}
+                                {% set collector_number = card_parts[1] %}
+
+                                {# Fetch card data from Scryfall API using PHP helper #}
+                                {% set card_data = function('get_scryfall_card', set_code, collector_number) %}
+                                {% if card_data %}
+
+                                    <div class="group relative overflow-hidden transition-all duration-300 hover:scale-105">
+                                        <a href="{{ card_item.scryfall_url }}" target="_blank" rel="noopener noreferrer" class="block">
+                                            {% if card_data.image_uris and card_data.image_uris.border_crop %}
+                                                <img
+                                                    src="{{ card_data.image_uris.border_crop }}"
+                                                    alt="{{ card_data.name }}"
+                                                    class="w-full h-auto rounded-xl"
+                                                    loading="lazy"
+                                                >
+                                            {% elseif card_data.card_faces and card_data.card_faces[0].image_uris %}
+                                                {# Handle double-faced cards #}
+                                                <img
+                                                    src="{{ card_data.card_faces[0].image_uris.normal }}"
+                                                    alt="{{ card_data.name }}"
+                                                    class="w-full h-auto rounded-xl"
+                                                    loading="lazy"
+                                                >
+                                            {% endif %}
+
+                                            <div class="absolute inset-0 bg-gradient-to-t from-brand-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 rounded-xl">
+                                                <p class="text-white font-heading font-bold text-sm uppercase">
+                                                    {{ card_data.name }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</section>

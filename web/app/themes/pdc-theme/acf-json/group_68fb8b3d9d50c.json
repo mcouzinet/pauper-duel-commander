@@ -113,110 +113,14 @@
                     "min": "",
                     "max": ""
                 },
-                "layout_68fb8c0233330": {
-                    "key": "layout_68fb8c0233330",
-                    "name": "m04_stats_bar",
-                    "label": "M04 - Stats Bar",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_68fb8c0233340",
-                            "label": "Stats Bar",
-                            "name": "m04_stats_bar",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68fb8c0233333"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_68fb8c0344440": {
-                    "key": "layout_68fb8c0344440",
-                    "name": "m05_getting_started",
-                    "label": "M05 - Getting Started",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_68fb8c0344450",
-                            "label": "Getting Started",
-                            "name": "m05_getting_started",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68fb8c0344444"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_68fb8c0455550": {
-                    "key": "layout_68fb8c0455550",
-                    "name": "m06_footer",
-                    "label": "M06 - Footer",
-                    "display": "block",
-                    "sub_fields": [
-                        {
-                            "key": "field_68fb8c0455560",
-                            "label": "Footer",
-                            "name": "m06_footer",
-                            "aria-label": "",
-                            "type": "clone",
-                            "instructions": "",
-                            "required": 0,
-                            "conditional_logic": 0,
-                            "wrapper": {
-                                "width": "",
-                                "class": "",
-                                "id": ""
-                            },
-                            "clone": [
-                                "group_68fb8c0455555"
-                            ],
-                            "display": "seamless",
-                            "layout": "block",
-                            "prefix_label": 0,
-                            "prefix_name": 0
-                        }
-                    ],
-                    "min": "",
-                    "max": ""
-                },
-                "layout_676449f0a1b3d": {
-                    "key": "layout_676449f0a1b3d",
+                "layout_68fb8c0566670": {
+                    "key": "layout_68fb8c0566670",
                     "name": "m07_ban_list",
                     "label": "M07 - Ban List",
                     "display": "block",
                     "sub_fields": [
                         {
-                            "key": "field_676449f0a1b3e",
+                            "key": "field_68fb8c0566680",
                             "label": "Ban List",
                             "name": "m07_ban_list",
                             "aria-label": "",
@@ -230,7 +134,71 @@
                                 "id": ""
                             },
                             "clone": [
-                                "group_676449f0a1b2c"
+                                "group_68fb8c0566666"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_68fb8c0888880": {
+                    "key": "layout_68fb8c0888880",
+                    "name": "m08_faq_accordion",
+                    "label": "M08 - FAQ Accordion",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_68fb8c0888890",
+                            "label": "FAQ Accordion",
+                            "name": "m08_faq_accordion",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_68fb8c0888888"
+                            ],
+                            "display": "seamless",
+                            "layout": "block",
+                            "prefix_label": 0,
+                            "prefix_name": 0
+                        }
+                    ],
+                    "min": "",
+                    "max": ""
+                },
+                "layout_6949a1f1e06ab": {
+                    "key": "layout_6949a1f1e06ab",
+                    "name": "m09_community",
+                    "label": "M09 - Community",
+                    "display": "block",
+                    "sub_fields": [
+                        {
+                            "key": "field_6949a1f1e06ad",
+                            "label": "M09 - Community",
+                            "name": "m09_community",
+                            "aria-label": "",
+                            "type": "clone",
+                            "instructions": "",
+                            "required": 0,
+                            "conditional_logic": 0,
+                            "wrapper": {
+                                "width": "",
+                                "class": "",
+                                "id": ""
+                            },
+                            "clone": [
+                                "group_m09_community"
                             ],
                             "display": "seamless",
                             "layout": "block",
@@ -278,5 +246,5 @@
     "description": "",
     "show_in_rest": 0,
     "display_title": "",
-    "modified": 1761319854
+    "modified": 1766435717
 }

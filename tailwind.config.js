@@ -1,9 +1,28 @@
 export default {
   content: [
-    './*.php',
-    './views/**/*.twig',
-    './src/**/*.{php,vue,js}',
-    './inc/**/*.php',
+    './web/app/themes/pdc-theme/*.php',
+    './web/app/themes/pdc-theme/views/**/*.twig',
+    './web/app/themes/pdc-theme/src/**/*.{php,vue,js}',
+    './web/app/themes/pdc-theme/inc/**/*.php',
+  ],
+  safelist: [
+    // Protect Gutenberg block classes from purge
+    {
+      pattern: /^wp-block-/,
+      variants: ['hover', 'focus', 'active', 'disabled'],
+    },
+    // Protect Gutenberg alignment classes
+    {
+      pattern: /^align(left|right|center|wide|full)$/,
+    },
+    // Protect Gutenberg style variants
+    {
+      pattern: /^is-style-/,
+    },
+    // Protect Gutenberg state classes
+    {
+      pattern: /^(has-background|has-text-color|has-drop-cap|has-media-on-the-right)$/,
+    },
   ],
   theme: {
     extend: {
@@ -30,6 +49,11 @@ export default {
           'red': '#D3202A',
           'green': '#00733E',
           'colorless': '#BEB9B2',
+        },
+        'magic-gold': {
+          DEFAULT: '#FFA500',
+          light: '#FFB84D',
+          dark: '#CC8400',
         },
         // Interface
         'card': {

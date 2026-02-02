@@ -9,7 +9,16 @@
                 </a>
             </div>
 
-            <div class="flex items-center gap-8">
+            {# Burger button - visible only on mobile #}
+            <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Toggle menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="burger-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    <path id="burger-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            {# Desktop Menu - hidden on mobile #}
+            <div class="hidden md:flex items-center gap-8">
                 {% if menu and menu.items %}
                     <ul class="flex items-center space-x-6">
                         {% for item in menu.items %}
@@ -29,44 +38,28 @@
                     </div>
                 {% endif %}
 
-                {# Language Switcher (Polylang) #}
+                {# Language Switcher (Polylang) - Native Select #}
                 {% if function('function_exists', 'pll_the_languages') and function('pll_languages_list') %}
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 px-3 py-2 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 hover:scale-105 rounded-lg">
-                            <span class="font-heading font-bold uppercase text-brand-orange text-xs tracking-wider">
-                                {{ function('pll_current_language', 'slug')|upper }}
-                            </span>
-                            <svg class="w-3 h-3 text-brand-orange transition-transform group-hover:rotate-180 duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-
-                        <div class="absolute right-0 mt-3 min-w-[140px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                            <div class="magic-card p-2">
-                                <ul class="space-y-1">
-                                    {% set languages = function('pll_the_languages', {
-                                        'dropdown': 0,
-                                        'show_flags': 1,
-                                        'show_names': 1,
-                                        'hide_current': 1,
-                                        'hide_if_no_translation': 0,
-                                        'force_home': 0,
-                                        'echo': 0,
-                                        'raw': 1
-                                    }) %}
-                                    {% if languages %}
-                                        {% for lang in languages %}
-                                            <li class="lang-item {{ lang.current_lang ? 'current-lang' : '' }}">
-                                                <a href="{{ lang.url }}" hreflang="{{ lang.slug }}" class="flex items-center">
-                                                    <span>{{ lang.name }}</span>
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                    {% set all_languages = function('pll_the_languages', {
+                        'dropdown': 0,
+                        'show_flags': 0,
+                        'show_names': 1,
+                        'hide_current': 0,
+                        'hide_if_no_translation': 0,
+                        'force_home': 0,
+                        'echo': 0,
+                        'raw': 1
+                    }) %}
+                    {% if all_languages %}
+                        <select onchange="window.location.href=this.value"
+                                class="px-3 py-2 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-xs tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+                            {% for lang in all_languages %}
+                                <option value="{{ lang.url }}" {{ lang.current_lang ? 'selected' : '' }}>
+                                    {{ lang.slug|upper }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                 {% elseif function('function_exists', 'pll_the_languages') %}
                     {# Polylang installé mais pas configuré #}
                     <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
@@ -77,3 +70,63 @@
         </div>
     </nav>
 </header>
+
+{# Mobile Menu Overlay - outside header for proper z-index stacking #}
+<div id="mobile-menu" class="fixed inset-0 md:hidden hidden" style="background-color: #0A0E13; z-index: 9999;">
+    <div class="container mx-auto px-6 py-8 h-full flex flex-col">
+        {# Close button #}
+        <div class="flex justify-between items-center mb-12">
+            <a href="{{ site.url }}" class="block">
+                <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png"
+                     alt="{{ site.name }}"
+                     class="h-20 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]">
+            </a>
+            <button id="mobile-menu-close" class="flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Close menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        {# Mobile Navigation #}
+        {% if menu and menu.items %}
+            <ul class="flex flex-col space-y-6 mb-12">
+                {% for item in menu.items %}
+                    <li>
+                        <a href="{{ item.url }}"
+                           class="block font-heading font-bold uppercase text-2xl text-text-secondary hover:text-brand-orange transition-colors duration-300 {{ item.current ? 'text-brand-orange' : '' }}">
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {# Mobile Language Switcher #}
+        {% if function('function_exists', 'pll_the_languages') and function('pll_languages_list') %}
+            <div class="mt-auto pt-8 border-t border-brand-orange/20">
+                <p class="text-xs uppercase text-text-muted mb-4 font-heading font-bold tracking-wider">{{ __('Langue') }}</p>
+                {% set all_languages_mobile = function('pll_the_languages', {
+                    'dropdown': 0,
+                    'show_flags': 0,
+                    'show_names': 1,
+                    'hide_current': 0,
+                    'hide_if_no_translation': 0,
+                    'force_home': 0,
+                    'echo': 0,
+                    'raw': 1
+                }) %}
+                {% if all_languages_mobile %}
+                    <select onchange="window.location.href=this.value"
+                            class="w-full px-4 py-3 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-sm tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+                        {% for lang in all_languages_mobile %}
+                            <option value="{{ lang.url }}" {{ lang.current_lang ? 'selected' : '' }}>
+                                {{ lang.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,138 @@
+# Translation of Plugins - Classic Editor - Stable (latest release) in French (France)
+# This file is distributed under the same license as the Plugins - Classic Editor - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-05-16 08:34:19+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: GlotPress/4.0.1\n"
+"Language: fr\n"
+"Project-Id-Version: Plugins - Classic Editor - Stable (latest release)\n"
+
+#: classic-editor.php:503
+msgctxt "Editor Name"
+msgid "Classic Editor"
+msgstr "Classic Editor"
+
+#: classic-editor.php:429 classic-editor.php:507 classic-editor.php:907
+msgctxt "Editor Name"
+msgid "Block editor"
+msgstr "Éditeur de blocs"
+
+#: classic-editor.php:425 classic-editor.php:907
+msgctxt "Editor Name"
+msgid "Classic editor"
+msgstr "Éditeur classique"
+
+#: classic-editor.php:860
+msgctxt "Editor Name"
+msgid "Edit (classic editor)"
+msgstr "Modifier (Classic Editor)"
+
+#: classic-editor.php:853
+msgctxt "Editor Name"
+msgid "Edit (block editor)"
+msgstr "Modifier (Nouvel éditeur)"
+
+#: classic-editor.php:512
+msgid "Change settings"
+msgstr "Modifier les réglages"
+
+#: classic-editor.php:499
+msgid "Default editor for all sites"
+msgstr "Éditeur par défaut pour tous le sites"
+
+#: classic-editor.php:495
+msgid "Editor Settings"
+msgstr "Réglages de l’éditeur"
+
+#: classic-editor.php:479
+msgid "Default Editor"
+msgstr "Éditeur par défaut"
+
+#: classic-editor.php:894
+msgctxt "Editor Name"
+msgid "block editor"
+msgstr "Nouvel éditeur"
+
+#: classic-editor.php:891
+msgctxt "Editor Name"
+msgid "classic editor"
+msgstr "Éditeur classique"
+
+#. translators: %s: post title
+#: classic-editor.php:855
+msgid "Edit &#8220;%s&#8221; in the block editor"
+msgstr "Modifier &#171; %s &#187; dans l’éditeur de blocs"
+
+#: classic-editor.php:690
+msgid "Switch to block editor"
+msgstr "Changer vers le nouvel éditeur"
+
+#: classic-editor.php:719
+msgid "Switch to classic editor"
+msgstr "Basculer vers l’éditeur classique"
+
+#: classic-editor.php:516
+msgid "By default the block editor is replaced with the classic editor and users cannot switch editors."
+msgstr "Par défaut, le nouvel éditeur est remplacé par l’éditeur classique et les utilisateurs ne peuvent pas changer d’éditeur."
+
+#: classic-editor.php:515
+msgid "Allow site admins to change settings"
+msgstr "Autoriser les administrateurs et les administratrices à modifier les réglages"
+
+#: classic-editor.php:671
+msgid "Editor"
+msgstr "Éditeur"
+
+#: classic-editor.php:453
+msgid "No"
+msgstr "Non"
+
+#: classic-editor.php:449
+msgid "Yes"
+msgstr "Oui"
+
+#: classic-editor.php:376
+msgid "Allow users to switch editors"
+msgstr "Autoriser les utilisateurs et utilisatrices à changer d’éditeur"
+
+#: classic-editor.php:375
+msgid "Default editor for all users"
+msgstr "Éditeur par défaut pour tous les utilisateurs et utilisatrices"
+
+#. Author URI of the plugin
+#: classic-editor.php
+msgid "https://github.com/WordPress/classic-editor/"
+msgstr "https://github.com/WordPress/classic-editor/"
+
+#. Plugin URI of the plugin
+#: classic-editor.php
+msgid "https://wordpress.org/plugins/classic-editor/"
+msgstr "https://wordpress.org/plugins/classic-editor/"
+
+#. Author of the plugin
+#: classic-editor.php
+msgid "WordPress Contributors"
+msgstr "Contributeurs et contributrices WordPress"
+
+#. Description of the plugin
+#: classic-editor.php
+msgid "Enables the WordPress classic editor and the old-style Edit Post screen with TinyMCE, Meta Boxes, etc. Supports the older plugins that extend this screen."
+msgstr "Active l’éditeur classique de WordPress et l’ancienne disposition de l’écran de modification d’article (TinyMCE, boites à méta, etc.). Prend en charge les anciennes extensions qui étendent cet écran."
+
+#. Plugin Name of the plugin
+#: classic-editor.php
+msgid "Classic Editor"
+msgstr "Classic Editor"
+
+#. translators: %s: post title
+#: classic-editor.php:862
+msgid "Edit &#8220;%s&#8221; in the classic editor"
+msgstr "Modifier « %s » dans l’éditeur classique"
+
+#: classic-editor.php:738
+msgid "Settings"
+msgstr "Réglages"

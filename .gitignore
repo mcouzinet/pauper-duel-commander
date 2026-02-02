@@ -29,3 +29,5 @@ wp-cli.local.yml
 # Front
 node_modules
 .budfiles
+
+.DS_Store

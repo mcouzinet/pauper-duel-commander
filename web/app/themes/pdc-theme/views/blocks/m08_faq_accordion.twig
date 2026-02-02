@@ -1,0 +1,72 @@
+{#
+/**
+ * Module M08 - FAQ Accordion
+ *
+ * Variables:
+ * - title (string): Titre de la section (optionnel)
+ * - description (textarea): Description de préambule (optionnel)
+ * - questions (repeater): Liste des questions
+ *   - question (string): La question
+ *   - answer (wysiwyg): La réponse
+ * - key (int): Index du module dans la boucle
+ */
+#}
+
+<section id="module{{ key }}" class="py-24 relative">
+    <div class="container mx-auto px-6">
+        {% if module.title or module.description %}
+            <div class="text-center mb-16">
+                {% if module.title %}
+                    <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+                        {{ module.title }}
+                    </h2>
+                {% endif %}
+                {% if module.description %}
+                    <p class="text-xl text-text-secondary max-w-3xl mx-auto leading-relaxed">
+                        {{ module.description }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if module.questions %}
+            <div class="max-w-4xl mx-auto">
+                <div class="accordion space-y-4" data-accordion-group>
+                    {% for faq in module.questions %}
+                        <div class="accordion-item magic-card overflow-hidden transition-all duration-300"
+                             data-accordion-item>
+                            <button class="accordion-trigger w-full text-left p-6 flex items-center justify-between gap-4 group"
+                                    data-accordion-trigger
+                                    aria-expanded="false"
+                                    aria-controls="accordion-content-{{ key }}-{{ loop.index0 }}"
+                                    id="accordion-trigger-{{ key }}-{{ loop.index0 }}">
+                                <span class="text-xl font-heading font-semibold text-text-primary group-hover:text-magic-gold transition-colors duration-300">
+                                    {{ faq.question }}
+                                </span>
+                                <div class="accordion-icon flex-shrink-0 w-6 h-6 text-magic-gold transition-transform duration-300"
+                                     data-accordion-icon
+                                     aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </div>
+                            </button>
+                            <div class="accordion-content overflow-hidden"
+                                 data-accordion-content
+                                 id="accordion-content-{{ key }}-{{ loop.index0 }}"
+                                 aria-labelledby="accordion-trigger-{{ key }}-{{ loop.index0 }}"
+                                 role="region"
+                                 style="max-height: 0;">
+                                <div class="accordion-inner px-6 pb-6 pt-2">
+                                    <div class="text-text-secondary">
+                                        {{ faq.answer|raw }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>

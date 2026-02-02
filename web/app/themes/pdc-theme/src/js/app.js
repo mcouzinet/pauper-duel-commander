@@ -4,9 +4,16 @@
 
 // Import CSS
 import '../css/app.css';
+import '../css/components/accordion.css';
 
 // Import decklist functionality
 import './decklist.js';
+
+// Import mobile menu functionality
+import './mobile-menu.js';
+
+// Import accordion functionality
+import './accordion.js';
 
 /**
  * Smooth scroll to anchor links

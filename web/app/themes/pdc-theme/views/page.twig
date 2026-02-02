@@ -1,5 +1,11 @@
 {% extends "layouts/base.twig" %}
 
 {% block content %}
-    {% include 'modules/modules-loop.twig' %}
+    {# Render Gutenberg blocks (ACF Blocks) #}
+    {{ post.content }}
+
+    {# Legacy: Flexible Content modules (for old pages) #}
+    {% if modules %}
+        {% include 'modules/modules-loop.twig' %}
+    {% endif %}
 {% endblock %}

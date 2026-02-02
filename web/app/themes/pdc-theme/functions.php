@@ -33,20 +33,21 @@ function pdc_theme_enqueue_assets() {
         '1.18.0'
     );
 
-    // Enqueue Bud-compiled assets
-    $manifest_path = get_template_directory() . '/public/manifest.json';
+    // Enqueue theme CSS
+    $css_path = get_template_directory() . '/public/css/app.css';
+    if (file_exists($css_path)) {
+        wp_enqueue_style(
+            'pdc-theme-app',
+            get_template_directory_uri() . '/public/css/app.css',
+            ['mana-font'],
+            filemtime($css_path)
+        );
+    }
 
+    // Enqueue Bud-compiled JS
+    $manifest_path = get_template_directory() . '/public/manifest.json';
     if (file_exists($manifest_path)) {
         $manifest = json_decode(file_get_contents($manifest_path), true);
-
-        if (isset($manifest['app.css'])) {
-            wp_enqueue_style(
-                'pdc-theme-app',
-                get_template_directory_uri() . '/public/' . $manifest['app.css'],
-                ['mana-font'],
-                null
-            );
-        }
 
         if (isset($manifest['app.js'])) {
             wp_enqueue_script(
@@ -72,10 +73,46 @@ function pdc_theme_enqueue_assets() {
 add_action('wp_enqueue_scripts', 'pdc_theme_enqueue_assets');
 
 /**
+ * Enqueue editor assets (for Gutenberg block editor)
+ */
+function pdc_theme_enqueue_editor_assets() {
+    // Enqueue Mana Font for Magic mana symbols (via CDN)
+    wp_enqueue_style(
+        'mana-font',
+        'https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.min.css',
+        [],
+        '1.18.0'
+    );
+
+    // Enqueue theme CSS for block preview
+    $css_path = get_template_directory() . '/public/css/app.css';
+    if (file_exists($css_path)) {
+        wp_enqueue_style(
+            'pdc-theme-app-editor',
+            get_template_directory_uri() . '/public/css/app.css',
+            ['mana-font'],
+            filemtime($css_path)
+        );
+    }
+
+    // Enqueue editor-specific CSS to override Gutenberg defaults
+    $editor_css_path = get_template_directory() . '/public/css/editor.css';
+    if (file_exists($editor_css_path)) {
+        wp_enqueue_style(
+            'pdc-theme-editor-overrides',
+            get_template_directory_uri() . '/public/css/editor.css',
+            ['pdc-theme-app-editor'],
+            filemtime($editor_css_path)
+        );
+    }
+}
+add_action('enqueue_block_editor_assets', 'pdc_theme_enqueue_editor_assets');
+
+/**
  * Initialize Timber
  */
 // Set Timber directories
-Timber\Timber::$dirname = ['views', 'views/components', 'views/layouts', 'views/modules'];
+Timber\Timber::$dirname = ['views', 'views/components', 'views/layouts', 'views/modules', 'views/blocks'];
 
 /**
  * Timber context
@@ -122,7 +159,7 @@ function pdc_theme_setup() {
 
     // Register navigation menus
     register_nav_menus([
-        'primary' => __('Menu principal', 'pdc-theme-admin'),
+        'primary' => __('Menu principal', 'pdc-theme'),
     ]);
 }
 add_action('after_setup_theme', 'pdc_theme_setup');
@@ -132,9 +169,9 @@ add_action('after_setup_theme', 'pdc_theme_setup');
  */
 function pdc_theme_widgets_init() {
     register_sidebar([
-        'name'          => __('Sidebar', 'pdc-theme-admin'),
+        'name'          => __('Sidebar', 'pdc-theme'),
         'id'            => 'sidebar-1',
-        'description'   => __('Add widgets here.', 'pdc-theme-admin'),
+        'description'   => __('Add widgets here.', 'pdc-theme'),
         'before_widget' => '<section id="%1$s" class="widget %2$s mb-8">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title text-xl font-bold mb-4">',
@@ -144,22 +181,10 @@ function pdc_theme_widgets_init() {
 add_action('widgets_init', 'pdc_theme_widgets_init');
 
 /**
- * Disable Gutenberg Editor
+ * Gutenberg Editor Configuration
  */
-// Disable Gutenberg on the back end
-add_filter('use_block_editor_for_post', '__return_false');
-
-// Disable Gutenberg for widgets
+// Disable Gutenberg for widgets (keep classic widgets)
 add_filter('use_widgets_block_editor', '__return_false');
-
-// Disable the Gutenberg blocks CSS on the front-end
-function pdc_theme_disable_gutenberg_styles() {
-    wp_dequeue_style('wp-block-library');
-    wp_dequeue_style('wp-block-library-theme');
-    wp_dequeue_style('wc-blocks-style'); // WooCommerce blocks if present
-    wp_dequeue_style('global-styles');
-}
-add_action('wp_enqueue_scripts', 'pdc_theme_disable_gutenberg_styles', 100);
 
 /**
  * ACF JSON - Save and Load
@@ -195,6 +220,11 @@ function pdc_theme_add_favicons() {
 add_action('wp_head', 'pdc_theme_add_favicons');
 
 /**
+ * Load Custom Blocks
+ */
+require_once get_template_directory() . '/inc/blocks.php';
+
+/**
  * Load Decklist Classes
  */
 require_once get_template_directory() . '/inc/class-scryfall-service.php';
@@ -217,23 +247,23 @@ function get_scryfall_card($set_code, $collector_number) {
  */
 function pdc_register_decklist_cpt() {
     $labels = array(
-        'name' => __('Decklists', 'pdc-theme-admin'),
-        'singular_name' => __('Decklist', 'pdc-theme-admin'),
-        'menu_name' => __('Decklists', 'pdc-theme-admin'),
-        'add_new' => __('Ajouter une decklist', 'pdc-theme-admin'),
-        'add_new_item' => __('Ajouter une nouvelle decklist', 'pdc-theme-admin'),
-        'edit_item' => __('Modifier la decklist', 'pdc-theme-admin'),
-        'new_item' => __('Nouvelle decklist', 'pdc-theme-admin'),
-        'view_item' => __('Voir la decklist', 'pdc-theme-admin'),
-        'search_items' => __('Rechercher des decklists', 'pdc-theme-admin'),
-        'not_found' => __('Aucune decklist trouvée', 'pdc-theme-admin'),
-        'not_found_in_trash' => __('Aucune decklist dans la corbeille', 'pdc-theme-admin'),
+        'name' => __('Decklists', 'pdc-theme'),
+        'singular_name' => __('Decklist', 'pdc-theme'),
+        'menu_name' => __('Decklists', 'pdc-theme'),
+        'add_new' => __('Ajouter une decklist', 'pdc-theme'),
+        'add_new_item' => __('Ajouter une nouvelle decklist', 'pdc-theme'),
+        'edit_item' => __('Modifier la decklist', 'pdc-theme'),
+        'new_item' => __('Nouvelle decklist', 'pdc-theme'),
+        'view_item' => __('Voir la decklist', 'pdc-theme'),
+        'search_items' => __('Rechercher des decklists', 'pdc-theme'),
+        'not_found' => __('Aucune decklist trouvée', 'pdc-theme'),
+        'not_found_in_trash' => __('Aucune decklist dans la corbeille', 'pdc-theme'),
     );
 
     $args = array(
         'labels' => $labels,
         'public' => true,
-        'has_archive' => false, // Pas d'archive pour le moment
+        'has_archive' => true,
         'publicly_queryable' => true,
         'show_ui' => true,
         'show_in_menu' => true,
@@ -260,15 +290,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Author
     register_taxonomy('deck_author', 'decklist', array(
         'labels' => array(
-            'name' => __('Auteurs', 'pdc-theme-admin'),
-            'singular_name' => __('Auteur', 'pdc-theme-admin'),
-            'search_items' => __('Rechercher des auteurs', 'pdc-theme-admin'),
-            'all_items' => __('Tous les auteurs', 'pdc-theme-admin'),
-            'edit_item' => __('Modifier l\'auteur', 'pdc-theme-admin'),
-            'update_item' => __('Mettre à jour l\'auteur', 'pdc-theme-admin'),
-            'add_new_item' => __('Ajouter un auteur', 'pdc-theme-admin'),
-            'new_item_name' => __('Nouveau nom d\'auteur', 'pdc-theme-admin'),
-            'menu_name' => __('Auteurs', 'pdc-theme-admin'),
+            'name' => __('Auteurs', 'pdc-theme'),
+            'singular_name' => __('Auteur', 'pdc-theme'),
+            'search_items' => __('Rechercher des auteurs', 'pdc-theme'),
+            'all_items' => __('Tous les auteurs', 'pdc-theme'),
+            'edit_item' => __('Modifier l\'auteur', 'pdc-theme'),
+            'update_item' => __('Mettre à jour l\'auteur', 'pdc-theme'),
+            'add_new_item' => __('Ajouter un auteur', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom d\'auteur', 'pdc-theme'),
+            'menu_name' => __('Auteurs', 'pdc-theme'),
         ),
         'public' => true,
         'hierarchical' => false,
@@ -282,15 +312,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Archetype
     register_taxonomy('deck_archetype', 'decklist', array(
         'labels' => array(
-            'name' => __('Archétypes', 'pdc-theme-admin'),
-            'singular_name' => __('Archétype', 'pdc-theme-admin'),
-            'search_items' => __('Rechercher des archétypes', 'pdc-theme-admin'),
-            'all_items' => __('Tous les archétypes', 'pdc-theme-admin'),
-            'edit_item' => __('Modifier l\'archétype', 'pdc-theme-admin'),
-            'update_item' => __('Mettre à jour l\'archétype', 'pdc-theme-admin'),
-            'add_new_item' => __('Ajouter un archétype', 'pdc-theme-admin'),
-            'new_item_name' => __('Nouveau nom d\'archétype', 'pdc-theme-admin'),
-            'menu_name' => __('Archétypes', 'pdc-theme-admin'),
+            'name' => __('Archétypes', 'pdc-theme'),
+            'singular_name' => __('Archétype', 'pdc-theme'),
+            'search_items' => __('Rechercher des archétypes', 'pdc-theme'),
+            'all_items' => __('Tous les archétypes', 'pdc-theme'),
+            'edit_item' => __('Modifier l\'archétype', 'pdc-theme'),
+            'update_item' => __('Mettre à jour l\'archétype', 'pdc-theme'),
+            'add_new_item' => __('Ajouter un archétype', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom d\'archétype', 'pdc-theme'),
+            'menu_name' => __('Archétypes', 'pdc-theme'),
         ),
         'public' => true,
         'hierarchical' => true,
@@ -304,15 +334,15 @@ function pdc_register_decklist_taxonomies() {
     // Taxonomy: Deck Color
     register_taxonomy('deck_color', 'decklist', array(
         'labels' => array(
-            'name' => __('Couleurs', 'pdc-theme-admin'),
-            'singular_name' => __('Couleur', 'pdc-theme-admin'),
-            'search_items' => __('Rechercher des couleurs', 'pdc-theme-admin'),
-            'all_items' => __('Toutes les couleurs', 'pdc-theme-admin'),
-            'edit_item' => __('Modifier la couleur', 'pdc-theme-admin'),
-            'update_item' => __('Mettre à jour la couleur', 'pdc-theme-admin'),
-            'add_new_item' => __('Ajouter une couleur', 'pdc-theme-admin'),
-            'new_item_name' => __('Nouveau nom de couleur', 'pdc-theme-admin'),
-            'menu_name' => __('Couleurs', 'pdc-theme-admin'),
+            'name' => __('Couleurs', 'pdc-theme'),
+            'singular_name' => __('Couleur', 'pdc-theme'),
+            'search_items' => __('Rechercher des couleurs', 'pdc-theme'),
+            'all_items' => __('Toutes les couleurs', 'pdc-theme'),
+            'edit_item' => __('Modifier la couleur', 'pdc-theme'),
+            'update_item' => __('Mettre à jour la couleur', 'pdc-theme'),
+            'add_new_item' => __('Ajouter une couleur', 'pdc-theme'),
+            'new_item_name' => __('Nouveau nom de couleur', 'pdc-theme'),
+            'menu_name' => __('Couleurs', 'pdc-theme'),
         ),
         'public' => true,
         'hierarchical' => false,
