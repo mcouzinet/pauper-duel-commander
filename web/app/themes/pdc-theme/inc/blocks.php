@@ -52,16 +52,6 @@ function pdc_acf_block_render_callback($attributes, $content = '', $is_preview =
     // DEBUG: Log block rendering (remove this after testing)
     error_log('ACF Block Render: ' . $slug . ' | Fields: ' . (empty($fields) ? 'EMPTY' : 'OK') . ' | Preview: ' . ($is_preview ? 'YES' : 'NO'));
 
-    // If no fields are loaded, show placeholder
-    if (empty($fields)) {
-        echo '<div style="padding: 2rem; background: #f0f0f0; border: 2px dashed #ccc; border-radius: 8px; text-align: center; color: #666;">';
-        echo '<p style="margin: 0; font-size: 14px;"><strong>' . esc_html($block_name) . '</strong></p>';
-        echo '<p style="margin: 0.5rem 0 0; font-size: 12px;">Remplissez les champs dans la barre latérale →</p>';
-        echo '<p style="margin: 0.5rem 0 0; font-size: 11px; color: #999;">Block: acf/' . esc_html($slug) . '</p>';
-        echo '</div>';
-        return;
-    }
-
     // Prepare minimal context (avoid rebuilding global context for performance)
     $context = [];
 

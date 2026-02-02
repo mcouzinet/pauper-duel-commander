@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Rejoignez la communauté",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -36,7 +36,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "<p>Connectez-vous avec d'autres joueurs PDC, partagez vos decks et participez à des tournois.</p>",
             "tabs": "all",
             "toolbar": "basic",
             "media_upload": 0,
@@ -81,7 +81,7 @@
                     "default_value": "",
                     "maxlength": "",
                     "rows": 4,
-                    "placeholder": "<svg>...<\/svg>",
+                    "placeholder": "<svg>...</svg>",
                     "new_lines": "",
                     "parent_repeater": "field_m09_features"
                 },
@@ -99,7 +99,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "Discord actif",
                     "maxlength": "",
                     "placeholder": "",
                     "prepend": "",
@@ -120,7 +120,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "Rejoignez notre serveur Discord pour discuter stratégie et trouver des adversaires.",
                     "maxlength": "",
                     "rows": 3,
                     "placeholder": "",
@@ -143,7 +143,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Rejoignez notre Discord",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -163,7 +163,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Discutez stratégie, partagez vos decks et trouvez des adversaires pour vos parties.",
             "maxlength": "",
             "rows": 3,
             "placeholder": "",
@@ -205,5 +205,5 @@
     "description": "",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1770055892
+    "modified": 1770065493
 }

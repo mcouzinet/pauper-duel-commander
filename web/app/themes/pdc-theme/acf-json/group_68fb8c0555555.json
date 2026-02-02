@@ -43,7 +43,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Point important",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -64,7 +64,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "<p>Contrairement à l'EDH classique, <strong>seul votre commandant</strong> peut être une carte rare ou mythique. Le reste du deck doit être composé de cartes communes.</p>",
             "tabs": "all",
             "toolbar": "basic",
             "media_upload": 0,
@@ -111,5 +111,5 @@
     "description": "",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1738530000
+    "modified": 1770065493
 }

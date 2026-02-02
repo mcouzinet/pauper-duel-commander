@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Qu'est-ce qu'un Commander ?",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -37,7 +37,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "<p>Le <strong>Commander</strong> est la carte centrale de votre deck. Il reste en zone de commandement et peut être joué à tout moment en payant son coût de mana plus 2 manas incolores par fois qu'il a été joué depuis la zone de commandement.</p><p>En PDC, votre commandant peut être n'importe quelle créature légendaire rare ou mythique. Le reste de votre deck doit être composé exclusivement de cartes communes.</p>",
             "tabs": "all",
             "toolbar": "full",
             "media_upload": 0,
@@ -114,5 +114,5 @@
     "description": "",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1738530000
+    "modified": 1770065493
 }

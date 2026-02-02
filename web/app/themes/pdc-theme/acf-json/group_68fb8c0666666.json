@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Comment jouer un tour",
             "maxlength": "",
             "allow_in_bindings": 0,
             "placeholder": "",
@@ -37,7 +37,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Déroulement d'un tour complet en Pauper Duel Commander",
             "maxlength": "",
             "allow_in_bindings": 0,
             "rows": 3,
@@ -80,7 +80,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "Dégagement",
                     "maxlength": "",
                     "allow_in_bindings": 0,
                     "placeholder": "",
@@ -102,7 +102,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "Dégagez tous vos permanents engagés.",
                     "maxlength": "",
                     "allow_in_bindings": 0,
                     "rows": 3,
@@ -132,5 +132,5 @@
     "description": "",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1738530000
+    "modified": 1770065493
 }

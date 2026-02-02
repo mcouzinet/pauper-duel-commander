@@ -16,7 +16,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Questions fréquentes",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -36,7 +36,7 @@
                 "class": "",
                 "id": ""
             },
-            "default_value": "",
+            "default_value": "Tout ce que vous devez savoir sur le format Pauper Duel Commander",
             "maxlength": "",
             "rows": 3,
             "placeholder": "",
@@ -78,7 +78,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "Quelle est la taille d'un deck PDC ?",
                     "maxlength": "",
                     "placeholder": "",
                     "prepend": "",
@@ -99,7 +99,7 @@
                         "class": "",
                         "id": ""
                     },
-                    "default_value": "",
+                    "default_value": "<p>Un deck PDC contient <strong>100 cartes exactement</strong>, incluant votre commandant. Les 99 autres cartes doivent être des cartes communes.</p>",
                     "tabs": "all",
                     "toolbar": "full",
                     "media_upload": 1,
@@ -128,5 +128,5 @@
     "description": "Module FAQ avec accordéon",
     "show_in_rest": 1,
     "display_title": "",
-    "modified": 1770055892
+    "modified": 1770065493
 }
