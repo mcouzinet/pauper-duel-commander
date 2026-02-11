@@ -207,13 +207,13 @@ add_filter('acf/settings/load_json', function($paths) {
 function pdc_theme_add_favicons() {
     $theme_uri = get_template_directory_uri();
     ?>
-    <link rel="icon" type="image/x-icon" href="<?php echo $theme_uri; ?>/public/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $theme_uri; ?>/public/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo $theme_uri; ?>/public/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $theme_uri; ?>/public/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo $theme_uri; ?>/public/android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="<?php echo $theme_uri; ?>/public/android-chrome-512x512.png">
-    <link rel="manifest" href="<?php echo $theme_uri; ?>/public/site.webmanifest">
+    <link rel="icon" type="image/x-icon" href="<?php echo $theme_uri; ?>/public/img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo $theme_uri; ?>/public/img/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo $theme_uri; ?>/public/img/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $theme_uri; ?>/public/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?php echo $theme_uri; ?>/public/img/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="<?php echo $theme_uri; ?>/public/img/android-chrome-512x512.png">
+    <link rel="manifest" href="<?php echo $theme_uri; ?>/public/img/site.webmanifest">
     <meta name="theme-color" content="#FF5722">
     <?php
 }
