@@ -1,0 +1,23 @@
+/**
+ * Editor-specific overrides for Gutenberg back-office
+ *
+ * Overrides the default Gutenberg constraint:
+ * :where(.wp-block) { max-width: 840px; margin-top: 28px; margin-bottom: 28px; }
+ * which restricts custom ACF modules (M01-M09) display in the editor.
+ */
+
+/* Remove the 840px max-width constraint on all blocks in the editor */
+.editor-styles-wrapper :where(.wp-block) {
+  max-width: none;
+}
+
+/* ACF blocks (our custom modules) should take full width in the editor */
+.editor-styles-wrapper .acf-block-preview,
+.editor-styles-wrapper [data-type^="acf/"] {
+  max-width: none;
+}
+
+/* Ensure ACF block inner content also isn't constrained */
+.editor-styles-wrapper [data-type^="acf/"] .acf-block-preview > * {
+  max-width: none;
+}
