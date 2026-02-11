@@ -65,27 +65,6 @@
             "rows_per_page": 20,
             "sub_fields": [
                 {
-                    "key": "field_m09_feature_icon",
-                    "label": "Icône (SVG)",
-                    "name": "icon",
-                    "aria-label": "",
-                    "type": "textarea",
-                    "instructions": "Code SVG de l'icône",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "",
-                        "class": "",
-                        "id": ""
-                    },
-                    "default_value": "",
-                    "maxlength": "",
-                    "rows": 4,
-                    "placeholder": "<svg>...</svg>",
-                    "new_lines": "",
-                    "parent_repeater": "field_m09_features"
-                },
-                {
                     "key": "field_m09_feature_title",
                     "label": "Titre",
                     "name": "title",

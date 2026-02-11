@@ -33,23 +33,12 @@
                 <div class="grid md:grid-cols-2 gap-8 mb-12">
                     {% for feature in module.features %}
                         <div class="glass-effect border border-card-border rounded-xl p-8 hover:border-brand-orange/50 transition-all duration-300 group">
-                            {# Icon #}
-                            <div class="flex flex-row items-center text-center">
-                                {% if feature.icon %}
-                                    <div class="w-14 h-14 rounded-lg bg-brand-orange/10 flex items-center justify-center mb-6 group-hover:bg-brand-orange/20 transition-colors duration-300 p-6 pt-8 mr-4">
-                                        <div class="w-8 h-8 text-brand-orange">
-                                            {{ feature.icon|raw }}
-                                        </div>
-                                    </div>
-                                {% endif %}
-
-                                {# Title #}
-                                {% if feature.title %}
-                                    <h3 class="text-2xl font-heading font-bold text-magic-gold mb-4">
-                                        {{ feature.title }}
-                                    </h3>
-                                {% endif %}
-                            </div>
+                            {# Title #}
+                            {% if feature.title %}
+                                <h3 class="text-2xl font-heading font-bold text-magic-gold mb-4">
+                                    {{ feature.title }}
+                                </h3>
+                            {% endif %}
 
                             {# Description #}
                             {% if feature.description %}
