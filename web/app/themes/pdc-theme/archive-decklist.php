@@ -60,10 +60,12 @@ $context['posts'] = Timber::get_posts($args);
 // Enrich posts with additional data
 $enriched_posts = array();
 foreach ($context['posts'] as $post) {
+    $commander_name = function_exists('get_field') ? get_field('commander', $post->ID) : '';
+
     $post_data = array(
         'post' => $post,
         'commander_image' => '',
-        'commander_name' => '',
+        'commander_name' => $commander_name ?: '',
     );
 
     // Get commander data from ACF

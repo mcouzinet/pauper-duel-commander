@@ -154,9 +154,9 @@
                                             </div>
                                         </div>
 
-                                        {# Title #}
+                                        {# Title: Commander Name #}
                                         <h2 class="text-2xl font-heading font-bold text-text-primary group-hover:text-brand-orange transition-colors mt-2 line-clamp-2">
-                                            {{ item.post.title }}
+                                            {{ item.commander_name ?: item.post.title }}
                                         </h2>
 
                                         {# Author - Nom du joueur caché
