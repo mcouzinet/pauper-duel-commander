@@ -179,6 +179,7 @@ function pdc_register_acf_blocks() {
             'category'          => 'pdc-modules',
             'icon'              => $block['icon'],
             'keywords'          => $block['keywords'],
+            'api_version'       => 3,
             'mode'              => 'preview',
             'supports'          => [
                 'align'         => false,
