@@ -37,8 +37,55 @@
   .site-main > h4:not([class]),
   .site-main > h5:not([class]),
   .site-main > h6:not([class]) {
-    @apply max-w-screen-xl mx-auto px-6 font-heading uppercase tracking-tight text-text-primary mb-6;
+    @apply max-w-screen-xl mx-auto px-6 font-heading uppercase tracking-tight mb-6;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+
+  /* H1 - Titre principal - Grand avec gradient orange */
+  h1.wp-block-heading,
+  .site-main > h1:not([class]) {
+    @apply text-5xl md:text-6xl font-bold mb-8;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 50%, #E64A19 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  /* H2 - Sous-titre majeur - Grand avec gradient orange */
+  h2.wp-block-heading,
+  .site-main > h2:not([class]) {
+    @apply text-4xl md:text-5xl font-bold mb-6;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 50%, #E64A19 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+  }
+
+  /* H3 - Titre de section - Orange solide */
+  h3.wp-block-heading,
+  .site-main > h3:not([class]) {
+    @apply text-3xl md:text-4xl font-bold text-brand-orange mb-6;
+  }
+
+  /* H4 - Sous-section - Texte clair */
+  h4.wp-block-heading,
+  .site-main > h4:not([class]) {
+    @apply text-2xl md:text-3xl font-semibold text-text-primary mb-4;
+  }
+
+  /* H5 - Petit titre - Texte secondaire */
+  h5.wp-block-heading,
+  .site-main > h5:not([class]) {
+    @apply text-xl md:text-2xl font-semibold text-text-secondary mb-4;
+  }
+
+  /* H6 - Très petit titre - Texte muté avec bordure */
+  h6.wp-block-heading,
+  .site-main > h6:not([class]) {
+    @apply text-lg md:text-xl font-semibold text-text-muted mb-3 pb-2 border-b border-brand-orange/20;
   }
 
   /* Quote - bordure gauche orange */

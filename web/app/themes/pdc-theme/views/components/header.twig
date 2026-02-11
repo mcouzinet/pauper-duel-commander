@@ -34,7 +34,7 @@
                 {% else %}
                     {# Debug: afficher un message si le menu n'existe pas #}
                     <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
-                        {{ __('Menu non configuré') }}
+                        {{ __('Menu non configuré', 'pdc-theme') }}
                     </div>
                 {% endif %}
 
@@ -63,7 +63,7 @@
                 {% elseif function('function_exists', 'pll_the_languages') %}
                     {# Polylang installé mais pas configuré #}
                     <div class="text-xs text-text-muted px-4 py-2 border border-brand-orange/20 rounded-lg">
-                        {{ __('Langues non configurées') }}
+                        {{ __('Langues non configurées', 'pdc-theme') }}
                     </div>
                 {% endif %}
             </div>
@@ -105,7 +105,7 @@
         {# Mobile Language Switcher #}
         {% if function('function_exists', 'pll_the_languages') and function('pll_languages_list') %}
             <div class="mt-auto pt-8 border-t border-brand-orange/20">
-                <p class="text-xs uppercase text-text-muted mb-4 font-heading font-bold tracking-wider">{{ __('Langue') }}</p>
+                <p class="text-xs uppercase text-text-muted mb-4 font-heading font-bold tracking-wider">{{ __('Langue', 'pdc-theme') }}</p>
                 {% set all_languages_mobile = function('pll_the_languages', {
                     'dropdown': 0,
                     'show_flags': 0,

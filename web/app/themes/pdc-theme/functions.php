@@ -354,3 +354,17 @@ function pdc_register_decklist_taxonomies() {
     ));
 }
 add_action('init', 'pdc_register_decklist_taxonomies');
+
+/**
+ * Disable Polylang translation for Decklist post type
+ * Decklists should remain in English only, not be translated
+ * However, taxonomies (Auteurs, Archétypes, Couleurs) remain translatable
+ */
+function pdc_disable_polylang_for_decklist($post_types, $is_settings) {
+    // Remove 'decklist' from translatable post types
+    if (isset($post_types['decklist'])) {
+        unset($post_types['decklist']);
+    }
+    return $post_types;
+}
+add_filter('pll_get_post_types', 'pdc_disable_polylang_for_decklist', 10, 2);

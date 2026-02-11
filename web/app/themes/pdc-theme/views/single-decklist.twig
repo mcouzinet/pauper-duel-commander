@@ -71,7 +71,7 @@
                         <div class="flex flex-wrap gap-3 mb-6">
                             {% if deck_archetype %}
                                 {% for archetype in deck_archetype %}
-                                    <span class="px-4 py-2 bg-brand-orange/20 border border-brand-orange/40 rounded-lg text-sm font-semibold text-brand-orange">
+                                    <span class="px-4 py-2 glass-effect border border-white/10 rounded-lg text-sm font-medium text-text-secondary">
                                         {{ archetype.name }}
                                     </span>
                                 {% endfor %}
@@ -79,8 +79,8 @@
 
                             {% if deck_color %}
                                 {% for color in deck_color %}
-                                    <span class="px-4 py-2 glass-effect border border-magic-gold/40 rounded-lg text-sm font-semibold text-magic-gold">
-                                        {{ color.name }}
+                                    <span class="px-3 py-2 glass-effect border border-magic-gold/40 rounded-lg text-sm font-semibold flex gap-1 items-center text-text-primary">
+                                        {{ function('Deck_Renderer::format_color_symbol', color.name)|raw }}
                                     </span>
                                 {% endfor %}
                             {% endif %}
@@ -93,18 +93,20 @@
 
                         {# Taxonomies #}
                         <div class="flex flex-wrap gap-3 mb-6">
+                            {# Nom du joueur caché
                             {% if deck_author %}
                                 {% for author in deck_author %}
                                     <span class="text-sm font-semibold text-text-secondary">
-                                        {{ __('par') }} {{ author.name }}
+                                        {{ __('par', 'pdc-theme') }} {{ author.name }}
                                     </span>
                                 {% endfor %}
                             {% endif %}
+                            #}
 
                             {# Date #}
                             {% if deck_date %}
                                 <span class="text-sm font-semibold text-text-secondary">
-                                    {{ __('le') }} {{ deck_date ? deck_date : post.date|date('d/m/Y') }}
+                                    {{ __('le', 'pdc-theme') }} {{ deck_date ? deck_date : post.date|date('d/m/Y') }}
                                 </span>
                             {% endif %}
 
@@ -123,7 +125,7 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
-                                {{ __('Exporter la decklist') }}
+                                {{ __('Exporter la decklist', 'pdc-theme') }}
                         </div>
                     </div>
                 </div>
@@ -136,7 +138,7 @@
         <div class="container mx-auto px-6">
             <div class="max-w-7xl mx-auto">
                 <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
-                    {{ __('Decklist') }}
+                    {{ __('Decklist', 'pdc-theme') }}
                 </h2>
 
                 {# Cards grouped by type #}
@@ -194,7 +196,7 @@
                     {# Mana Curve #}
                     <div class="md:col-span-3 lg:col-span-1">
                         <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
-                            {{ __('Courbe de Mana') }}
+                            {{ __('Courbe de Mana', 'pdc-theme') }}
                         </h2>
                         <div class="py-6 rounded-lg mt-6">
                             {% set max_count = max(deck.stats.cmc_distribution) %}
@@ -217,7 +219,7 @@
                     {# Mana Colors #}
                     <div class="md:col-span-3 lg:col-span-1">
                         <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
-                            {{ __('Couleurs de Mana') }}
+                            {{ __('Couleurs de Mana', 'pdc-theme') }}
                         </h2>
                         <div class="flex flex-col items-center gap-6">
                             {# Color Donut Chart #}
@@ -294,7 +296,7 @@
                     {# Card Types #}
                     <div class="md:col-span-3 lg:col-span-1">
                         <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
-                            {{ __('Types de Cartes') }}
+                            {{ __('Types de Cartes', 'pdc-theme') }}
                         </h2>
                         <div class="flex flex-col items-center gap-6">
                             {# Type Donut Chart #}

@@ -25,37 +25,101 @@ msgid "Tous droits réservés."
 msgstr "All rights reserved."
 
 #: views/components/footer.twig:19
-msgid ""
-"Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des "
-"marques déposées de Wizards of the Coast LLC."
-msgstr ""
-"Wizards of the Coast, Magic: The Gathering, and their respective logos are "
-"registered trademarks of Wizards of the Coast LLC.\n"
+msgid "Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC."
+msgstr "Wizards of the Coast, Magic: The Gathering, and their respective logos are registered trademarks of Wizards of the Coast LLC."
 
 #: views/components/header.twig:28
 msgid "Menu non configuré"
-msgstr "menu not configured"
+msgstr "Menu not configured"
 
 #: views/components/header.twig:73
 msgid "Langues non configurées"
-msgstr "Languages ​​not configured"
+msgstr "Languages not configured"
 
-#: views/single-decklist.twig:78
+#: views/components/header.twig:74
+msgid "Langue"
+msgstr "Language"
+
+#: views/archive-decklist.twig:26
+msgid "Quelques Decklists"
+msgstr "Featured Decklists"
+
+#: views/archive-decklist.twig:29
+msgid "Notre collection de decklists est en construction. Vous trouverez ici nos premières sélections pour le Pauper Duel Commander : de quoi vous inspirer, tester le format, ou affiner votre propre stratégie."
+msgstr "Our decklist collection is under construction. Here you'll find our first selections for Pauper Duel Commander: something to inspire you, test the format, or refine your own strategy."
+
+#: views/archive-decklist.twig:43
+msgid "Auteur"
+msgstr "Author"
+
+#: views/archive-decklist.twig:48
+msgid "Tous les auteurs"
+msgstr "All authors"
+
+#: views/archive-decklist.twig:59
+msgid "Archétype"
+msgstr "Archetype"
+
+#: views/archive-decklist.twig:64
+msgid "Tous les archétypes"
+msgstr "All archetypes"
+
+#: views/archive-decklist.twig:75
+msgid "Couleur"
+msgstr "Color"
+
+#: views/archive-decklist.twig:80
+msgid "Toutes les couleurs"
+msgstr "All colors"
+
+#: views/archive-decklist.twig:93
+msgid "Réinitialiser les filtres"
+msgstr "Reset filters"
+
+#: views/archive-decklist.twig:178
+msgid "Précédent"
+msgstr "Previous"
+
+#: views/archive-decklist.twig:196
+msgid "Suivant"
+msgstr "Next"
+
+#: views/archive-decklist.twig:209
+msgid "Aucune decklist trouvée"
+msgstr "No decklist found"
+
+#: views/archive-decklist.twig:212
+msgid "Essayez de modifier vos filtres pour voir plus de résultats."
+msgstr "Try changing your filters to see more results."
+
+#: views/archive-decklist.twig:216
+msgid "Voir toutes les decklists"
+msgstr "View all decklists"
+
+#: views/single-decklist.twig:100
 msgid "par"
 msgstr "by"
 
-#: views/single-decklist.twig:86
+#: views/single-decklist.twig:109
 msgid "le"
-msgstr "the"
+msgstr "on"
 
-#: views/single-decklist.twig:113
-msgid "Courbe de Mana"
-msgstr "Mana curve"
-
-#: views/single-decklist.twig:148
+#: views/single-decklist.twig:128
 msgid "Exporter la decklist"
 msgstr "Export decklist"
 
-#: views/single-decklist.twig:161
+#: views/single-decklist.twig:141
 msgid "Decklist"
 msgstr "Decklist"
+
+#: views/single-decklist.twig:199
+msgid "Courbe de Mana"
+msgstr "Mana Curve"
+
+#: views/single-decklist.twig:222
+msgid "Couleurs de Mana"
+msgstr "Mana Colors"
+
+#: views/single-decklist.twig:299
+msgid "Types de Cartes"
+msgstr "Card Types"

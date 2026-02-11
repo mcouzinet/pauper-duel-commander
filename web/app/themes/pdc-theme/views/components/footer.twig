@@ -1,4 +1,4 @@
-<footer class="relative mt-20 border-t border-card-border bg-bg-secondary">
+<footer class="relative border-t border-card-border bg-bg-secondary">
     <div class="container mx-auto px-6 py-12">
         <div class="text-center space-y-4">
             <div class="flex justify-center items-center mb-6">
@@ -9,14 +9,14 @@
                 </a>
             </div>
             <p class="text-text-secondary font-body">
-                {{ __('Un format Commander accessible et compétitif') }}
+                {{ __('Un format Commander accessible et compétitif', 'pdc-theme') }}
             </p>
             <div class="pt-6 border-t border-card-border/50 mt-8">
                 <p class="text-text-muted text-sm">
-                    &copy; {{ "now"|date('Y') }} {{ site.name }}. {{ __('Tous droits réservés.') }}
+                    &copy; {{ "now"|date('Y') }} {{ site.name }}. {{ __('Tous droits réservés.', 'pdc-theme') }}
                 </p>
                 <p class="text-text-muted text-xs mt-2">
-                    {{ __('Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.') }}
+                    {{ __('Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.', 'pdc-theme') }}
                 </p>
             </div>
         </div>

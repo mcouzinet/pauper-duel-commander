@@ -180,6 +180,53 @@ class Deck_Renderer {
     }
 
     /**
+     * Format color name to mana symbol
+     *
+     * Converts color names (e.g., "Blanc", "W", "UB") to Mana Font icons.
+     * Supports multiple colors (e.g., "UB", "RB", "WUBR").
+     *
+     * @param string $color_name Color name or code(s)
+     * @return string HTML formatted mana symbol(s)
+     */
+    public static function format_color_symbol($color_name) {
+        if (empty($color_name)) {
+            return '';
+        }
+
+        // Map color names to mana symbols
+        $color_map = array(
+            'Blanc' => 'W',
+            'Bleu' => 'U',
+            'Noir' => 'B',
+            'Rouge' => 'R',
+            'Vert' => 'G',
+            'Incolore' => 'C',
+        );
+
+        // If it's a full color name, convert it
+        if (isset($color_map[$color_name])) {
+            $color_name = $color_map[$color_name];
+        }
+
+        // Process each character as a color symbol (for "UB", "RB", "WUBR", etc.)
+        $symbols = '';
+        $valid_colors = array('W', 'U', 'B', 'R', 'G', 'C');
+
+        for ($i = 0; $i < strlen($color_name); $i++) {
+            $char = strtoupper($color_name[$i]);
+
+            // Only process valid mana color letters
+            if (in_array($char, $valid_colors)) {
+                $symbol_lower = strtolower($char);
+                $mana_class = sanitize_html_class($symbol_lower);
+                $symbols .= '<i class="ms ms-' . esc_attr($mana_class) . ' ms-cost ms-shadow" style="font-size: 1.25em;" title="' . esc_attr($char) . '"></i>';
+            }
+        }
+
+        return $symbols;
+    }
+
+    /**
      * Calculate deck statistics
      *
      * @param array $cards Enriched cards array

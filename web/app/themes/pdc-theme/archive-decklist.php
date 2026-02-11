@@ -10,12 +10,14 @@
 
 use Timber\Timber;
 
+require_once get_template_directory() . '/inc/class-scryfall-service.php';
+
 $context = Timber::context();
 
 // Get all decklists with pagination
 $args = array(
     'post_type' => 'decklist',
-    'posts_per_page' => 12,
+    'posts_per_page' => 24,
     'paged' => get_query_var('paged') ? get_query_var('paged') : 1,
     'orderby' => 'date',
     'order' => 'DESC',
@@ -63,6 +65,20 @@ foreach ($context['posts'] as $post) {
         'commander_image' => '',
         'commander_name' => '',
     );
+
+    // Get commander data from ACF
+    if (function_exists('get_field')) {
+        $commander_name = get_field('commander', $post->ID);
+        if ($commander_name) {
+            $post_data['commander_name'] = $commander_name;
+
+            // Get commander image from Scryfall
+            $commander_data = Scryfall_Service::get_card_by_name($commander_name);
+            if ($commander_data) {
+                $post_data['commander_image'] = Scryfall_Service::get_card_image($commander_data, 'art_crop');
+            }
+        }
+    }
 
     // Get taxonomies
     $post_data['deck_author'] = wp_get_post_terms($post->ID, 'deck_author');
