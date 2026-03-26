@@ -83,150 +83,155 @@
     </div>
 </section>
 
-{# ---- Top 8 ---- #}
+{# ---- Top 8 + Meta side by side ---- #}
 <section class="py-16 bg-bg-primary">
     <div class="container mx-auto px-6">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-7xl mx-auto">
 
-            <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8 text-center">
-                {{ __('Top 8', 'pdc-theme') }}
-            </h2>
+            <div class="grid lg:grid-cols-2 gap-8 items-start">
 
-            {% if top8 %}
-                <div class="grid sm:grid-cols-2 gap-4">
-                    {% for entry in top8 %}
-                        <div class="magic-card p-5 flex items-center gap-4
-                            {% if entry.place == 1 %}border-yellow-500/40{% elseif entry.place == 2 %}border-slate-400/30{% elseif entry.place == 3 %}border-amber-700/30{% endif %}">
+                {# ===== Left: Top 8 ===== #}
+                <div>
+                    <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
+                        {{ __('Top 8', 'pdc-theme') }}
+                    </h2>
 
-                            {# Place badge #}
-                            <span class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full text-xl font-bold font-heading
-                                {% if entry.place == 1 %}bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500/50
-                                {% elseif entry.place == 2 %}bg-slate-400/20 text-slate-300 border-2 border-slate-400/40
-                                {% elseif entry.place == 3 %}bg-amber-700/20 text-amber-500 border-2 border-amber-700/40
-                                {% else %}bg-bg-secondary text-text-muted border border-magic-gold/10{% endif %}">
-                                {{ entry.place }}
-                            </span>
+                    {% if top8 %}
+                        <div class="space-y-3">
+                            {% for entry in top8 %}
+                                <div class="magic-card p-4 flex items-center gap-4
+                                    {% if entry.place == 1 %}border-yellow-500/40{% elseif entry.place == 2 %}border-slate-400/30{% elseif entry.place == 3 %}border-amber-700/30{% endif %}">
 
-                            {# Commander art_crop #}
-                            {% if entry.commander_image %}
-                                <div class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden shadow-md">
-                                    <img src="{{ entry.commander_image }}"
-                                         alt="{{ entry.commander_name }}"
-                                         class="w-full h-full object-cover"
-                                         loading="lazy">
+                                    {# Place badge #}
+                                    <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full text-lg font-bold font-heading
+                                        {% if entry.place == 1 %}bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500/50
+                                        {% elseif entry.place == 2 %}bg-slate-400/20 text-slate-300 border-2 border-slate-400/40
+                                        {% elseif entry.place == 3 %}bg-amber-700/20 text-amber-500 border-2 border-amber-700/40
+                                        {% else %}bg-bg-secondary text-text-muted border border-magic-gold/10{% endif %}">
+                                        {{ entry.place }}
+                                    </span>
+
+                                    {# Commander art_crop #}
+                                    {% if entry.commander_image %}
+                                        <div class="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden shadow-md">
+                                            <img src="{{ entry.commander_image }}"
+                                                 alt="{{ entry.commander_name }}"
+                                                 class="w-full h-full object-cover"
+                                                 loading="lazy">
+                                        </div>
+                                    {% else %}
+                                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-bg-secondary border border-magic-gold/10 flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-magic-gold/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Info #}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-text-primary truncate">{{ entry.player_name }}</p>
+                                        <p class="text-sm text-text-muted font-mono truncate">{{ entry.commander_name }}</p>
+                                        {% if entry.score %}
+                                            <p class="text-xs text-text-secondary mt-0.5">{{ entry.score }}</p>
+                                        {% endif %}
+                                    </div>
+
+                                    {# Decklist link #}
+                                    {% if entry.decklist_url %}
+                                        <a href="{{ entry.decklist_url }}"
+                                           class="flex-shrink-0 px-3 py-1.5 bg-brand-orange/10 border border-brand-orange/30 rounded-lg text-xs font-semibold text-brand-orange hover:bg-brand-orange/20 transition-colors">
+                                            {{ __('Decklist', 'pdc-theme') }}
+                                        </a>
+                                    {% else %}
+                                        <span class="flex-shrink-0 px-3 py-1.5 bg-bg-secondary border border-magic-gold/10 rounded-lg text-xs text-text-muted">
+                                            {{ __('Pas de decklist', 'pdc-theme') }}
+                                        </span>
+                                    {% endif %}
+
                                 </div>
-                            {% else %}
-                                <div class="flex-shrink-0 w-16 h-16 rounded-lg bg-bg-secondary border border-magic-gold/10 flex items-center justify-center">
-                                    <svg class="w-7 h-7 text-magic-gold/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
-                                </div>
-                            {% endif %}
-
-                            {# Info #}
-                            <div class="flex-1 min-w-0">
-                                <p class="font-semibold text-text-primary truncate">{{ entry.player_name }}</p>
-                                <p class="text-sm text-text-muted font-mono truncate">{{ entry.commander_name }}</p>
-                                {% if entry.score %}
-                                    <p class="text-xs text-text-secondary mt-0.5">{{ entry.score }}</p>
-                                {% endif %}
-                            </div>
-
-                            {# Decklist link #}
-                            {% if entry.decklist_url %}
-                                <a href="{{ entry.decklist_url }}"
-                                   class="flex-shrink-0 px-3 py-1.5 bg-brand-orange/10 border border-brand-orange/30 rounded-lg text-xs font-semibold text-brand-orange hover:bg-brand-orange/20 transition-colors">
-                                    {{ __('Decklist', 'pdc-theme') }}
-                                </a>
-                            {% else %}
-                                <span class="flex-shrink-0 px-3 py-1.5 bg-bg-secondary border border-magic-gold/10 rounded-lg text-xs text-text-muted">
-                                    {{ __('Pas de decklist', 'pdc-theme') }}
-                                </span>
-                            {% endif %}
-
+                            {% endfor %}
                         </div>
-                    {% endfor %}
+
+                    {% else %}
+                        <p class="text-text-muted italic">{{ __('Résultats non disponibles.', 'pdc-theme') }}</p>
+                    {% endif %}
                 </div>
 
-            {% else %}
-                <p class="text-center text-text-muted italic">{{ __('Résultats non disponibles.', 'pdc-theme') }}</p>
-            {% endif %}
+                {# ===== Right: Meta ===== #}
+                <div>
+                    <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
+                        {{ __('Méta du tournoi', 'pdc-theme') }}
+                    </h2>
 
-        </div>
-    </div>
-</section>
+                    {% if has_meta %}
 
-{# ---- Meta ---- #}
-{% if has_meta %}
-<section class="py-16 bg-bg-secondary/50 border-t border-magic-gold/10">
-    <div class="container mx-auto px-6">
-        <div class="max-w-5xl mx-auto">
-
-            <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8 text-center">
-                {{ __('Méta du tournoi', 'pdc-theme') }}
-            </h2>
-
-            {# Color distribution #}
-            {% if color_counts %}
-                <div class="mb-10">
-                    <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">
-                        {{ __('Répartition des couleurs', 'pdc-theme') }}
-                    </h3>
-                    <div class="flex flex-wrap gap-3">
-                        {% set color_labels = {'W': 'Blanc', 'U': 'Bleu', 'B': 'Noir', 'R': 'Rouge', 'G': 'Vert', 'C': 'Incolore'} %}
-                        {% for code, count in color_counts %}
-                            <div class="flex items-center gap-2 px-4 py-2 magic-card">
-                                {{ function('Deck_Renderer::format_color_symbol', code)|raw }}
-                                <span class="text-sm text-text-secondary">{{ color_labels[code] ?? code }}</span>
-                                <span class="text-sm font-bold text-text-primary">{{ count }}</span>
+                        {# Color distribution #}
+                        {% if color_counts %}
+                            <div class="mb-8">
+                                <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">
+                                    {{ __('Répartition des couleurs', 'pdc-theme') }}
+                                </h3>
+                                <div class="flex flex-wrap gap-3">
+                                    {% set color_labels = {'W': 'Blanc', 'U': 'Bleu', 'B': 'Noir', 'R': 'Rouge', 'G': 'Vert', 'C': 'Incolore'} %}
+                                    {% for code, count in color_counts %}
+                                        <div class="flex items-center gap-2 px-4 py-2 magic-card">
+                                            {{ function('Deck_Renderer::format_color_symbol', code)|raw }}
+                                            <span class="text-sm text-text-secondary">{{ color_labels[code] ?? code }}</span>
+                                            <span class="text-sm font-bold text-text-primary">{{ count }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Commander distribution #}
-            <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">
-                {{ __('Généraux joués', 'pdc-theme') }}
-            </h3>
-
-            <div class="space-y-3">
-                {% for commander in meta_commanders %}
-                    <div class="flex items-center gap-4">
-
-                        {# Commander image #}
-                        {% if commander.image %}
-                            <div class="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden shadow-md">
-                                <img src="{{ commander.image }}" alt="{{ commander.name }}"
-                                     class="w-full h-full object-cover" loading="lazy">
-                            </div>
-                        {% else %}
-                            <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-bg-secondary border border-magic-gold/10"></div>
                         {% endif %}
 
-                        {# Bar #}
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-baseline justify-between mb-1">
-                                <span class="text-sm font-mono text-text-primary truncate">{{ commander.name }}</span>
-                                <span class="flex-shrink-0 ml-3 text-sm font-semibold text-text-secondary">
-                                    {{ commander.count }}
-                                    <span class="text-xs text-text-muted font-normal">/ {{ player_count }}</span>
-                                    <span class="ml-1 text-xs text-magic-gold">({{ commander.percentage }}%)</span>
-                                </span>
-                            </div>
-                            <div class="h-2 bg-bg-primary rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-brand-orange to-magic-gold rounded-full transition-all"
-                                     style="width: {{ commander.percentage }}%"></div>
-                            </div>
+                        {# Commander distribution #}
+                        <h3 class="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4">
+                            {{ __('Généraux joués', 'pdc-theme') }}
+                        </h3>
+
+                        <div class="space-y-3">
+                            {% for commander in meta_commanders %}
+                                <div class="flex items-center gap-4">
+
+                                    {# Commander image #}
+                                    {% if commander.image %}
+                                        <div class="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden shadow-md">
+                                            <img src="{{ commander.image }}" alt="{{ commander.name }}"
+                                                 class="w-full h-full object-cover" loading="lazy">
+                                        </div>
+                                    {% else %}
+                                        <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-bg-secondary border border-magic-gold/10"></div>
+                                    {% endif %}
+
+                                    {# Bar #}
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-baseline justify-between mb-1">
+                                            <span class="text-sm font-mono text-text-primary truncate">{{ commander.name }}</span>
+                                            <span class="flex-shrink-0 ml-3 text-sm font-semibold text-text-secondary">
+                                                {{ commander.count }}
+                                                <span class="text-xs text-text-muted font-normal">/ {{ player_count }}</span>
+                                                <span class="ml-1 text-xs text-magic-gold">({{ commander.percentage }}%)</span>
+                                            </span>
+                                        </div>
+                                        <div class="h-2 bg-bg-primary rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-brand-orange to-magic-gold rounded-full transition-all"
+                                                 style="width: {{ commander.percentage }}%"></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            {% endfor %}
                         </div>
 
-                    </div>
-                {% endfor %}
-            </div>
+                    {% else %}
+                        <p class="text-text-muted italic">{{ __('Données de méta non disponibles pour ce tournoi.', 'pdc-theme') }}</p>
+                    {% endif %}
+                </div>
+
+            </div>{# /grid #}
 
         </div>
     </div>
 </section>
-{% endif %}
 
 {% endblock %}
