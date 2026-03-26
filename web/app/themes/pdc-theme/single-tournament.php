@@ -101,17 +101,28 @@ if (!empty($top8) && $top8[0]['place'] === 1 && !empty($top8[0]['commander_image
     $hero_image = $top8[0]['commander_image'];
 }
 
-$context['post']             = $post;
-$context['date_formatted']   = $date_formatted;
-$context['location']         = $fields['tournament_location'] ?? '';
-$context['city']             = $fields['tournament_city'] ?? '';
-$context['player_count']     = (int) ($fields['tournament_player_count'] ?? 0);
-$context['signup_url']       = $fields['tournament_signup_url'] ?? '';
-$context['top8']             = $top8;
-$context['meta_commanders']  = $meta_commanders;
-$context['color_counts']     = pdc_sort_color_counts($color_counts);
-$context['hero_image']       = $hero_image;
-$context['has_meta']         = !empty($meta_commanders);
-$context['archive_url']      = get_post_type_archive_link('tournament');
+// Color identity meta: group commanders by their exact color identity
+$color_identity_counts = array();
+foreach ($meta_commanders as $cmd) {
+    $colors = $cmd['colors'];
+    sort($colors);
+    $identity_key = !empty($colors) ? implode('', $colors) : 'C';
+    $color_identity_counts[$identity_key] = ($color_identity_counts[$identity_key] ?? 0) + $cmd['count'];
+}
+arsort($color_identity_counts);
+
+$context['post']                  = $post;
+$context['date_formatted']        = $date_formatted;
+$context['location']              = $fields['tournament_location'] ?? '';
+$context['city']                  = $fields['tournament_city'] ?? '';
+$context['player_count']          = (int) ($fields['tournament_player_count'] ?? 0);
+$context['signup_url']            = $fields['tournament_signup_url'] ?? '';
+$context['top8']                  = $top8;
+$context['meta_commanders']       = $meta_commanders;
+$context['color_counts']          = pdc_sort_color_counts($color_counts);
+$context['color_identity_counts'] = $color_identity_counts;
+$context['hero_image']            = $hero_image;
+$context['has_meta']              = !empty($meta_commanders);
+$context['archive_url']           = get_post_type_archive_link('tournament');
 
 Timber::render('single-tournament.twig', $context);
