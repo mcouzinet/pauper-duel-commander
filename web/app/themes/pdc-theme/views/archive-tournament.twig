@@ -133,19 +133,13 @@
                     {{ __('Résultats des Tournois', 'pdc-theme') }}
                 </h2>
 
-                <div class="accordion space-y-4" data-accordion-group>
+                <div class="space-y-4">
 
                     {% for t in past_tournaments %}
-                    <div class="accordion-item magic-card overflow-hidden transition-all duration-300"
-                         data-accordion-item>
+                    <a href="{{ t.link }}"
+                       class="magic-card block p-6 group transition-all duration-300 hover:border-magic-gold/40">
 
-                        {# ---- Accordion trigger ---- #}
-                        <button class="accordion-trigger w-full text-left p-6 flex items-center gap-4 group"
-                                data-accordion-trigger
-                                aria-expanded="false"
-                                aria-controls="tournament-content-{{ loop.index0 }}"
-                                id="tournament-trigger-{{ loop.index0 }}">
-
+                        <div class="flex items-center gap-4">
                             {# Title + meta info #}
                             <span class="flex-1 min-w-0">
                                 <span class="block text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors truncate">
@@ -166,183 +160,18 @@
                                 </span>
                             </span>
 
-                            {# Chevron #}
-                            <div class="accordion-icon flex-shrink-0 w-6 h-6 text-magic-gold transition-transform duration-300"
-                                 data-accordion-icon aria-hidden="true">
+                            {# Arrow #}
+                            <div class="flex-shrink-0 w-6 h-6 text-magic-gold group-hover:translate-x-1 transition-transform duration-300">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
                                 </svg>
                             </div>
-                        </button>
+                        </div>
 
-                        {# ---- Accordion content ---- #}
-                        <div class="accordion-content overflow-hidden"
-                             data-accordion-content
-                             id="tournament-content-{{ loop.index0 }}"
-                             aria-labelledby="tournament-trigger-{{ loop.index0 }}"
-                             role="region"
-                             style="max-height: 0;">
-                            <div class="accordion-inner px-6 pb-8 pt-2">
-
-                                <div class="grid lg:grid-cols-2 gap-8">
-
-                                    {# ---- Top 8 ---- #}
-                                    <div>
-                                        <h3 class="text-lg font-heading font-bold text-text-primary mb-4">
-                                            {{ __('Top 8', 'pdc-theme') }}
-                                        </h3>
-
-                                        {% if t.top8 %}
-                                            <div class="space-y-2">
-                                                {% for entry in t.top8 %}
-                                                    <div class="flex items-center gap-3 p-3 bg-bg-secondary/50 rounded-lg border border-magic-gold/5 hover:border-magic-gold/20 transition-colors">
-
-                                                        {# Place badge #}
-                                                        <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold
-                                                            {% if entry.place == 1 %}bg-yellow-500/20 text-yellow-400 border border-yellow-500/30
-                                                            {% elseif entry.place == 2 %}bg-slate-400/20 text-slate-300 border border-slate-400/30
-                                                            {% elseif entry.place == 3 %}bg-amber-700/20 text-amber-500 border border-amber-700/30
-                                                            {% else %}bg-bg-primary text-text-muted border border-magic-gold/10{% endif %}">
-                                                            {{ entry.place }}
-                                                        </span>
-
-                                                        {# Commander art_crop thumbnail #}
-                                                        {% if entry.commander_image %}
-                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden bg-bg-primary">
-                                                                <img src="{{ entry.commander_image }}"
-                                                                     alt="{{ entry.commander_name }}"
-                                                                     class="w-full h-full object-cover"
-                                                                     loading="lazy">
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-bg-primary border border-magic-gold/10 flex items-center justify-center">
-                                                                <svg class="w-5 h-5 text-magic-gold/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                                                </svg>
-                                                            </div>
-                                                        {% endif %}
-
-                                                        {# Player + commander #}
-                                                        <div class="flex-1 min-w-0">
-                                                            <p class="text-sm font-semibold text-text-primary truncate">{{ entry.player_name }}</p>
-                                                            <p class="text-xs text-text-muted truncate font-mono">{{ entry.commander_name }}</p>
-                                                        </div>
-
-                                                        {# Score + decklist link #}
-                                                        <div class="flex-shrink-0 flex items-center gap-2">
-                                                            {% if entry.score %}
-                                                                <span class="text-xs text-text-secondary font-mono">{{ entry.score }}</span>
-                                                            {% endif %}
-                                                            {% if entry.decklist_url %}
-                                                                <a href="{{ entry.decklist_url }}"
-                                                                   class="text-xs px-2 py-0.5 bg-brand-orange/10 border border-brand-orange/30 rounded text-brand-orange hover:bg-brand-orange/20 transition-colors whitespace-nowrap"
-                                                                   title="{{ __('Voir la decklist', 'pdc-theme') }}">
-                                                                    {{ __('Decklist', 'pdc-theme') }}
-                                                                </a>
-                                                            {% endif %}
-                                                        </div>
-
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% else %}
-                                            <p class="text-sm text-text-muted italic">{{ __('Résultats non disponibles.', 'pdc-theme') }}</p>
-                                        {% endif %}
-                                    </div>
-
-                                    {# ---- Meta ---- #}
-                                    <div>
-                                        <h3 class="text-lg font-heading font-bold text-text-primary mb-4">
-                                            {{ __('Méta du tournoi', 'pdc-theme') }}
-                                        </h3>
-
-                                        {% if t.has_meta %}
-
-                                            {# Color distribution #}
-                                            {% if t.color_counts %}
-                                                <div class="flex flex-wrap gap-2 mb-5">
-                                                    {% for code, count in t.color_counts %}
-                                                        <span class="flex items-center gap-1.5 px-2 py-1 bg-bg-secondary rounded-lg border border-magic-gold/10 text-xs text-text-secondary">
-                                                            {{ function('Deck_Renderer::format_color_symbol', code)|raw }}
-                                                            <span class="font-semibold text-text-primary">{{ count }}</span>
-                                                        </span>
-                                                    {% endfor %}
-                                                </div>
-                                            {% endif %}
-
-                                            {# Commander list with mana symbols #}
-                                            <div class="space-y-2.5">
-                                                {% for commander in t.meta_commanders|slice(0, 10) %}
-                                                    <div class="flex items-center gap-3">
-                                                        {% if commander.image %}
-                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden bg-bg-primary ring-1 ring-white/10">
-                                                                <img src="{{ commander.image }}" alt="{{ commander.name }}"
-                                                                     class="w-full h-full object-cover" loading="lazy">
-                                                            </div>
-                                                        {% else %}
-                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary"></div>
-                                                        {% endif %}
-                                                        <div class="flex-1 min-w-0">
-                                                            <div class="flex items-center justify-between">
-                                                                <span class="text-xs font-mono text-text-secondary truncate">{{ commander.name }}</span>
-                                                                <span class="flex-shrink-0 ml-2 text-xs text-text-muted">
-                                                                    {{ commander.count }}× ({{ commander.percentage }}%)
-                                                                </span>
-                                                            </div>
-                                                            <div class="flex items-center gap-0.5 mt-0.5">
-                                                                {% if commander.colors|length > 0 %}
-                                                                    {% for color in commander.colors %}
-                                                                        <i class="ms ms-{{ color|lower }} ms-cost ms-shadow" title="{{ color }}"></i>
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                    <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                                {% if t.meta_commanders|length > 10 %}
-                                                    <p class="text-xs text-text-muted italic pt-1">
-                                                        {{ __('… et', 'pdc-theme') }} {{ t.meta_commanders|length - 10 }} {{ __('autres généraux', 'pdc-theme') }}.
-                                                        <a href="{{ t.link }}" class="text-brand-orange hover:underline">{{ __('Voir tout', 'pdc-theme') }}</a>
-                                                    </p>
-                                                {% endif %}
-                                            </div>
-
-                                        {% else %}
-                                            <p class="text-sm text-text-muted italic">{{ __('Données de méta non disponibles pour ce tournoi.', 'pdc-theme') }}</p>
-                                        {% endif %}
-                                    </div>
-
-                                </div>{# /grid #}
-
-                                {# Link to full page + optional signup #}
-                                <div class="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-magic-gold/10">
-                                    <a href="{{ t.link }}"
-                                       class="inline-flex items-center gap-2 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
-                                        {{ __('Voir la page complète', 'pdc-theme') }}
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                                        </svg>
-                                    </a>
-                                    {% if t.signup_url %}
-                                        <a href="{{ t.signup_url }}" target="_blank" rel="noopener noreferrer"
-                                           class="inline-flex items-center gap-2 text-sm font-semibold text-text-secondary hover:text-text-primary border border-magic-gold/20 hover:border-magic-gold/40 px-3 py-1 rounded-lg transition-colors">
-                                            {{ __("Lien d'inscription", 'pdc-theme') }}
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                            </svg>
-                                        </a>
-                                    {% endif %}
-                                </div>
-
-                            </div>{# /accordion-inner #}
-                        </div>{# /accordion-content #}
-
-                    </div>{# /accordion-item #}
+                    </a>
                     {% endfor %}
 
-                </div>{# /accordion #}
+                </div>
 
             {% else %}
 
