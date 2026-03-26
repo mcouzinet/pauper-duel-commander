@@ -154,7 +154,7 @@
 
   /* Winner card */
   .tournament-winner {
-    @apply p-3 rounded-lg;
+    @apply p-3 rounded-lg overflow-hidden;
     background: linear-gradient(135deg, rgba(234, 179, 8, 0.08) 0%, rgba(234, 179, 8, 0.02) 100%);
     border: 1px solid rgba(234, 179, 8, 0.15);
   }
@@ -183,7 +183,7 @@
   }
 
   .tournament-row {
-    @apply flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg transition-colors duration-200;
+    @apply flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg overflow-hidden transition-colors duration-200;
     @apply bg-bg-secondary/40 hover:bg-bg-secondary/70;
     border: 1px solid transparent;
   }
@@ -194,13 +194,13 @@
 
   /* Meta sidebar panels */
   .tournament-meta-panel {
-    @apply p-4 rounded-lg bg-bg-secondary;
+    @apply p-4 rounded-lg bg-bg-secondary overflow-hidden;
     border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   /* Commander row in meta */
   .tournament-commander-row {
-    @apply flex items-center gap-2;
+    @apply flex items-center gap-2 overflow-hidden;
   }
 
   /* Linkable rows */

@@ -16,7 +16,6 @@
 {% extends "layouts/base.twig" %}
 
 {% block content %}
-<div class="overflow-x-hidden">
 
 {# ---- Hero ---- #}
 <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
@@ -223,7 +222,7 @@
             <div class="grid lg:grid-cols-5 gap-6 lg:gap-8 items-start">
 
                 {# ===== Left: Commander ranking (3 cols) ===== #}
-                <div class="lg:col-span-3">
+                <div class="lg:col-span-3 min-w-0">
                     <h3 class="text-lg sm:text-xl md:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide mb-4 flex items-center gap-2">
                         <span class="w-1 h-6 bg-brand-orange rounded-full"></span>
                         {{ __('Généraux les plus joués', 'pdc-theme') }}
@@ -296,7 +295,7 @@
                 </div>
 
                 {# ===== Right: Color identity + Color distribution (2 cols) ===== #}
-                <div class="lg:col-span-2 space-y-6 sm:space-y-8">
+                <div class="lg:col-span-2 min-w-0 space-y-6 sm:space-y-8">
 
                     {# --- Color Identity Breakdown --- #}
                     {% if global_meta.color_identity_counts %}
@@ -453,5 +452,4 @@
 </section>
 {% endif %}
 
-</div>{# /overflow-x-hidden #}
 {% endblock %}
