@@ -148,4 +148,64 @@ $context['upcoming_tournaments'] = $upcoming;
 $context['past_tournaments']     = $past;
 $context['tournaments']          = $tournaments;
 
+// ----------------------------------------------------------------
+// Global meta: aggregate commander counts across ALL past tournaments
+// ----------------------------------------------------------------
+$global_commander_counts = array();
+$global_total_players    = 0;
+$global_color_counts     = array();
+$global_tournament_count = count($past);
+
+foreach ($past as $t) {
+    if (empty($t['meta_commanders'])) {
+        continue;
+    }
+    foreach ($t['meta_commanders'] as $cmd) {
+        $name  = $cmd['name'];
+        $count = $cmd['count'];
+        $global_commander_counts[$name] = ($global_commander_counts[$name] ?? 0) + $count;
+        $global_total_players += $count;
+    }
+}
+
+// Sort by count desc
+arsort($global_commander_counts);
+
+// Resolve Scryfall data for global commanders
+$global_expanded = pdc_expand_commander_names(array_keys($global_commander_counts));
+$global_unique   = array_values(array_unique(array_filter($global_expanded)));
+$global_cards    = !empty($global_unique)
+    ? Scryfall_Service::get_cards_by_names($global_unique)
+    : array();
+
+$global_meta_commanders = array();
+foreach ($global_commander_counts as $name => $count) {
+    $card_data = pdc_resolve_commander_card($name, $global_cards);
+
+    // Accumulate global color distribution
+    if ($card_data && !empty($card_data->color_identity)) {
+        foreach ($card_data->color_identity as $color) {
+            $global_color_counts[$color] = ($global_color_counts[$color] ?? 0) + $count;
+        }
+    } elseif ($card_data) {
+        $global_color_counts['C'] = ($global_color_counts['C'] ?? 0) + $count;
+    }
+
+    $global_meta_commanders[] = array(
+        'name'       => $name,
+        'count'      => $count,
+        'percentage' => $global_total_players > 0 ? round($count / $global_total_players * 100) : 0,
+        'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
+    );
+}
+
+$context['global_meta'] = array(
+    'commanders'       => $global_meta_commanders,
+    'color_counts'     => pdc_sort_color_counts($global_color_counts),
+    'total_players'    => $global_total_players,
+    'tournament_count' => $global_tournament_count,
+    'has_data'         => !empty($global_meta_commanders),
+);
+
 Timber::render('archive-tournament.twig', $context);
