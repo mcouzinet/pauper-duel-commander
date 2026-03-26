@@ -134,13 +134,13 @@ add_action('acf/init', function() {
             array(
                 'key'           => 'field_tournament_meta_list',
                 'label'         => 'Méta (généraux joués)',
-                'instructions'  => 'Collez la liste des généraux joués, un par ligne. Nombre optionnel devant (défaut = 1).<br>Exemples :<br><code>2 Strix</code> → 2 joueurs avec Strix<br><code>Arabella</code> → 1 joueur avec Arabella<br><code>Dargo / Black</code> → 1 joueur avec Dargo / Black',
+                'instructions'  => 'Collez la liste des généraux joués, un par ligne. Nombre optionnel devant (défaut = 1).<br>Pour les partners/backgrounds, séparez avec <code>//</code> ou <code>/</code>.<br>Exemples :<br><code>2 Strix</code> → 2 joueurs avec Strix<br><code>Arabella</code> → 1 joueur avec Arabella<br><code>Gut, True Soul Zealot // Agent of the Iron Throne</code> → partner + background',
                 'name'          => 'tournament_meta_list',
                 'type'          => 'textarea',
                 'rows'          => 15,
                 'new_lines'     => '',
                 'required'      => 0,
-                'placeholder'   => "1 Arabella\n2 Strix\nCormella Baleful\nDargo / Black",
+                'placeholder'   => "1 Arabella\n2 Strix\nCormella Baleful\nGut, True Soul Zealot // Agent of the Iron Throne",
             ),
         ),
         'location' => array(

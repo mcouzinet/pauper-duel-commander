@@ -457,26 +457,46 @@ function pdc_parse_meta_list($text) {
 }
 
 /**
+ * Split a commander name into its parts if it contains a partner separator.
+ *
+ * Accepts " // " or " / " as separator between partner / background names.
+ * Returns an array of individual card names, or a single-element array
+ * if no separator is found.
+ *
+ * @param string $name Commander name (may contain separator).
+ * @return array Individual card names.
+ */
+function pdc_split_commander_name($name) {
+    // Try " // " first (canonical MTG notation)
+    if (strpos($name, '//') !== false) {
+        $parts = array_map('trim', explode('//', $name));
+        return array_values(array_filter($parts, fn($p) => $p !== ''));
+    }
+
+    // Try " / " (common shorthand) — require spaces around slash
+    // to avoid splitting card names that contain "/" without spaces
+    if (preg_match('/ \/ /', $name)) {
+        $parts = array_map('trim', preg_split('/ \/ /', $name));
+        return array_values(array_filter($parts, fn($p) => $p !== ''));
+    }
+
+    return array($name);
+}
+
+/**
  * Expand commander names for Scryfall lookup.
  *
- * Splits partner / background pairs separated by " // " into individual
- * card names so each can be looked up on Scryfall independently.
+ * Splits partner / background pairs into individual card names
+ * so each can be looked up on Scryfall independently.
  *
- * @param array $names Commander names (may contain " // " pairs).
+ * @param array $names Commander names (may contain partner pairs).
  * @return array Flat array of individual card names.
  */
 function pdc_expand_commander_names(array $names) {
     $expanded = array();
     foreach ($names as $name) {
-        if (strpos($name, '//') !== false) {
-            foreach (explode('//', $name) as $part) {
-                $part = trim($part);
-                if ($part !== '') {
-                    $expanded[] = $part;
-                }
-            }
-        } else {
-            $expanded[] = $name;
+        foreach (pdc_split_commander_name($name) as $part) {
+            $expanded[] = $part;
         }
     }
     return $expanded;
@@ -486,7 +506,7 @@ function pdc_expand_commander_names(array $names) {
  * Resolve Scryfall card data for a commander name that may be a partner pair.
  *
  * For single commanders, returns the card data directly from the map.
- * For " // " pairs (partner / background), returns an object with:
+ * For partner pairs, returns an object with:
  *   - color_identity merged from both cards
  *   - image from the first card
  *
@@ -495,13 +515,14 @@ function pdc_expand_commander_names(array $names) {
  * @return object|null Resolved card data or null if no card found.
  */
 function pdc_resolve_commander_card($name, array $cards_map) {
-    // Single commander (no partner)
-    if (strpos($name, '//') === false) {
-        return $cards_map[strtolower($name)] ?? null;
+    $parts = pdc_split_commander_name($name);
+
+    // Single commander
+    if (count($parts) === 1) {
+        return $cards_map[strtolower($parts[0])] ?? null;
     }
 
-    // Partner pair: split and merge
-    $parts = array_map('trim', explode('//', $name));
+    // Partner pair: lookup each part and merge
     $cards = array();
     foreach ($parts as $part) {
         $card = $cards_map[strtolower($part)] ?? null;
