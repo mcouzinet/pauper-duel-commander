@@ -233,6 +233,7 @@ require_once get_template_directory() . '/inc/class-scryfall-service.php';
 require_once get_template_directory() . '/inc/class-decklist-parser.php';
 require_once get_template_directory() . '/inc/class-deck-renderer.php';
 require_once get_template_directory() . '/inc/class-deck-validator.php';
+require_once get_template_directory() . '/inc/tournament-fields.php';
 
 /**
  * Wrapper function for Scryfall API (for backward compatibility with M07 module)
@@ -410,3 +411,38 @@ function pdc_invalidate_ban_list_on_save($post_id) {
     Deck_Validator::invalidate_ban_list_cache();
 }
 add_action('save_post', 'pdc_invalidate_ban_list_on_save');
+
+/**
+ * Register Tournament Custom Post Type
+ */
+function pdc_register_tournament_cpt() {
+    register_post_type('tournament', array(
+        'labels' => array(
+            'name'               => __('Tournois', 'pdc-theme'),
+            'singular_name'      => __('Tournoi', 'pdc-theme'),
+            'menu_name'          => __('Tournois', 'pdc-theme'),
+            'add_new_item'       => __('Ajouter un tournoi', 'pdc-theme'),
+            'edit_item'          => __('Modifier le tournoi', 'pdc-theme'),
+            'view_item'          => __('Voir le tournoi', 'pdc-theme'),
+            'search_items'       => __('Rechercher des tournois', 'pdc-theme'),
+            'not_found'          => __('Aucun tournoi trouvé', 'pdc-theme'),
+            'not_found_in_trash' => __('Aucun tournoi dans la corbeille', 'pdc-theme'),
+        ),
+        'public'            => true,
+        'has_archive'       => true,
+        'publicly_queryable'=> true,
+        'show_ui'           => true,
+        'show_in_menu'      => true,
+        'show_in_nav_menus' => true,
+        'show_in_rest'      => false,
+        'menu_position'     => 6,
+        'menu_icon'         => 'dashicons-awards',
+        'supports'          => array('title'),
+        'rewrite'           => array(
+            'slug'       => 'tournoi',
+            'with_front' => false,
+        ),
+        'capability_type'   => 'post',
+    ));
+}
+add_action('init', 'pdc_register_tournament_cpt');
