@@ -15,6 +15,10 @@ $context = Timber::context();
 $post    = Timber::get_post();
 $fields  = get_fields($post->ID) ?: array();
 
+// Parse meta list textarea into commander counts
+$meta_raw        = $fields['tournament_meta_list'] ?? '';
+$commander_counts = pdc_parse_meta_list($meta_raw);
+
 // Collect all unique commander names for bulk Scryfall fetch
 $commander_names = array();
 foreach (($fields['top8'] ?? array()) as $entry) {
@@ -22,10 +26,8 @@ foreach (($fields['top8'] ?? array()) as $entry) {
         $commander_names[] = $entry['commander_name'];
     }
 }
-foreach (($fields['participants'] ?? array()) as $p) {
-    if (!empty($p['commander_name'])) {
-        $commander_names[] = $p['commander_name'];
-    }
+foreach (array_keys($commander_counts) as $name) {
+    $commander_names[] = $name;
 }
 
 $unique_names = array_values(array_unique(array_filter($commander_names)));
@@ -53,29 +55,21 @@ foreach (($fields['top8'] ?? array()) as $entry) {
 usort($top8, fn($a, $b) => $a['place'] - $b['place']);
 
 // ----------------------------------------------------------------
-// Compute meta stats
+// Compute meta stats from parsed commander_counts
 // ----------------------------------------------------------------
-$commander_counts   = array();
 $color_counts       = array();
-$total_participants = count(array_filter($fields['participants'] ?? array(), fn($p) => !empty($p['commander_name'])));
+$total_participants = array_sum($commander_counts);
 
-foreach (($fields['participants'] ?? array()) as $p) {
-    $name = trim($p['commander_name'] ?? '');
-    if (empty($name)) {
-        continue;
-    }
-    $commander_counts[$name] = ($commander_counts[$name] ?? 0) + 1;
-
+foreach ($commander_counts as $name => $count) {
     $card_data = $cards_map[strtolower($name)] ?? null;
     if ($card_data && !empty($card_data->color_identity)) {
         foreach ($card_data->color_identity as $color) {
-            $color_counts[$color] = ($color_counts[$color] ?? 0) + 1;
+            $color_counts[$color] = ($color_counts[$color] ?? 0) + $count;
         }
     } elseif ($card_data) {
-        $color_counts['C'] = ($color_counts['C'] ?? 0) + 1;
+        $color_counts['C'] = ($color_counts['C'] ?? 0) + $count;
     }
 }
-arsort($commander_counts);
 
 $meta_commanders = array();
 foreach ($commander_counts as $name => $count) {

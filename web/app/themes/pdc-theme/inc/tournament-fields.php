@@ -132,31 +132,15 @@ add_action('acf/init', function() {
             // ----------------------------------------------------------------
 
             array(
-                'key'           => 'field_tournament_participants',
-                'label'         => 'Participants (méta)',
-                'instructions'  => 'Listez tous les participants avec leur général pour calculer la méta du tournoi.',
-                'name'          => 'participants',
-                'type'          => 'repeater',
-                'layout'        => 'table',
-                'button_label'  => 'Ajouter un participant',
-                'sub_fields'    => array(
-                    array(
-                        'key'          => 'field_participant_player_name',
-                        'label'        => 'Joueur',
-                        'name'         => 'player_name',
-                        'type'         => 'text',
-                        'column_width' => '40',
-                    ),
-                    array(
-                        'key'          => 'field_participant_commander_name',
-                        'label'        => 'Général (nom Scryfall exact)',
-                        'name'         => 'commander_name',
-                        'type'         => 'text',
-                        'required'     => 1,
-                        'placeholder'  => 'Ex: Isamaru, Hound of Konda',
-                        'column_width' => '60',
-                    ),
-                ),
+                'key'           => 'field_tournament_meta_list',
+                'label'         => 'Méta (généraux joués)',
+                'instructions'  => 'Collez la liste des généraux joués, un par ligne. Nombre optionnel devant (défaut = 1).<br>Exemples :<br><code>2 Strix</code> → 2 joueurs avec Strix<br><code>Arabella</code> → 1 joueur avec Arabella<br><code>Dargo / Black</code> → 1 joueur avec Dargo / Black',
+                'name'          => 'tournament_meta_list',
+                'type'          => 'textarea',
+                'rows'          => 15,
+                'new_lines'     => '',
+                'required'      => 0,
+                'placeholder'   => "1 Arabella\n2 Strix\nCormella Baleful\nDargo / Black",
             ),
         ),
         'location' => array(

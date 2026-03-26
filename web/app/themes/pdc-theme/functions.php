@@ -413,6 +413,50 @@ function pdc_invalidate_ban_list_on_save($post_id) {
 add_action('save_post', 'pdc_invalidate_ban_list_on_save');
 
 /**
+ * Parse tournament meta list textarea into commander counts.
+ *
+ * Accepts a text block with one commander per line.
+ * Optional number prefix = quantity (default 1).
+ *
+ * Format examples:
+ *   "2 Strix"           → Strix × 2
+ *   "Arabella"           → Arabella × 1
+ *   "1 Dargo / Black"    → Dargo / Black × 1
+ *
+ * @param string $text Raw textarea content.
+ * @return array [ 'Commander Name' => count, … ] sorted by count desc.
+ */
+function pdc_parse_meta_list($text) {
+    $counts = array();
+    $lines  = preg_split('/\r\n|\r|\n/', trim($text));
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '') {
+            continue;
+        }
+
+        // Match optional leading number (digits) followed by space(s), then the commander name
+        if (preg_match('/^(\d+)\s+(.+)$/', $line, $m)) {
+            $qty  = (int) $m[1];
+            $name = trim($m[2]);
+        } else {
+            $qty  = 1;
+            $name = $line;
+        }
+
+        if ($name === '' || $qty < 1) {
+            continue;
+        }
+
+        $counts[$name] = ($counts[$name] ?? 0) + $qty;
+    }
+
+    arsort($counts);
+    return $counts;
+}
+
+/**
  * Register Tournament Custom Post Type
  */
 function pdc_register_tournament_cpt() {
