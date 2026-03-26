@@ -356,14 +356,80 @@ class Scryfall_Service {
                 $found[strtolower($card->name)] = $card;
             }
 
-            // Map each requested name to its result (null if not found)
+            // Map each requested name to its result; try fuzzy search for missing ones
             foreach ($batch as $name) {
                 $lower = strtolower($name);
-                $result[$lower] = $found[$lower] ?? null;
+                if (isset($found[$lower])) {
+                    $result[$lower] = $found[$lower];
+                } else {
+                    // Fallback: search by name (supports translated / non-English names)
+                    $card = self::search_card_by_name($name);
+                    if ($card) {
+                        set_transient('scryfall_name_' . sanitize_key($name), $card, self::CACHE_DURATION);
+                    }
+                    $result[$lower] = $card;
+                }
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Search for a card by name, supporting non-English / translated names.
+     *
+     * Uses the Scryfall /cards/search endpoint which can match printed_name
+     * across all languages.
+     *
+     * @param string $name Card name (any language)
+     * @return object|null Card data object or null
+     */
+    public static function search_card_by_name($name) {
+        $cache_key   = 'scryfall_name_' . sanitize_key($name);
+        $cached_data = get_transient($cache_key);
+        if ($cached_data !== false) {
+            return $cached_data;
+        }
+
+        // Try exact English name first
+        $api_url  = self::API_BASE . '/cards/named?exact=' . urlencode($name);
+        $response = wp_remote_get($api_url, array(
+            'timeout' => 10,
+            'headers' => array(
+                'User-Agent' => 'PDC-Theme/' . wp_get_theme()->get('Version') . '; ' . get_bloginfo('url'),
+            ),
+        ));
+
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $data = json_decode(wp_remote_retrieve_body($response));
+            if ($data && isset($data->object) && $data->object === 'card') {
+                set_transient($cache_key, $data, self::CACHE_DURATION);
+                return $data;
+            }
+        }
+
+        // Fallback: search across all languages
+        $search_url = self::API_BASE . '/cards/search?q=' . urlencode('!"' . $name . '" include:extras') . '&unique=cards';
+        $response   = wp_remote_get($search_url, array(
+            'timeout' => 10,
+            'headers' => array(
+                'User-Agent' => 'PDC-Theme/' . wp_get_theme()->get('Version') . '; ' . get_bloginfo('url'),
+            ),
+        ));
+
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            error_log('Scryfall search failed for "' . $name . '"');
+            return null;
+        }
+
+        $data = json_decode(wp_remote_retrieve_body($response));
+        if (!$data || !isset($data->data[0])) {
+            return null;
+        }
+
+        $card = $data->data[0];
+        set_transient($cache_key, $card, self::CACHE_DURATION);
+        return $card;
     }
 
     /**
