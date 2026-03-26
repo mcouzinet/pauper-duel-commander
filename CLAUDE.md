@@ -210,3 +210,4 @@ npm run production  # Alias build --mode production
 - Polylang est actif: penser aux traductions `__('texte', 'pdc-theme')` dans les templates
 - Les images de cartes viennent de Scryfall API, pas stockées localement
 - Le thème est dark by default (bg: #0A0E13), design Magic-themed avec accents orange
+- **ACF JSON**: Toujours mettre à jour le champ `modified` (timestamp Unix) dans le fichier JSON après chaque modification d'un groupe de champs ACF dans `acf-json/`
