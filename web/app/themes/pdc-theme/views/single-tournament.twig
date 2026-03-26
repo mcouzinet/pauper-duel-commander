@@ -260,15 +260,16 @@
                                 {% endfor %}
 
                                 <div class="flex items-center gap-4">
-                                    {# SVG Pie chart #}
+                                    {# SVG Pie chart — circumference = 2 * pi * r = 2 * 3.1416 * 40 = 251.33 #}
+                                    {% set circ = 251.33 %}
                                     <div class="flex-shrink-0">
                                         <svg viewBox="0 0 100 100" class="w-24 h-24 tournament-pie">
                                             {% set cumulative = 0 %}
                                             {% for code, count in color_counts %}
                                                 {% set pct = count / color_total * 100 %}
-                                                {% set dash = pct * 3.1416 %}
-                                                {% set gap = 314.16 - dash %}
-                                                {% set offset = -1 * cumulative * 3.1416 %}
+                                                {% set dash = pct / 100 * circ %}
+                                                {% set gap = circ - dash %}
+                                                {% set offset = circ / 4 - (cumulative / 100 * circ) %}
                                                 <circle cx="50" cy="50" r="40"
                                                         fill="none"
                                                         stroke="{{ color_hex[code] ?? '#6B7280' }}"
