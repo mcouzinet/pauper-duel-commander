@@ -63,13 +63,9 @@
   @apply bg-gradient-to-br from-gray-200 to-gray-400 text-gray-900 border-gray-500;
 }
 
-/* Card hover animation */
+/* Card hover - no visual effect, only used for image preview trigger */
 .card-hover-trigger {
-  @apply transition-all duration-200;
-}
-
-.card-hover-trigger:hover {
-  @apply scale-[1.01] shadow-card-hover;
+  @apply cursor-default;
 }
 
 /* Deck stats */

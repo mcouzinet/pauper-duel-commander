@@ -98,7 +98,15 @@ class Deck_Validator {
             }
         }
 
-        // --- Rule 1: Commander rarity must be uncommon ---
+        // --- Rule 1a: Commander must be a creature ---
+        if ($commander_data) {
+            self::check_commander_is_creature($commander_data, $commander_name, $errors);
+        }
+        if ($partner_data) {
+            self::check_commander_is_creature($partner_data, $partner_name, $errors);
+        }
+
+        // --- Rule 1b: Commander rarity must be uncommon ---
         if ($commander_data) {
             self::check_commander_rarity($commander_data, $commander_name, $errors);
         }
@@ -153,6 +161,21 @@ class Deck_Validator {
     // -------------------------------------------------------------------------
     // Rule checkers
     // -------------------------------------------------------------------------
+
+    /**
+     * Rule: Commander must be a creature.
+     */
+    private static function check_commander_is_creature($card_data, $card_name, &$errors) {
+        $type_line = isset($card_data->type_line) ? $card_data->type_line : '';
+        if (stripos($type_line, 'Creature') === false) {
+            $type_label = $type_line ?: 'inconnu';
+            $errors[] = array(
+                'rule'    => 'commander_type',
+                'message' => "Le général « {$card_name} » doit être une créature (type actuel : {$type_label}).",
+                'cards'   => array($card_name),
+            );
+        }
+    }
 
     /**
      * Rule: Commander must be uncommon rarity.

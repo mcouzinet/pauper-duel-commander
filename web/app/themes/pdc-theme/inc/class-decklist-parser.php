@@ -82,19 +82,25 @@ class Decklist_Parser {
             return null;
         }
 
-        // Parse format: "quantity card_name"
-        // Match number at start, followed by space(s), followed by card name
+        // Parse format: "quantity card_name" (e.g. "1 Lightning Bolt")
         if (preg_match('/^(\d+)\s+(.+)$/', $line, $matches)) {
             $quantity = (int) $matches[1];
             $card_name = trim($matches[2]);
 
-            // Validate
             if ($quantity > 0 && !empty($card_name)) {
                 return array(
                     'quantity' => $quantity,
                     'name' => $card_name
                 );
             }
+        }
+
+        // Fallback: line without quantity prefix (e.g. "Crackling Drake") → assume 1 copy
+        if (preg_match('/^[A-Za-z]/', $line) && !empty($line)) {
+            return array(
+                'quantity' => 1,
+                'name' => $line
+            );
         }
 
         // Line doesn't match expected format

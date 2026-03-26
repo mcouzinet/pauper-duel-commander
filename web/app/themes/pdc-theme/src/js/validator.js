@@ -10,6 +10,7 @@
 const RULE_LABELS = {
   format: 'Format invalide',
   commander: 'Général introuvable',
+  commander_type: 'Type du général',
   commander_rarity: 'Rareté du général',
   deck_size: 'Nombre de cartes',
   not_found: 'Cartes introuvables',
