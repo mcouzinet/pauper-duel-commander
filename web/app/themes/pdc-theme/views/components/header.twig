@@ -73,14 +73,16 @@
 
 {# Mobile Menu Overlay - outside header for proper z-index stacking #}
 <div id="mobile-menu" class="fixed inset-0 md:hidden hidden" style="background-color: #0A0E13; z-index: 9999;">
-    <div class="container mx-auto px-6 py-8 h-full flex flex-col">
-        {# Close button #}
-        <div class="flex justify-between items-center mb-12">
-            <a href="{{ site.url }}" class="block">
-                <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png"
-                     alt="{{ site.name }}"
-                     class="h-20 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]">
-            </a>
+    <div class="container mx-auto px-4 h-full flex flex-col">
+        {# Close button - aligned with header logo and burger #}
+        <div class="relative flex justify-between items-center py-3 mb-12">
+            <div class="w-12">
+                <a href="{{ site.url }}" class="absolute top-0 left-0 block">
+                    <img src="{{ site.theme.uri }}/public/img/PauperDuelCommander.png"
+                         alt="{{ site.name }}"
+                         class="h-20 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]">
+                </a>
+            </div>
             <button id="mobile-menu-close" class="flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Close menu">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
