@@ -202,6 +202,46 @@
   .tournament-commander-row {
     @apply flex items-center gap-2;
   }
+
+  /* Linkable rows */
+  .tournament-row--link {
+    @apply no-underline cursor-pointer;
+  }
+
+  .tournament-row--link:hover {
+    @apply bg-bg-secondary/70;
+    border-color: rgba(255, 87, 34, 0.15);
+  }
+
+  .tournament-row--link:hover .text-text-primary {
+    @apply text-brand-orange;
+  }
+
+  .tournament-winner--link {
+    @apply no-underline cursor-pointer transition-all duration-200;
+  }
+
+  .tournament-winner--link:hover {
+    border-color: rgba(234, 179, 8, 0.3);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.04) 100%);
+  }
+
+  /* Pie chart */
+  .tournament-pie {
+    transform: rotate(-90deg);
+  }
+
+  .tournament-pie__slice {
+    transition: opacity 0.2s ease;
+  }
+
+  .tournament-pie:hover .tournament-pie__slice {
+    opacity: 0.7;
+  }
+
+  .tournament-pie:hover .tournament-pie__slice:hover {
+    opacity: 1;
+  }
 }
 
 @layer utilities {
