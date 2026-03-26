@@ -1,0 +1,38 @@
+{#
+/**
+ * Page Résultats de Tournoi
+ *
+ * Variables:
+ * - post (Timber\Post): The page post
+ */
+#}
+
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+
+{# Hero Section with Background Image #}
+<section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+    {# Background Layers #}
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+
+    {# Background Image #}
+    <div class="absolute inset-0 opacity-10">
+        <img src="{{ theme.link }}/public/cards-background.png"
+             alt="{{ __('Magic cards background', 'pdc-theme') }}"
+             class="w-full h-full object-cover">
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+                {{ post.title }}
+            </h1>
+        </div>
+    </div>
+</section>
+
+{# Page Content (Gutenberg blocks) #}
+{{ post.content }}
+
+{% endblock %}
