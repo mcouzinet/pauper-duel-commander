@@ -18,7 +18,7 @@ class Scryfall_Service {
     /**
      * Cache duration (7 days)
      */
-    const CACHE_DURATION = 7 * DAY_IN_SECONDS;
+    const CACHE_DURATION = 30 * DAY_IN_SECONDS;
 
     /**
      * Scryfall API base URL
@@ -278,6 +278,92 @@ class Scryfall_Service {
         }
 
         return 'Other';
+    }
+
+    /**
+     * Get multiple cards by name using Scryfall's /cards/collection bulk endpoint.
+     *
+     * Checks individual transient caches first; only fetches uncached cards via the
+     * API in batches of 75 (the Scryfall limit). Results are stored in the same
+     * per-card transients used by get_card_by_name(), so both methods share the cache.
+     *
+     * @param array $names Array of exact card names
+     * @return array Map of strtolower(card_name) => card data object|null
+     */
+    public static function get_cards_by_names(array $names) {
+        $result   = array();
+        $to_fetch = array();
+
+        foreach ($names as $name) {
+            $cache_key   = 'scryfall_name_' . sanitize_key($name);
+            $cached_data = get_transient($cache_key);
+            if ($cached_data !== false) {
+                $result[strtolower($name)] = $cached_data;
+            } else {
+                $to_fetch[] = $name;
+            }
+        }
+
+        if (empty($to_fetch)) {
+            return $result;
+        }
+
+        foreach (array_chunk($to_fetch, 75) as $batch) {
+            $identifiers = array_map(function($name) {
+                return array('name' => $name);
+            }, $batch);
+
+            $response = wp_remote_post(self::API_BASE . '/cards/collection', array(
+                'timeout' => 15,
+                'headers' => array(
+                    'User-Agent'   => 'PDC-Theme/' . wp_get_theme()->get('Version') . '; ' . get_bloginfo('url'),
+                    'Content-Type' => 'application/json',
+                ),
+                'body' => wp_json_encode(array('identifiers' => $identifiers)),
+            ));
+
+            if (is_wp_error($response)) {
+                error_log('Scryfall /cards/collection error: ' . $response->get_error_message());
+                foreach ($batch as $name) {
+                    $result[strtolower($name)] = null;
+                }
+                continue;
+            }
+
+            $response_code = wp_remote_retrieve_response_code($response);
+            if ($response_code !== 200) {
+                error_log('Scryfall /cards/collection returned status ' . $response_code);
+                foreach ($batch as $name) {
+                    $result[strtolower($name)] = null;
+                }
+                continue;
+            }
+
+            $data = json_decode(wp_remote_retrieve_body($response));
+
+            if (!$data || !isset($data->data)) {
+                error_log('Scryfall /cards/collection: unexpected response format');
+                foreach ($batch as $name) {
+                    $result[strtolower($name)] = null;
+                }
+                continue;
+            }
+
+            // Index returned cards by canonical name and cache individually
+            $found = array();
+            foreach ($data->data as $card) {
+                set_transient('scryfall_name_' . sanitize_key($card->name), $card, self::CACHE_DURATION);
+                $found[strtolower($card->name)] = $card;
+            }
+
+            // Map each requested name to its result (null if not found)
+            foreach ($batch as $name) {
+                $lower = strtolower($name);
+                $result[$lower] = $found[$lower] ?? null;
+            }
+        }
+
+        return $result;
     }
 
     /**

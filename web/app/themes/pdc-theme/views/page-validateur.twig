@@ -1,0 +1,217 @@
+{#
+/**
+ * Page Validateur de Deck
+ *
+ * Variables:
+ * - post (Timber\Post): The page post
+ * - validator_nonce (string): WordPress nonce for the AJAX request
+ * - ajax_url (string): WordPress admin-ajax.php URL
+ */
+#}
+
+{% extends "layouts/base.twig" %}
+
+{% block content %}
+
+{# Hero Section #}
+<section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+
+    <div class="absolute inset-0 opacity-10">
+        <img src="{{ theme.link }}/public/cards-background.png"
+             alt="{{ __('Magic cards background', 'pdc-theme') }}"
+             class="w-full h-full object-cover">
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+                {{ __('Validateur de Deck', 'pdc-theme') }}
+            </h1>
+            <p class="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+                {{ __('Vérifiez si votre deck est conforme aux règles du format', 'pdc-theme') }}
+                <strong class="text-text-primary">{{ __('Pauper Duel Commander', 'pdc-theme') }}</strong>.
+                {{ __('Entrez votre général et votre decklist au format MTGO pour obtenir une analyse complète.', 'pdc-theme') }}
+            </p>
+        </div>
+    </div>
+</section>
+
+{# Validator Form Section #}
+<section class="py-16 bg-bg-primary">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+
+            {# Form Card #}
+            <div class="magic-card p-8 mb-8">
+                <form id="deck-validator-form" novalidate>
+
+                    {# Hidden fields #}
+                    <input type="hidden" id="validator-nonce" value="{{ validator_nonce }}">
+                    <input type="hidden" id="ajax-url" value="{{ ajax_url }}">
+
+                    {# Commander Field #}
+                    <div class="mb-6">
+                        <label for="commander-name" class="block text-sm font-semibold text-text-secondary mb-2 uppercase tracking-wider">
+                            {{ __('Général', 'pdc-theme') }} <span class="text-brand-orange">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="commander-name"
+                            name="commander"
+                            placeholder="{{ __('Ex : Isamaru, Hound of Konda', 'pdc-theme') }}"
+                            class="w-full px-4 py-3 bg-bg-primary border border-magic-gold/20 rounded-lg text-text-primary placeholder-text-muted focus:border-brand-orange focus:outline-none transition-colors"
+                            required
+                        >
+                        <p class="mt-1 text-xs text-text-muted">{{ __('Nom exact en anglais tel qu\'il apparaît sur Scryfall.', 'pdc-theme') }}</p>
+                    </div>
+
+                    {# Partner Toggle #}
+                    <div class="mb-6">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <input
+                                type="checkbox"
+                                id="has-partner"
+                                class="w-4 h-4 rounded border-magic-gold/30 bg-bg-primary text-brand-orange focus:ring-brand-orange/50 cursor-pointer"
+                            >
+                            <span class="text-sm font-semibold text-text-secondary uppercase tracking-wider group-hover:text-text-primary transition-colors">
+                                {{ __('Deck avec partenaire (Partner / Background)', 'pdc-theme') }}
+                            </span>
+                        </label>
+                    </div>
+
+                    {# Partner Field (hidden by default) #}
+                    <div id="partner-field" class="mb-6 hidden">
+                        <label for="partner-name" class="block text-sm font-semibold text-text-secondary mb-2 uppercase tracking-wider">
+                            {{ __('Partenaire', 'pdc-theme') }}
+                        </label>
+                        <input
+                            type="text"
+                            id="partner-name"
+                            name="partner"
+                            placeholder="{{ __('Ex : Keleth, Sunmane Familiar', 'pdc-theme') }}"
+                            class="w-full px-4 py-3 bg-bg-primary border border-magic-gold/20 rounded-lg text-text-primary placeholder-text-muted focus:border-brand-orange focus:outline-none transition-colors"
+                        >
+                        <p class="mt-1 text-xs text-text-muted">{{ __('Nom exact en anglais. Le deck devra contenir 98 cartes au lieu de 99.', 'pdc-theme') }}</p>
+                    </div>
+
+                    {# Decklist Field #}
+                    <div class="mb-8">
+                        <label for="decklist-input" class="block text-sm font-semibold text-text-secondary mb-2 uppercase tracking-wider">
+                            {{ __('Decklist', 'pdc-theme') }} <span class="text-brand-orange">*</span>
+                        </label>
+                        <textarea
+                            id="decklist-input"
+                            name="decklist"
+                            rows="18"
+                            placeholder="{{ __('1 Sol Ring', 'pdc-theme') }}&#10;{{ __('4 Plains', 'pdc-theme') }}&#10;{{ __('1 Counterspell', 'pdc-theme') }}&#10;..."
+                            class="w-full px-4 py-3 bg-bg-primary border border-magic-gold/20 rounded-lg text-text-primary placeholder-text-muted focus:border-brand-orange focus:outline-none transition-colors font-mono text-sm resize-y custom-scrollbar"
+                            required
+                        ></textarea>
+                        <p class="mt-1 text-xs text-text-muted">
+                            {{ __('Format MTGO : une ligne par carte, commençant par la quantité. Ex :', 'pdc-theme') }}
+                            <code class="text-brand-orange">1 Lightning Bolt</code>
+                        </p>
+                    </div>
+
+                    {# Submit Button #}
+                    <div class="flex justify-center">
+                        <button type="submit" id="validate-btn" class="btn-primary min-w-[200px]">
+                            <span id="btn-text">{{ __('Valider le deck', 'pdc-theme') }}</span>
+                            <span id="btn-spinner" class="hidden ml-2">
+                                <svg class="animate-spin h-5 w-5 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            {# Results Area (populated by JS) #}
+            <div id="validator-results" class="hidden" aria-live="polite">
+                {# Content injected by validator.js #}
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{# Rules Summary Section #}
+<section class="py-16 bg-bg-secondary/50 border-t border-magic-gold/10">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8 text-center">
+                {{ __('Règles du format PDC', 'pdc-theme') }}
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-4">
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">⚔️</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('100 cartes', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('99 cartes + 1 général (ou 98 + 2 en cas de partenaire).', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">🔮</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('Général Uncommon', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('Le général doit obligatoirement être de rareté Uncommon.', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">🌿</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('Cartes Communes', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('Toutes les 99 cartes du deck doivent être de rareté Commune (Common).', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">🎨</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('Identité de couleur', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('Toutes les cartes doivent respecter l\'identité de couleur du général.', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">📋</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('Pas de doublon', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('Maximum 1 exemplaire de chaque carte, sauf les terrains de base.', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="magic-card p-6">
+                    <div class="flex items-start gap-4">
+                        <span class="text-2xl flex-shrink-0">🚫</span>
+                        <div>
+                            <h3 class="font-heading font-bold text-text-primary mb-1">{{ __('Ban List', 'pdc-theme') }}</h3>
+                            <p class="text-sm text-text-secondary">{{ __('Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées.', 'pdc-theme') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

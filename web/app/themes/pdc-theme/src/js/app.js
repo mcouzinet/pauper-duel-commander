@@ -9,6 +9,9 @@ import '../css/components/accordion.css';
 // Import decklist functionality
 import './decklist.js';
 
+// Import deck validator functionality
+import './validator.js';
+
 // Import mobile menu functionality
 import './mobile-menu.js';
 

@@ -45,34 +45,38 @@ class Deck_Renderer {
     public static function fetch_card_data($parsed_cards) {
         $enriched = array();
 
+        // Fetch all unique card names in bulk (1-2 API calls vs ~99)
+        $names     = array_unique(array_column($parsed_cards, 'name'));
+        $cards_map = Scryfall_Service::get_cards_by_names($names);
+
         foreach ($parsed_cards as $card) {
-            $card_data = Scryfall_Service::get_card_by_name($card['name']);
+            $card_data = $cards_map[strtolower($card['name'])] ?? null;
 
             if ($card_data) {
                 $enriched[] = array(
-                    'quantity' => $card['quantity'],
-                    'name' => $card['name'],
-                    'scryfall_data' => $card_data,
-                    'cmc' => Scryfall_Service::get_cmc($card_data),
-                    'type' => Scryfall_Service::get_primary_type($card_data),
-                    'type_line' => Scryfall_Service::get_type_line($card_data),
-                    'mana_cost' => Scryfall_Service::get_mana_cost($card_data),
-                    'colors' => Scryfall_Service::get_colors($card_data),
-                    'image_url' => Scryfall_Service::get_card_image($card_data, 'normal'),
+                    'quantity'        => $card['quantity'],
+                    'name'            => $card['name'],
+                    'scryfall_data'   => $card_data,
+                    'cmc'             => Scryfall_Service::get_cmc($card_data),
+                    'type'            => Scryfall_Service::get_primary_type($card_data),
+                    'type_line'       => Scryfall_Service::get_type_line($card_data),
+                    'mana_cost'       => Scryfall_Service::get_mana_cost($card_data),
+                    'colors'          => Scryfall_Service::get_colors($card_data),
+                    'image_url'       => Scryfall_Service::get_card_image($card_data, 'normal'),
                     'image_url_small' => Scryfall_Service::get_card_image($card_data, 'small'),
                 );
             } else {
                 // Card not found - include with minimal data
                 $enriched[] = array(
-                    'quantity' => $card['quantity'],
-                    'name' => $card['name'],
-                    'scryfall_data' => null,
-                    'cmc' => 0,
-                    'type' => 'Other',
-                    'type_line' => 'Unknown',
-                    'mana_cost' => '',
-                    'colors' => array(),
-                    'image_url' => null,
+                    'quantity'        => $card['quantity'],
+                    'name'            => $card['name'],
+                    'scryfall_data'   => null,
+                    'cmc'             => 0,
+                    'type'            => 'Other',
+                    'type_line'       => 'Unknown',
+                    'mana_cost'       => '',
+                    'colors'          => array(),
+                    'image_url'       => null,
                     'image_url_small' => null,
                 );
             }
