@@ -20,6 +20,7 @@
 {% extends "layouts/base.twig" %}
 
 {% block content %}
+<div class="overflow-x-hidden">
 
 {# ---- Compact Hero ---- #}
 <section class="tournament-hero relative overflow-hidden">
@@ -113,10 +114,10 @@
                             {% else %}
                                 <div class="tournament-winner mb-4">
                             {% endif %}
-                                <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2 sm:gap-3">
                                     <div class="tournament-place tournament-place--1">1</div>
                                     {% if winner.commander_image %}
-                                        <div class="w-14 h-14 rounded-lg overflow-hidden shadow-lg ring-2 ring-yellow-500/30 flex-shrink-0">
+                                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-lg overflow-hidden shadow-lg ring-2 ring-yellow-500/30 flex-shrink-0">
                                             <img src="{{ winner.commander_image }}"
                                                  alt="{{ winner.commander_name }}"
                                                  class="w-full h-full object-cover"
@@ -124,8 +125,8 @@
                                         </div>
                                     {% endif %}
                                     <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-base text-yellow-300 truncate">{{ winner.player_name }}</p>
-                                        <p class="text-sm text-yellow-200/60 font-mono truncate">{{ winner.commander_name }}</p>
+                                        <p class="font-bold text-sm sm:text-base text-yellow-300 truncate">{{ winner.player_name }}</p>
+                                        <p class="text-xs sm:text-sm text-yellow-200/60 font-mono truncate">{{ winner.commander_name }}</p>
                                     </div>
                                     {% if winner.score %}
                                         <span class="text-xs font-mono text-yellow-400/70 flex-shrink-0">{{ winner.score }}</span>
@@ -414,4 +415,5 @@
     </div>
 </section>
 
+</div>{# /overflow-x-hidden #}
 {% endblock %}

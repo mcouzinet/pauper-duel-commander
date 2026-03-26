@@ -16,6 +16,7 @@
 {% extends "layouts/base.twig" %}
 
 {% block content %}
+<div class="overflow-x-hidden">
 
 {# ---- Hero ---- #}
 <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
@@ -25,12 +26,12 @@
              alt="" aria-hidden="true"
              class="w-full h-full object-cover">
     </div>
-    <div class="container mx-auto px-6 relative z-10">
+    <div class="container mx-auto px-4 sm:px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
                 {{ __('Tournois PDC', 'pdc-theme') }}
             </h1>
-            <p class="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+            <p class="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
                 {{ __('Inscrivez-vous aux prochains tournois et retrouvez les résultats, top 8 et méta des événements passés.', 'pdc-theme') }}
             </p>
         </div>
@@ -39,8 +40,8 @@
 
 {# ---- Upcoming tournaments ---- #}
 {% if upcoming_tournaments %}
-<section class="py-16 bg-bg-primary border-b border-magic-gold/10">
-    <div class="container mx-auto px-6">
+<section class="py-10 sm:py-16 bg-bg-primary border-b border-magic-gold/10">
+    <div class="container mx-auto px-4 sm:px-6">
         <div class="max-w-5xl mx-auto">
 
             <div class="flex items-center gap-3 mb-8">
@@ -48,14 +49,14 @@
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
                 </span>
-                <h2 class="text-3xl font-heading font-bold text-magic-gradient">
+                <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient">
                     {{ __('Prochains Tournois', 'pdc-theme') }}
                 </h2>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
                 {% for t in upcoming_tournaments %}
-                <div class="magic-card p-6 relative overflow-hidden group">
+                <div class="magic-card p-4 sm:p-6 relative overflow-hidden group">
                     {# Glow accent #}
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange via-magic-gold to-brand-orange"></div>
 
@@ -123,29 +124,29 @@
 {% endif %}
 
 {# ---- Past tournament results ---- #}
-<section class="py-16 bg-bg-primary">
-    <div class="container mx-auto px-6">
+<section class="py-10 sm:py-16 bg-bg-primary">
+    <div class="container mx-auto px-4 sm:px-6">
         <div class="max-w-5xl mx-auto">
 
             {% if past_tournaments %}
 
-                <h2 class="text-3xl font-heading font-bold text-text-primary mb-8">
+                <h2 class="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8">
                     {{ __('Résultats des Tournois', 'pdc-theme') }}
                 </h2>
 
-                <div class="space-y-4">
+                <div class="space-y-3 sm:space-y-4">
 
                     {% for t in past_tournaments %}
                     <a href="{{ t.link }}"
-                       class="magic-card block p-6 group transition-all duration-300 hover:border-magic-gold/40">
+                       class="magic-card block p-4 sm:p-6 group transition-all duration-300 hover:border-magic-gold/40">
 
-                        <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-3 sm:gap-4">
                             {# Title + meta info #}
                             <span class="flex-1 min-w-0">
-                                <span class="block text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors truncate">
+                                <span class="block text-base sm:text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors truncate">
                                     {{ t.title }}
                                 </span>
-                                <span class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted mt-1">
+                                <span class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm text-text-muted mt-1">
                                     {% if t.date_formatted %}
                                         <span>{{ t.date_formatted }}</span>
                                     {% endif %}
@@ -452,4 +453,5 @@
 </section>
 {% endif %}
 
+</div>{# /overflow-x-hidden #}
 {% endblock %}
