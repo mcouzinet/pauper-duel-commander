@@ -19,7 +19,7 @@ $fields  = get_fields($post->ID) ?: array();
 $meta_raw        = $fields['tournament_meta_list'] ?? '';
 $commander_counts = pdc_parse_meta_list($meta_raw);
 
-// Collect all unique commander names for bulk Scryfall fetch
+// Collect all commander names (top8 + meta) and expand partner pairs for Scryfall
 $commander_names = array();
 foreach (($fields['top8'] ?? array()) as $entry) {
     if (!empty($entry['commander_name'])) {
@@ -29,8 +29,9 @@ foreach (($fields['top8'] ?? array()) as $entry) {
 foreach (array_keys($commander_counts) as $name) {
     $commander_names[] = $name;
 }
+$expanded_names = pdc_expand_commander_names($commander_names);
 
-$unique_names = array_values(array_unique(array_filter($commander_names)));
+$unique_names = array_values(array_unique(array_filter($expanded_names)));
 $cards_map    = !empty($unique_names)
     ? Scryfall_Service::get_cards_by_names($unique_names)
     : array();
@@ -40,8 +41,7 @@ $cards_map    = !empty($unique_names)
 // ----------------------------------------------------------------
 $top8 = array();
 foreach (($fields['top8'] ?? array()) as $entry) {
-    $cmd_key   = strtolower($entry['commander_name'] ?? '');
-    $card_data = $cards_map[$cmd_key] ?? null;
+    $card_data = pdc_resolve_commander_card($entry['commander_name'] ?? '', $cards_map);
 
     $top8[] = array(
         'place'           => (int) ($entry['place'] ?? 0),
@@ -61,7 +61,7 @@ $color_counts       = array();
 $total_participants = array_sum($commander_counts);
 
 foreach ($commander_counts as $name => $count) {
-    $card_data = $cards_map[strtolower($name)] ?? null;
+    $card_data = pdc_resolve_commander_card($name, $cards_map);
     if ($card_data && !empty($card_data->color_identity)) {
         foreach ($card_data->color_identity as $color) {
             $color_counts[$color] = ($color_counts[$color] ?? 0) + $count;
@@ -73,7 +73,7 @@ foreach ($commander_counts as $name => $count) {
 
 $meta_commanders = array();
 foreach ($commander_counts as $name => $count) {
-    $card_data = $cards_map[strtolower($name)] ?? null;
+    $card_data = pdc_resolve_commander_card($name, $cards_map);
     $meta_commanders[] = array(
         'name'       => $name,
         'count'      => $count,

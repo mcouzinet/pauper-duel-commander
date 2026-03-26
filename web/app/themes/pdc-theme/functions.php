@@ -457,6 +457,77 @@ function pdc_parse_meta_list($text) {
 }
 
 /**
+ * Expand commander names for Scryfall lookup.
+ *
+ * Splits partner / background pairs separated by " // " into individual
+ * card names so each can be looked up on Scryfall independently.
+ *
+ * @param array $names Commander names (may contain " // " pairs).
+ * @return array Flat array of individual card names.
+ */
+function pdc_expand_commander_names(array $names) {
+    $expanded = array();
+    foreach ($names as $name) {
+        if (strpos($name, '//') !== false) {
+            foreach (explode('//', $name) as $part) {
+                $part = trim($part);
+                if ($part !== '') {
+                    $expanded[] = $part;
+                }
+            }
+        } else {
+            $expanded[] = $name;
+        }
+    }
+    return $expanded;
+}
+
+/**
+ * Resolve Scryfall card data for a commander name that may be a partner pair.
+ *
+ * For single commanders, returns the card data directly from the map.
+ * For " // " pairs (partner / background), returns an object with:
+ *   - color_identity merged from both cards
+ *   - image from the first card
+ *
+ * @param string $name      The full commander name as entered.
+ * @param array  $cards_map Map of strtolower(card_name) => Scryfall card object.
+ * @return object|null Resolved card data or null if no card found.
+ */
+function pdc_resolve_commander_card($name, array $cards_map) {
+    // Single commander (no partner)
+    if (strpos($name, '//') === false) {
+        return $cards_map[strtolower($name)] ?? null;
+    }
+
+    // Partner pair: split and merge
+    $parts = array_map('trim', explode('//', $name));
+    $cards = array();
+    foreach ($parts as $part) {
+        $card = $cards_map[strtolower($part)] ?? null;
+        if ($card) {
+            $cards[] = $card;
+        }
+    }
+
+    if (empty($cards)) {
+        return null;
+    }
+
+    // Build a merged pseudo-card with combined color_identity and first card's image
+    $merged = clone $cards[0];
+    $colors = array();
+    foreach ($cards as $card) {
+        if (!empty($card->color_identity)) {
+            $colors = array_merge($colors, (array) $card->color_identity);
+        }
+    }
+    $merged->color_identity = array_values(array_unique($colors));
+
+    return $merged;
+}
+
+/**
  * Register Tournament Custom Post Type
  */
 function pdc_register_tournament_cpt() {
