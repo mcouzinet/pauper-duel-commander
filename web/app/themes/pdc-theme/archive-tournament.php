@@ -200,12 +200,25 @@ foreach ($global_commander_counts as $name => $count) {
     );
 }
 
+// ----------------------------------------------------------------
+// Color identity meta: group commanders by their exact color identity
+// ----------------------------------------------------------------
+$color_identity_counts = array();
+foreach ($global_meta_commanders as $cmd) {
+    $colors = $cmd['colors'];
+    sort($colors); // Canonical WUBRG order via alphabetical (B, G, R, U, W)
+    $identity_key = !empty($colors) ? implode('', $colors) : 'C';
+    $color_identity_counts[$identity_key] = ($color_identity_counts[$identity_key] ?? 0) + $cmd['count'];
+}
+arsort($color_identity_counts);
+
 $context['global_meta'] = array(
-    'commanders'       => $global_meta_commanders,
-    'color_counts'     => pdc_sort_color_counts($global_color_counts),
-    'total_players'    => $global_total_players,
-    'tournament_count' => $global_tournament_count,
-    'has_data'         => !empty($global_meta_commanders),
+    'commanders'            => $global_meta_commanders,
+    'color_counts'          => pdc_sort_color_counts($global_color_counts),
+    'color_identity_counts' => $color_identity_counts,
+    'total_players'         => $global_total_players,
+    'tournament_count'      => $global_tournament_count,
+    'has_data'              => !empty($global_meta_commanders),
 );
 
 Timber::render('archive-tournament.twig', $context);
