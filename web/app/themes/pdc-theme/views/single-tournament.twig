@@ -200,8 +200,8 @@
 
                 {# ===== Right: Meta sidebar (2 cols) ===== #}
                 <div class="lg:col-span-2">
-                    <h2 class="text-lg font-heading font-bold text-text-primary uppercase tracking-wide mb-4 flex items-center gap-2">
-                        <span class="w-1 h-5 bg-brand-orange rounded-full"></span>
+                    <h2 class="text-xl md:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-brand-orange rounded-full"></span>
                         {{ __('Méta', 'pdc-theme') }}
                     </h2>
 
@@ -209,27 +209,27 @@
 
                         {# Commander distribution - compact bars (first) #}
                         <div class="tournament-meta-panel mb-4">
-                            <h3 class="text-xs font-heading font-semibold text-text-muted uppercase tracking-wider mb-3">
+                            <h3 class="text-sm font-heading font-semibold text-text-secondary uppercase tracking-wider mb-3">
                                 {{ __('Généraux joués', 'pdc-theme') }}
                             </h3>
 
-                            <div class="space-y-2.5">
+                            <div class="space-y-3">
                                 {% for commander in meta_commanders %}
                                     <div class="tournament-commander-row">
                                         {% if commander.image %}
-                                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-white/10">
+                                            <div class="w-11 h-11 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-white/10">
                                                 <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                      class="w-full h-full object-cover" loading="lazy">
                                             </div>
                                         {% else %}
-                                            <div class="w-10 h-10 rounded-lg bg-bg-tertiary flex-shrink-0"></div>
+                                            <div class="w-11 h-11 rounded-lg bg-bg-tertiary flex-shrink-0"></div>
                                         {% endif %}
 
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between">
-                                                <span class="text-xs font-mono text-text-primary truncate">{{ commander.name }}</span>
-                                                <span class="flex-shrink-0 ml-2 text-xs text-text-muted tabular-nums">
-                                                    {{ commander.count }}<span class="text-text-muted/50">/{{ player_count }}</span>
+                                                <span class="text-sm font-mono text-text-primary truncate">{{ commander.name }}</span>
+                                                <span class="flex-shrink-0 ml-2 text-sm text-text-secondary tabular-nums">
+                                                    {{ commander.count }}<span class="text-text-secondary/60">/{{ player_count }}</span>
                                                     <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                                 </span>
                                             </div>
@@ -251,7 +251,7 @@
                         {# Color distribution as pie chart (second) #}
                         {% if color_counts %}
                             <div class="tournament-meta-panel">
-                                <h3 class="text-xs font-heading font-semibold text-text-muted uppercase tracking-wider mb-3">
+                                <h3 class="text-sm font-heading font-semibold text-text-secondary uppercase tracking-wider mb-3">
                                     {{ __('Répartition des couleurs', 'pdc-theme') }}
                                 </h3>
 

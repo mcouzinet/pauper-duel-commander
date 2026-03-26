@@ -194,8 +194,8 @@
 
   /* Meta sidebar panels */
   .tournament-meta-panel {
-    @apply p-3 rounded-lg bg-bg-secondary/50;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    @apply p-4 rounded-lg bg-bg-secondary;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   /* Commander row in meta */
