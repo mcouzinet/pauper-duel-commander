@@ -9,7 +9,7 @@
  * - player_count (int)
  * - signup_url (string)
  * - top8 (array): [{place, player_name, commander_name, score, commander_image, decklist_url}]
- * - meta_commanders (array): [{name, count, percentage, image}]
+ * - meta_commanders (array): [{name, count, percentage, image, colors}]
  * - color_counts (array): {'W': n, ...}
  * - hero_image (string|null): art_crop of the winner's commander
  * - has_meta (bool)
@@ -213,29 +213,34 @@
                                 {{ __('Généraux joués', 'pdc-theme') }}
                             </h3>
 
-                            <div class="space-y-2">
+                            <div class="space-y-2.5">
                                 {% for commander in meta_commanders %}
                                     <div class="tournament-commander-row">
                                         {% if commander.image %}
-                                            <div class="w-7 h-7 rounded overflow-hidden flex-shrink-0">
+                                            <div class="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-white/10">
                                                 <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                      class="w-full h-full object-cover" loading="lazy">
                                             </div>
                                         {% else %}
-                                            <div class="w-7 h-7 rounded bg-bg-tertiary flex-shrink-0"></div>
+                                            <div class="w-10 h-10 rounded-lg bg-bg-tertiary flex-shrink-0"></div>
                                         {% endif %}
 
                                         <div class="flex-1 min-w-0">
-                                            <div class="flex items-baseline justify-between mb-0.5">
+                                            <div class="flex items-center justify-between">
                                                 <span class="text-xs font-mono text-text-primary truncate">{{ commander.name }}</span>
                                                 <span class="flex-shrink-0 ml-2 text-xs text-text-muted tabular-nums">
                                                     {{ commander.count }}<span class="text-text-muted/50">/{{ player_count }}</span>
                                                     <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                                 </span>
                                             </div>
-                                            <div class="h-1 bg-bg-primary rounded-full overflow-hidden">
-                                                <div class="h-full bg-gradient-to-r from-brand-orange to-magic-gold rounded-full"
-                                                     style="width: {{ commander.percentage }}%"></div>
+                                            <div class="flex items-center gap-0.5 mt-0.5">
+                                                {% if commander.colors|length > 0 %}
+                                                    {% for color in commander.colors %}
+                                                        <i class="ms ms-{{ color|lower }} ms-cost ms-shadow" title="{{ color }}"></i>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>

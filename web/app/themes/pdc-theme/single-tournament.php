@@ -79,6 +79,7 @@ foreach ($commander_counts as $name => $count) {
         'count'      => $count,
         'percentage' => $total_participants > 0 ? round($count / $total_participants * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
     );
 }
 

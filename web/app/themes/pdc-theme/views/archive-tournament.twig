@@ -7,7 +7,7 @@
  *   Each entry:
  *   - post, title, link, date_formatted, location, city, player_count, signup_url
  *   - top8 (array): [{place, player_name, commander_name, score, commander_image, decklist_url}]
- *   - meta_commanders (array): [{name, count, percentage, image}]
+ *   - meta_commanders (array): [{name, count, percentage, image, colors}]
  *   - color_counts (array): {'W': n, 'U': n, ...}
  *   - has_meta (bool)
  */
@@ -270,26 +270,33 @@
                                                 </div>
                                             {% endif %}
 
-                                            {# Commander bars #}
-                                            <div class="space-y-2">
+                                            {# Commander list with mana symbols #}
+                                            <div class="space-y-2.5">
                                                 {% for commander in t.meta_commanders|slice(0, 10) %}
                                                     <div class="flex items-center gap-3">
                                                         {% if commander.image %}
-                                                            <div class="flex-shrink-0 w-8 h-8 rounded overflow-hidden bg-bg-primary">
+                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg overflow-hidden bg-bg-primary ring-1 ring-white/10">
                                                                 <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                                      class="w-full h-full object-cover" loading="lazy">
                                                             </div>
+                                                        {% else %}
+                                                            <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-bg-tertiary"></div>
                                                         {% endif %}
                                                         <div class="flex-1 min-w-0">
-                                                            <div class="flex items-center justify-between mb-0.5">
+                                                            <div class="flex items-center justify-between">
                                                                 <span class="text-xs font-mono text-text-secondary truncate">{{ commander.name }}</span>
                                                                 <span class="flex-shrink-0 ml-2 text-xs text-text-muted">
                                                                     {{ commander.count }}× ({{ commander.percentage }}%)
                                                                 </span>
                                                             </div>
-                                                            <div class="h-1.5 bg-bg-primary rounded-full overflow-hidden">
-                                                                <div class="h-full bg-gradient-to-r from-brand-orange to-magic-gold rounded-full"
-                                                                     style="width: {{ commander.percentage }}%"></div>
+                                                            <div class="flex items-center gap-0.5 mt-0.5">
+                                                                {% if commander.colors|length > 0 %}
+                                                                    {% for color in commander.colors %}
+                                                                        <i class="ms ms-{{ color|lower }} ms-cost ms-shadow" title="{{ color }}"></i>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
+                                                                {% endif %}
                                                             </div>
                                                         </div>
                                                     </div>
