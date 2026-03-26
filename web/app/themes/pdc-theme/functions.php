@@ -597,10 +597,22 @@ function pdc_register_tournament_cpt() {
         'menu_icon'         => 'dashicons-awards',
         'supports'          => array('title'),
         'rewrite'           => array(
-            'slug'       => 'tournoi',
+            'slug'       => 'tournois',
             'with_front' => false,
         ),
         'capability_type'   => 'post',
     ));
 }
 add_action('init', 'pdc_register_tournament_cpt');
+
+/**
+ * Redirect old /tournoi/ URLs to /tournois/
+ */
+function pdc_redirect_old_tournament_slug() {
+    if (preg_match('#^/tournoi(/.*)?$#', $_SERVER['REQUEST_URI'], $matches)) {
+        $path = isset($matches[1]) ? $matches[1] : '/';
+        wp_redirect(home_url('/tournois' . $path), 301);
+        exit;
+    }
+}
+add_action('template_redirect', 'pdc_redirect_old_tournament_slug');
