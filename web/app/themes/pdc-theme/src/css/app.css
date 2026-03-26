@@ -132,6 +132,76 @@
   .section-divider::after {
     @apply right-[48%];
   }
+
+  /* ============================
+     Tournament Page - Compact
+     ============================ */
+
+  /* Hero section */
+  .tournament-hero {
+    border-bottom: 1px solid rgba(255, 87, 34, 0.12);
+  }
+
+  /* Meta badges */
+  .tournament-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-heading font-semibold uppercase tracking-wide;
+    @apply bg-bg-secondary/80 border border-white/10 rounded text-text-secondary;
+  }
+
+  .tournament-badge--primary {
+    @apply bg-brand-orange/10 border-brand-orange/25 text-brand-orange;
+  }
+
+  /* Winner card */
+  .tournament-winner {
+    @apply p-3 rounded-lg;
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.08) 0%, rgba(234, 179, 8, 0.02) 100%);
+    border: 1px solid rgba(234, 179, 8, 0.15);
+  }
+
+  /* Place badge */
+  .tournament-place {
+    @apply flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold font-heading;
+    @apply bg-bg-tertiary text-text-muted border border-white/5;
+  }
+
+  .tournament-place--1 {
+    @apply bg-yellow-500/20 text-yellow-400 border-yellow-500/40;
+  }
+
+  .tournament-place--2 {
+    @apply bg-slate-400/15 text-slate-300 border-slate-400/30;
+  }
+
+  .tournament-place--3 {
+    @apply bg-amber-700/15 text-amber-500 border-amber-700/30;
+  }
+
+  /* Top 8 table rows */
+  .tournament-table {
+    @apply space-y-1;
+  }
+
+  .tournament-row {
+    @apply flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200;
+    @apply bg-bg-secondary/40 hover:bg-bg-secondary/70;
+    border: 1px solid transparent;
+  }
+
+  .tournament-row:hover {
+    border-color: rgba(255, 87, 34, 0.08);
+  }
+
+  /* Meta sidebar panels */
+  .tournament-meta-panel {
+    @apply p-3 rounded-lg bg-bg-secondary/50;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  /* Commander row in meta */
+  .tournament-commander-row {
+    @apply flex items-center gap-2;
+  }
 }
 
 @layer utilities {
