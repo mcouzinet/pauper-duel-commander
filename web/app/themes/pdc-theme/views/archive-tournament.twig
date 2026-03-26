@@ -352,35 +352,33 @@
                         </h3>
 
                         <div class="tournament-meta-panel">
-                            <div class="space-y-3">
+                            <div class="space-y-2">
                                 {% for identity_key, count in global_meta.color_identity_counts %}
                                     {% set pct = (ci_total > 0) ? (count / ci_total * 100)|round : 0 %}
                                     {% set label = ci_labels[identity_key] ?? identity_key %}
 
-                                    <div class="flex items-center gap-3">
-                                        {# Mana pips #}
-                                        <div class="flex items-center gap-0.5 flex-shrink-0 w-12 justify-center">
-                                            {% if identity_key == 'C' %}
-                                                <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
-                                            {% else %}
-                                                {% for char in identity_key|split('') %}
-                                                    <i class="ms ms-{{ char|lower }} ms-cost ms-shadow" title="{{ char }}"></i>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </div>
-
-                                        <div class="flex-1 min-w-0">
-                                            <div class="flex items-center justify-between">
+                                    <div class="flex flex-col gap-1.5 py-1.5 {% if not loop.last %}border-b border-white/5{% endif %}">
+                                        {# Row 1: pips + label + stats #}
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2 min-w-0">
+                                                <div class="flex items-center gap-0.5 flex-shrink-0">
+                                                    {% if identity_key == 'C' %}
+                                                        <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
+                                                    {% else %}
+                                                        {% for char in identity_key|split('') %}
+                                                            <i class="ms ms-{{ char|lower }} ms-cost ms-shadow" title="{{ char }}"></i>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </div>
                                                 <span class="text-sm font-mono text-text-primary truncate">{{ label }}</span>
-                                                <span class="flex-shrink-0 ml-2 text-sm text-text-secondary tabular-nums">
-                                                    {{ count }}<span class="text-text-secondary/60">/{{ ci_total }}</span>
-                                                    <span class="ml-1 text-magic-gold font-semibold">{{ pct }}%</span>
-                                                </span>
                                             </div>
+                                            <span class="flex-shrink-0 ml-2 text-sm text-text-secondary tabular-nums">
+                                                {{ count }}<span class="text-text-secondary/60">/{{ ci_total }}</span>
+                                                <span class="ml-1 text-magic-gold font-semibold">{{ pct }}%</span>
+                                            </span>
                                         </div>
-
-                                        {# Bar #}
-                                        <div class="flex-shrink-0 w-16 h-2 bg-bg-primary/50 rounded-full overflow-hidden self-center">
+                                        {# Row 2: full-width bar #}
+                                        <div class="w-full h-1.5 bg-bg-primary/50 rounded-full overflow-hidden">
                                             <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
                                                  style="width: {{ ci_max > 0 ? (count / ci_max * 100)|round : 0 }}%"></div>
                                         </div>
