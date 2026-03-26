@@ -213,6 +213,14 @@
                                 {{ __('Généraux joués', 'pdc-theme') }}
                             </h3>
 
+                            {# Calculate max percentage for bar normalization #}
+                            {% set max_pct = 0 %}
+                            {% for commander in meta_commanders %}
+                                {% if commander.percentage > max_pct %}
+                                    {% set max_pct = commander.percentage %}
+                                {% endif %}
+                            {% endfor %}
+
                             <div class="space-y-3">
                                 {% for commander in meta_commanders %}
                                     <div class="tournament-commander-row">
@@ -242,6 +250,12 @@
                                                     <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
                                                 {% endif %}
                                             </div>
+                                        </div>
+
+                                        {# Bar — fixed width, normalized to max #}
+                                        <div class="flex-shrink-0 w-20 h-2 bg-bg-primary/50 rounded-full overflow-hidden self-center">
+                                            <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
+                                                 style="width: {{ max_pct > 0 ? (commander.percentage / max_pct * 100)|round : 0 }}%"></div>
                                         </div>
                                     </div>
                                 {% endfor %}

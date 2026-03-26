@@ -229,6 +229,14 @@
                     </h3>
 
                     <div class="tournament-meta-panel">
+                        {# Calculate max percentage for bar normalization #}
+                        {% set max_pct = 0 %}
+                        {% for commander in global_meta.commanders %}
+                            {% if commander.percentage > max_pct %}
+                                {% set max_pct = commander.percentage %}
+                            {% endif %}
+                        {% endfor %}
+
                         <div class="space-y-3">
                             {% for commander in global_meta.commanders %}
                                 <div class="tournament-commander-row">
@@ -264,8 +272,7 @@
                                                 <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                             </span>
                                         </div>
-                                        <div class="flex items-center gap-1 mt-0.5">
-                                            {# Mana icons #}
+                                        <div class="flex items-center gap-0.5 mt-0.5">
                                             {% if commander.colors|length > 0 %}
                                                 {% for color in commander.colors %}
                                                     <i class="ms ms-{{ color|lower }} ms-cost ms-shadow" title="{{ color }}"></i>
@@ -273,12 +280,13 @@
                                             {% else %}
                                                 <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
                                             {% endif %}
-                                            {# Bar chart inline #}
-                                            <div class="flex-1 ml-2 h-1.5 bg-bg-primary/50 rounded-full overflow-hidden">
-                                                <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
-                                                     style="width: {{ commander.percentage }}%"></div>
-                                            </div>
                                         </div>
+                                    </div>
+
+                                    {# Bar — fixed width, normalized to max #}
+                                    <div class="flex-shrink-0 w-20 h-2 bg-bg-primary/50 rounded-full overflow-hidden self-center">
+                                        <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
+                                             style="width: {{ max_pct > 0 ? (commander.percentage / max_pct * 100)|round : 0 }}%"></div>
                                     </div>
                                 </div>
                             {% endfor %}
