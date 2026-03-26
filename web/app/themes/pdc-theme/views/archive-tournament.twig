@@ -28,25 +28,114 @@
     <div class="container mx-auto px-6 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
-                {{ __('Résultats des Tournois', 'pdc-theme') }}
+                {{ __('Tournois PDC', 'pdc-theme') }}
             </h1>
             <p class="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
-                {{ __('Retrouvez les classements, le top 8 et la méta de chaque tournoi PDC organisé en boutique.', 'pdc-theme') }}
+                {{ __('Inscrivez-vous aux prochains tournois et retrouvez les résultats, top 8 et méta des événements passés.', 'pdc-theme') }}
             </p>
         </div>
     </div>
 </section>
 
-{# ---- Tournament list ---- #}
+{# ---- Upcoming tournaments ---- #}
+{% if upcoming_tournaments %}
+<section class="py-16 bg-bg-primary border-b border-magic-gold/10">
+    <div class="container mx-auto px-6">
+        <div class="max-w-5xl mx-auto">
+
+            <div class="flex items-center gap-3 mb-8">
+                <span class="relative flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+                </span>
+                <h2 class="text-3xl font-heading font-bold text-magic-gradient">
+                    {{ __('Prochains Tournois', 'pdc-theme') }}
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                {% for t in upcoming_tournaments %}
+                <div class="magic-card p-6 relative overflow-hidden group">
+                    {# Glow accent #}
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange via-magic-gold to-brand-orange"></div>
+
+                    {# Date badge #}
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors">
+                                {{ t.title }}
+                            </h3>
+                        </div>
+                        {% if t.date_formatted %}
+                        <span class="flex-shrink-0 ml-3 px-3 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-lg text-sm font-semibold text-brand-orange whitespace-nowrap">
+                            {{ t.date_formatted }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {# Info #}
+                    <div class="space-y-2 text-sm text-text-secondary mb-5">
+                        {% if t.location %}
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>{{ t.location }}{% if t.city %}, {{ t.city }}{% endif %}</span>
+                        </div>
+                        {% endif %}
+                        {% if t.player_count %}
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>{{ t.player_count }} {{ __('joueurs', 'pdc-theme') }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {# Actions #}
+                    <div class="flex flex-wrap items-center gap-3">
+                        {% if t.signup_url %}
+                        <a href="{{ t.signup_url }}" target="_blank" rel="noopener noreferrer"
+                           class="btn-primary text-sm px-5 py-2">
+                            {{ __("S'inscrire", 'pdc-theme') }}
+                            <svg class="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        <a href="{{ t.link }}"
+                           class="inline-flex items-center gap-2 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+                            {{ __('Détails', 'pdc-theme') }}
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---- Past tournament results ---- #}
 <section class="py-16 bg-bg-primary">
     <div class="container mx-auto px-6">
         <div class="max-w-5xl mx-auto">
 
-            {% if tournaments %}
+            {% if past_tournaments %}
+
+                <h2 class="text-3xl font-heading font-bold text-text-primary mb-8">
+                    {{ __('Résultats des Tournois', 'pdc-theme') }}
+                </h2>
 
                 <div class="accordion space-y-4" data-accordion-group>
 
-                    {% for t in tournaments %}
+                    {% for t in past_tournaments %}
                     <div class="accordion-item magic-card overflow-hidden transition-all duration-300"
                          data-accordion-item>
 
@@ -250,6 +339,7 @@
 
             {% else %}
 
+                {% if not upcoming_tournaments %}
                 <div class="text-center py-16">
                     <svg class="w-24 h-24 text-magic-gold/20 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
@@ -261,6 +351,11 @@
                         {{ __('Les résultats des prochains tournois seront publiés ici.', 'pdc-theme') }}
                     </p>
                 </div>
+                {% else %}
+                <p class="text-center text-text-muted py-8">
+                    {{ __('Aucun résultat de tournoi disponible pour le moment.', 'pdc-theme') }}
+                </p>
+                {% endif %}
 
             {% endif %}
 

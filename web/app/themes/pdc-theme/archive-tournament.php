@@ -127,6 +127,24 @@ foreach ($posts as $post) {
     );
 }
 
-$context['tournaments'] = $tournaments;
+// Split into upcoming vs past tournaments based on date
+$today = date('Ymd');
+$upcoming    = array();
+$past        = array();
+
+foreach ($tournaments as $t) {
+    if (!empty($t['date_raw']) && $t['date_raw'] >= $today) {
+        $upcoming[] = $t;
+    } else {
+        $past[] = $t;
+    }
+}
+
+// Upcoming: nearest first (ASC)
+usort($upcoming, fn($a, $b) => strcmp($a['date_raw'], $b['date_raw']));
+
+$context['upcoming_tournaments'] = $upcoming;
+$context['past_tournaments']     = $past;
+$context['tournaments']          = $tournaments;
 
 Timber::render('archive-tournament.twig', $context);
