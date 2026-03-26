@@ -259,11 +259,11 @@
                                     {% set color_total = color_total + count %}
                                 {% endfor %}
 
-                                <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-6">
                                     {# SVG Pie chart — circumference = 2 * pi * r = 2 * 3.1416 * 40 = 251.33 #}
                                     {% set circ = 251.33 %}
                                     <div class="flex-shrink-0">
-                                        <svg viewBox="0 0 100 100" class="w-24 h-24 tournament-pie">
+                                        <svg viewBox="0 0 100 100" class="w-32 h-32 tournament-pie">
                                             {% set cumulative = 0 %}
                                             {% for code, count in color_counts %}
                                                 {% set pct = count / color_total * 100 %}
@@ -282,12 +282,12 @@
                                         </svg>
                                     </div>
 
-                                    {# Legend #}
-                                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1.5">
+                                    {# Legend — single column, sorted by count desc (WUBRG tiebreaker) #}
+                                    <div class="flex-1 space-y-1.5">
                                         {% for code, count in color_counts %}
-                                            <div class="flex items-center gap-1.5">
+                                            <div class="flex items-center gap-2">
                                                 <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background: {{ color_hex[code] ?? '#6B7280' }};{% if code == 'B' %} border: 1px solid rgba(255,255,255,0.15);{% endif %}"></span>
-                                                <span class="text-xs text-text-secondary truncate">{{ color_labels[code] ?? code }}</span>
+                                                <span class="text-xs text-text-secondary">{{ color_labels[code] ?? code }}</span>
                                                 <span class="text-xs font-bold text-text-primary ml-auto">{{ count }}</span>
                                             </div>
                                         {% endfor %}

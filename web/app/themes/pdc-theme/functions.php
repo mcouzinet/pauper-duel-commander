@@ -549,6 +549,28 @@ function pdc_resolve_commander_card($name, array $cards_map) {
 }
 
 /**
+ * Sort color counts by count descending, with WUBRG+C order as tiebreaker.
+ *
+ * @param array $color_counts ['W' => n, 'U' => n, …]
+ * @return array Sorted color counts (preserves keys).
+ */
+function pdc_sort_color_counts(array $color_counts) {
+    $wubrg_order = array('W' => 0, 'U' => 1, 'B' => 2, 'R' => 3, 'G' => 4, 'C' => 5);
+
+    uksort($color_counts, function($a, $b) use ($color_counts, $wubrg_order) {
+        // Sort by count descending
+        $diff = $color_counts[$b] - $color_counts[$a];
+        if ($diff !== 0) {
+            return $diff;
+        }
+        // Tiebreaker: WUBRG order
+        return ($wubrg_order[$a] ?? 9) - ($wubrg_order[$b] ?? 9);
+    });
+
+    return $color_counts;
+}
+
+/**
  * Register Tournament Custom Post Type
  */
 function pdc_register_tournament_cpt() {

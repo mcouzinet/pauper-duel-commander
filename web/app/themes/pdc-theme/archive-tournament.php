@@ -122,7 +122,7 @@ foreach ($posts as $post) {
         'signup_url'      => $fields['tournament_signup_url'] ?? '',
         'top8'            => $top8,
         'meta_commanders' => $meta_commanders,
-        'color_counts'    => $color_counts,
+        'color_counts'    => pdc_sort_color_counts($color_counts),
         'has_meta'        => !empty($meta_commanders),
     );
 }
