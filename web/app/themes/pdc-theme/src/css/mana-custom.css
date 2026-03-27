@@ -36,8 +36,9 @@
 }
 
 /* Ensure consistent sizing in different contexts */
-.decklist-card .mana-cost-wrapper .ms-cost {
-  font-size: 1em;
+.decklist-card .mana-cost-wrapper .ms-cost,
+.card-hover-trigger .mana-cost-wrapper .ms-cost {
+  font-size: 0.85em;
 }
 
 /* Commander mana cost - larger */
