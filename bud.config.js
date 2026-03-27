@@ -4,7 +4,7 @@ export default async (app) => {
     .setPath('@dist', 'web/app/themes/pdc-theme/public')
     .entry('app', ['@src/js/app.js'])
     .entry('css/editor', ['@src/css/editor.css'])
-    .assets(['img', 'video'])
+    .assets(['img', 'video', 'font'])
     .use([
       '@roots/bud-tailwindcss',
     ]);

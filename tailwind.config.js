@@ -77,6 +77,7 @@ export default {
         'display': ['Barlow Condensed', 'Impact', 'sans-serif'],
         'heading': ['Barlow Condensed', 'Impact', 'sans-serif'],
         'body': ['Inter', 'system-ui', 'sans-serif'],
+        'beleren': ['Beleren', 'Barlow Condensed', 'serif'],
       },
       backgroundImage: {
         'gradient-orange': 'linear-gradient(135deg, #FF7043 0%, #FF5722 50%, #E64A19 100%)',

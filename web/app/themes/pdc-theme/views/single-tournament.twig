@@ -126,7 +126,7 @@
                                     {% endif %}
                                     <div class="flex-1 min-w-0">
                                         <p class="font-bold text-sm sm:text-base text-yellow-300 truncate">{{ winner.player_name }}</p>
-                                        <p class="text-xs sm:text-sm text-yellow-200/60 font-mono truncate">{{ winner.commander_name }}</p>
+                                        <p class="text-xs sm:text-sm text-yellow-200/60 font-beleren truncate">{{ winner.commander_name }}</p>
                                     </div>
                                     {% if winner.score %}
                                         <span class="text-xs font-mono text-yellow-400/70 flex-shrink-0">{{ winner.score }}</span>
@@ -170,7 +170,7 @@
 
                                         <div class="flex-1 min-w-0">
                                             <p class="text-sm font-semibold text-text-primary truncate leading-tight">{{ entry.player_name }}</p>
-                                            <p class="text-xs text-text-muted font-mono truncate leading-tight">{{ entry.commander_name }}</p>
+                                            <p class="text-xs text-text-muted font-beleren truncate leading-tight">{{ entry.commander_name }}</p>
                                         </div>
 
                                         {% if entry.score %}
@@ -235,7 +235,7 @@
 
                                         <div class="flex-1 min-w-0">
                                             <div class="flex items-center justify-between gap-1">
-                                                <span class="text-xs sm:text-sm font-mono text-text-primary truncate">{{ commander.name }}</span>
+                                                <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ commander.name }}</span>
                                                 <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
                                                     {{ commander.count }}<span class="text-text-secondary/60">/{{ player_count }}</span>
                                                     <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
