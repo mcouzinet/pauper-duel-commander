@@ -125,12 +125,12 @@
                                         </div>
                                     {% endif %}
                                     <div class="flex-1 min-w-0">
-                                        <p class="font-bold text-sm sm:text-base text-yellow-300 truncate">{{ winner.player_name }}</p>
                                         {% set cmd_parts = winner.commander_name|split(' // ') %}
-                                        <p class="text-xs sm:text-sm text-yellow-200/60 font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
+                                        <p class="font-bold text-sm sm:text-base text-yellow-300 font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
                                         {% if cmd_parts|length > 1 %}
                                             <p class="text-yellow-200/40 font-beleren truncate leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</p>
                                         {% endif %}
+                                        <p class="text-xs text-yellow-200/60 truncate">{{ winner.player_name }}</p>
                                     </div>
                                     {% if winner.score %}
                                         <span class="text-xs font-mono text-yellow-400/70 flex-shrink-0">{{ winner.score }}</span>
@@ -173,12 +173,12 @@
                                         {% endif %}
 
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-semibold text-text-primary truncate leading-tight">{{ entry.player_name }}</p>
                                             {% set cmd_parts = entry.commander_name|split(' // ') %}
-                                            <p class="text-xs text-text-muted font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
+                                            <p class="text-sm font-semibold text-text-primary font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
                                             {% if cmd_parts|length > 1 %}
                                                 <p class="text-text-muted/60 font-beleren truncate leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</p>
                                             {% endif %}
+                                            <p class="text-xs text-text-muted truncate leading-tight">{{ entry.player_name }}</p>
                                         </div>
 
                                         {% if entry.score %}
