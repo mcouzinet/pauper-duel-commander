@@ -29,9 +29,11 @@ $today = date('Ymd');
 // Aggregate commander counts across all past tournaments
 // ----------------------------------------------------------------
 $global_commander_counts = array();
+$global_canon_names      = array(); // strtolower(name) => display name
 $global_total_players    = 0;
 $global_tournament_count = 0;
 $top4_commander_counts   = array();
+$top4_canon_names        = array();
 $top4_total              = 0;
 
 foreach ($posts as $post) {
@@ -53,7 +55,11 @@ foreach ($posts as $post) {
 
     $global_tournament_count++;
     foreach ($commander_counts as $name => $count) {
-        $global_commander_counts[$name] = ($global_commander_counts[$name] ?? 0) + $count;
+        $key = strtolower($name);
+        if (!isset($global_canon_names[$key])) {
+            $global_canon_names[$key] = $name;
+        }
+        $global_commander_counts[$key] = ($global_commander_counts[$key] ?? 0) + $count;
         $global_total_players += $count;
     }
 
@@ -62,7 +68,11 @@ foreach ($posts as $post) {
         $place = (int) ($entry['place'] ?? 0);
         $name  = $entry['commander_name'] ?? '';
         if ($place >= 1 && $place <= 4 && $name !== '') {
-            $top4_commander_counts[$name] = ($top4_commander_counts[$name] ?? 0) + 1;
+            $key = strtolower($name);
+            if (!isset($top4_canon_names[$key])) {
+                $top4_canon_names[$key] = $name;
+            }
+            $top4_commander_counts[$key] = ($top4_commander_counts[$key] ?? 0) + 1;
             $top4_total++;
         }
     }
@@ -73,7 +83,8 @@ foreach ($posts as $post) {
 // ----------------------------------------------------------------
 arsort($global_commander_counts);
 
-$global_expanded = pdc_expand_commander_names(array_keys($global_commander_counts));
+$global_display_names = array_map(fn($key) => $global_canon_names[$key], array_keys($global_commander_counts));
+$global_expanded = pdc_expand_commander_names($global_display_names);
 $global_unique   = array_values(array_unique(array_filter($global_expanded)));
 $global_cards    = !empty($global_unique)
     ? Scryfall_Service::get_cards_by_names($global_unique)
@@ -82,7 +93,8 @@ $global_cards    = !empty($global_unique)
 $global_meta_commanders = array();
 $global_color_counts    = array();
 
-foreach ($global_commander_counts as $name => $count) {
+foreach ($global_commander_counts as $key => $count) {
+    $name      = $global_canon_names[$key];
     $card_data = pdc_resolve_commander_card($name, $global_cards);
 
     if ($card_data && !empty($card_data->color_identity)) {
@@ -126,7 +138,8 @@ $context['global_meta'] = array(
 // ----------------------------------------------------------------
 arsort($top4_commander_counts);
 
-$top4_expanded = pdc_expand_commander_names(array_keys($top4_commander_counts));
+$top4_display_names = array_map(fn($key) => $top4_canon_names[$key], array_keys($top4_commander_counts));
+$top4_expanded = pdc_expand_commander_names($top4_display_names);
 $top4_unique   = array_values(array_unique(array_filter($top4_expanded)));
 // Reuse global_cards when possible, fetch missing ones
 $top4_missing = array_diff($top4_unique, $global_unique);
@@ -138,7 +151,8 @@ if (!empty($top4_missing)) {
 $top4_meta_commanders = array();
 $top4_color_counts    = array();
 
-foreach ($top4_commander_counts as $name => $count) {
+foreach ($top4_commander_counts as $key => $count) {
+    $name      = $top4_canon_names[$key];
     $card_data = pdc_resolve_commander_card($name, $top4_cards);
 
     if ($card_data && !empty($card_data->color_identity)) {

@@ -427,8 +427,9 @@ add_action('save_post', 'pdc_invalidate_ban_list_on_save');
  * @return array [ 'Commander Name' => count, … ] sorted by count desc.
  */
 function pdc_parse_meta_list($text) {
-    $counts = array();
-    $lines  = preg_split('/\r\n|\r|\n/', trim($text));
+    $counts      = array();
+    $canon_names = array(); // strtolower(name) => first-seen display name
+    $lines       = preg_split('/\r\n|\r|\n/', trim($text));
 
     foreach ($lines as $line) {
         $line = trim($line);
@@ -449,11 +450,22 @@ function pdc_parse_meta_list($text) {
             continue;
         }
 
-        $counts[$name] = ($counts[$name] ?? 0) + $qty;
+        // Normalize key to avoid case-sensitivity duplicates
+        $key = strtolower($name);
+        if (!isset($canon_names[$key])) {
+            $canon_names[$key] = $name;
+        }
+        $counts[$key] = ($counts[$key] ?? 0) + $qty;
     }
 
     arsort($counts);
-    return $counts;
+
+    // Re-key with canonical display names
+    $result = array();
+    foreach ($counts as $key => $count) {
+        $result[$canon_names[$key]] = $count;
+    }
+    return $result;
 }
 
 /**
