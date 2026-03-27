@@ -99,9 +99,10 @@
 
                 {# ===== Left: Top 8 (3 cols) ===== #}
                 <div class="lg:col-span-3 min-w-0">
+                    {% set top_label = top8|length <= 4 ? 'Top 4' : 'Top 8' %}
                     <h2 class="text-lg font-heading font-bold text-text-primary uppercase tracking-wide mb-4 flex items-center gap-2">
                         <span class="w-1 h-5 bg-brand-orange rounded-full"></span>
-                        {{ __('Top 8', 'pdc-theme') }}
+                        {{ top_label }}
                     </h2>
 
                     {% if top8 %}
