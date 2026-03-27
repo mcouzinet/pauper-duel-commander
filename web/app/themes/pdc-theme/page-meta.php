@@ -26,14 +26,13 @@ $posts = Timber::get_posts(array(
 $today = date('Ymd');
 
 // ----------------------------------------------------------------
-// Per-tournament meta + global aggregation
+// Aggregate commander counts across all past tournaments
 // ----------------------------------------------------------------
 $global_commander_counts = array();
 $global_total_players    = 0;
-$global_color_counts     = array();
 $global_tournament_count = 0;
-
-$tournaments_meta = array();
+$top4_commander_counts   = array();
+$top4_total              = 0;
 
 foreach ($posts as $post) {
     $fields = get_fields($post->ID) ?: array();
@@ -45,7 +44,6 @@ foreach ($posts as $post) {
         continue;
     }
 
-    // Parse meta list textarea into commander counts
     $meta_raw         = $fields['tournament_meta_list'] ?? '';
     $commander_counts = pdc_parse_meta_list($meta_raw);
 
@@ -53,80 +51,20 @@ foreach ($posts as $post) {
         continue;
     }
 
-    // Collect all commander names and expand partner pairs for Scryfall
-    $commander_names = array();
-    foreach (array_keys($commander_counts) as $name) {
-        $commander_names[] = $name;
-    }
-    $expanded_names = pdc_expand_commander_names($commander_names);
-
-    $unique_names = array_values(array_unique(array_filter($expanded_names)));
-    $cards_map    = !empty($unique_names)
-        ? Scryfall_Service::get_cards_by_names($unique_names)
-        : array();
-
-    // Compute per-tournament stats
-    $color_counts       = array();
-    $total_participants = array_sum($commander_counts);
-
-    foreach ($commander_counts as $name => $count) {
-        $card_data = pdc_resolve_commander_card($name, $cards_map);
-        if ($card_data && !empty($card_data->color_identity)) {
-            foreach ($card_data->color_identity as $color) {
-                $color_counts[$color] = ($color_counts[$color] ?? 0) + $count;
-            }
-        } elseif ($card_data) {
-            $color_counts['C'] = ($color_counts['C'] ?? 0) + $count;
-        }
-    }
-
-    $meta_commanders = array();
-    foreach ($commander_counts as $name => $count) {
-        $card_data = pdc_resolve_commander_card($name, $cards_map);
-        $meta_commanders[] = array(
-            'name'       => $name,
-            'count'      => $count,
-            'percentage' => $total_participants > 0 ? round($count / $total_participants * 100) : 0,
-            'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
-            'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
-        );
-    }
-
-    // Color identity breakdown for this tournament
-    $color_identity_counts = array();
-    foreach ($meta_commanders as $cmd) {
-        $colors = $cmd['colors'];
-        sort($colors);
-        $identity_key = !empty($colors) ? implode('', $colors) : 'C';
-        $color_identity_counts[$identity_key] = ($color_identity_counts[$identity_key] ?? 0) + $cmd['count'];
-    }
-    arsort($color_identity_counts);
-
-    // Format date
-    $date_formatted = '';
-    if ($date_raw) {
-        $dt = DateTime::createFromFormat('Ymd', $date_raw);
-        if ($dt) {
-            $date_formatted = wp_date('j F Y', $dt->getTimestamp());
-        }
-    }
-
-    $tournaments_meta[] = array(
-        'title'                 => $post->title,
-        'link'                  => $post->link,
-        'date_formatted'        => $date_formatted,
-        'player_count'          => (int) ($fields['tournament_player_count'] ?? 0),
-        'meta_commanders'       => $meta_commanders,
-        'color_counts'          => pdc_sort_color_counts($color_counts),
-        'color_identity_counts' => $color_identity_counts,
-        'total_participants'    => $total_participants,
-    );
-
-    // Accumulate global stats
     $global_tournament_count++;
-    foreach ($meta_commanders as $cmd) {
-        $global_commander_counts[$cmd['name']] = ($global_commander_counts[$cmd['name']] ?? 0) + $cmd['count'];
-        $global_total_players += $cmd['count'];
+    foreach ($commander_counts as $name => $count) {
+        $global_commander_counts[$name] = ($global_commander_counts[$name] ?? 0) + $count;
+        $global_total_players += $count;
+    }
+
+    // Collect top 4 commanders from this tournament
+    foreach (($fields['top8'] ?? array()) as $entry) {
+        $place = (int) ($entry['place'] ?? 0);
+        $name  = $entry['commander_name'] ?? '';
+        if ($place >= 1 && $place <= 4 && $name !== '') {
+            $top4_commander_counts[$name] = ($top4_commander_counts[$name] ?? 0) + 1;
+            $top4_total++;
+        }
     }
 }
 
@@ -183,6 +121,59 @@ $context['global_meta'] = array(
     'has_data'              => !empty($global_meta_commanders),
 );
 
-$context['tournaments_meta'] = $tournaments_meta;
+// ----------------------------------------------------------------
+// Top 4 meta: resolve Scryfall data for top 4 commanders
+// ----------------------------------------------------------------
+arsort($top4_commander_counts);
+
+$top4_expanded = pdc_expand_commander_names(array_keys($top4_commander_counts));
+$top4_unique   = array_values(array_unique(array_filter($top4_expanded)));
+// Reuse global_cards when possible, fetch missing ones
+$top4_missing = array_diff($top4_unique, $global_unique);
+$top4_cards   = $global_cards;
+if (!empty($top4_missing)) {
+    $top4_cards = array_merge($top4_cards, Scryfall_Service::get_cards_by_names(array_values($top4_missing)));
+}
+
+$top4_meta_commanders = array();
+$top4_color_counts    = array();
+
+foreach ($top4_commander_counts as $name => $count) {
+    $card_data = pdc_resolve_commander_card($name, $top4_cards);
+
+    if ($card_data && !empty($card_data->color_identity)) {
+        foreach ($card_data->color_identity as $color) {
+            $top4_color_counts[$color] = ($top4_color_counts[$color] ?? 0) + $count;
+        }
+    } elseif ($card_data) {
+        $top4_color_counts['C'] = ($top4_color_counts['C'] ?? 0) + $count;
+    }
+
+    $top4_meta_commanders[] = array(
+        'name'       => $name,
+        'count'      => $count,
+        'percentage' => $top4_total > 0 ? round($count / $top4_total * 100) : 0,
+        'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
+    );
+}
+
+$top4_color_identity_counts = array();
+foreach ($top4_meta_commanders as $cmd) {
+    $colors = $cmd['colors'];
+    sort($colors);
+    $identity_key = !empty($colors) ? implode('', $colors) : 'C';
+    $top4_color_identity_counts[$identity_key] = ($top4_color_identity_counts[$identity_key] ?? 0) + $cmd['count'];
+}
+arsort($top4_color_identity_counts);
+
+$context['top4_meta'] = array(
+    'commanders'            => $top4_meta_commanders,
+    'color_counts'          => pdc_sort_color_counts($top4_color_counts),
+    'color_identity_counts' => $top4_color_identity_counts,
+    'total'                 => $top4_total,
+    'tournament_count'      => $global_tournament_count,
+    'has_data'              => !empty($top4_meta_commanders),
+);
 
 Timber::render('page-meta.twig', $context);
