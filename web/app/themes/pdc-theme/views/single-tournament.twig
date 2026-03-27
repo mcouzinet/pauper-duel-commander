@@ -129,7 +129,7 @@
                                         {% set cmd_parts = winner.commander_name|split(' // ') %}
                                         <p class="text-xs sm:text-sm text-yellow-200/60 font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
                                         {% if cmd_parts|length > 1 %}
-                                            <p class="text-[10px] sm:text-xs text-yellow-200/40 font-beleren truncate leading-tight">+ {{ cmd_parts[1] }}</p>
+                                            <p class="text-yellow-200/40 font-beleren truncate leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</p>
                                         {% endif %}
                                     </div>
                                     {% if winner.score %}
@@ -177,7 +177,7 @@
                                             {% set cmd_parts = entry.commander_name|split(' // ') %}
                                             <p class="text-xs text-text-muted font-beleren truncate leading-tight">{{ cmd_parts[0] }}</p>
                                             {% if cmd_parts|length > 1 %}
-                                                <p class="text-[10px] text-text-muted/60 font-beleren truncate leading-tight">+ {{ cmd_parts[1] }}</p>
+                                                <p class="text-text-muted/60 font-beleren truncate leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</p>
                                             {% endif %}
                                         </div>
 
@@ -242,17 +242,17 @@
                                         {% endif %}
 
                                         <div class="flex-1 min-w-0">
+                                            {% set cmd_parts = commander.name|split(' // ') %}
                                             <div class="flex items-center justify-between gap-1">
-                                                {% set cmd_parts = commander.name|split(' // ') %}
-                                                <span class="text-xs sm:text-sm font-beleren text-text-primary truncate block">{{ cmd_parts[0] }}</span>
-                                                {% if cmd_parts|length > 1 %}
-                                                    <span class="text-[10px] sm:text-xs font-beleren text-text-secondary/60 truncate block leading-tight">+ {{ cmd_parts[1] }}</span>
-                                                {% endif %}
+                                                <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ cmd_parts[0] }}</span>
                                                 <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
                                                     {{ commander.count }}<span class="text-text-secondary/60">/{{ player_count }}</span>
                                                     <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                                 </span>
                                             </div>
+                                            {% if cmd_parts|length > 1 %}
+                                                <span class="font-beleren text-text-secondary/60 truncate block leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
+                                            {% endif %}
                                             <div class="flex items-center gap-0.5 mt-0.5">
                                                 {% if commander.colors|length > 0 %}
                                                     {% for color in commander.colors %}

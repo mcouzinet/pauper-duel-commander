@@ -138,13 +138,17 @@
                                     {% endif %}
 
                                     <div class="flex-1 min-w-0">
+                                        {% set cmd_parts = commander.name|split(' // ') %}
                                         <div class="flex items-center justify-between gap-1">
-                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ commander.name }}</span>
+                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ cmd_parts[0] }}</span>
                                             <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
                                                 {{ commander.count }}<span class="text-text-secondary/60">/{{ global_meta.total_players }}</span>
                                                 <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                             </span>
                                         </div>
+                                        {% if cmd_parts|length > 1 %}
+                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
+                                        {% endif %}
                                         <div class="flex items-center gap-0.5 mt-0.5">
                                             {% if commander.colors|length > 0 %}
                                                 {% for color in commander.colors %}
@@ -352,13 +356,17 @@
                                     {% endif %}
 
                                     <div class="flex-1 min-w-0">
+                                        {% set cmd_parts = commander.name|split(' // ') %}
                                         <div class="flex items-center justify-between gap-1">
-                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ commander.name }}</span>
+                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ cmd_parts[0] }}</span>
                                             <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
                                                 {{ commander.count }}<span class="text-text-secondary/60">/{{ top4_meta.total }}</span>
                                                 <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
                                             </span>
                                         </div>
+                                        {% if cmd_parts|length > 1 %}
+                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
+                                        {% endif %}
                                         <div class="flex items-center gap-0.5 mt-0.5">
                                             {% if commander.colors|length > 0 %}
                                                 {% for color in commander.colors %}
