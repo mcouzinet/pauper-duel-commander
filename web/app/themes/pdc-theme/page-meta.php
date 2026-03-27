@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Méta
+ * Template Name: Meta
  *
  * Dedicated page for PDC metagame statistics.
  * Aggregates commander data across all past tournaments.
