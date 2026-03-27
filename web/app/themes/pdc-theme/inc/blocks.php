@@ -49,9 +49,6 @@ function pdc_acf_block_render_callback($attributes, $content = '', $is_preview =
     // Get ACF fields for this block
     $fields = get_fields();
 
-    // DEBUG: Log block rendering (remove this after testing)
-    error_log('ACF Block Render: ' . $slug . ' | Fields: ' . (empty($fields) ? 'EMPTY' : 'OK') . ' | Preview: ' . ($is_preview ? 'YES' : 'NO'));
-
     // Prepare minimal context (avoid rebuilding global context for performance)
     $context = [];
 
@@ -75,21 +72,16 @@ function pdc_acf_block_render_callback($attributes, $content = '', $is_preview =
     // Render the block template (use underscore version for backward compatibility)
     $template_path = 'blocks/' . $template_slug . '.twig';
 
-    // DEBUG: Check if template exists
+    // Check if template exists
     $full_path = get_template_directory() . '/views/' . $template_path;
     if (!file_exists($full_path)) {
-        error_log('ACF Block Template NOT FOUND: ' . $full_path);
-        echo '<!-- Template not found: ' . esc_html($template_path) . ' -->';
         return;
     }
 
     try {
         Timber\Timber::render($template_path, $context);
     } catch (Exception $e) {
-        error_log('ACF Block Render Error: ' . $e->getMessage());
-        if (!$is_preview) {
-            echo '<!-- Block render error: ' . esc_html($e->getMessage()) . ' -->';
-        }
+        // Silently fail in production
     }
 }
 

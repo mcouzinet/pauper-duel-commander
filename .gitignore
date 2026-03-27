@@ -31,3 +31,10 @@ node_modules
 .budfiles
 
 .DS_Store
+
+# Security
+phpinfo.php
+web/phpinfo.php
+
+# Backup files
+*.po~
