@@ -85,10 +85,13 @@ $color_identity_counts  = array();
 foreach ($all_posts as $post) {
     $commander_name = function_exists('get_field') ? get_field('commander', $post->ID) : '';
 
+    $partner_name = function_exists('get_field') ? get_field('partner', $post->ID) : '';
+
     $post_data = array(
         'post'            => $post,
         'commander_image' => '',
         'commander_name'  => $commander_name ?: '',
+        'partner_name'    => $partner_name ?: '',
         'color_identity'  => 'C',
     );
 

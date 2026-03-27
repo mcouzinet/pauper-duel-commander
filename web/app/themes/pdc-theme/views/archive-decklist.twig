@@ -143,6 +143,11 @@
                                         <h2 class="text-2xl font-beleren font-bold text-text-primary group-hover:text-brand-orange transition-colors mt-2 line-clamp-2">
                                             {{ item.commander_name ?: item.post.title }}
                                         </h2>
+                                        {% if item.partner_name %}
+                                            <p class="text-sm font-beleren text-magic-gold/70 mt-1 truncate">
+                                                + {{ item.partner_name }}
+                                            </p>
+                                        {% endif %}
 
                                         {# Author - Nom du joueur caché
                                         {% if item.deck_author %}
