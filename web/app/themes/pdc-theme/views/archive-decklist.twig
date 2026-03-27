@@ -3,10 +3,11 @@
  * Archive Decklist Template
  *
  * Variables:
- * - posts (array): Array of decklist posts
- * - posts.pagination (array): Pagination data (Timber 2.0)
- * - all_authors, all_archetypes, all_colors (array): Terms for filters
- * - current_author, current_archetype, current_color (string): Active filters
+ * - deck_posts (array): Enriched decklist posts with commander data
+ * - pagination (array): Manual pagination data {current, total, pages, prev, next}
+ * - all_archetypes (array): Archetype terms for filter
+ * - color_identities (array): [{key, label, count}] Color identity options
+ * - current_archetype, current_color_identity (string): Active filters
  */
 #}
 
@@ -42,23 +43,7 @@
 <section class="py-8 bg-bg-secondary/50 border-b border-magic-gold/10">
     <div class="container mx-auto px-6">
         <div class="max-w-7xl mx-auto">
-            <form method="get" class="grid md:grid-cols-3 gap-4">
-
-                <div>
-                    <label class="block text-sm font-semibold text-text-secondary mb-2">
-                        {{ __('Auteur', 'pdc-theme') }}
-                    </label>
-                    <select name="deck_author"
-                            class="w-full px-4 py-2 bg-bg-primary border border-magic-gold/20 rounded-lg text-text-primary focus:border-brand-orange focus:outline-none transition-colors"
-                            onchange="this.form.submit()">
-                        <option value="">{{ __('Tous les auteurs', 'pdc-theme') }}</option>
-                        {% for author in all_authors %}
-                            <option value="{{ author.slug }}" {{ current_author == author.slug ? 'selected' : '' }}>
-                                {{ author.name }} ({{ author.count }})
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+            <form method="get" class="grid md:grid-cols-2 gap-4">
 
                 <div>
                     <label class="block text-sm font-semibold text-text-secondary mb-2">
@@ -78,22 +63,22 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-text-secondary mb-2">
-                        {{ __('Couleur', 'pdc-theme') }}
+                        {{ __('Identité de couleur', 'pdc-theme') }}
                     </label>
-                    <select name="deck_color"
+                    <select name="color_identity"
                             class="w-full px-4 py-2 bg-bg-primary border border-magic-gold/20 rounded-lg text-text-primary focus:border-brand-orange focus:outline-none transition-colors"
                             onchange="this.form.submit()">
                         <option value="">{{ __('Toutes les couleurs', 'pdc-theme') }}</option>
-                        {% for color in all_colors %}
-                            <option value="{{ color.slug }}" {{ current_color == color.slug ? 'selected' : '' }}>
-                                {{ color.name }} ({{ color.count }})
+                        {% for identity in color_identities %}
+                            <option value="{{ identity.key }}" {{ current_color_identity == identity.key ? 'selected' : '' }}>
+                                {{ identity.label }} ({{ identity.count }})
                             </option>
                         {% endfor %}
                     </select>
                 </div>
 
-                {% if current_author or current_archetype or current_color %}
-                    <div class="md:col-span-3 flex justify-center">
+                {% if current_archetype or current_color_identity %}
+                    <div class="md:col-span-2 flex justify-center">
                         <a href="{{ site.url }}/decklist"
                            class="text-sm text-brand-orange hover:text-magic-gold transition-colors">
                             {{ __('Réinitialiser les filtres', 'pdc-theme') }}
@@ -176,28 +161,24 @@
                 </div>
 
                 {# Pagination #}
-                {% if posts.pagination %}
+                {% if pagination.total > 1 %}
                     <div class="flex justify-center gap-2">
-                        {% if posts.pagination.prev %}
-                            <a href="{{ posts.pagination.prev.link }}"
+                        {% if pagination.prev %}
+                            <a href="{{ pagination.prev.link }}"
                                class="px-4 py-2 bg-bg-secondary border border-magic-gold/20 rounded-lg text-text-primary hover:border-brand-orange hover:text-brand-orange transition-colors">
                                 {{ __('Précédent', 'pdc-theme') }}
                             </a>
                         {% endif %}
 
-                        {% for page in posts.pagination.pages %}
-                            {% if page.link %}
-                                <a href="{{ page.link }}"
-                                   class="px-4 py-2 {{ page.current ? 'bg-brand-orange text-white' : 'bg-bg-secondary border border-magic-gold/20 text-text-primary hover:border-brand-orange hover:text-brand-orange' }} rounded-lg transition-colors">
-                                    {{ page.title }}
-                                </a>
-                            {% else %}
-                                <span class="px-4 py-2 text-text-muted">{{ page.title }}</span>
-                            {% endif %}
+                        {% for page in pagination.pages %}
+                            <a href="{{ page.link }}"
+                               class="px-4 py-2 {{ page.current ? 'bg-brand-orange text-white' : 'bg-bg-secondary border border-magic-gold/20 text-text-primary hover:border-brand-orange hover:text-brand-orange' }} rounded-lg transition-colors">
+                                {{ page.title }}
+                            </a>
                         {% endfor %}
 
-                        {% if posts.pagination.next %}
-                            <a href="{{ posts.pagination.next.link }}"
+                        {% if pagination.next %}
+                            <a href="{{ pagination.next.link }}"
                                class="px-4 py-2 bg-bg-secondary border border-magic-gold/20 rounded-lg text-text-primary hover:border-brand-orange hover:text-brand-orange transition-colors">
                                 {{ __('Suivant', 'pdc-theme') }}
                             </a>
