@@ -68,12 +68,11 @@ add_action('acf/init', function() {
             array(
                 'key'           => 'field_tournament_details',
                 'label'         => 'Informations complémentaires',
-                'instructions'  => 'Infos libres : horaire, PAF, rondes, récompenses, ambiance…',
+                'instructions'  => 'Infos libres : horaire, PAF, rondes, récompenses, ambiance… Les retours à la ligne sont conservés.',
                 'name'          => 'tournament_details',
-                'type'          => 'wysiwyg',
-                'tabs'          => 'all',
-                'toolbar'       => 'basic',
-                'media_upload'  => 0,
+                'type'          => 'textarea',
+                'rows'          => 10,
+                'new_lines'     => 'wpautop',
                 'required'      => 0,
             ),
 
