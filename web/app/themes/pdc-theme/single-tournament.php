@@ -11,9 +11,14 @@
 
 use Timber\Timber;
 
+require_once get_template_directory() . '/inc/class-deck-validator.php';
+
 $context = Timber::context();
 $post    = Timber::get_post();
 $fields  = get_fields($post->ID) ?: array();
+
+// Fetch banned card names for visual indicator
+$banned_names = Deck_Validator::get_banned_card_names();
 
 // Parse meta list textarea into commander counts
 $meta_raw        = $fields['tournament_meta_list'] ?? '';
@@ -43,6 +48,17 @@ $top8 = array();
 foreach (($fields['top8'] ?? array()) as $entry) {
     $card_data = pdc_resolve_commander_card($entry['commander_name'] ?? '', $cards_map);
 
+    // Check if any part of the commander name is banned
+    $cmd_name = $entry['commander_name'] ?? '';
+    $cmd_parts = array_map('trim', explode(' // ', $cmd_name));
+    $is_banned = false;
+    foreach ($cmd_parts as $part) {
+        if (in_array(strtolower($part), $banned_names, true)) {
+            $is_banned = true;
+            break;
+        }
+    }
+
     $top8[] = array(
         'place'           => (int) ($entry['place'] ?? 0),
         'player_name'     => $entry['player_name'] ?? '',
@@ -50,6 +66,7 @@ foreach (($fields['top8'] ?? array()) as $entry) {
         'score'           => $entry['score'] ?? '',
         'commander_image' => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
         'decklist_url'    => !empty($entry['decklist_post']) ? get_permalink($entry['decklist_post']) : null,
+        'is_banned'       => $is_banned,
     );
 }
 usort($top8, fn($a, $b) => $a['place'] - $b['place']);
@@ -74,12 +91,24 @@ foreach ($commander_counts as $name => $count) {
 $meta_commanders = array();
 foreach ($commander_counts as $name => $count) {
     $card_data = pdc_resolve_commander_card($name, $cards_map);
+
+    // Check if any part of the commander name is banned
+    $meta_cmd_parts = array_map('trim', explode(' // ', $name));
+    $meta_is_banned = false;
+    foreach ($meta_cmd_parts as $part) {
+        if (in_array(strtolower($part), $banned_names, true)) {
+            $meta_is_banned = true;
+            break;
+        }
+    }
+
     $meta_commanders[] = array(
         'name'       => $name,
         'count'      => $count,
         'percentage' => $total_participants > 0 ? round($count / $total_participants * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
+        'is_banned'  => $meta_is_banned,
     );
 }
 

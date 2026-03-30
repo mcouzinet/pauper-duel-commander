@@ -99,9 +99,9 @@
                     {% for item in deck_posts %}
                         <article class="group relative">
                             <a href="{{ item.post.link }}" class="block h-full">
-                                <div class="relative overflow-hidden rounded-xl bg-bg-secondary border border-magic-gold/10 hover:border-brand-orange/40 transition-all duration-300 shadow-card hover:shadow-card-hover h-full flex flex-col">
+                                <div class="relative overflow-hidden rounded-xl bg-bg-secondary border {{ item.is_banned ? 'border-red-500/30' : 'border-magic-gold/10' }} hover:border-brand-orange/40 transition-all duration-300 shadow-card hover:shadow-card-hover h-full flex flex-col">
                                     {# Commander Image #}
-                                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-bg-secondary to-bg-primary flex-shrink-0">
+                                    <div class="aspect-[4/3] overflow-hidden bg-gradient-to-br from-bg-secondary to-bg-primary flex-shrink-0 relative {{ item.is_banned ? 'grayscale' : '' }}">
                                         {% if item.commander_image %}
                                             <img src="{{ item.commander_image }}"
                                                  alt="{{ item.commander_name }}"
@@ -112,6 +112,11 @@
                                                 <svg class="w-16 h-16 text-magic-gold/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                                                 </svg>
+                                            </div>
+                                        {% endif %}
+                                        {% if item.is_banned %}
+                                            <div class="absolute top-2 right-2 px-2 py-1 bg-red-600/90 border border-red-500/50 rounded text-[10px] font-bold text-white uppercase tracking-wider leading-none shadow-lg">
+                                                {{ __('Banned', 'pdc-theme') }}
                                             </div>
                                         {% endif %}
                                     </div>
@@ -140,11 +145,11 @@
                                         </div>
 
                                         {# Title: Commander Name #}
-                                        <h2 class="text-2xl font-beleren font-bold text-text-primary group-hover:text-brand-orange transition-colors mt-2 line-clamp-2">
+                                        <h2 class="text-2xl font-beleren font-bold text-text-primary group-hover:text-brand-orange transition-colors mt-2 line-clamp-2 {{ item.is_banned ? 'line-through decoration-red-500/70' : '' }}">
                                             {{ item.commander_name ?: item.post.title }}
                                         </h2>
                                         {% if item.partner_name %}
-                                            <p class="text-sm font-beleren text-magic-gold/70 mt-1 truncate">
+                                            <p class="text-sm font-beleren text-magic-gold/70 mt-1 truncate {{ item.is_banned ? 'line-through decoration-red-500/70' : '' }}">
                                                 + {{ item.partner_name }}
                                             </p>
                                         {% endif %}

@@ -34,11 +34,18 @@
                     <div class="md:col-span-4 lg:col-span-3">
                         {% if deck.commander and deck.commander.image_url %}
                             <div class="sticky top-24">
-                                <div class="group">
+                                <div class="group relative">
                                     <img src="{{ deck.commander.image_url }}"
                                          alt="{{ deck.commander.name }}"
-                                         class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
+                                         class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow {{ is_banned ? 'grayscale' : '' }}"
                                          loading="eager">
+                                    {% if is_banned %}
+                                        <div class="absolute top-3 left-3 right-3">
+                                            <div class="px-3 py-1.5 bg-red-600/90 border border-red-500/50 rounded-lg text-center shadow-lg">
+                                                <span class="text-xs font-bold text-white uppercase tracking-wider">{{ __('Commandant banni', 'pdc-theme') }}</span>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 </div>
 
                                 {# Partner Card #}
@@ -87,9 +94,20 @@
                         </div>
 
                         {# Title #}
-                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-beleren font-bold text-magic-gradient mb-4">
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-beleren font-bold text-magic-gradient mb-4 {{ is_banned ? 'line-through decoration-red-500/70' : '' }}">
                             {{ post.title }}
                         </h1>
+
+                        {% if is_banned %}
+                            <div class="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3">
+                                <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                                </svg>
+                                <p class="text-sm text-red-300">
+                                    {{ __('Ce commandant est actuellement banni en PDC. Cette decklist n\'est plus légale dans le format.', 'pdc-theme') }}
+                                </p>
+                            </div>
+                        {% endif %}
 
                         {# Taxonomies #}
                         <div class="flex flex-wrap gap-3 mb-6">

@@ -11,8 +11,12 @@
 use Timber\Timber;
 
 require_once get_template_directory() . '/inc/class-scryfall-service.php';
+require_once get_template_directory() . '/inc/class-deck-validator.php';
 
 $context = Timber::context();
+
+// Fetch banned card names for visual indicator
+$banned_names = Deck_Validator::get_banned_card_names();
 
 // Color identity labels (same as meta page)
 $ci_labels = array(
@@ -87,12 +91,29 @@ foreach ($all_posts as $post) {
 
     $partner_name = function_exists('get_field') ? get_field('partner', $post->ID) : '';
 
+    // Check if any part of the commander/partner name is banned
+    $cmd_parts_check = array();
+    if ($commander_name) {
+        $cmd_parts_check = array_merge($cmd_parts_check, array_map('trim', explode(' // ', $commander_name)));
+    }
+    if ($partner_name) {
+        $cmd_parts_check = array_merge($cmd_parts_check, array_map('trim', explode(' // ', $partner_name)));
+    }
+    $is_banned = false;
+    foreach ($cmd_parts_check as $part) {
+        if (in_array(strtolower($part), $banned_names, true)) {
+            $is_banned = true;
+            break;
+        }
+    }
+
     $post_data = array(
         'post'            => $post,
         'commander_image' => '',
         'commander_name'  => $commander_name ?: '',
         'partner_name'    => $partner_name ?: '',
         'color_identity'  => 'C',
+        'is_banned'       => $is_banned,
     );
 
     // Get commander data from ACF + Scryfall

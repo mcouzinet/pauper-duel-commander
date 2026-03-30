@@ -112,7 +112,7 @@
 
                         <div class="space-y-3">
                             {% for commander in global_meta.commanders %}
-                                <div class="tournament-commander-row flex-wrap sm:flex-nowrap">
+                                <div class="tournament-commander-row flex-wrap sm:flex-nowrap {{ commander.is_banned ? 'opacity-60' : '' }}">
                                     {# Rank badge #}
                                     <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
                                         {% if loop.index == 1 %}
@@ -129,7 +129,7 @@
                                     </div>
 
                                     {% if commander.image %}
-                                        <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-white/10">
+                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }}">
                                             <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                  class="w-full h-full object-cover" loading="lazy">
                                         </div>
@@ -140,14 +140,21 @@
                                     <div class="flex-1 min-w-0">
                                         {% set cmd_parts = commander.name|split(' // ') %}
                                         <div class="flex items-center justify-between gap-1">
-                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ cmd_parts[0] }}</span>
-                                            <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                                                {{ commander.count }}<span class="text-text-secondary/60">/{{ global_meta.total_players }}</span>
-                                                <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
-                                            </span>
+                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate {{ commander.is_banned ? 'line-through decoration-red-500/70' : '' }}">{{ cmd_parts[0] }}</span>
+                                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                                                {% if commander.is_banned %}
+                                                    <span class="px-1.5 py-0.5 bg-red-500/20 border border-red-500/30 rounded text-[10px] font-bold text-red-400 uppercase tracking-wider leading-none">
+                                                        {{ __('Banned', 'pdc-theme') }}
+                                                    </span>
+                                                {% endif %}
+                                                <span class="text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
+                                                    {{ commander.count }}<span class="text-text-secondary/60">/{{ global_meta.total_players }}</span>
+                                                    <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
+                                                </span>
+                                            </div>
                                         </div>
                                         {% if cmd_parts|length > 1 %}
-                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
+                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight {{ commander.is_banned ? 'line-through decoration-red-500/70' : '' }}" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
                                         {% endif %}
                                         <div class="flex items-center gap-0.5 mt-0.5">
                                             {% if commander.colors|length > 0 %}
@@ -330,7 +337,7 @@
 
                         <div class="space-y-3">
                             {% for commander in top4_meta.commanders %}
-                                <div class="tournament-commander-row flex-wrap sm:flex-nowrap">
+                                <div class="tournament-commander-row flex-wrap sm:flex-nowrap {{ commander.is_banned ? 'opacity-60' : '' }}">
                                     {# Rank badge #}
                                     <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
                                         {% if loop.index == 1 %}
@@ -347,7 +354,7 @@
                                     </div>
 
                                     {% if commander.image %}
-                                        <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 ring-white/10">
+                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }}">
                                             <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                  class="w-full h-full object-cover" loading="lazy">
                                         </div>
@@ -358,14 +365,21 @@
                                     <div class="flex-1 min-w-0">
                                         {% set cmd_parts = commander.name|split(' // ') %}
                                         <div class="flex items-center justify-between gap-1">
-                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate">{{ cmd_parts[0] }}</span>
-                                            <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                                                {{ commander.count }}<span class="text-text-secondary/60">/{{ top4_meta.total }}</span>
-                                                <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
-                                            </span>
+                                            <span class="text-xs sm:text-sm font-beleren text-text-primary truncate {{ commander.is_banned ? 'line-through decoration-red-500/70' : '' }}">{{ cmd_parts[0] }}</span>
+                                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                                                {% if commander.is_banned %}
+                                                    <span class="px-1.5 py-0.5 bg-red-500/20 border border-red-500/30 rounded text-[10px] font-bold text-red-400 uppercase tracking-wider leading-none">
+                                                        {{ __('Banned', 'pdc-theme') }}
+                                                    </span>
+                                                {% endif %}
+                                                <span class="text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
+                                                    {{ commander.count }}<span class="text-text-secondary/60">/{{ top4_meta.total }}</span>
+                                                    <span class="ml-1 text-magic-gold font-semibold">{{ commander.percentage }}%</span>
+                                                </span>
+                                            </div>
                                         </div>
                                         {% if cmd_parts|length > 1 %}
-                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
+                                            <span class="font-beleren text-text-secondary/60 truncate block leading-tight {{ commander.is_banned ? 'line-through decoration-red-500/70' : '' }}" style="font-size:10px">+ {{ cmd_parts[1] }}</span>
                                         {% endif %}
                                         <div class="flex items-center gap-0.5 mt-0.5">
                                             {% if commander.colors|length > 0 %}

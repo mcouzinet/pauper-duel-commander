@@ -46,4 +46,22 @@ $context['deck_author'] = wp_get_post_terms($context['post']->ID, 'deck_author')
 $context['deck_archetype'] = wp_get_post_terms($context['post']->ID, 'deck_archetype');
 $context['deck_color'] = wp_get_post_terms($context['post']->ID, 'deck_color');
 
+// Check if commander is banned
+$banned_names = Deck_Validator::get_banned_card_names();
+$cmd_parts_check = array();
+if ($commander) {
+    $cmd_parts_check = array_merge($cmd_parts_check, array_map('trim', explode(' // ', $commander)));
+}
+if ($partner) {
+    $cmd_parts_check = array_merge($cmd_parts_check, array_map('trim', explode(' // ', $partner)));
+}
+$is_banned = false;
+foreach ($cmd_parts_check as $part) {
+    if (in_array(strtolower($part), $banned_names, true)) {
+        $is_banned = true;
+        break;
+    }
+}
+$context['is_banned'] = $is_banned;
+
 Timber::render('single-decklist.twig', $context);

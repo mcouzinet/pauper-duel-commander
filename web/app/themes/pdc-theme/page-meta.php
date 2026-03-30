@@ -11,8 +11,13 @@
 
 use Timber\Timber;
 
+require_once get_template_directory() . '/inc/class-deck-validator.php';
+
 $context         = Timber::context();
 $context['post'] = Timber::get_post();
+
+// Fetch banned card names for visual indicator
+$banned_names = Deck_Validator::get_banned_card_names();
 
 // Fetch all published tournaments, ordered by date descending
 $posts = Timber::get_posts(array(
@@ -105,12 +110,23 @@ foreach ($global_commander_counts as $key => $count) {
         $global_color_counts['C'] = ($global_color_counts['C'] ?? 0) + $count;
     }
 
+    // Check if any part of the commander name is banned
+    $cmd_parts = array_map('trim', explode(' // ', $name));
+    $is_banned = false;
+    foreach ($cmd_parts as $part) {
+        if (in_array(strtolower($part), $banned_names, true)) {
+            $is_banned = true;
+            break;
+        }
+    }
+
     $global_meta_commanders[] = array(
         'name'       => $name,
         'count'      => $count,
         'percentage' => $global_total_players > 0 ? round($count / $global_total_players * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
+        'is_banned'  => $is_banned,
     );
 }
 
@@ -163,12 +179,23 @@ foreach ($top4_commander_counts as $key => $count) {
         $top4_color_counts['C'] = ($top4_color_counts['C'] ?? 0) + $count;
     }
 
+    // Check if any part of the commander name is banned
+    $cmd_parts_t4 = array_map('trim', explode(' // ', $name));
+    $is_banned_t4 = false;
+    foreach ($cmd_parts_t4 as $part) {
+        if (in_array(strtolower($part), $banned_names, true)) {
+            $is_banned_t4 = true;
+            break;
+        }
+    }
+
     $top4_meta_commanders[] = array(
         'name'       => $name,
         'count'      => $count,
         'percentage' => $top4_total > 0 ? round($count / $top4_total * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
+        'is_banned'  => $is_banned_t4,
     );
 }
 
