@@ -103,7 +103,8 @@
 </section>
 {% endif %}
 
-{# ---- Main content: Top 8 + Meta ---- #}
+{# ---- Main content: Top 8 + Meta (only for past tournaments) ---- #}
+{% if is_past %}
 <section class="py-6 md:py-8 bg-bg-primary">
     <div class="container mx-auto px-4 sm:px-6">
         <div class="max-w-6xl mx-auto">
@@ -439,5 +440,6 @@
         </div>
     </div>
 </section>
+{% endif %}
 
 {% endblock %}

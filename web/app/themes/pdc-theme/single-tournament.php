@@ -124,6 +124,7 @@ $context['color_counts']          = pdc_sort_color_counts($color_counts);
 $context['color_identity_counts'] = $color_identity_counts;
 $context['hero_image']            = $hero_image;
 $context['has_meta']              = !empty($meta_commanders);
+$context['is_past']               = !empty($date_raw) && $date_raw < date('Ymd');
 $context['archive_url']           = get_post_type_archive_link('tournament');
 
 Timber::render('single-tournament.twig', $context);
