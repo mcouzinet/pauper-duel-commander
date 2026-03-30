@@ -91,6 +91,13 @@
                         {% endif %}
                     </div>
 
+                    {# Details #}
+                    {% if t.details %}
+                    <div class="text-sm text-text-secondary prose prose-sm prose-invert max-w-none mb-5 [&>*:last-child]:mb-0">
+                        {{ t.details|raw }}
+                    </div>
+                    {% endif %}
+
                     {# Actions #}
                     {% if t.signup_url %}
                     <div class="flex flex-wrap items-center gap-3">

@@ -117,6 +117,7 @@ $context['location']              = $fields['tournament_location'] ?? '';
 $context['city']                  = $fields['tournament_city'] ?? '';
 $context['player_count']          = (int) ($fields['tournament_player_count'] ?? 0);
 $context['signup_url']            = $fields['tournament_signup_url'] ?? '';
+$context['details']               = $fields['tournament_details'] ?? '';
 $context['top8']                  = $top8;
 $context['meta_commanders']       = $meta_commanders;
 $context['color_counts']          = pdc_sort_color_counts($color_counts);

@@ -53,6 +53,7 @@ foreach ($posts as $post) {
         'city'            => $fields['tournament_city'] ?? '',
         'player_count'    => (int) ($fields['tournament_player_count'] ?? 0),
         'signup_url'      => $fields['tournament_signup_url'] ?? '',
+        'details'         => $fields['tournament_details'] ?? '',
     );
 }
 

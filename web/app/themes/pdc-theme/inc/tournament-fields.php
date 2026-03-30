@@ -65,6 +65,17 @@ add_action('acf/init', function() {
                 'type'          => 'url',
                 'required'      => 0,
             ),
+            array(
+                'key'           => 'field_tournament_details',
+                'label'         => 'Informations complémentaires',
+                'instructions'  => 'Infos libres : horaire, PAF, rondes, récompenses, ambiance…',
+                'name'          => 'tournament_details',
+                'type'          => 'wysiwyg',
+                'tabs'          => 'all',
+                'toolbar'       => 'basic',
+                'media_upload'  => 0,
+                'required'      => 0,
+            ),
 
             // ----------------------------------------------------------------
             // Top 8
