@@ -236,6 +236,19 @@
     background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.04) 100%);
   }
 
+  /* Rich text content (tournament details, etc.) */
+  .rich-text p {
+    margin-bottom: 0.75rem;
+  }
+
+  .rich-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .rich-text strong {
+    @apply text-text-primary;
+  }
+
   /* Pie chart */
   .tournament-pie {
     transform: rotate(-90deg);
