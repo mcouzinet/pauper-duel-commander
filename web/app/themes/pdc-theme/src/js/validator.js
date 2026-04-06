@@ -6,18 +6,21 @@
  * - Renders validation results (valid/invalid, error list) without page reload
  */
 
+// Localized strings (injected via wp_localize_script in page-validateur.php)
+const L10N = window.pdcValidatorL10n || {};
+
 // Rule label map (module-level constant, not recreated per call)
 const RULE_LABELS = {
-  format: 'Format invalide',
-  commander: 'Général introuvable',
-  commander_type: 'Type du général',
-  commander_rarity: 'Rareté du général',
-  deck_size: 'Nombre de cartes',
-  not_found: 'Cartes introuvables',
-  duplicates: 'Doublons',
-  rarity: 'Rareté des cartes',
-  color_identity: 'Identité de couleur',
-  ban_list: 'Cartes bannies',
+  format: L10N.rule_format || 'Format invalide',
+  commander: L10N.rule_commander || 'Général introuvable',
+  commander_type: L10N.rule_commander_type || 'Type du général',
+  commander_rarity: L10N.rule_commander_rarity || 'Rareté du général',
+  deck_size: L10N.rule_deck_size || 'Nombre de cartes',
+  not_found: L10N.rule_not_found || 'Cartes introuvables',
+  duplicates: L10N.rule_duplicates || 'Doublons',
+  rarity: L10N.rule_rarity || 'Rareté des cartes',
+  color_identity: L10N.rule_color_identity || 'Identité de couleur',
+  ban_list: L10N.rule_ban_list || 'Cartes bannies',
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -55,11 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const ajaxUrl   = document.getElementById('ajax-url').value;
 
     if (!commander) {
-      renderClientError('Veuillez saisir le nom du général.');
+      renderClientError(L10N.error_no_commander || 'Veuillez saisir le nom du général.');
       return;
     }
     if (!decklist) {
-      renderClientError('Veuillez saisir votre decklist.');
+      renderClientError(L10N.error_no_decklist || 'Veuillez saisir votre decklist.');
       return;
     }
 
@@ -77,19 +80,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Erreur réseau : ${response.status}`);
+        throw new Error((L10N.error_network || 'Erreur réseau : %s').replace('%s', response.status));
       }
 
       const data = await response.json();
 
       if (!data.success) {
-        renderClientError(data.data?.message || 'Une erreur inattendue s\'est produite. Veuillez réessayer.');
+        renderClientError(data.data?.message || L10N.error_unexpected || 'Une erreur inattendue s\'est produite. Veuillez réessayer.');
         return;
       }
 
       renderResults(data.data);
     } catch (err) {
-      renderClientError('Impossible de contacter le serveur. Vérifiez votre connexion et réessayez.');
+      renderClientError(L10N.error_server || 'Impossible de contacter le serveur. Vérifiez votre connexion et réessayez.');
       console.error('[PDC Validator]', err);
     } finally {
       setLoading(false);
@@ -102,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function setLoading(loading) {
     validateBtn.disabled = loading;
-    btnText.textContent  = loading ? 'Validation en cours…' : 'Valider le deck';
+    btnText.textContent  = loading ? (L10N.btn_loading || 'Validation en cours…') : (L10N.btn_default || 'Valider le deck');
     btnSpinner.classList.toggle('hidden', !loading);
   }
 
@@ -123,10 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const iconPath   = isValid
       ? 'M5 13l4 4L19 7'
       : 'M6 18L18 6M6 6l12 12';
-    const title      = isValid ? 'Deck Valide !' : 'Deck Invalide';
+    const title      = isValid ? (L10N.result_valid || 'Deck Valide !') : (L10N.result_invalid || 'Deck Invalide');
     const subtitle   = isValid
-      ? 'Votre deck respecte toutes les règles du format PDC.'
-      : `${result.errors.length} problème${result.errors.length > 1 ? 's' : ''} détecté${result.errors.length > 1 ? 's' : ''}. Consultez les détails ci-dessous.`;
+      ? (L10N.result_valid_msg || 'Votre deck respecte toutes les règles du format PDC.')
+      : (L10N.result_invalid_msg || '%count% problème(s) détecté(s). Consultez les détails ci-dessous.')
+          .replace('%count%', result.errors.length);
 
     let html = `
       <div class="magic-card p-8 mb-6 border-${color}-500/50 bg-${color}-900/10">
@@ -168,10 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     return `
       <div class="mt-4 flex flex-wrap gap-4">
         <span class="px-3 py-1 bg-bg-secondary rounded-lg text-sm text-text-secondary">
-          <strong class="text-text-primary">${stats.total_cards}</strong> carte${stats.total_cards !== 1 ? 's' : ''} au total
+          <strong class="text-text-primary">${stats.total_cards}</strong> ${(L10N.stats_total || 'cartes au total')}
         </span>
         <span class="px-3 py-1 bg-bg-secondary rounded-lg text-sm text-text-secondary">
-          <strong class="text-text-primary">${stats.unique_cards}</strong> carte${stats.unique_cards !== 1 ? 's' : ''} uniques
+          <strong class="text-text-primary">${stats.unique_cards}</strong> ${(L10N.stats_unique || 'cartes uniques')}
         </span>
       </div>`;
   }

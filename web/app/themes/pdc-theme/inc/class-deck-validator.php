@@ -57,7 +57,7 @@ class Deck_Validator {
         if (empty($commander_name)) {
             $errors[] = array(
                 'rule'    => 'commander',
-                'message' => 'Le nom du général est obligatoire.',
+                'message' => __('Le nom du général est obligatoire.', 'pdc-theme'),
                 'cards'   => array(),
             );
             return self::build_result(false, $errors, $warnings, null);
@@ -69,7 +69,7 @@ class Deck_Validator {
         if (empty($parsed_cards)) {
             $errors[] = array(
                 'rule'    => 'format',
-                'message' => 'La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".',
+                'message' => __('La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".', 'pdc-theme'),
                 'cards'   => array(),
             );
             return self::build_result(false, $errors, $warnings, null);
@@ -80,7 +80,7 @@ class Deck_Validator {
         if (!$commander_data) {
             $errors[] = array(
                 'rule'    => 'commander',
-                'message' => "Le général « {$commander_name} » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais).",
+                'message' => sprintf(__('Le général « %s » est introuvable sur Scryfall. Vérifiez l\'orthographe (en anglais).', 'pdc-theme'), $commander_name),
                 'cards'   => array($commander_name),
             );
         }
@@ -92,7 +92,7 @@ class Deck_Validator {
             if (!$partner_data) {
                 $errors[] = array(
                     'rule'    => 'commander',
-                    'message' => "Le partenaire « {$partner_name} » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais).",
+                    'message' => sprintf(__('Le partenaire « %s » est introuvable sur Scryfall. Vérifiez l\'orthographe (en anglais).', 'pdc-theme'), $partner_name),
                     'cards'   => array($partner_name),
                 );
             }
@@ -141,7 +141,7 @@ class Deck_Validator {
         if (!empty($banned_names)) {
             self::check_ban_list($enriched_cards, $banned_names, $errors);
         } else {
-            $warnings[] = 'La liste des cartes bannies n\'a pas pu être chargée. La vérification de la ban list a été ignorée.';
+            $warnings[] = __('La liste des cartes bannies n\'a pas pu être chargée. La vérification de la ban list a été ignorée.', 'pdc-theme');
         }
 
         $total_cards  = array_sum(array_column($parsed_cards, 'quantity'));
@@ -168,10 +168,10 @@ class Deck_Validator {
     private static function check_commander_is_creature($card_data, $card_name, &$errors) {
         $type_line = isset($card_data->type_line) ? $card_data->type_line : '';
         if (stripos($type_line, 'Creature') === false) {
-            $type_label = $type_line ?: 'inconnu';
+            $type_label = $type_line ?: __('inconnu', 'pdc-theme');
             $errors[] = array(
                 'rule'    => 'commander_type',
-                'message' => "Le général « {$card_name} » doit être une créature (type actuel : {$type_label}).",
+                'message' => sprintf(__('Le général « %1$s » doit être une créature (type actuel : %2$s).', 'pdc-theme'), $card_name, $type_label),
                 'cards'   => array($card_name),
             );
         }
@@ -183,10 +183,10 @@ class Deck_Validator {
     private static function check_commander_rarity($card_data, $card_name, &$errors) {
         $rarity = isset($card_data->rarity) ? $card_data->rarity : null;
         if ($rarity !== 'uncommon') {
-            $rarity_label = $rarity ? ucfirst($rarity) : 'inconnue';
+            $rarity_label = $rarity ? ucfirst($rarity) : __('inconnue', 'pdc-theme');
             $errors[] = array(
                 'rule'    => 'commander_rarity',
-                'message' => "Le général « {$card_name} » doit être de rareté Uncommon (rareté actuelle : {$rarity_label}).",
+                'message' => sprintf(__('Le général « %1$s » doit être de rareté Uncommon (rareté actuelle : %2$s).', 'pdc-theme'), $card_name, $rarity_label),
                 'cards'   => array($card_name),
             );
         }
@@ -199,11 +199,11 @@ class Deck_Validator {
         $total = array_sum(array_column($parsed_cards, 'quantity'));
         if ($total !== $expected_size) {
             $label = $has_partner
-                ? '98 cartes (avec 2 généraux partenaires)'
-                : '99 cartes (avec 1 général)';
+                ? __('98 cartes (avec 2 généraux partenaires)', 'pdc-theme')
+                : __('99 cartes (avec 1 général)', 'pdc-theme');
             $errors[] = array(
                 'rule'    => 'deck_size',
-                'message' => "Le deck contient {$total} carte(s). Un deck PDC doit contenir {$label}.",
+                'message' => sprintf(__('Le deck contient %1$s carte(s). Un deck PDC doit contenir %2$s.', 'pdc-theme'), $total, $label),
                 'cards'   => array(),
             );
         }
@@ -234,7 +234,7 @@ class Deck_Validator {
         if (!empty($not_found)) {
             $errors[] = array(
                 'rule'    => 'not_found',
-                'message' => 'Les cartes suivantes sont introuvables sur Scryfall. Vérifiez l\'orthographe (noms en anglais) :',
+                'message' => __('Les cartes suivantes sont introuvables sur Scryfall. Vérifiez l\'orthographe (noms en anglais) :', 'pdc-theme'),
                 'cards'   => $not_found,
             );
         }
@@ -253,7 +253,7 @@ class Deck_Validator {
         if (!empty($duplicates)) {
             $errors[] = array(
                 'rule'    => 'duplicates',
-                'message' => 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorisés en plusieurs copies) :',
+                'message' => __('Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorisés en plusieurs copies) :', 'pdc-theme'),
                 'cards'   => $duplicates,
             );
         }
@@ -282,7 +282,7 @@ class Deck_Validator {
         if (!empty($invalid)) {
             $errors[] = array(
                 'rule'    => 'rarity',
-                'message' => 'Les cartes suivantes n\'ont jamais été imprimées en rareté Commune (non légales en Pauper) :',
+                'message' => __('Les cartes suivantes n\'ont jamais été imprimées en rareté Commune (non légales en Pauper) :', 'pdc-theme'),
                 'cards'   => $invalid,
             );
         }
@@ -309,13 +309,13 @@ class Deck_Validator {
             }
         }
         if (!empty($violations)) {
-            $identity_label = empty($allowed_colors) ? 'Incolore' : implode('', $allowed_colors);
+            $identity_label = empty($allowed_colors) ? __('Incolore', 'pdc-theme') : implode('', $allowed_colors);
             $label = !empty($partner_name)
-                ? "« {$commander_name} » + « {$partner_name} » ({$identity_label})"
-                : "« {$commander_name} » ({$identity_label})";
+                ? sprintf(__('« %1$s » + « %2$s » (%3$s)', 'pdc-theme'), $commander_name, $partner_name, $identity_label)
+                : sprintf(__('« %1$s » (%2$s)', 'pdc-theme'), $commander_name, $identity_label);
             $errors[] = array(
                 'rule'    => 'color_identity',
-                'message' => "Les cartes suivantes sont hors de l'identité de couleur du général {$label} :",
+                'message' => sprintf(__('Les cartes suivantes sont hors de l\'identité de couleur du général %s :', 'pdc-theme'), $label),
                 'cards'   => array_values(array_unique($violations)),
             );
         }
@@ -334,7 +334,7 @@ class Deck_Validator {
         if (!empty($found)) {
             $errors[] = array(
                 'rule'    => 'ban_list',
-                'message' => 'Les cartes suivantes sont bannies dans le format PDC :',
+                'message' => __('Les cartes suivantes sont bannies dans le format PDC :', 'pdc-theme'),
                 'cards'   => $found,
             );
         }

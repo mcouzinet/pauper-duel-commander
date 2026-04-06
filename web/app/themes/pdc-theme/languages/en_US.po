@@ -1,17 +1,19 @@
-# Copyright (C) 2025 PDC Theme - Frontend
+# English (US) translation for PDC Theme
+# Copyright (C) 2025 PDC Theme
 # This file is distributed under the same license as the PDC Theme package.
 msgid ""
 msgstr ""
 "Project-Id-Version: PDC Theme Frontend 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/pdc-theme\n"
 "POT-Creation-Date: 2025-01-01 00:00:00+00:00\n"
+"PO-Revision-Date: 2025-01-01 00:00:00+00:00\n"
+"Last-Translator: PDC Team\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2025-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. ================================================================
 #. Components
@@ -19,23 +21,23 @@ msgstr ""
 
 #: views/components/footer.twig:12
 msgid "Un format Commander accessible et compétitif"
-msgstr ""
+msgstr "An accessible and competitive Commander format"
 
 #: views/components/footer.twig:16
 msgid "Tous droits réservés."
-msgstr ""
+msgstr "All rights reserved."
 
 #: views/components/footer.twig:19
 msgid "Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC."
-msgstr ""
+msgstr "Wizards of the Coast, Magic: The Gathering, and their respective logos are trademarks of Wizards of the Coast LLC."
 
 #: views/components/header.twig:28
 msgid "Menu non configuré"
-msgstr ""
+msgstr "Menu not configured"
 
 #: views/components/header.twig:73
 msgid "Langues non configurées"
-msgstr ""
+msgstr "Languages not configured"
 
 #. ================================================================
 #. Single Decklist
@@ -43,23 +45,23 @@ msgstr ""
 
 #: views/single-decklist.twig:78
 msgid "par"
-msgstr ""
+msgstr "by"
 
 #: views/single-decklist.twig:86
 msgid "le"
-msgstr ""
+msgstr "on"
 
 #: views/single-decklist.twig:113
 msgid "Courbe de Mana"
-msgstr ""
+msgstr "Mana Curve"
 
 #: views/single-decklist.twig:148
 msgid "Exporter la decklist"
-msgstr ""
+msgstr "Export decklist"
 
 #: views/single-decklist.twig:161 views/page-validateur.twig:101
 msgid "Decklist"
-msgstr ""
+msgstr "Decklist"
 
 #. ================================================================
 #. Page Validateur
@@ -67,127 +69,127 @@ msgstr ""
 
 #: views/page-validateur.twig:22
 msgid "Magic cards background"
-msgstr ""
+msgstr "Magic cards background"
 
 #: views/page-validateur.twig:29
 msgid "Validateur de Deck"
-msgstr ""
+msgstr "Deck Validator"
 
 #: views/page-validateur.twig:32
 msgid "Vérifiez si votre deck est conforme aux règles du format"
-msgstr ""
+msgstr "Check if your deck complies with the format rules of"
 
 #: views/page-validateur.twig:33
 msgid "Pauper Duel Commander"
-msgstr ""
+msgstr "Pauper Duel Commander"
 
 #: views/page-validateur.twig:34
 msgid "Entrez votre général et votre decklist au format MTGO pour obtenir une analyse complète."
-msgstr ""
+msgstr "Enter your commander and your decklist in MTGO format for a complete analysis."
 
 #: views/page-validateur.twig:56
 msgid "Général"
-msgstr ""
+msgstr "Commander"
 
 #: views/page-validateur.twig:62
 msgid "Ex : Isamaru, Hound of Konda"
-msgstr ""
+msgstr "E.g.: Isamaru, Hound of Konda"
 
 #: views/page-validateur.twig:66
 msgid "Nom exact en anglais tel qu'il apparaît sur Scryfall."
-msgstr ""
+msgstr "Exact English name as it appears on Scryfall."
 
 #: views/page-validateur.twig:78
 msgid "Deck avec partenaire (Partner / Background)"
-msgstr ""
+msgstr "Deck with partner (Partner / Background)"
 
 #: views/page-validateur.twig:86
 msgid "Partenaire"
-msgstr ""
+msgstr "Partner"
 
 #: views/page-validateur.twig:92
 msgid "Ex : Keleth, Sunmane Familiar"
-msgstr ""
+msgstr "E.g.: Keleth, Sunmane Familiar"
 
 #: views/page-validateur.twig:95
 msgid "Nom exact en anglais. Le deck devra contenir 98 cartes au lieu de 99."
-msgstr ""
+msgstr "Exact English name. The deck must contain 98 cards instead of 99."
 
 #: views/page-validateur.twig:107
 msgid "1 Sol Ring"
-msgstr ""
+msgstr "1 Sol Ring"
 
 #: views/page-validateur.twig:107
 msgid "4 Plains"
-msgstr ""
+msgstr "4 Plains"
 
 #: views/page-validateur.twig:107
 msgid "1 Counterspell"
-msgstr ""
+msgstr "1 Counterspell"
 
 #: views/page-validateur.twig:112
 msgid "Format MTGO : une ligne par carte, commençant par la quantité. Ex :"
-msgstr ""
+msgstr "MTGO format: one line per card, starting with the quantity. E.g.:"
 
 #: views/page-validateur.twig:116
 msgid "Ne mettez pas votre général dans la decklist, il est renseigné séparément ci-dessus."
-msgstr ""
+msgstr "Do not include your commander in the decklist, it is specified separately above."
 
-#: views/page-validateur.twig:123 page-validateur.php
+#: views/page-validateur.twig:123
 msgid "Valider le deck"
-msgstr ""
+msgstr "Validate deck"
 
 #: views/page-validateur.twig:150
 msgid "Règles du format PDC"
-msgstr ""
+msgstr "PDC Format Rules"
 
 #: views/page-validateur.twig:167
 msgid "100 cartes"
-msgstr ""
+msgstr "100 cards"
 
 #: views/page-validateur.twig:168
 msgid "99 cartes + 1 général (ou 98 + 2 en cas de partenaire)."
-msgstr ""
+msgstr "99 cards + 1 commander (or 98 + 2 with partner)."
 
 #: views/page-validateur.twig:181
 msgid "Général Uncommon"
-msgstr ""
+msgstr "Uncommon Commander"
 
 #: views/page-validateur.twig:182
 msgid "Le général doit obligatoirement être de rareté Uncommon."
-msgstr ""
+msgstr "The commander must be of Uncommon rarity."
 
 #: views/page-validateur.twig:197
 msgid "Cartes Communes"
-msgstr ""
+msgstr "Common Cards"
 
 #: views/page-validateur.twig:198
 msgid "Toutes les 99 cartes du deck doivent être de rareté Commune (Common)."
-msgstr ""
+msgstr "All 99 cards in the deck must be of Common rarity."
 
 #: views/page-validateur.twig:216
 msgid "Identité de couleur"
-msgstr ""
+msgstr "Color Identity"
 
 #: views/page-validateur.twig:217
 msgid "Toutes les cartes doivent respecter l'identité de couleur du général."
-msgstr ""
+msgstr "All cards must respect the commander's color identity."
 
 #: views/page-validateur.twig:233
 msgid "Pas de doublon"
-msgstr ""
+msgstr "No duplicates"
 
 #: views/page-validateur.twig:234
 msgid "Maximum 1 exemplaire de chaque carte, sauf les terrains de base."
-msgstr ""
+msgstr "Maximum 1 copy of each card, except basic lands."
 
 #: views/page-validateur.twig:250
 msgid "Ban List"
-msgstr ""
+msgstr "Ban List"
 
 #: views/page-validateur.twig:251
 msgid "Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées."
-msgstr ""
+msgstr "Cards on the PDC ban list are not allowed."
 
 #. ================================================================
 #. Page Meta
@@ -195,225 +197,225 @@ msgstr ""
 
 #: views/page-meta.twig:65
 msgid "Méta PDC"
-msgstr ""
+msgstr "PDC Meta"
 
 #: views/page-meta.twig:68
 msgid "Analyse du métagame Pauper Duel Commander : généraux les plus joués, répartition des couleurs et tendances par tournoi."
-msgstr ""
+msgstr "Pauper Duel Commander metagame analysis: most played commanders, color distribution and trends by tournament."
 
 #: views/page-meta.twig:84
 msgid "Méta Globale"
-msgstr ""
+msgstr "Global Meta"
 
 #: views/page-meta.twig:87
 msgid "Statistiques agrégées sur"
-msgstr ""
+msgstr "Aggregated statistics across"
 
-#: views/page-meta.twig:89 views/page-meta.twig:314
+#: views/page-meta.twig:89
 msgid "tournois"
-msgstr ""
+msgstr "tournaments"
 
 #: views/page-meta.twig:92
 msgid "entrées joueurs"
-msgstr ""
+msgstr "player entries"
 
 #: views/page-meta.twig:102
 msgid "Généraux les plus joués"
-msgstr ""
+msgstr "Most Played Commanders"
 
-#: views/page-meta.twig:147 views/page-meta.twig:372
+#: views/page-meta.twig:147
 msgid "Banned"
-msgstr ""
+msgstr "Banned"
 
 #: views/page-meta.twig:200
 msgid "Méta par identité de couleur"
-msgstr ""
+msgstr "Meta by Color Identity"
 
 #: views/page-meta.twig:242
 msgid "Répartition des couleurs"
-msgstr ""
+msgstr "Color Distribution"
 
 #: views/page-meta.twig:309
 msgid "Méta Top 4"
-msgstr ""
+msgstr "Top 4 Meta"
 
 #: views/page-meta.twig:312
 msgid "Généraux ayant atteint le top 4 sur"
-msgstr ""
+msgstr "Commanders who reached top 4 across"
 
 #: views/page-meta.twig:317
 msgid "places en top 4"
-msgstr ""
+msgstr "top 4 spots"
 
 #: views/page-meta.twig:327
 msgid "Généraux en Top 4"
-msgstr ""
+msgstr "Top 4 Commanders"
 
 #: views/page-meta.twig:425
 msgid "Identités de couleur en Top 4"
-msgstr ""
+msgstr "Color Identities in Top 4"
 
 #: views/page-meta.twig:467
 msgid "Couleurs en Top 4"
-msgstr ""
+msgstr "Colors in Top 4"
 
 #: views/page-meta.twig:531
 msgid "Aucune donnée de méta disponible"
-msgstr ""
+msgstr "No meta data available"
 
 #: views/page-meta.twig:534
 msgid "Les statistiques du métagame seront disponibles après les premiers tournois."
-msgstr ""
+msgstr "Metagame statistics will be available after the first tournaments."
 
-#. Color identity labels (page-meta.twig)
+#. Color identity labels
 #: views/page-meta.twig:17
 msgid "Mono Blanc"
-msgstr ""
+msgstr "Mono White"
 
 #: views/page-meta.twig:18
 msgid "Mono Bleu"
-msgstr ""
+msgstr "Mono Blue"
 
 #: views/page-meta.twig:19
 msgid "Mono Noir"
-msgstr ""
+msgstr "Mono Black"
 
 #: views/page-meta.twig:20
 msgid "Mono Rouge"
-msgstr ""
+msgstr "Mono Red"
 
 #: views/page-meta.twig:21
 msgid "Mono Vert"
-msgstr ""
+msgstr "Mono Green"
 
-#: views/page-meta.twig:22 inc/class-deck-validator.php
+#: views/page-meta.twig:22
 msgid "Incolore"
-msgstr ""
+msgstr "Colorless"
 
 #: views/page-meta.twig:23
 msgid "Dimir"
-msgstr ""
+msgstr "Dimir"
 
 #: views/page-meta.twig:24
 msgid "Rakdos"
-msgstr ""
+msgstr "Rakdos"
 
 #: views/page-meta.twig:25
 msgid "Golgari"
-msgstr ""
+msgstr "Golgari"
 
 #: views/page-meta.twig:26
 msgid "Orzhov"
-msgstr ""
+msgstr "Orzhov"
 
 #: views/page-meta.twig:27
 msgid "Gruul"
-msgstr ""
+msgstr "Gruul"
 
 #: views/page-meta.twig:28
 msgid "Simic"
-msgstr ""
+msgstr "Simic"
 
 #: views/page-meta.twig:29
 msgid "Selesnya"
-msgstr ""
+msgstr "Selesnya"
 
 #: views/page-meta.twig:30
 msgid "Izzet"
-msgstr ""
+msgstr "Izzet"
 
 #: views/page-meta.twig:31
 msgid "Boros"
-msgstr ""
+msgstr "Boros"
 
 #: views/page-meta.twig:32
 msgid "Azorius"
-msgstr ""
+msgstr "Azorius"
 
 #: views/page-meta.twig:33
 msgid "Jund"
-msgstr ""
+msgstr "Jund"
 
 #: views/page-meta.twig:34
 msgid "Sultai"
-msgstr ""
+msgstr "Sultai"
 
 #: views/page-meta.twig:35
 msgid "Abzan"
-msgstr ""
+msgstr "Abzan"
 
 #: views/page-meta.twig:36
 msgid "Grixis"
-msgstr ""
+msgstr "Grixis"
 
 #: views/page-meta.twig:37
 msgid "Mardu"
-msgstr ""
+msgstr "Mardu"
 
 #: views/page-meta.twig:38
 msgid "Esper"
-msgstr ""
+msgstr "Esper"
 
 #: views/page-meta.twig:39
 msgid "Temur"
-msgstr ""
+msgstr "Temur"
 
 #: views/page-meta.twig:40
 msgid "Naya"
-msgstr ""
+msgstr "Naya"
 
 #: views/page-meta.twig:41
 msgid "Bant"
-msgstr ""
+msgstr "Bant"
 
 #: views/page-meta.twig:42
 msgid "Jeskai"
-msgstr ""
+msgstr "Jeskai"
 
 #: views/page-meta.twig:43
 msgid "Sans Blanc"
-msgstr ""
+msgstr "Without White"
 
 #: views/page-meta.twig:44
 msgid "Sans Bleu"
-msgstr ""
+msgstr "Without Blue"
 
 #: views/page-meta.twig:45
 msgid "Sans Rouge"
-msgstr ""
+msgstr "Without Red"
 
 #: views/page-meta.twig:46
 msgid "Sans Vert"
-msgstr ""
+msgstr "Without Green"
 
 #: views/page-meta.twig:47
 msgid "Sans Noir"
-msgstr ""
+msgstr "Without Black"
 
 #: views/page-meta.twig:48
 msgid "5 Couleurs"
-msgstr ""
+msgstr "5 Colors"
 
-#. Color labels (page-meta.twig)
+#. Color labels
 #: views/page-meta.twig:52
 msgid "Blanc"
-msgstr ""
+msgstr "White"
 
 #: views/page-meta.twig:52
 msgid "Bleu"
-msgstr ""
+msgstr "Blue"
 
 #: views/page-meta.twig:52
 msgid "Noir"
-msgstr ""
+msgstr "Black"
 
 #: views/page-meta.twig:52
 msgid "Rouge"
-msgstr ""
+msgstr "Red"
 
 #: views/page-meta.twig:52
 msgid "Vert"
-msgstr ""
+msgstr "Green"
 
 #. ================================================================
 #. Validator JS (localized via wp_localize_script)
@@ -421,87 +423,87 @@ msgstr ""
 
 #: page-validateur.php
 msgid "Format invalide"
-msgstr ""
+msgstr "Invalid format"
 
 #: page-validateur.php
 msgid "Général introuvable"
-msgstr ""
+msgstr "Commander not found"
 
 #: page-validateur.php
 msgid "Type du général"
-msgstr ""
+msgstr "Commander type"
 
 #: page-validateur.php
 msgid "Rareté du général"
-msgstr ""
+msgstr "Commander rarity"
 
 #: page-validateur.php
 msgid "Nombre de cartes"
-msgstr ""
+msgstr "Card count"
 
 #: page-validateur.php
 msgid "Cartes introuvables"
-msgstr ""
+msgstr "Cards not found"
 
 #: page-validateur.php
 msgid "Doublons"
-msgstr ""
+msgstr "Duplicates"
 
 #: page-validateur.php
 msgid "Rareté des cartes"
-msgstr ""
+msgstr "Card rarity"
 
 #: page-validateur.php
 msgid "Cartes bannies"
-msgstr ""
+msgstr "Banned cards"
 
 #: page-validateur.php
 msgid "Veuillez saisir le nom du général."
-msgstr ""
+msgstr "Please enter the commander name."
 
 #: page-validateur.php
 msgid "Veuillez saisir votre decklist."
-msgstr ""
+msgstr "Please enter your decklist."
 
 #: page-validateur.php
 msgid "Erreur réseau : %s"
-msgstr ""
+msgstr "Network error: %s"
 
 #: page-validateur.php
 msgid "Une erreur inattendue s'est produite. Veuillez réessayer."
-msgstr ""
+msgstr "An unexpected error occurred. Please try again."
 
 #: page-validateur.php
 msgid "Impossible de contacter le serveur. Vérifiez votre connexion et réessayez."
-msgstr ""
+msgstr "Unable to contact the server. Check your connection and try again."
 
 #: page-validateur.php
 msgid "Validation en cours…"
-msgstr ""
+msgstr "Validating…"
 
 #: page-validateur.php
 msgid "Deck Valide !"
-msgstr ""
+msgstr "Valid Deck!"
 
 #: page-validateur.php
 msgid "Deck Invalide"
-msgstr ""
+msgstr "Invalid Deck"
 
 #: page-validateur.php
 msgid "Votre deck respecte toutes les règles du format PDC."
-msgstr ""
+msgstr "Your deck complies with all PDC format rules."
 
 #: page-validateur.php
 msgid "%count% problème(s) détecté(s). Consultez les détails ci-dessous."
-msgstr ""
+msgstr "%count% issue(s) detected. See details below."
 
 #: page-validateur.php
 msgid "cartes au total"
-msgstr ""
+msgstr "total cards"
 
 #: page-validateur.php
 msgid "cartes uniques"
-msgstr ""
+msgstr "unique cards"
 
 #. ================================================================
 #. Deck Validator (PHP backend)
@@ -509,79 +511,79 @@ msgstr ""
 
 #: inc/class-deck-validator.php
 msgid "Le nom du général est obligatoire."
-msgstr ""
+msgstr "The commander name is required."
 
 #: inc/class-deck-validator.php
 msgid "La decklist est vide ou dans un format invalide. Utilisez le format MTGO : \"1 Nom de la carte\"."
-msgstr ""
+msgstr "The decklist is empty or in an invalid format. Use the MTGO format: \"1 Card Name\"."
 
 #: inc/class-deck-validator.php
 msgid "Le général « %s » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais)."
-msgstr ""
+msgstr "Commander \"%s\" was not found on Scryfall. Please check the spelling (in English)."
 
 #: inc/class-deck-validator.php
 msgid "Le partenaire « %s » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais)."
-msgstr ""
+msgstr "Partner \"%s\" was not found on Scryfall. Please check the spelling (in English)."
 
 #: inc/class-deck-validator.php
 msgid "inconnu"
-msgstr ""
+msgstr "unknown"
 
 #: inc/class-deck-validator.php
 msgid "Le général « %1$s » doit être une créature (type actuel : %2$s)."
-msgstr ""
+msgstr "Commander \"%1$s\" must be a creature (current type: %2$s)."
 
 #: inc/class-deck-validator.php
 msgid "inconnue"
-msgstr ""
+msgstr "unknown"
 
 #: inc/class-deck-validator.php
 msgid "Le général « %1$s » doit être de rareté Uncommon (rareté actuelle : %2$s)."
-msgstr ""
+msgstr "Commander \"%1$s\" must be Uncommon rarity (current rarity: %2$s)."
 
 #: inc/class-deck-validator.php
 msgid "98 cartes (avec 2 généraux partenaires)"
-msgstr ""
+msgstr "98 cards (with 2 partner commanders)"
 
 #: inc/class-deck-validator.php
 msgid "99 cartes (avec 1 général)"
-msgstr ""
+msgstr "99 cards (with 1 commander)"
 
 #: inc/class-deck-validator.php
 msgid "Le deck contient %1$s carte(s). Un deck PDC doit contenir %2$s."
-msgstr ""
+msgstr "The deck contains %1$s card(s). A PDC deck must contain %2$s."
 
 #: inc/class-deck-validator.php
 msgid "Les cartes suivantes sont introuvables sur Scryfall. Vérifiez l'orthographe (noms en anglais) :"
-msgstr ""
+msgstr "The following cards were not found on Scryfall. Check the spelling (English names):"
 
 #: inc/class-deck-validator.php
 msgid "Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorisés en plusieurs copies) :"
-msgstr ""
+msgstr "The following cards appear in multiple copies (only basic lands are allowed in multiple copies):"
 
 #: inc/class-deck-validator.php
 msgid "Les cartes suivantes n'ont jamais été imprimées en rareté Commune (non légales en Pauper) :"
-msgstr ""
+msgstr "The following cards have never been printed at Common rarity (not Pauper legal):"
 
 #: inc/class-deck-validator.php
 msgid "« %1$s » + « %2$s » (%3$s)"
-msgstr ""
+msgstr "\"%1$s\" + \"%2$s\" (%3$s)"
 
 #: inc/class-deck-validator.php
 msgid "« %1$s » (%2$s)"
-msgstr ""
+msgstr "\"%1$s\" (%2$s)"
 
 #: inc/class-deck-validator.php
 msgid "Les cartes suivantes sont hors de l'identité de couleur du général %s :"
-msgstr ""
+msgstr "The following cards are outside the color identity of commander %s:"
 
 #: inc/class-deck-validator.php
 msgid "Les cartes suivantes sont bannies dans le format PDC :"
-msgstr ""
+msgstr "The following cards are banned in the PDC format:"
 
 #: inc/class-deck-validator.php
 msgid "La liste des cartes bannies n'a pas pu être chargée. La vérification de la ban list a été ignorée."
-msgstr ""
+msgstr "The ban list could not be loaded. Ban list verification was skipped."
 
 #. ================================================================
 #. AJAX handler (functions.php)
@@ -589,4 +591,4 @@ msgstr ""
 
 #: functions.php
 msgid "Requête invalide. Veuillez recharger la page et réessayer."
-msgstr ""
+msgstr "Invalid request. Please reload the page and try again."

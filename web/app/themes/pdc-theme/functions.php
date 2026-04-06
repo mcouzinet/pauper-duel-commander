@@ -382,7 +382,7 @@ add_filter('pll_get_post_types', 'pdc_disable_polylang_for_decklist', 10, 2);
 function pdc_ajax_validate_deck() {
     // Verify nonce
     if (!check_ajax_referer('pdc_validate_deck', 'nonce', false)) {
-        wp_send_json_error(array('message' => 'Requête invalide. Veuillez recharger la page et réessayer.'), 403);
+        wp_send_json_error(array('message' => __('Requête invalide. Veuillez recharger la page et réessayer.', 'pdc-theme')), 403);
     }
 
     $commander = isset($_POST['commander']) ? sanitize_text_field(wp_unslash($_POST['commander'])) : '';
@@ -390,7 +390,7 @@ function pdc_ajax_validate_deck() {
     $decklist  = isset($_POST['decklist'])  ? sanitize_textarea_field(wp_unslash($_POST['decklist'])) : '';
 
     if (empty($commander)) {
-        wp_send_json_error(array('message' => 'Le nom du général est obligatoire.'), 400);
+        wp_send_json_error(array('message' => __('Le nom du général est obligatoire.', 'pdc-theme')), 400);
     }
 
     $result = Deck_Validator::validate($commander, $partner, $decklist);
