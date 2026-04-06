@@ -146,6 +146,14 @@ function pdc_theme_setup() {
     // Load theme text domain for translations
     load_theme_textdomain('pdc-theme', get_template_directory() . '/languages');
 
+    // Reload text domain when Polylang switches the locale (e.g. /en/ pages).
+    // Without this, the textdomain is loaded once at after_setup_theme with the
+    // default locale, before Polylang has a chance to switch it.
+    add_action('change_locale', function () {
+        unload_textdomain('pdc-theme');
+        load_theme_textdomain('pdc-theme', get_template_directory() . '/languages');
+    });
+
     // Add theme support
     add_theme_support('title-tag');
     add_theme_support('post-thumbnails');
