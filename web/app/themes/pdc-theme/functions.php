@@ -167,6 +167,164 @@ function pdc_theme_setup() {
 add_action('after_setup_theme', 'pdc_theme_setup');
 
 /**
+ * Register theme strings for Polylang translation.
+ *
+ * These strings are used in Twig templates via __() and in JS via wp_localize_script.
+ * They become translatable in the Polylang admin: Languages > String translations.
+ */
+function pdc_register_polylang_strings() {
+    if (!function_exists('pll_register_string')) {
+        return;
+    }
+
+    // --- Components ---
+    pll_register_string('footer_tagline', 'Un format Commander accessible et compétitif', 'pdc-theme');
+    pll_register_string('footer_rights', 'Tous droits réservés.', 'pdc-theme');
+    pll_register_string('footer_legal', 'Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.', 'pdc-theme');
+    pll_register_string('header_menu_fallback', 'Menu non configuré', 'pdc-theme');
+    pll_register_string('header_lang_fallback', 'Langues non configurées', 'pdc-theme');
+
+    // --- Single Decklist ---
+    pll_register_string('decklist_by', 'par', 'pdc-theme');
+    pll_register_string('decklist_on', 'le', 'pdc-theme');
+    pll_register_string('decklist_mana_curve', 'Courbe de Mana', 'pdc-theme');
+    pll_register_string('decklist_export', 'Exporter la decklist', 'pdc-theme');
+    pll_register_string('decklist_title', 'Decklist', 'pdc-theme');
+
+    // --- Page Validateur ---
+    pll_register_string('validator_title', 'Validateur de Deck', 'pdc-theme');
+    pll_register_string('validator_subtitle_1', 'Vérifiez si votre deck est conforme aux règles du format', 'pdc-theme');
+    pll_register_string('validator_pdc', 'Pauper Duel Commander', 'pdc-theme');
+    pll_register_string('validator_subtitle_2', 'Entrez votre général et votre decklist au format MTGO pour obtenir une analyse complète.', 'pdc-theme');
+    pll_register_string('validator_commander', 'Général', 'pdc-theme');
+    pll_register_string('validator_commander_placeholder', 'Ex : Isamaru, Hound of Konda', 'pdc-theme');
+    pll_register_string('validator_commander_help', "Nom exact en anglais tel qu'il apparaît sur Scryfall.", 'pdc-theme');
+    pll_register_string('validator_partner_toggle', 'Deck avec partenaire (Partner / Background)', 'pdc-theme');
+    pll_register_string('validator_partner', 'Partenaire', 'pdc-theme');
+    pll_register_string('validator_partner_placeholder', 'Ex : Keleth, Sunmane Familiar', 'pdc-theme');
+    pll_register_string('validator_partner_help', 'Nom exact en anglais. Le deck devra contenir 98 cartes au lieu de 99.', 'pdc-theme');
+    pll_register_string('validator_decklist_format', 'Format MTGO : une ligne par carte, commençant par la quantité. Ex :', 'pdc-theme');
+    pll_register_string('validator_decklist_help', 'Ne mettez pas votre général dans la decklist, il est renseigné séparément ci-dessus.', 'pdc-theme');
+    pll_register_string('validator_submit', 'Valider le deck', 'pdc-theme');
+    pll_register_string('validator_rules_title', 'Règles du format PDC', 'pdc-theme');
+    pll_register_string('validator_rule_100', '100 cartes', 'pdc-theme');
+    pll_register_string('validator_rule_100_desc', '99 cartes + 1 général (ou 98 + 2 en cas de partenaire).', 'pdc-theme');
+    pll_register_string('validator_rule_uncommon', 'Général Uncommon', 'pdc-theme');
+    pll_register_string('validator_rule_uncommon_desc', 'Le général doit obligatoirement être de rareté Uncommon.', 'pdc-theme');
+    pll_register_string('validator_rule_common', 'Cartes Communes', 'pdc-theme');
+    pll_register_string('validator_rule_common_desc', 'Toutes les 99 cartes du deck doivent être de rareté Commune (Common).', 'pdc-theme');
+    pll_register_string('validator_rule_color', 'Identité de couleur', 'pdc-theme');
+    pll_register_string('validator_rule_color_desc', "Toutes les cartes doivent respecter l'identité de couleur du général.", 'pdc-theme');
+    pll_register_string('validator_rule_singleton', 'Pas de doublon', 'pdc-theme');
+    pll_register_string('validator_rule_singleton_desc', 'Maximum 1 exemplaire de chaque carte, sauf les terrains de base.', 'pdc-theme');
+    pll_register_string('validator_rule_ban', 'Ban List', 'pdc-theme');
+    pll_register_string('validator_rule_ban_desc', 'Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées.', 'pdc-theme');
+
+    // --- Validator JS strings ---
+    pll_register_string('js_rule_format', 'Format invalide', 'pdc-theme');
+    pll_register_string('js_rule_commander', 'Général introuvable', 'pdc-theme');
+    pll_register_string('js_rule_commander_type', 'Type du général', 'pdc-theme');
+    pll_register_string('js_rule_commander_rarity', 'Rareté du général', 'pdc-theme');
+    pll_register_string('js_rule_deck_size', 'Nombre de cartes', 'pdc-theme');
+    pll_register_string('js_rule_not_found', 'Cartes introuvables', 'pdc-theme');
+    pll_register_string('js_rule_duplicates', 'Doublons', 'pdc-theme');
+    pll_register_string('js_rule_rarity', 'Rareté des cartes', 'pdc-theme');
+    pll_register_string('js_rule_ban_list', 'Cartes bannies', 'pdc-theme');
+    pll_register_string('js_error_no_commander', 'Veuillez saisir le nom du général.', 'pdc-theme');
+    pll_register_string('js_error_no_decklist', 'Veuillez saisir votre decklist.', 'pdc-theme');
+    pll_register_string('js_error_network', 'Erreur réseau : %s', 'pdc-theme');
+    pll_register_string('js_error_unexpected', "Une erreur inattendue s'est produite. Veuillez réessayer.", 'pdc-theme');
+    pll_register_string('js_error_server', 'Impossible de contacter le serveur. Vérifiez votre connexion et réessayez.', 'pdc-theme');
+    pll_register_string('js_btn_loading', 'Validation en cours…', 'pdc-theme');
+    pll_register_string('js_result_valid', 'Deck Valide !', 'pdc-theme');
+    pll_register_string('js_result_invalid', 'Deck Invalide', 'pdc-theme');
+    pll_register_string('js_result_valid_msg', 'Votre deck respecte toutes les règles du format PDC.', 'pdc-theme');
+    pll_register_string('js_result_invalid_msg', '%count% problème(s) détecté(s). Consultez les détails ci-dessous.', 'pdc-theme');
+    pll_register_string('js_stats_total', 'cartes au total', 'pdc-theme');
+    pll_register_string('js_stats_unique', 'cartes uniques', 'pdc-theme');
+
+    // --- Page Meta ---
+    pll_register_string('meta_title', 'Méta PDC', 'pdc-theme');
+    pll_register_string('meta_subtitle', 'Analyse du métagame Pauper Duel Commander : généraux les plus joués, répartition des couleurs et tendances par tournoi.', 'pdc-theme');
+    pll_register_string('meta_global', 'Méta Globale', 'pdc-theme');
+    pll_register_string('meta_stats_on', 'Statistiques agrégées sur', 'pdc-theme');
+    pll_register_string('meta_tournaments', 'tournois', 'pdc-theme');
+    pll_register_string('meta_player_entries', 'entrées joueurs', 'pdc-theme');
+    pll_register_string('meta_most_played', 'Généraux les plus joués', 'pdc-theme');
+    pll_register_string('meta_banned', 'Banned', 'pdc-theme');
+    pll_register_string('meta_ci_title', 'Méta par identité de couleur', 'pdc-theme');
+    pll_register_string('meta_color_dist', 'Répartition des couleurs', 'pdc-theme');
+    pll_register_string('meta_top4', 'Méta Top 4', 'pdc-theme');
+    pll_register_string('meta_top4_desc', 'Généraux ayant atteint le top 4 sur', 'pdc-theme');
+    pll_register_string('meta_top4_spots', 'places en top 4', 'pdc-theme');
+    pll_register_string('meta_top4_commanders', 'Généraux en Top 4', 'pdc-theme');
+    pll_register_string('meta_top4_ci', 'Identités de couleur en Top 4', 'pdc-theme');
+    pll_register_string('meta_top4_colors', 'Couleurs en Top 4', 'pdc-theme');
+    pll_register_string('meta_no_data', 'Aucune donnée de méta disponible', 'pdc-theme');
+    pll_register_string('meta_no_data_desc', 'Les statistiques du métagame seront disponibles après les premiers tournois.', 'pdc-theme');
+
+    // --- Color identity labels ---
+    pll_register_string('ci_mono_white', 'Mono Blanc', 'pdc-theme');
+    pll_register_string('ci_mono_blue', 'Mono Bleu', 'pdc-theme');
+    pll_register_string('ci_mono_black', 'Mono Noir', 'pdc-theme');
+    pll_register_string('ci_mono_red', 'Mono Rouge', 'pdc-theme');
+    pll_register_string('ci_mono_green', 'Mono Vert', 'pdc-theme');
+    pll_register_string('ci_colorless', 'Incolore', 'pdc-theme');
+    pll_register_string('ci_dimir', 'Dimir', 'pdc-theme');
+    pll_register_string('ci_rakdos', 'Rakdos', 'pdc-theme');
+    pll_register_string('ci_golgari', 'Golgari', 'pdc-theme');
+    pll_register_string('ci_orzhov', 'Orzhov', 'pdc-theme');
+    pll_register_string('ci_gruul', 'Gruul', 'pdc-theme');
+    pll_register_string('ci_simic', 'Simic', 'pdc-theme');
+    pll_register_string('ci_selesnya', 'Selesnya', 'pdc-theme');
+    pll_register_string('ci_izzet', 'Izzet', 'pdc-theme');
+    pll_register_string('ci_boros', 'Boros', 'pdc-theme');
+    pll_register_string('ci_azorius', 'Azorius', 'pdc-theme');
+    pll_register_string('ci_jund', 'Jund', 'pdc-theme');
+    pll_register_string('ci_sultai', 'Sultai', 'pdc-theme');
+    pll_register_string('ci_abzan', 'Abzan', 'pdc-theme');
+    pll_register_string('ci_grixis', 'Grixis', 'pdc-theme');
+    pll_register_string('ci_mardu', 'Mardu', 'pdc-theme');
+    pll_register_string('ci_esper', 'Esper', 'pdc-theme');
+    pll_register_string('ci_temur', 'Temur', 'pdc-theme');
+    pll_register_string('ci_naya', 'Naya', 'pdc-theme');
+    pll_register_string('ci_bant', 'Bant', 'pdc-theme');
+    pll_register_string('ci_jeskai', 'Jeskai', 'pdc-theme');
+    pll_register_string('ci_sans_white', 'Sans Blanc', 'pdc-theme');
+    pll_register_string('ci_sans_blue', 'Sans Bleu', 'pdc-theme');
+    pll_register_string('ci_sans_red', 'Sans Rouge', 'pdc-theme');
+    pll_register_string('ci_sans_green', 'Sans Vert', 'pdc-theme');
+    pll_register_string('ci_sans_black', 'Sans Noir', 'pdc-theme');
+    pll_register_string('ci_5_colors', '5 Couleurs', 'pdc-theme');
+
+    // --- Color labels ---
+    pll_register_string('color_white', 'Blanc', 'pdc-theme');
+    pll_register_string('color_blue', 'Bleu', 'pdc-theme');
+    pll_register_string('color_black', 'Noir', 'pdc-theme');
+    pll_register_string('color_red', 'Rouge', 'pdc-theme');
+    pll_register_string('color_green', 'Vert', 'pdc-theme');
+
+    // --- Deck Validator backend ---
+    pll_register_string('validator_error_commander_required', 'Le nom du général est obligatoire.', 'pdc-theme');
+    pll_register_string('validator_error_empty_decklist', 'La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".', 'pdc-theme');
+    pll_register_string('validator_error_commander_not_found', "Le général « %s » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais).", 'pdc-theme');
+    pll_register_string('validator_error_partner_not_found', "Le partenaire « %s » est introuvable sur Scryfall. Vérifiez l'orthographe (en anglais).", 'pdc-theme');
+    pll_register_string('validator_error_type', 'Le général « %1$s » doit être une créature (type actuel : %2$s).', 'pdc-theme');
+    pll_register_string('validator_error_rarity', 'Le général « %1$s » doit être de rareté Uncommon (rareté actuelle : %2$s).', 'pdc-theme');
+    pll_register_string('validator_deck_size_98', '98 cartes (avec 2 généraux partenaires)', 'pdc-theme');
+    pll_register_string('validator_deck_size_99', '99 cartes (avec 1 général)', 'pdc-theme');
+    pll_register_string('validator_error_deck_size', 'Le deck contient %1$s carte(s). Un deck PDC doit contenir %2$s.', 'pdc-theme');
+    pll_register_string('validator_error_not_found', "Les cartes suivantes sont introuvables sur Scryfall. Vérifiez l'orthographe (noms en anglais) :", 'pdc-theme');
+    pll_register_string('validator_error_duplicates', 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorisés en plusieurs copies) :', 'pdc-theme');
+    pll_register_string('validator_error_pauper', "Les cartes suivantes n'ont jamais été imprimées en rareté Commune (non légales en Pauper) :", 'pdc-theme');
+    pll_register_string('validator_error_color_identity', "Les cartes suivantes sont hors de l'identité de couleur du général %s :", 'pdc-theme');
+    pll_register_string('validator_error_banned', 'Les cartes suivantes sont bannies dans le format PDC :', 'pdc-theme');
+    pll_register_string('validator_warning_ban_list', "La liste des cartes bannies n'a pas pu être chargée. La vérification de la ban list a été ignorée.", 'pdc-theme');
+    pll_register_string('ajax_error_invalid_request', 'Requête invalide. Veuillez recharger la page et réessayer.', 'pdc-theme');
+}
+add_action('init', 'pdc_register_polylang_strings');
+
+/**
  * Register widget areas
  */
 function pdc_theme_widgets_init() {
