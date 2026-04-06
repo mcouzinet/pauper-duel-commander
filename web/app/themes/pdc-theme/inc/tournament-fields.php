@@ -52,11 +52,21 @@ add_action('acf/init', function() {
             ),
             array(
                 'key'           => 'field_tournament_player_count',
-                'label'         => 'Nombre de participants',
+                'label'         => 'Nombre max de joueurs',
                 'name'          => 'tournament_player_count',
                 'type'          => 'number',
+                'instructions'  => 'Capacité prévue / nombre de places.',
                 'min'           => 2,
                 'required'      => 1,
+            ),
+            array(
+                'key'           => 'field_tournament_actual_player_count',
+                'label'         => 'Nombre réel de joueurs',
+                'name'          => 'tournament_actual_player_count',
+                'type'          => 'number',
+                'instructions'  => 'À remplir après le tournoi avec le nombre effectif de participants.',
+                'min'           => 0,
+                'required'      => 0,
             ),
             array(
                 'key'           => 'field_tournament_signup_url',

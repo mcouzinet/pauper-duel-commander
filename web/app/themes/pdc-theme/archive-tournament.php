@@ -51,7 +51,9 @@ foreach ($posts as $post) {
         'date_formatted'  => $date_formatted,
         'location'        => $fields['tournament_location'] ?? '',
         'city'            => $fields['tournament_city'] ?? '',
-        'player_count'    => (int) ($fields['tournament_player_count'] ?? 0),
+        'max_player_count'    => (int) ($fields['tournament_player_count'] ?? 0),
+        'actual_player_count' => (int) ($fields['tournament_actual_player_count'] ?? 0),
+        'player_count'        => ((int) ($fields['tournament_actual_player_count'] ?? 0)) ?: ((int) ($fields['tournament_player_count'] ?? 0)),
         'signup_url'      => $fields['tournament_signup_url'] ?? '',
         'details'         => $fields['tournament_details'] ?? '',
     );

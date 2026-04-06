@@ -81,12 +81,12 @@
                             <span>{{ t.location }}{% if t.city %}, {{ t.city }}{% endif %}</span>
                         </div>
                         {% endif %}
-                        {% if t.player_count %}
+                        {% if t.max_player_count %}
                         <div class="flex items-center gap-2">
                             <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                             </svg>
-                            <span>{{ t.player_count }} {{ __('joueurs', 'pdc-theme') }}</span>
+                            <span>{{ t.max_player_count }} {{ __('places', 'pdc-theme') }}</span>
                         </div>
                         {% endif %}
                     </div>
@@ -153,6 +153,9 @@
                                     {% if t.player_count %}
                                         <span class="hidden sm:inline text-text-muted/40">|</span>
                                         <span>{{ t.player_count }} {{ __('joueurs', 'pdc-theme') }}</span>
+                                    {% elseif t.max_player_count %}
+                                        <span class="hidden sm:inline text-text-muted/40">|</span>
+                                        <span>{{ t.max_player_count }} {{ __('places', 'pdc-theme') }}</span>
                                     {% endif %}
                                 </span>
                             </span>
