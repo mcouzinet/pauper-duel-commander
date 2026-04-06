@@ -167,7 +167,7 @@ msgstr "Common Cards"
 msgid "Toutes les 99 cartes du deck doivent être de rareté Commune (Common)."
 msgstr "All 99 cards in the deck must be of Common rarity."
 
-#: views/page-validateur.twig:216
+#: views/page-validateur.twig:216 views/archive-decklist.twig:60
 msgid "Identité de couleur"
 msgstr "Color Identity"
 
@@ -231,7 +231,7 @@ msgstr "Banned"
 msgid "Méta par identité de couleur"
 msgstr "Meta by Color Identity"
 
-#: views/page-meta.twig:242
+#: views/page-meta.twig:242 views/single-tournament.twig:415
 msgid "Répartition des couleurs"
 msgstr "Color Distribution"
 
@@ -584,6 +584,162 @@ msgstr "The following cards are banned in the PDC format:"
 #: inc/class-deck-validator.php
 msgid "La liste des cartes bannies n'a pas pu être chargée. La vérification de la ban list a été ignorée."
 msgstr "The ban list could not be loaded. Ban list verification was skipped."
+
+#. ================================================================
+#. Single Decklist (additional strings)
+#. ================================================================
+
+#: views/single-decklist.twig:45
+msgid "Commandant banni"
+msgstr "Banned commander"
+
+#: views/single-decklist.twig:107
+msgid "Ce commandant est actuellement banni en PDC. Cette decklist n'est plus légale dans le format."
+msgstr "This commander is currently banned in PDC. This decklist is no longer legal in the format."
+
+#: views/single-decklist.twig:240
+msgid "Couleurs de Mana"
+msgstr "Mana Colors"
+
+#: views/single-decklist.twig:317
+msgid "Types de Cartes"
+msgstr "Card Types"
+
+#. ================================================================
+#. Archive Decklist
+#. ================================================================
+
+#: views/archive-decklist.twig:33
+msgid "Quelques Decklists"
+msgstr "Some Decklists"
+
+#: views/archive-decklist.twig:36
+msgid "Notre collection de decklists est en construction. Vous trouverez ici nos premières sélections pour le Pauper Duel Commander : de quoi vous inspirer, tester le format, ou affiner votre propre stratégie."
+msgstr "Our decklist collection is under construction. Here you will find our first selections for Pauper Duel Commander: inspiration to test the format or refine your own strategy."
+
+#: views/archive-decklist.twig:50
+msgid "Archétype"
+msgstr "Archetype"
+
+#: views/archive-decklist.twig:55
+msgid "Tous les archétypes"
+msgstr "All archetypes"
+
+#: views/archive-decklist.twig:71
+msgid "Toutes les couleurs"
+msgstr "All colors"
+
+#: views/archive-decklist.twig:84
+msgid "Réinitialiser les filtres"
+msgstr "Reset filters"
+
+#: views/archive-decklist.twig:179
+msgid "Précédent"
+msgstr "Previous"
+
+#: views/archive-decklist.twig:193
+msgid "Suivant"
+msgstr "Next"
+
+#: views/archive-decklist.twig:206
+msgid "Aucune decklist trouvée"
+msgstr "No decklist found"
+
+#: views/archive-decklist.twig:209
+msgid "Essayez de modifier vos filtres pour voir plus de résultats."
+msgstr "Try adjusting your filters to see more results."
+
+#: views/archive-decklist.twig:213
+msgid "Voir toutes les decklists"
+msgstr "View all decklists"
+
+#. ================================================================
+#. Archive Tournament
+#. ================================================================
+
+#: views/archive-tournament.twig:28
+msgid "Tournois PDC"
+msgstr "PDC Tournaments"
+
+#: views/archive-tournament.twig:31
+msgid "Inscrivez-vous aux prochains tournois et retrouvez les résultats, top 8 et méta des événements passés."
+msgstr "Sign up for upcoming tournaments and find results, top 8 and meta from past events."
+
+#: views/archive-tournament.twig:49
+msgid "Prochains Tournois"
+msgstr "Upcoming Tournaments"
+
+#: views/archive-tournament.twig:89 views/single-tournament.twig:75
+msgid "joueurs"
+msgstr "players"
+
+#: views/archive-tournament.twig:99 views/single-tournament.twig:105
+msgid "S'inscrire"
+msgstr "Sign up"
+
+#: views/archive-tournament.twig:107
+msgid "Plus de détails"
+msgstr "More details"
+
+#: views/archive-tournament.twig:130
+msgid "Résultats des Tournois"
+msgstr "Tournament Results"
+
+#: views/archive-tournament.twig:181
+msgid "Aucun tournoi pour le moment"
+msgstr "No tournament yet"
+
+#: views/archive-tournament.twig:184
+msgid "Les résultats des prochains tournois seront publiés ici."
+msgstr "Results from upcoming tournaments will be published here."
+
+#: views/archive-tournament.twig:189
+msgid "Aucun résultat de tournoi disponible pour le moment."
+msgstr "No tournament results available at this time."
+
+#. ================================================================
+#. Single Tournament
+#. ================================================================
+
+#: views/single-tournament.twig:43
+msgid "Tournois"
+msgstr "Tournaments"
+
+#: views/single-tournament.twig:81
+msgid "Inscription"
+msgstr "Registration"
+
+#: views/single-tournament.twig:172 views/single-tournament.twig:229
+msgid "Deck"
+msgstr "Deck"
+
+#: views/single-tournament.twig:245
+msgid "Résultats non disponibles."
+msgstr "Results not available."
+
+#: views/single-tournament.twig:253
+msgid "Méta"
+msgstr "Meta"
+
+#: views/single-tournament.twig:261
+msgid "Généraux joués"
+msgstr "Commanders played"
+
+#: views/single-tournament.twig:374
+msgid "Identités de couleur"
+msgstr "Color Identities"
+
+#: views/single-tournament.twig:465
+msgid "Données de méta non disponibles."
+msgstr "Meta data not available."
+
+#. ================================================================
+#. Header (additional strings)
+#. ================================================================
+
+#: views/components/header.twig:110
+msgid "Langue"
+msgstr "Language"
 
 #. ================================================================
 #. AJAX handler (functions.php)

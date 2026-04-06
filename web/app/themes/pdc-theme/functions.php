@@ -329,6 +329,50 @@ function pdc_register_polylang_strings() {
     pll_register_string('validator_error_banned', 'Les cartes suivantes sont bannies dans le format PDC :', 'pdc-theme');
     pll_register_string('validator_warning_ban_list', "La liste des cartes bannies n'a pas pu être chargée. La vérification de la ban list a été ignorée.", 'pdc-theme');
     pll_register_string('ajax_error_invalid_request', 'Requête invalide. Veuillez recharger la page et réessayer.', 'pdc-theme');
+
+    // --- Single Decklist (additional) ---
+    pll_register_string('decklist_banned_commander', 'Commandant banni', 'pdc-theme');
+    pll_register_string('decklist_banned_desc', "Ce commandant est actuellement banni en PDC. Cette decklist n'est plus légale dans le format.", 'pdc-theme');
+    pll_register_string('decklist_mana_colors', 'Couleurs de Mana', 'pdc-theme');
+    pll_register_string('decklist_card_types', 'Types de Cartes', 'pdc-theme');
+
+    // --- Archive Decklist ---
+    pll_register_string('archive_decklist_title', 'Quelques Decklists', 'pdc-theme');
+    pll_register_string('archive_decklist_desc', "Notre collection de decklists est en construction. Vous trouverez ici nos premières sélections pour le Pauper Duel Commander : de quoi vous inspirer, tester le format, ou affiner votre propre stratégie.", 'pdc-theme');
+    pll_register_string('filter_archetype', 'Archétype', 'pdc-theme');
+    pll_register_string('filter_all_archetypes', 'Tous les archétypes', 'pdc-theme');
+    pll_register_string('filter_all_colors', 'Toutes les couleurs', 'pdc-theme');
+    pll_register_string('filter_reset', 'Réinitialiser les filtres', 'pdc-theme');
+    pll_register_string('pagination_previous', 'Précédent', 'pdc-theme');
+    pll_register_string('pagination_next', 'Suivant', 'pdc-theme');
+    pll_register_string('no_decklist_found', 'Aucune decklist trouvée', 'pdc-theme');
+    pll_register_string('no_decklist_hint', 'Essayez de modifier vos filtres pour voir plus de résultats.', 'pdc-theme');
+    pll_register_string('view_all_decklists', 'Voir toutes les decklists', 'pdc-theme');
+
+    // --- Archive Tournament ---
+    pll_register_string('tournament_title', 'Tournois PDC', 'pdc-theme');
+    pll_register_string('tournament_desc', "Inscrivez-vous aux prochains tournois et retrouvez les résultats, top 8 et méta des événements passés.", 'pdc-theme');
+    pll_register_string('upcoming_tournaments', 'Prochains Tournois', 'pdc-theme');
+    pll_register_string('players', 'joueurs', 'pdc-theme');
+    pll_register_string('sign_up', "S'inscrire", 'pdc-theme');
+    pll_register_string('more_details', 'Plus de détails', 'pdc-theme');
+    pll_register_string('tournament_results', 'Résultats des Tournois', 'pdc-theme');
+    pll_register_string('no_tournament_yet', 'Aucun tournoi pour le moment', 'pdc-theme');
+    pll_register_string('tournament_results_coming', 'Les résultats des prochains tournois seront publiés ici.', 'pdc-theme');
+    pll_register_string('no_tournament_results', 'Aucun résultat de tournoi disponible pour le moment.', 'pdc-theme');
+
+    // --- Single Tournament ---
+    pll_register_string('tournaments_label', 'Tournois', 'pdc-theme');
+    pll_register_string('registration', 'Inscription', 'pdc-theme');
+    pll_register_string('deck_label', 'Deck', 'pdc-theme');
+    pll_register_string('results_unavailable', 'Résultats non disponibles.', 'pdc-theme');
+    pll_register_string('meta_label', 'Méta', 'pdc-theme');
+    pll_register_string('commanders_played', 'Généraux joués', 'pdc-theme');
+    pll_register_string('color_identities', 'Identités de couleur', 'pdc-theme');
+    pll_register_string('meta_unavailable', 'Données de méta non disponibles.', 'pdc-theme');
+
+    // --- Header ---
+    pll_register_string('language_label', 'Langue', 'pdc-theme');
 }
 add_action('init', 'pdc_register_polylang_strings');
 

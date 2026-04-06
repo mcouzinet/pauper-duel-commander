@@ -165,7 +165,7 @@ msgstr ""
 msgid "Toutes les 99 cartes du deck doivent être de rareté Commune (Common)."
 msgstr ""
 
-#: views/page-validateur.twig:216
+#: views/page-validateur.twig:216 views/archive-decklist.twig:66
 msgid "Identité de couleur"
 msgstr ""
 
@@ -229,7 +229,7 @@ msgstr ""
 msgid "Méta par identité de couleur"
 msgstr ""
 
-#: views/page-meta.twig:242
+#: views/page-meta.twig:242 views/single-tournament.twig:415
 msgid "Répartition des couleurs"
 msgstr ""
 
@@ -581,6 +581,162 @@ msgstr ""
 
 #: inc/class-deck-validator.php
 msgid "La liste des cartes bannies n'a pas pu être chargée. La vérification de la ban list a été ignorée."
+msgstr ""
+
+#. ================================================================
+#. Single Decklist (additional strings)
+#. ================================================================
+
+#: views/single-decklist.twig:45
+msgid "Commandant banni"
+msgstr ""
+
+#: views/single-decklist.twig:107
+msgid "Ce commandant est actuellement banni en PDC. Cette decklist n'est plus légale dans le format."
+msgstr ""
+
+#: views/single-decklist.twig:240
+msgid "Couleurs de Mana"
+msgstr ""
+
+#: views/single-decklist.twig:317
+msgid "Types de Cartes"
+msgstr ""
+
+#. ================================================================
+#. Archive Decklist
+#. ================================================================
+
+#: views/archive-decklist.twig:33
+msgid "Quelques Decklists"
+msgstr ""
+
+#: views/archive-decklist.twig:36
+msgid "Notre collection de decklists est en construction. Vous trouverez ici nos premières sélections pour le Pauper Duel Commander : de quoi vous inspirer, tester le format, ou affiner votre propre stratégie."
+msgstr ""
+
+#: views/archive-decklist.twig:50
+msgid "Archétype"
+msgstr ""
+
+#: views/archive-decklist.twig:55
+msgid "Tous les archétypes"
+msgstr ""
+
+#: views/archive-decklist.twig:71
+msgid "Toutes les couleurs"
+msgstr ""
+
+#: views/archive-decklist.twig:84
+msgid "Réinitialiser les filtres"
+msgstr ""
+
+#: views/archive-decklist.twig:179
+msgid "Précédent"
+msgstr ""
+
+#: views/archive-decklist.twig:193
+msgid "Suivant"
+msgstr ""
+
+#: views/archive-decklist.twig:206
+msgid "Aucune decklist trouvée"
+msgstr ""
+
+#: views/archive-decklist.twig:209
+msgid "Essayez de modifier vos filtres pour voir plus de résultats."
+msgstr ""
+
+#: views/archive-decklist.twig:213
+msgid "Voir toutes les decklists"
+msgstr ""
+
+#. ================================================================
+#. Archive Tournament
+#. ================================================================
+
+#: views/archive-tournament.twig:28
+msgid "Tournois PDC"
+msgstr ""
+
+#: views/archive-tournament.twig:31
+msgid "Inscrivez-vous aux prochains tournois et retrouvez les résultats, top 8 et méta des événements passés."
+msgstr ""
+
+#: views/archive-tournament.twig:49
+msgid "Prochains Tournois"
+msgstr ""
+
+#: views/archive-tournament.twig:89 views/single-tournament.twig:75
+msgid "joueurs"
+msgstr ""
+
+#: views/archive-tournament.twig:99 views/single-tournament.twig:105
+msgid "S'inscrire"
+msgstr ""
+
+#: views/archive-tournament.twig:107
+msgid "Plus de détails"
+msgstr ""
+
+#: views/archive-tournament.twig:130
+msgid "Résultats des Tournois"
+msgstr ""
+
+#: views/archive-tournament.twig:181
+msgid "Aucun tournoi pour le moment"
+msgstr ""
+
+#: views/archive-tournament.twig:184
+msgid "Les résultats des prochains tournois seront publiés ici."
+msgstr ""
+
+#: views/archive-tournament.twig:189
+msgid "Aucun résultat de tournoi disponible pour le moment."
+msgstr ""
+
+#. ================================================================
+#. Single Tournament
+#. ================================================================
+
+#: views/single-tournament.twig:43
+msgid "Tournois"
+msgstr ""
+
+#: views/single-tournament.twig:81
+msgid "Inscription"
+msgstr ""
+
+#: views/single-tournament.twig:172 views/single-tournament.twig:229
+msgid "Deck"
+msgstr ""
+
+#: views/single-tournament.twig:245
+msgid "Résultats non disponibles."
+msgstr ""
+
+#: views/single-tournament.twig:253
+msgid "Méta"
+msgstr ""
+
+#: views/single-tournament.twig:261
+msgid "Généraux joués"
+msgstr ""
+
+#: views/single-tournament.twig:374
+msgid "Identités de couleur"
+msgstr ""
+
+#: views/single-tournament.twig:465
+msgid "Données de méta non disponibles."
+msgstr ""
+
+#. ================================================================
+#. Header (additional strings)
+#. ================================================================
+
+#: views/components/header.twig:110
+msgid "Langue"
 msgstr ""
 
 #. ================================================================
