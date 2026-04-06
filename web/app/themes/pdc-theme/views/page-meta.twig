@@ -129,7 +129,9 @@
                                     </div>
 
                                     {% if commander.image %}
-                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }}">
+                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }} card-hover-trigger"
+                                             data-card-name="{{ commander.name }}"
+                                             data-card-image="{{ commander.card_image ?? commander.image }}">
                                             <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                  class="w-full h-full object-cover" loading="lazy">
                                         </div>
@@ -354,7 +356,9 @@
                                     </div>
 
                                     {% if commander.image %}
-                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }}">
+                                        <div class="relative w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }} card-hover-trigger"
+                                             data-card-name="{{ commander.name }}"
+                                             data-card-image="{{ commander.card_image ?? commander.image }}">
                                             <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                  class="w-full h-full object-cover" loading="lazy">
                                         </div>

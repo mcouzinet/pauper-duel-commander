@@ -142,7 +142,9 @@
                                 <div class="flex items-center gap-2 sm:gap-3">
                                     <div class="tournament-place tournament-place--1">1</div>
                                     {% if winner.commander_image %}
-                                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-lg overflow-hidden shadow-lg ring-2 {{ winner.is_banned ? 'ring-red-500/40 grayscale' : 'ring-yellow-500/30' }} flex-shrink-0">
+                                        <div class="w-10 h-10 sm:w-14 sm:h-14 rounded-lg overflow-hidden shadow-lg ring-2 {{ winner.is_banned ? 'ring-red-500/40 grayscale' : 'ring-yellow-500/30' }} flex-shrink-0 card-hover-trigger"
+                                             data-card-name="{{ winner.commander_name }}"
+                                             data-card-image="{{ winner.card_image ?? winner.commander_image }}">
                                             <img src="{{ winner.commander_image }}"
                                                  alt="{{ winner.commander_name }}"
                                                  class="w-full h-full object-cover"
@@ -194,7 +196,9 @@
                                         </div>
 
                                         {% if entry.commander_image %}
-                                            <div class="w-9 h-9 rounded overflow-hidden flex-shrink-0 {{ entry.is_banned ? 'grayscale ring-1 ring-red-500/40' : '' }}">
+                                            <div class="w-9 h-9 rounded overflow-hidden flex-shrink-0 {{ entry.is_banned ? 'grayscale ring-1 ring-red-500/40' : '' }} card-hover-trigger"
+                                                 data-card-name="{{ entry.commander_name }}"
+                                                 data-card-image="{{ entry.card_image ?? entry.commander_image }}">
                                                 <img src="{{ entry.commander_image }}"
                                                      alt="{{ entry.commander_name }}"
                                                      class="w-full h-full object-cover"
@@ -272,7 +276,9 @@
                                 {% for commander in meta_commanders %}
                                     <div class="tournament-commander-row {{ commander.is_banned ? 'opacity-60' : '' }}">
                                         {% if commander.image %}
-                                            <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }}">
+                                            <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 {{ commander.is_banned ? 'ring-red-500/40 grayscale' : 'ring-white/10' }} card-hover-trigger"
+                                                 data-card-name="{{ commander.name }}"
+                                                 data-card-image="{{ commander.card_image ?? commander.image }}">
                                                 <img src="{{ commander.image }}" alt="{{ commander.name }}"
                                                      class="w-full h-full object-cover" loading="lazy">
                                             </div>

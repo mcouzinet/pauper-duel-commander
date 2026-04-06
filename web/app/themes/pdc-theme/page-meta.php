@@ -127,6 +127,7 @@ foreach ($global_commander_counts as $key => $count) {
         'count'      => $count,
         'percentage' => $global_total_players > 0 ? round($count / $global_total_players * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'card_image' => $card_data ? Scryfall_Service::get_card_image($card_data, 'normal') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
         'is_banned'  => $is_banned,
     );
@@ -196,6 +197,7 @@ foreach ($top4_commander_counts as $key => $count) {
         'count'      => $count,
         'percentage' => $top4_total > 0 ? round($count / $top4_total * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'card_image' => $card_data ? Scryfall_Service::get_card_image($card_data, 'normal') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
         'is_banned'  => $is_banned_t4,
     );

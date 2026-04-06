@@ -65,6 +65,7 @@ foreach (($fields['top8'] ?? array()) as $entry) {
         'commander_name'  => $entry['commander_name'] ?? '',
         'score'           => $entry['score'] ?? '',
         'commander_image' => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'card_image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'normal') : null,
         'decklist_url'    => !empty($entry['decklist_post']) ? get_permalink($entry['decklist_post']) : null,
         'is_banned'       => $is_banned,
     );
@@ -107,6 +108,7 @@ foreach ($commander_counts as $name => $count) {
         'count'      => $count,
         'percentage' => $total_participants > 0 ? round($count / $total_participants * 100) : 0,
         'image'      => $card_data ? Scryfall_Service::get_card_image($card_data, 'art_crop') : null,
+        'card_image' => $card_data ? Scryfall_Service::get_card_image($card_data, 'normal') : null,
         'colors'     => $card_data && !empty($card_data->color_identity) ? (array) $card_data->color_identity : array(),
         'is_banned'  => $meta_is_banned,
     );
