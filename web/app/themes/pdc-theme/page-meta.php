@@ -71,8 +71,10 @@ foreach ($posts as $post) {
     // Collect top 4 commanders from this tournament
     foreach (($fields['top8'] ?? array()) as $entry) {
         $place = (int) ($entry['place'] ?? 0);
-        $name  = $entry['commander_name'] ?? '';
+        $name  = trim($entry['commander_name'] ?? '');
         if ($place >= 1 && $place <= 4 && $name !== '') {
+            // Normalize separator whitespace: "Gut, True Soul Zealot  //  Agent" → "Gut, True Soul Zealot // Agent"
+            $name = preg_replace('/\s*\/\/\s*/', ' // ', $name);
             $key = strtolower($name);
             if (!isset($top4_canon_names[$key])) {
                 $top4_canon_names[$key] = $name;

@@ -450,6 +450,9 @@ function pdc_parse_meta_list($text) {
             continue;
         }
 
+        // Normalize separator whitespace to avoid duplicates from inconsistent input
+        $name = preg_replace('/\s*\/\/\s*/', ' // ', $name);
+
         // Normalize key to avoid case-sensitivity duplicates
         $key = strtolower($name);
         if (!isset($canon_names[$key])) {
