@@ -1,0 +1,90 @@
+{
+    "title": "Artefact #5",
+    "date": "2026-04-05",
+    "location": "Artefact",
+    "city": "Bordeaux",
+    "playerCount": 32,
+    "actualPlayerCount": null,
+    "signupUrl": "https://artefacts.gg/evenement/magic-pauper-dc-10e-2/",
+    "details": "<strong>📅 Dimanche 5 Avril à 11h30</strong>\r\n<strong>💵 PAF : 10€</strong>\r\n<strong>⚔️ 4 ou 5 rondes + Top (en fonction du nombre de joueurs)</strong>\r\n<br>\r\n<br>\r\n<strong>🏆 Récompenses :</strong>\r\n<br>\r\n<br>\r\nTop 1 : 40€ de bon d’achat\r\nTop 2 : 20€ de bon d’achat\r\nTop 3-4 : 15€ de bon d’achat\r\n5€ de bon d’achat pour tous les autres participants\r\n<br><br>\r\n<strong>Les plus :</strong>\r\n<br><br>\r\nUne ambiance chaleureuse et conviviale pour tous les mages ! ✨\r\nBoissons et snacks magiques pour recharger vos points de mana ! 🧙‍♂️🥤🍪\r\nRencontrez d’autres joueurs de Magic et passez un bon moment! 🤝\r\n<br><br>\r\nInscription à partir de 11h.\r\n\r\nPaiement sur place !",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Élie",
+            "commanderName": "Crackling Drake",
+            "score": "7-0",
+            "decklistSlug": ""
+        },
+        {
+            "place": 2,
+            "playerName": "Martin",
+            "commanderName": "Gut, True Soul Zealot // Agent of the Iron Throne",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 3,
+            "playerName": "???",
+            "commanderName": "Dionus, Elvish Archdruid",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 4,
+            "playerName": "Quentin",
+            "commanderName": "Tor Wauki the Younger",
+            "score": "",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 1
+        },
+        {
+            "name": "Soulherder",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Agent of the Iron Throne",
+            "count": 1
+        },
+        {
+            "name": "Crackling Drake",
+            "count": 1
+        },
+        {
+            "name": "Sphinx of the Guildpact",
+            "count": 1
+        },
+        {
+            "name": "Balmor, Battlemage Captain",
+            "count": 1
+        },
+        {
+            "name": "Satyr Enchanter",
+            "count": 1
+        },
+        {
+            "name": "Tor Wauki the Younger",
+            "count": 1
+        },
+        {
+            "name": "Tidehollow Sculler",
+            "count": 1
+        },
+        {
+            "name": "Silver-Fur Master",
+            "count": 1
+        },
+        {
+            "name": "Dionus, Elvish Archdruid",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        }
+    ]
+}

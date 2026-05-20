@@ -1,0 +1,154 @@
+---
+/**
+ * MetaPanel.astro
+ *
+ * Displays the commander meta breakdown with horizontal bars,
+ * and the color identity breakdown section.
+ *
+ * Props:
+ *   metaCommanders       – enriched commander meta entries
+ *   colorIdentityCounts  – { "BR": 5, "U": 3, ... }
+ *   playerCount          – total participant count
+ *   locale               – 'fr' | 'en'
+ */
+import { t, type Locale } from '@/lib/i18n';
+
+interface MetaCommander {
+  name: string;
+  count: number;
+  percentage: number;
+  image: string | null;
+  cardImage: string | null;
+  colors: string[];
+  isBanned: boolean;
+}
+
+interface Props {
+  metaCommanders: MetaCommander[];
+  colorIdentityCounts: Record<string, number>;
+  playerCount: number;
+  locale: Locale;
+}
+
+const { metaCommanders, colorIdentityCounts, playerCount, locale } = Astro.props;
+
+const maxPct = Math.max(...metaCommanders.map(c => c.percentage), 0);
+
+// Color identity totals
+const ciEntries = Object.entries(colorIdentityCounts).sort(([, a], [, b]) => b - a);
+const ciTotal = ciEntries.reduce((sum, [, count]) => sum + count, 0);
+const ciMax = Math.max(...ciEntries.map(([, count]) => count), 0);
+
+function splitCmd(name: string): string[] {
+  return name.split(' // ').map(s => s.trim());
+}
+---
+
+{/* Commander distribution - compact bars */}
+<div class="tournament-meta-panel !p-3 sm:!p-4">
+  <h3 class="text-sm font-heading font-semibold text-text-secondary uppercase tracking-wider mb-3">
+    {t('tournament.commandersPlayed', locale)}
+  </h3>
+
+  <div class="space-y-3">
+    {metaCommanders.map(commander => {
+      const parts = splitCmd(commander.name);
+      const barWidth = maxPct > 0 ? Math.round(commander.percentage / maxPct * 100) : 0;
+
+      return (
+        <div class={`tournament-commander-row ${commander.isBanned ? 'opacity-60' : ''}`}>
+          {commander.image ? (
+            <div class={`w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 ${commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10'} card-hover-trigger`}
+                 data-card-name={commander.name}
+                 data-card-image={commander.cardImage ?? commander.image}>
+              <img src={commander.image} alt={commander.name}
+                   class="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ) : (
+            <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg bg-bg-tertiary flex-shrink-0"></div>
+          )}
+
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-1">
+              <span class={`text-xs sm:text-sm font-beleren text-text-primary truncate ${commander.isBanned ? 'line-through decoration-red-500/70' : ''}`}>{parts[0]}</span>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                {commander.isBanned && (
+                  <span class="px-1.5 py-0.5 bg-red-500/20 border border-red-500/30 rounded text-[10px] font-bold text-red-400 uppercase tracking-wider leading-none">
+                    {t('meta.banned', locale)}
+                  </span>
+                )}
+                <span class="text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
+                  {commander.count}<span class="text-text-secondary/60">/{playerCount}</span>
+                  <span class="ml-1 text-magic-gold font-semibold">{commander.percentage}%</span>
+                </span>
+              </div>
+            </div>
+            {parts.length > 1 && (
+              <span class={`font-beleren text-text-secondary/60 truncate block leading-tight ${commander.isBanned ? 'line-through decoration-red-500/70' : ''}`} style="font-size:10px">+ {parts[1]}</span>
+            )}
+            <div class="flex items-center gap-0.5 mt-0.5">
+              {commander.colors.length > 0 ? (
+                commander.colors.map(color => (
+                  <i class={`ms ms-${color.toLowerCase()} ms-cost ms-shadow`} title={color}></i>
+                ))
+              ) : (
+                <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
+              )}
+            </div>
+          </div>
+
+          {/* Bar -- hidden on mobile, visible sm+ */}
+          <div class="hidden sm:block flex-shrink-0 w-20 h-2 bg-bg-primary/50 rounded-full overflow-hidden self-center">
+            <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
+                 style={`width: ${barWidth}%`}></div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+{/* Color identity breakdown */}
+{ciEntries.length > 0 && (
+  <div class="tournament-meta-panel !p-3 sm:!p-4">
+    <h3 class="text-sm font-heading font-semibold text-text-secondary uppercase tracking-wider mb-3">
+      {t('tournament.colorIdentities', locale)}
+    </h3>
+
+    <div class="space-y-2">
+      {ciEntries.map(([identityKey, count], index) => {
+        const pct = ciTotal > 0 ? Math.round(count / ciTotal * 100) : 0;
+        const label = t(`ci.${identityKey}`, locale);
+        const ciBarWidth = ciMax > 0 ? Math.round(count / ciMax * 100) : 0;
+        const isLast = index === ciEntries.length - 1;
+
+        return (
+          <div class={`flex flex-col gap-1 sm:gap-1.5 py-1.5 ${!isLast ? 'border-b border-white/5' : ''}`}>
+            <div class="flex items-center justify-between gap-1">
+              <div class="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <div class="flex items-center gap-0.5 flex-shrink-0">
+                  {identityKey === 'C' ? (
+                    <i class="ms ms-c ms-cost ms-shadow" title="C"></i>
+                  ) : (
+                    [...identityKey].map(char => (
+                      <i class={`ms ms-${char.toLowerCase()} ms-cost ms-shadow`} title={char}></i>
+                    ))
+                  )}
+                </div>
+                <span class="text-xs sm:text-sm font-mono text-text-primary truncate">{label}</span>
+              </div>
+              <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
+                {count}<span class="text-text-secondary/60">/{ciTotal}</span>
+                <span class="ml-1 text-magic-gold font-semibold">{pct}%</span>
+              </span>
+            </div>
+            <div class="w-full h-1.5 bg-bg-primary/50 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
+                   style={`width: ${ciBarWidth}%`}></div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}

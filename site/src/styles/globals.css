@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "./mana-custom.css";
+
+/*
+ * Fix Tailwind v4 vs v3 line-height difference.
+ * In TW3, text-5xl through text-9xl included line-height: 1.
+ * In TW4, they don't. This breaks all heading typography.
+ * We add this AFTER tailwindcss import so it overrides utilities.
+ */
+.text-5xl, .text-6xl, .text-7xl, .text-8xl, .text-9xl {
+  line-height: 1 !important;
+}
+
+/* Beleren - Police officielle des cartes Magic: The Gathering */
+@font-face {
+  font-family: 'Beleren';
+  src: url('/fonts/beleren/Beleren2016-Bold.woff') format('woff'),
+       url('/fonts/beleren/Beleren2016-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================
+   Tailwind v4 Theme
+   ============================ */
+@theme {
+  /* Colors - Brand */
+  --color-brand-orange: #FF5722;
+  --color-brand-orange-light: #FF7043;
+  --color-brand-orange-dark: #E64A19;
+  --color-brand-orange-glow: #FF6E40;
+  --color-brand-black: #0A0E13;
+  --color-brand-black-light: #1A1F26;
+  --color-brand-black-dark: #000000;
+
+  /* Colors - Mana */
+  --color-mana-white: #F8F6F1;
+  --color-mana-blue: #0E68AB;
+  --color-mana-black: #150B00;
+  --color-mana-red: #D3202A;
+  --color-mana-green: #00733E;
+  --color-mana-colorless: #BEB9B2;
+
+  /* Colors - Magic Gold */
+  --color-magic-gold: #FFA500;
+  --color-magic-gold-light: #FFB84D;
+  --color-magic-gold-dark: #CC8400;
+
+  /* Colors - Interface */
+  --color-card-bg: #141821;
+  --color-card-border: #FF5722;
+  --color-card-hover: #1C212B;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #B8BEC8;
+  --color-text-muted: #6B7280;
+  --color-text-orange: #FF5722;
+  --color-bg-primary: #0A0E13;
+  --color-bg-secondary: #141821;
+  --color-bg-tertiary: #1C212B;
+
+  /* Fonts */
+  --font-display: "Barlow Condensed", Impact, sans-serif;
+  --font-heading: "Barlow Condensed", Impact, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-beleren: "Beleren", "Barlow Condensed", serif;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px -2px rgba(255, 87, 34, 0.08), 0 8px 16px -4px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 12px 40px -4px rgba(255, 87, 34, 0.15), 0 16px 24px -8px rgba(0, 0, 0, 0.4);
+  --shadow-orange: 0 0 20px rgba(255, 87, 34, 0.15), 0 0 40px rgba(255, 87, 34, 0.08);
+  --shadow-orange-intense: 0 0 30px rgba(255, 87, 34, 0.25), 0 0 60px rgba(255, 110, 64, 0.12);
+  --shadow-inner-glow: inset 0 0 20px rgba(255, 87, 34, 0.05);
+  --shadow-inset-dark: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  /* Animations */
+  --animate-shimmer: shimmer 3s ease-in-out infinite;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-in: fadeIn 0.6s ease-out;
+  --animate-slide-up: slideUp 0.6s ease-out;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes glow {
+  0% { filter: brightness(1) drop-shadow(0 0 4px rgba(255, 87, 34, 0.2)); }
+  100% { filter: brightness(1.1) drop-shadow(0 0 8px rgba(255, 87, 34, 0.3)); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================
+   Base
+   ============================ */
+@layer base {
+  body {
+    @apply bg-bg-primary text-text-primary font-body antialiased;
+    background-image:
+      linear-gradient(180deg, rgba(255, 87, 34, 0.03) 0%, transparent 100%),
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .site-main h1, .site-main h2, .site-main h3,
+  .site-main h4, .site-main h5, .site-main h6 {
+    @apply font-heading uppercase tracking-tight;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ============================
+   Components
+   ============================ */
+@layer components {
+  /* Card Frame Effect */
+  .magic-card {
+    @apply relative overflow-hidden bg-card-bg border-2 border-brand-orange/20 shadow-card transition-all duration-300 rounded-xl;
+    background-image: linear-gradient(145deg, rgba(255, 87, 34, 0.06) 0%, rgba(255, 87, 34, 0.02) 100%);
+  }
+
+  .magic-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300 rounded-xl;
+    background: linear-gradient(145deg, rgba(255, 87, 34, 0.12) 0%, rgba(255, 87, 34, 0.06) 100%);
+    pointer-events: none;
+  }
+
+  .magic-card::after {
+    content: '';
+    @apply absolute top-0 left-0 w-full h-full opacity-0 transition-opacity duration-300 rounded-xl;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 87, 34, 0.1) 100%);
+    pointer-events: none;
+  }
+
+  .magic-card:hover {
+    @apply border-brand-orange/50 shadow-card-hover;
+  }
+
+  .magic-card:hover::before,
+  .magic-card:hover::after {
+    @apply opacity-100;
+  }
+
+  /* Magic Border Effect */
+  .magic-border {
+    @apply relative;
+  }
+
+  .magic-border::before {
+    content: '';
+    @apply absolute inset-0 opacity-90 rounded-xl;
+    background: linear-gradient(145deg, #E64A19 0%, #FF7043 100%);
+    padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  /* Button Styles */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center px-8 py-4 font-heading font-bold text-white uppercase tracking-wider overflow-hidden transition-all duration-300 rounded-lg;
+    @apply shadow-orange text-base;
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 50%, #E64A19 100%);
+    background-size: 200% 200%;
+    animation: shimmer 3s ease-in-out infinite;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+
+  .btn-primary:hover {
+    @apply shadow-orange-intense;
+    transform: scale(1.05) translateY(-2px);
+  }
+
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center px-8 py-4 font-heading font-bold uppercase tracking-wider overflow-hidden transition-all duration-300 rounded-lg;
+    @apply border-2 border-brand-orange text-brand-orange bg-brand-orange/10 text-base;
+  }
+
+  .btn-secondary:hover {
+    @apply bg-brand-orange/20 border-brand-orange-light shadow-card-hover;
+  }
+
+  /* Text Gradient Effects */
+  .text-magic-gradient {
+    background: linear-gradient(135deg, #FF7043 0%, #FF5722 50%, #E64A19 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .text-mana-gradient {
+    background: linear-gradient(135deg, #0E68AB 0%, #D3202A 25%, #00733E 50%, #FF5722 75%, #F8F6F1 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Icon Glow Effect */
+  .icon-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 87, 34, 0.6));
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  /* Section Divider */
+  .section-divider {
+    @apply relative h-px my-16;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 87, 34, 0.5) 50%, transparent 100%);
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '⚔';
+    @apply absolute top-1/2 -translate-y-1/2 text-brand-orange text-xs;
+  }
+
+  .section-divider::before { @apply left-[48%]; }
+  .section-divider::after { @apply right-[48%]; }
+
+  /* Tournament Styles */
+  .tournament-hero {
+    border-bottom: 1px solid rgba(255, 87, 34, 0.12);
+  }
+
+  .tournament-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-heading font-semibold uppercase tracking-wide;
+    @apply bg-bg-secondary/80 border border-white/10 rounded text-text-secondary;
+  }
+
+  .tournament-badge--primary {
+    @apply bg-brand-orange/10 border-brand-orange/25 text-brand-orange;
+  }
+
+  .tournament-winner {
+    @apply p-3 rounded-lg overflow-hidden;
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.08) 0%, rgba(234, 179, 8, 0.02) 100%);
+    border: 1px solid rgba(234, 179, 8, 0.15);
+  }
+
+  .tournament-place {
+    @apply flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold font-heading;
+    @apply bg-bg-tertiary text-text-muted border border-white/5;
+  }
+
+  .tournament-place--1 { @apply bg-yellow-500/20 text-yellow-400 border-yellow-500/40; }
+  .tournament-place--2 { @apply bg-slate-400/15 text-slate-300 border-slate-400/30; }
+  .tournament-place--3 { @apply bg-amber-700/15 text-amber-500 border-amber-700/30; }
+
+  .tournament-table { @apply space-y-1; }
+
+  .tournament-row {
+    @apply flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg overflow-hidden transition-colors duration-200;
+    @apply bg-bg-secondary/40 hover:bg-bg-secondary/70;
+    border: 1px solid transparent;
+  }
+
+  .tournament-row:hover {
+    border-color: rgba(255, 87, 34, 0.08);
+  }
+
+  .tournament-meta-panel {
+    @apply p-4 rounded-lg bg-bg-secondary overflow-hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .tournament-commander-row {
+    @apply flex items-center gap-2 overflow-hidden;
+  }
+
+  .tournament-row--link {
+    @apply no-underline cursor-pointer;
+  }
+
+  .tournament-row--link:hover {
+    @apply bg-bg-secondary/70;
+    border-color: rgba(255, 87, 34, 0.15);
+  }
+
+  .tournament-row--link:hover .text-text-primary {
+    @apply text-brand-orange;
+  }
+
+  .tournament-winner--link {
+    @apply no-underline cursor-pointer transition-all duration-200;
+  }
+
+  .tournament-winner--link:hover {
+    border-color: rgba(234, 179, 8, 0.3);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.04) 100%);
+  }
+
+  /* Rich text */
+  .rich-text p { margin-bottom: 0.75rem; }
+  .rich-text p:last-child { margin-bottom: 0; }
+  .rich-text strong { @apply text-text-primary; }
+
+  /* Pie chart */
+  .tournament-pie { transform: rotate(-90deg); }
+  .tournament-pie__slice { transition: opacity 0.2s ease; }
+  .tournament-pie:hover .tournament-pie__slice { opacity: 0.7; }
+  .tournament-pie:hover .tournament-pie__slice:hover { opacity: 1; }
+}
+
+/* ============================
+   Utilities
+   ============================ */
+@layer utilities {
+  .glass-effect {
+    @apply backdrop-blur-md bg-brand-black/90 border-b-2 border-brand-orange/20;
+  }
+
+  .animate-on-scroll {
+    @apply opacity-0 translate-y-8;
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+  .custom-scrollbar::-webkit-scrollbar-track { @apply bg-bg-secondary; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-brand-orange rounded-full; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { @apply bg-brand-orange-light; }
+
+  .mana-cost-wrapper {
+    @apply inline-flex items-center gap-1 whitespace-nowrap;
+    line-height: 1;
+  }
+
+  .mana-cost-wrapper .ms-cost {
+    @apply inline-flex items-center justify-center;
+    font-size: 1.1em;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+
+  .mana-cost-wrapper .ms-cost::before {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-header .mana-cost-wrapper .ms-cost { font-size: 1.3em; }
+  .commander-info .mana-cost-wrapper .ms-cost { font-size: 1.4em; }
+}

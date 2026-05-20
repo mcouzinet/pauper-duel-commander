@@ -38,3 +38,11 @@ web/phpinfo.php
 
 # Backup files
 *.po~
+# Migration temp files
+104dbb16-*
+uploads/
+site/.cache/
+site/dist/
+site/node_modules/
+*.sql
+*.dump

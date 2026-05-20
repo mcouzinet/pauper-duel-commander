@@ -1,0 +1,47 @@
+---
+import '@/styles/globals.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { getLocaleFromPath, type Locale } from '@/lib/i18n';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const locale = getLocaleFromPath(Astro.url.pathname);
+---
+<!DOCTYPE html>
+<html lang={locale}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} — Pauper Duel Commander</title>
+  {description && <meta name="description" content={description} />}
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.min.css" />
+
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4J2Y2V33VE"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-4J2Y2V33VE');
+  </script>
+</head>
+<body>
+  <Header locale={locale} currentPath={Astro.url.pathname} />
+
+  <main class="site-main pt-16 md:pt-24">
+    <slot />
+  </main>
+
+  <Footer locale={locale} />
+
+  <!-- Global scripts -->
+  <script src="@/scripts/mobile-menu.ts"></script>
+  <script src="@/scripts/card-hover.ts"></script>
+</body>
+</html>

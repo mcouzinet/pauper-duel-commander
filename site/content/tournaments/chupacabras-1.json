@@ -1,0 +1,74 @@
+{
+    "title": "Chupacabras #1",
+    "date": "2026-04-04",
+    "location": "Résidence Beauvallon ",
+    "city": "Hyeres",
+    "playerCount": 16,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "???",
+            "commanderName": "Soulherder",
+            "score": "3-0-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 2,
+            "playerName": "ArtRhino",
+            "commanderName": "Horrid Shadowspinner",
+            "score": "3-0-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 3,
+            "playerName": "???",
+            "commanderName": "???",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 4,
+            "playerName": "???",
+            "commanderName": "???",
+            "score": "",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Garland, Knight of Cornelia",
+            "count": 2
+        },
+        {
+            "name": "Ethersworn Sphinx",
+            "count": 1
+        },
+        {
+            "name": "Soulherder",
+            "count": 1
+        },
+        {
+            "name": "Ingenious Infiltrator",
+            "count": 1
+        },
+        {
+            "name": "Lotleth Troll",
+            "count": 1
+        },
+        {
+            "name": "Horrid Shadowspinner",
+            "count": 1
+        },
+        {
+            "name": "Nazgûl",
+            "count": 1
+        },
+        {
+            "name": "Arwen Undómiel",
+            "count": 1
+        }
+    ]
+}

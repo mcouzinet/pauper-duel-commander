@@ -1,0 +1,2 @@
+# Ignore cached Scryfall card data (auto-generated)
+scryfall/*.json

@@ -1,0 +1,130 @@
+{
+    "title": "Artefact #4",
+    "date": "2026-03-15",
+    "location": "Artefact",
+    "city": "Bordeaux",
+    "playerCount": 17,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Evan",
+            "commanderName": "Crackling Drake",
+            "score": "",
+            "decklistSlug": "crackling-drake-artefact-15-03-26-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Tristan",
+            "commanderName": "Heartfire Hero",
+            "score": "",
+            "decklistSlug": "heartfire-hero-artefact-15-03-26-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Élie",
+            "commanderName": "Crackling Drake",
+            "score": "",
+            "decklistSlug": "crackling-drake-artefact-15-03-26-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Nicolas",
+            "commanderName": "Mayhem Devil",
+            "score": "",
+            "decklistSlug": "mayhem-devil-artefact-15-03-26-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Mickael",
+            "commanderName": "Sailors Bane",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 6,
+            "playerName": "Martin",
+            "commanderName": "Gut, True Soul Zealot",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 7,
+            "playerName": "Pierre",
+            "commanderName": "Third Path Iconoclast",
+            "score": "",
+            "decklistSlug": "third-path-iconoclast-artefact-15-03-26-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Noah",
+            "commanderName": "Cormela, Glamour Thief",
+            "score": "",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Baleful Strix",
+            "count": 2
+        },
+        {
+            "name": "Crackling Drake",
+            "count": 2
+        },
+        {
+            "name": "Arabella, Abandoned Doll",
+            "count": 1
+        },
+        {
+            "name": "Sailor's Bane",
+            "count": 1
+        },
+        {
+            "name": "Cormela, Glamour Thief",
+            "count": 1
+        },
+        {
+            "name": "Garland, Knight of Cornelia",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Satyr Enchanter",
+            "count": 1
+        },
+        {
+            "name": "Mayhem Devil",
+            "count": 1
+        },
+        {
+            "name": "Tor Wauki the Younger",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Agent of the Iron Throne",
+            "count": 1
+        },
+        {
+            "name": "Black Waltz No. 3",
+            "count": 1
+        },
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        },
+        {
+            "name": "Dargo, the Shipwrecker // Miara, Thorn of the Glade",
+            "count": 1
+        },
+        {
+            "name": "Boggart Cursecrafter",
+            "count": 1
+        }
+    ]
+}

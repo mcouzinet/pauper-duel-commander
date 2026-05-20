@@ -1,0 +1,49 @@
+{
+    "lastUpdated": "2026-05-20",
+    "bannedAsCommander": [
+        "Bastion Protector",
+        "Bloodboil Sorcerer",
+        "Feywild Caretaker",
+        "Loyal Apprentice",
+        "Loyal Drake",
+        "Loyal Guardian",
+        "Loyal Subordinate",
+        "Loyal Unicorn",
+        "Passageway Seer",
+        "Rilsa Rael, Kingpin"
+    ],
+    "bannedInDeck": [
+        "Aarakocra Sneak",
+        "Avenging Hunter",
+        "Fall from Favor",
+        "Goliath Paladin",
+        "Imprisoned in the Moon",
+        "Oubliette",
+        "Stirring Bard",
+        "Trailblazer's Torch",
+        "Underdark Explorer",
+        "Vicious Battlerager"
+    ],
+    "cards": [
+        "Aarakocra Sneak",
+        "Avenging Hunter",
+        "Bastion Protector",
+        "Bloodboil Sorcerer",
+        "Fall from Favor",
+        "Feywild Caretaker",
+        "Goliath Paladin",
+        "Imprisoned in the Moon",
+        "Loyal Apprentice",
+        "Loyal Drake",
+        "Loyal Guardian",
+        "Loyal Subordinate",
+        "Loyal Unicorn",
+        "Oubliette",
+        "Passageway Seer",
+        "Rilsa Rael, Kingpin",
+        "Stirring Bard",
+        "Trailblazer's Torch",
+        "Underdark Explorer",
+        "Vicious Battlerager"
+    ]
+}

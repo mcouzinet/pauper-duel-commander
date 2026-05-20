@@ -1,0 +1,130 @@
+{
+    "title": "Fight Club MTG Var #1",
+    "date": "2026-03-20",
+    "location": "Fight Club MTG Var",
+    "city": "Toulon",
+    "playerCount": 16,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Thomas",
+            "commanderName": "Horrid Shadowspinner",
+            "score": "4-0",
+            "decklistSlug": "horrid-shadowspinner-fight-club-mtg-var-20-03-26-1eme"
+        },
+        {
+            "place": 2,
+            "playerName": "Fabien",
+            "commanderName": "Third Path Iconoclast",
+            "score": "3-1",
+            "decklistSlug": "third-path-iconoclast-fight-club-mtg-var-20-03-26-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Pierre",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "3-1",
+            "decklistSlug": "gut-fight-club-mtg-var-20-03-26-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "David",
+            "commanderName": "Tenth District Legionnaire",
+            "score": "3-1",
+            "decklistSlug": "tenth-district-legionnaire-fight-club-mtg-var-20-03-26-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Pierre-Louis",
+            "commanderName": "Baleful Strix",
+            "score": "3-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 6,
+            "playerName": "Laurent",
+            "commanderName": "Baleful Strix",
+            "score": "2-2",
+            "decklistSlug": ""
+        },
+        {
+            "place": 7,
+            "playerName": "Jérémy",
+            "commanderName": "Huskburster Swarm",
+            "score": "2-2",
+            "decklistSlug": ""
+        },
+        {
+            "place": 8,
+            "playerName": "Florent",
+            "commanderName": "??",
+            "score": "2-2",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Baleful Strix",
+            "count": 2
+        },
+        {
+            "name": "Skirmish Rhino",
+            "count": 1
+        },
+        {
+            "name": "Khenra Spellspear",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        },
+        {
+            "name": "Zoyowa Lava-Tongue",
+            "count": 1
+        },
+        {
+            "name": "Wilson, Refined Grizzly // Sword Coast Sailor",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Tenth District Legionnaire",
+            "count": 1
+        },
+        {
+            "name": "Huskburster Swarm",
+            "count": 1
+        },
+        {
+            "name": "Gyre Engineer",
+            "count": 1
+        },
+        {
+            "name": "Satyr Enchanter",
+            "count": 1
+        },
+        {
+            "name": "Exdeath, Void Warlock",
+            "count": 1
+        },
+        {
+            "name": "Queza, Augur of Agonies",
+            "count": 1
+        },
+        {
+            "name": "Sprite Dragon",
+            "count": 1
+        },
+        {
+            "name": "Horrid Shadowspinner",
+            "count": 1
+        }
+    ]
+}

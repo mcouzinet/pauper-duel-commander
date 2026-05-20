@@ -1,0 +1,84 @@
+---
+/**
+ * ColorPieChart.astro
+ *
+ * SVG donut chart showing color distribution among tournament participants.
+ * Uses stroke-dasharray segments on a circle with r=40 (circumference ~251.33).
+ *
+ * Props:
+ *   colorCounts – sorted [color, count][] pairs (e.g., [["R", 12], ["U", 8], ...])
+ *   locale      – 'fr' | 'en'
+ */
+import { t, type Locale } from '@/lib/i18n';
+
+interface Props {
+  colorCounts: [string, number][];
+  locale: Locale;
+}
+
+const { colorCounts, locale } = Astro.props;
+
+const COLOR_HEX: Record<string, string> = {
+  W: '#F8F6F1',
+  U: '#0E68AB',
+  B: '#564D44',
+  R: '#D3202A',
+  G: '#00733E',
+  C: '#BEB9B2',
+};
+
+const colorTotal = colorCounts.reduce((sum, [, count]) => sum + count, 0);
+const circ = 2 * Math.PI * 40; // ~251.33
+
+// Pre-compute slice data
+let cumulative = 0;
+const slices = colorCounts.map(([code, count]) => {
+  const pct = count / colorTotal * 100;
+  const dash = pct / 100 * circ;
+  const gap = circ - dash;
+  const offset = circ / 4 - (cumulative / 100 * circ);
+  cumulative += pct;
+  return { code, count, pct, dash, gap, offset };
+});
+---
+
+<div class="tournament-meta-panel !p-3 sm:!p-4">
+  <h3 class="text-sm font-heading font-semibold text-text-secondary uppercase tracking-wider mb-3">
+    {t('meta.colorDist', locale)}
+  </h3>
+
+  <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+    {/* SVG Pie chart */}
+    <div class="flex-shrink-0">
+      <svg viewBox="0 0 100 100" class="w-28 h-28 sm:w-32 sm:h-32 tournament-pie">
+        {slices.map(slice => (
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="none"
+            stroke={COLOR_HEX[slice.code] ?? '#6B7280'}
+            stroke-width="18"
+            stroke-dasharray={`${slice.dash} ${slice.gap}`}
+            stroke-dashoffset={slice.offset}
+            class="tournament-pie__slice"
+          />
+        ))}
+      </svg>
+    </div>
+
+    {/* Legend */}
+    <div class="flex-1 w-full space-y-1.5">
+      {colorCounts.map(([code, count]) => (
+        <div class="flex items-center gap-2">
+          <span
+            class="w-2.5 h-2.5 rounded-full flex-shrink-0"
+            style={`background: ${COLOR_HEX[code] ?? '#6B7280'};${code === 'B' ? ' border: 1px solid rgba(255,255,255,0.15);' : ''}`}
+          ></span>
+          <span class="text-xs text-text-secondary">{t(`color.${code}`, locale)}</span>
+          <span class="text-xs font-bold text-text-primary ml-auto">{count}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

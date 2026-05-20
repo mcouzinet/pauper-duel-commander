@@ -1,0 +1,6 @@
+/* Mana Font custom styles - extends mana-font library */
+
+.decklist-card .mana-cost-wrapper .ms-cost,
+.card-hover-trigger .mana-cost-wrapper .ms-cost {
+  font-size: 0.85em;
+}

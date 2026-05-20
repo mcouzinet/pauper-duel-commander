@@ -1,0 +1,106 @@
+{
+    "title": "Artefact #1",
+    "date": "2025-10-13",
+    "location": "Artefact",
+    "city": "Bordeaux",
+    "playerCount": 19,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Alexis",
+            "commanderName": "Hobgoblin Bandit Lord",
+            "score": "4-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 2,
+            "playerName": "??? ",
+            "commanderName": "Dionus, Elvish Archdruid",
+            "score": "4-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 3,
+            "playerName": "???",
+            "commanderName": "Baleful Strix",
+            "score": "4-1",
+            "decklistSlug": ""
+        },
+        {
+            "place": 4,
+            "playerName": "Élie",
+            "commanderName": "Loyal Apprentice",
+            "score": "4-1",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Baleful Strix",
+            "count": 2
+        },
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 2
+        },
+        {
+            "name": "Dionus, Elvish Archdruid",
+            "count": 2
+        },
+        {
+            "name": "Hobgoblin, Mantled Marauder",
+            "count": 1
+        },
+        {
+            "name": "Sphinx of the Guildpact",
+            "count": 1
+        },
+        {
+            "name": "Loyal Apprentice",
+            "count": 1
+        },
+        {
+            "name": "Elas il-Kor, Sadistic Pilgrim",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Siona, Captain of the Pyleas",
+            "count": 1
+        },
+        {
+            "name": "Tannuk, Memorial Ensign",
+            "count": 1
+        },
+        {
+            "name": "Crackling Drake",
+            "count": 1
+        },
+        {
+            "name": "Oji, the Exquisite Blade",
+            "count": 1
+        },
+        {
+            "name": "Black Waltz No. 3",
+            "count": 1
+        },
+        {
+            "name": "Wilson, Refined Grizzly // Sword Coast Sailor",
+            "count": 1
+        },
+        {
+            "name": "Huskburster Swarm",
+            "count": 1
+        },
+        {
+            "name": "Lagrella, the Magpie",
+            "count": 1
+        }
+    ]
+}

@@ -1,0 +1,36 @@
+---
+import { t, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const year = new Date().getFullYear();
+const homeHref = locale === 'fr' ? '/fr/' : '/en/';
+---
+
+<footer class="relative border-t border-card-border bg-bg-secondary">
+  <div class="container mx-auto px-6 py-12">
+    <div class="text-center space-y-4">
+      <div class="flex justify-center items-center mb-6">
+        <a href={homeHref} class="block hover:scale-105 transition-transform duration-300">
+          <img src="/img/PauperDuelCommander.png"
+               alt="Pauper Duel Commander"
+               class="h-24 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
+        </a>
+      </div>
+      <p class="text-text-secondary font-body">
+        {t('footer.tagline', locale)}
+      </p>
+      <div class="pt-6 border-t border-card-border/50 mt-8">
+        <p class="text-text-muted text-sm">
+          &copy; {year} Pauper Duel Commander. {t('footer.rights', locale)}
+        </p>
+        <p class="text-text-muted text-xs mt-2">
+          {t('footer.legal', locale)}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

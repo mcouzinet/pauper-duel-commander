@@ -1,0 +1,128 @@
+---
+import { t, getAlternateLocalePath, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  currentPath: string;
+}
+
+const { locale, currentPath } = Astro.props;
+
+const navItems = [
+  { label: { fr: 'Accueil', en: 'Home' }, href: { fr: '/fr/', en: '/en/' } },
+  { key: 'nav.banlist', href: { fr: '/fr/banlist/', en: '/en/banlist/' } },
+  { key: 'nav.validator', href: { fr: '/fr/validateur/', en: '/en/validator/' } },
+  { key: 'nav.tournaments', href: { fr: '/fr/tournois/', en: '/en/tournaments/' } },
+  { key: 'nav.meta', href: { fr: '/fr/meta/', en: '/en/meta/' } },
+  { key: 'nav.decklists', href: { fr: '/fr/decklist/', en: '/en/decklist/' } },
+];
+
+const homeHref = locale === 'fr' ? '/fr/' : '/en/';
+const altLocale: Locale = locale === 'fr' ? 'en' : 'fr';
+const altPath = getAlternateLocalePath(currentPath, altLocale);
+---
+
+<header class="glass-effect border-b border-card-border fixed top-0 left-0 right-0 z-50">
+  <nav class="container mx-auto px-4 md:px-6">
+    <div class="relative flex justify-between items-center py-3 md:py-8">
+      <div class="w-12 md:w-36">
+        <a href={homeHref} class="absolute top-0 left-0 block hover:scale-105 transition-transform duration-300">
+          <img src="/img/PauperDuelCommander.png"
+               alt="Pauper Duel Commander"
+               class="h-20 md:h-36 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
+        </a>
+      </div>
+
+      <!-- Burger button - mobile only -->
+      <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Toggle menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path id="burger-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          <path id="burger-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Desktop Menu -->
+      <div class="hidden md:flex items-center gap-8">
+        <ul class="flex items-center space-x-6">
+          {navItems.map((item) => {
+            const href = item.href[locale];
+            const isCurrent = href === '/' + locale + '/' ? currentPath === href : currentPath.startsWith(href);
+            const label = item.label ? item.label[locale] : t(item.key!, locale);
+            return (
+              <li>
+                <a href={href}
+                   class:list={[
+                     'relative font-heading font-bold uppercase text-md text-text-secondary hover:text-brand-orange transition-colors duration-300 group',
+                   ]}>
+                  {label}
+                  <span class:list={[
+                    'absolute -bottom-1 left-0 h-0.5 bg-brand-orange transition-all duration-300',
+                    isCurrent ? 'w-full' : 'w-0 group-hover:w-full',
+                  ]} />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <!-- Language Switcher -->
+        <select
+          onchange="window.location.href=this.value"
+          class="px-3 py-2 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-xs tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50"
+        >
+          <option value={locale === 'fr' ? currentPath : altPath} selected={locale === 'fr'}>FR</option>
+          <option value={locale === 'en' ? currentPath : altPath} selected={locale === 'en'}>EN</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 md:hidden hidden" style="background-color: #0A0E13; z-index: 9999;">
+  <div class="container mx-auto px-4 pb-8 h-full flex flex-col">
+    <div class="relative flex justify-between items-center py-3 mb-12">
+      <div class="w-12">
+        <a href={homeHref} class="absolute top-0 left-0 block">
+          <img src="/img/PauperDuelCommander.png"
+               alt="Pauper Duel Commander"
+               class="h-20 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
+        </a>
+      </div>
+      <button id="mobile-menu-close" class="flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Close menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <ul class="flex flex-col space-y-6 mb-12">
+      {navItems.map((item) => {
+        const href = item.href[locale];
+        const isCurrent = href === '/' + locale + '/' ? currentPath === href : currentPath.startsWith(href);
+        const label = item.label ? item.label[locale] : t(item.key!, locale);
+        return (
+          <li>
+            <a href={href}
+               class="block font-heading font-bold uppercase text-2xl text-text-secondary hover:text-brand-orange transition-colors duration-300">
+              {label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+
+    <div class="mt-auto pt-8 border-t border-brand-orange/20">
+      <p class="text-xs uppercase text-text-muted mb-4 font-heading font-bold tracking-wider">
+        {t('header.language', locale)}
+      </p>
+      <select
+        onchange="window.location.href=this.value"
+        class="w-full px-4 py-3 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-sm tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50"
+      >
+        <option value={locale === 'fr' ? currentPath : altPath} selected={locale === 'fr'}>Français</option>
+        <option value={locale === 'en' ? currentPath : altPath} selected={locale === 'en'}>English</option>
+      </select>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+---
+import { getCardByName, getCardImage } from '@/lib/scryfall';
+
+interface Props {
+  cards: string[];
+}
+
+const { cards } = Astro.props;
+
+// Fetch Scryfall data for all banned cards
+const enrichedCards = await Promise.all(
+  cards.map(async (name) => {
+    const data = await getCardByName(name);
+    const imageUrl = data
+      ? (getCardImage(data, 'border_crop') ?? getCardImage(data, 'normal'))
+      : null;
+    return { name, imageUrl, scryfallUrl: data ? `https://scryfall.com/card/${data.object === 'card' ? (data as any).set + '/' + (data as any).collector_number : ''}` : '#' };
+  })
+);
+---
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 max-w-7xl mx-auto">
+  {enrichedCards.map((card) => (
+    card.imageUrl && (
+      <div class="group relative overflow-hidden transition-all duration-300 hover:scale-105">
+        <a href={`https://scryfall.com/search?q=${encodeURIComponent(`!"${card.name}"`)}`} target="_blank" rel="noopener noreferrer" class="block">
+          <img
+            src={card.imageUrl}
+            alt={card.name}
+            class="w-full h-auto rounded-xl"
+            loading="lazy"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-brand-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 rounded-xl">
+            <p class="text-white font-beleren font-bold text-sm">
+              {card.name}
+            </p>
+          </div>
+        </a>
+      </div>
+    )
+  ))}
+</div>

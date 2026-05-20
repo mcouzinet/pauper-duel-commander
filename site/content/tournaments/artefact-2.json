@@ -1,0 +1,90 @@
+{
+    "title": "Artefact #2",
+    "date": "2025-11-30",
+    "location": "Artefact",
+    "city": "Bordeaux",
+    "playerCount": 16,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Élie",
+            "commanderName": "Loyal Apprentice",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 2,
+            "playerName": "Nicolas",
+            "commanderName": "Mayhem Devil",
+            "score": "",
+            "decklistSlug": "mayhem-devil-artefact-15-03-26-4eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Mickael",
+            "commanderName": "Long Feng, Grand Secretariat",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 4,
+            "playerName": "-",
+            "commanderName": "Baleful Strix",
+            "score": "",
+            "decklistSlug": ""
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Mayhem Devil",
+            "count": 2
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 2
+        },
+        {
+            "name": "Siona, Captain of the Pyleas",
+            "count": 1
+        },
+        {
+            "name": "Loyal Apprentice",
+            "count": 1
+        },
+        {
+            "name": "Skyfisher Spider",
+            "count": 1
+        },
+        {
+            "name": "Black Waltz No. 3",
+            "count": 1
+        },
+        {
+            "name": "Venomthrope",
+            "count": 1
+        },
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 1
+        },
+        {
+            "name": "Survey Mechan",
+            "count": 1
+        },
+        {
+            "name": "Descendant of Storms",
+            "count": 1
+        },
+        {
+            "name": "Long Feng, Grand Secretariat",
+            "count": 1
+        },
+        {
+            "name": "Sphinx of the Guildpact",
+            "count": 1
+        }
+    ]
+}

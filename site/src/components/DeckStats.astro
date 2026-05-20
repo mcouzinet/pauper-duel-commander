@@ -1,0 +1,219 @@
+---
+/**
+ * DeckStats Component
+ *
+ * Renders three stat charts for a decklist:
+ * 1. Mana Curve — bar chart of CMC distribution
+ * 2. Mana Colors — SVG donut chart of color counts
+ * 3. Card Types — SVG donut chart of type counts
+ *
+ * Props:
+ * - stats: DeckStats
+ * - locale: 'fr' | 'en'
+ */
+import { t, type Locale } from '@/lib/i18n';
+import type { DeckStats } from '@/types/decklist';
+
+interface Props {
+  stats: DeckStats;
+  locale: Locale;
+}
+
+const { stats, locale } = Astro.props;
+
+// ---------------------------------------------------------------------------
+// Mana Curve
+// ---------------------------------------------------------------------------
+const cmcEntries = Object.entries(stats.cmcDistribution);
+const maxCount = Math.max(...cmcEntries.map(([, count]) => count), 1);
+const MAX_HEIGHT = 192; // 12rem = h-48
+
+const cmcBars = cmcEntries.map(([cmc, count]) => {
+  const rawHeight = maxCount > 0 ? Math.round((count / maxCount) * (MAX_HEIGHT - 36)) : 0;
+  const barHeight = count > 0 ? Math.max(rawHeight, 8) : 0;
+  return { cmc, count, barHeight };
+});
+
+// ---------------------------------------------------------------------------
+// Color Donut
+// ---------------------------------------------------------------------------
+const COLOR_HEX: Record<string, string> = {
+  W: '#FFFCE5',
+  U: '#0E68AB',
+  B: '#211E1F',
+  R: '#E94941',
+  G: '#00A851',
+  C: '#CAC5C0',
+  Multi: '#F4D03F',
+};
+
+const COLOR_NAMES_FR: Record<string, string> = {
+  W: 'Blanc',
+  U: 'Bleu',
+  B: 'Noir',
+  R: 'Rouge',
+  G: 'Vert',
+  C: 'Incolore',
+  Multi: 'Multicolore',
+};
+
+const COLOR_NAMES_EN: Record<string, string> = {
+  W: 'White',
+  U: 'Blue',
+  B: 'Black',
+  R: 'Red',
+  G: 'Green',
+  C: 'Colorless',
+  Multi: 'Multicolor',
+};
+
+const colorNames = locale === 'en' ? COLOR_NAMES_EN : COLOR_NAMES_FR;
+
+const totalColored = Object.values(stats.colorCounts).reduce((s, c) => s + c, 0);
+const CIRCUMFERENCE = 2 * Math.PI * 35;
+
+/** Build donut segments for colors. */
+const colorSegments: { color: string; hex: string; label: string; count: number; segmentLength: number; offset: number }[] = [];
+let colorOffset = 0;
+for (const [color, count] of Object.entries(stats.colorCounts)) {
+  if (count <= 0) continue;
+  const percent = totalColored > 0 ? (count / totalColored) * 100 : 0;
+  const segmentLength = (percent / 100) * CIRCUMFERENCE;
+  colorSegments.push({
+    color,
+    hex: COLOR_HEX[color] ?? '#BEB9B2',
+    label: colorNames[color] ?? color,
+    count,
+    segmentLength,
+    offset: colorOffset,
+  });
+  colorOffset += segmentLength;
+}
+
+// ---------------------------------------------------------------------------
+// Type Donut
+// ---------------------------------------------------------------------------
+const TYPE_COLORS: Record<string, string> = {
+  Creature: '#4FC3F7',
+  Instant: '#9E9E9E',
+  Sorcery: '#FFD54F',
+  Enchantment: '#FF6E40',
+  Artifact: '#4DB6AC',
+  Land: '#A1887F',
+  Planeswalker: '#FFA726',
+  Battle: '#BA68C8',
+  Other: '#BEB9B2',
+};
+
+const totalTypeCards = Object.values(stats.typeCounts).reduce((s, c) => s + c, 0);
+
+const typeSegments: { type: string; hex: string; count: number; segmentLength: number; offset: number }[] = [];
+let typeOffset = 0;
+for (const [type, count] of Object.entries(stats.typeCounts)) {
+  if (count <= 0) continue;
+  const percent = totalTypeCards > 0 ? (count / totalTypeCards) * 100 : 0;
+  const segmentLength = (percent / 100) * CIRCUMFERENCE;
+  typeSegments.push({
+    type,
+    hex: TYPE_COLORS[type] ?? '#BEB9B2',
+    count,
+    segmentLength,
+    offset: typeOffset,
+  });
+  typeOffset += segmentLength;
+}
+---
+
+<div class="grid md:grid-cols-3 gap-8">
+
+  {/* ---- Mana Curve ---- */}
+  <div class="md:col-span-3 lg:col-span-1">
+    <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+      {t('decklist.manaCurve', locale)}
+    </h2>
+    <div class="py-6 rounded-lg mt-6">
+      <div class="flex justify-center items-end gap-2" style={`height: ${MAX_HEIGHT}px;`}>
+        {cmcBars.map(({ cmc, count, barHeight }) => (
+          <div class="flex flex-col items-center gap-2 flex-1">
+            <div
+              class="relative w-full rounded-t bg-white flex items-center justify-center"
+              style={`height: ${barHeight}px;`}
+            >
+              <span class="text-sm font-bold text-brand-orange absolute -top-6">{count}</span>
+            </div>
+            <span class="text-lg font-bold text-text-muted">{cmc}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* ---- Mana Colors ---- */}
+  <div class="md:col-span-3 lg:col-span-1">
+    <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+      {t('decklist.manaColors', locale)}
+    </h2>
+    <div class="flex flex-col items-center gap-6">
+      <div class="relative w-48 h-48">
+        <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+          {colorSegments.map((seg) => (
+            <circle
+              cx="50" cy="50" r="35"
+              fill="none"
+              stroke={seg.hex}
+              stroke-width="15"
+              stroke-dasharray={`${seg.segmentLength} ${CIRCUMFERENCE}`}
+              stroke-dashoffset={`${-seg.offset}`}
+            />
+          ))}
+          <circle cx="50" cy="50" r="27.5" fill="#0A0E13" />
+        </svg>
+      </div>
+
+      {/* Color Legend */}
+      <div class="grid grid-cols-1 gap-2 text-sm w-full">
+        {colorSegments.map((seg) => (
+          <div class="flex items-center gap-2 justify-center">
+            <span class="w-4 h-4 rounded" style={`background-color: ${seg.hex};`}></span>
+            <span class="text-text-secondary">{seg.label}: {seg.count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  {/* ---- Card Types ---- */}
+  <div class="md:col-span-3 lg:col-span-1">
+    <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-6 text-center">
+      {t('decklist.cardTypes', locale)}
+    </h2>
+    <div class="flex flex-col items-center gap-6">
+      <div class="relative w-48 h-48">
+        <svg viewBox="0 0 100 100" class="w-full h-full transform -rotate-90">
+          {typeSegments.map((seg) => (
+            <circle
+              cx="50" cy="50" r="35"
+              fill="none"
+              stroke={seg.hex}
+              stroke-width="15"
+              stroke-dasharray={`${seg.segmentLength} ${CIRCUMFERENCE}`}
+              stroke-dashoffset={`${-seg.offset}`}
+            />
+          ))}
+          <circle cx="50" cy="50" r="27.5" fill="#0A0E13" />
+        </svg>
+      </div>
+
+      {/* Type Legend */}
+      <div class="grid grid-cols-1 gap-2 text-sm w-full">
+        {typeSegments.map((seg) => (
+          <div class="flex items-center gap-2 justify-center">
+            <span class="w-4 h-4 rounded" style={`background-color: ${seg.hex};`}></span>
+            <span class="text-text-secondary">{seg.type}: {seg.count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+</div>

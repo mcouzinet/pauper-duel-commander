@@ -1,0 +1,102 @@
+{
+    "title": "Artefact #3",
+    "date": "2025-12-21",
+    "location": "Artefact",
+    "city": "Bordeaux",
+    "playerCount": 15,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Martin",
+            "commanderName": "Gut, True Soul Zealot // Agent of the Iron Throne",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 2,
+            "playerName": "Alexis",
+            "commanderName": "Satyr Enchanter",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 3,
+            "playerName": "Mickael",
+            "commanderName": "Sailors Bane",
+            "score": "",
+            "decklistSlug": ""
+        },
+        {
+            "place": 4,
+            "playerName": "Alexis",
+            "commanderName": "Greta, Sweettooth Scourge",
+            "score": "",
+            "decklistSlug": "greta-la-gourmande"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Gut, True Soul Zealot // Agent of the Iron Throne",
+            "count": 1
+        },
+        {
+            "name": "Sphinx of the Guildpact",
+            "count": 1
+        },
+        {
+            "name": "Tor Wauki the Younger",
+            "count": 1
+        },
+        {
+            "name": "Shaman of the Pack",
+            "count": 1
+        },
+        {
+            "name": "Satyr Enchanter",
+            "count": 1
+        },
+        {
+            "name": "Black Waltz No. 3",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Exdeath, Void Warlock",
+            "count": 1
+        },
+        {
+            "name": "Ravenous Squirrel",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Garland, Knight of Cornelia",
+            "count": 1
+        },
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 1
+        },
+        {
+            "name": "Greta, Sweettooth Scourge",
+            "count": 1
+        },
+        {
+            "name": "Sailor's Bane",
+            "count": 1
+        },
+        {
+            "name": "Marsh Crocodile",
+            "count": 1
+        }
+    ]
+}
