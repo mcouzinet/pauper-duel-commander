@@ -21,15 +21,6 @@ const locale = getLocaleFromPath(Astro.url.pathname);
   {description && <meta name="description" content={description} />}
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.min.css" />
-
-  <!-- Google Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4J2Y2V33VE"></script>
-  <script is:inline>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-4J2Y2V33VE');
-  </script>
 </head>
 <body>
   <Header locale={locale} currentPath={Astro.url.pathname} />
@@ -41,6 +32,7 @@ const locale = getLocaleFromPath(Astro.url.pathname);
   <Footer locale={locale} />
 
   <!-- Global scripts -->
+  <script src="@/scripts/cookieconsent-config.ts"></script>
   <script src="@/scripts/mobile-menu.ts"></script>
   <script src="@/scripts/card-hover.ts"></script>
 </body>
