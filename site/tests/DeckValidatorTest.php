@@ -173,6 +173,18 @@ class DeckValidatorTest extends TestCase
         $this->assertNotContains('commander_rarity', $this->ruleNames($result));
     }
 
+    /**
+     * The flip side of the rule above: Arena rebalances rarities for its own
+     * play patterns, so an Arena-only uncommon does not make a card eligible.
+     * Abhorrent Overlord is rare in every paper and MTGO printing.
+     */
+    public function testArenaOnlyUncommonPrintingDoesNotQualify(): void
+    {
+        $result = DeckValidator::validate('Abhorrent Overlord', '', $this->deck(['Swamp' => 99]));
+
+        $this->assertContains('commander_rarity', $this->ruleNames($result));
+    }
+
     // -- Rule 4: deck size ---------------------------------------------------
 
     public function testDeckSizeMustBe99WithoutPartner(): void

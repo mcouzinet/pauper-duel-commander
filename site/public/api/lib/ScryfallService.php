@@ -281,8 +281,9 @@ class ScryfallService {
      * Strix, for instance, defaults to rare but has an uncommon printing, and is
      * a legal commander played in tournaments.
      *
-     * Follows `prints_search_uri`, which lists all printings. Cached like
-     * everything else, keyed separately from the card itself.
+     * Follows `prints_search_uri`, which lists all printings, and counts only
+     * those released in paper or on MTGO — see below. Cached like everything
+     * else, keyed separately from the card itself.
      *
      * @param object $card_data Scryfall card object
      * @return array Lowercase rarity strings, e.g. ['rare', 'uncommon']
@@ -311,9 +312,18 @@ class ScryfallService {
             return $own;   // fall back to the single printing rather than nothing
         }
 
+        // Only printings that exist in paper or on MTGO count. Arena rebalances
+        // rarities for its own play patterns: Abhorrent Overlord is rare in every
+        // paper set but uncommon in an Arena-only release, and counting that would
+        // make it a legal commander when it is not. 561 creatures are uncommon on
+        // Arena alone.
         $rarities = $own;
         foreach ($data->data as $print) {
-            if (isset($print->rarity)) {
+            if (!isset($print->rarity)) {
+                continue;
+            }
+            $games = isset($print->games) ? (array) $print->games : array();
+            if (in_array('paper', $games, true) || in_array('mtgo', $games, true)) {
                 $rarities[] = $print->rarity;
             }
         }
