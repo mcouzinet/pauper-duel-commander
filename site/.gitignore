@@ -2,3 +2,11 @@ node_modules/
 dist/
 .cache/
 .astro/
+
+# PHP dev tooling (production needs no dependencies)
+vendor/
+composer.lock
+.phpunit.result.cache
+
+# Generated from content/banlist.json by scripts/copy-banlist.mjs
+public/api/data/banlist.json

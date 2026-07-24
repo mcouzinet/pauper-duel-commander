@@ -1,0 +1,15 @@
+{
+    "name": "pdc/site-api",
+    "description": "Dev tooling for the standalone PDC validator API (public/api). Production needs no dependencies.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

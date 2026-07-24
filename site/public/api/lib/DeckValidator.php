@@ -30,6 +30,13 @@ class DeckValidator {
     const BASIC_LAND_NAMES = array('Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes');
 
     /**
+     * Ban list path override. Null means PDC_BANLIST_PATH. Set by the test suite.
+     *
+     * @var string|null
+     */
+    public static $banlist_path = null;
+
+    /**
      * Main validation entry point.
      *
      * @param string $commander_name Commander card name
@@ -133,12 +140,10 @@ class DeckValidator {
         }
 
         // --- Rule 9: Ban list ---
+        // Throws if the ban list cannot be loaded: skipping this rule would let a
+        // deck full of banned cards validate, which is worse than returning an error.
         $banned_names = self::get_banned_card_names();
-        if (!empty($banned_names)) {
-            self::check_ban_list($enriched_cards, $banned_names, $commander_name, $partner_name, $errors);
-        } else {
-            $warnings[] = 'La liste des cartes bannies n\'a pas pu etre chargee. La verification de la ban list a ete ignoree.';
-        }
+        self::check_ban_list($enriched_cards, $banned_names, $commander_name, $partner_name, $errors);
 
         // --- Stats ---
         $total_cards  = 0;
@@ -438,25 +443,25 @@ class DeckValidator {
     /**
      * Load banned card names from banlist.json.
      *
-     * @return array Array of lowercase card names, or empty array on failure
+     * @param string|null $path Override path (tests); defaults to PDC_BANLIST_PATH
+     * @return array Lowercase card names
+     * @throws RuntimeException If the ban list is missing, unreadable or malformed
      */
-    public static function get_banned_card_names() {
-        $path = PDC_BANLIST_PATH;
+    public static function get_banned_card_names($path = null) {
+        $path = $path ?? self::$banlist_path ?? PDC_BANLIST_PATH;
+
         if (!file_exists($path)) {
-            error_log('PDC: banlist.json not found at ' . $path);
-            return array();
+            throw new RuntimeException('Ban list not found at ' . $path);
         }
 
         $json = @file_get_contents($path);
         if ($json === false) {
-            error_log('PDC: could not read banlist.json');
-            return array();
+            throw new RuntimeException('Ban list could not be read at ' . $path);
         }
 
         $data = json_decode($json, true);
-        if (!$data || !isset($data['cards']) || !is_array($data['cards'])) {
-            error_log('PDC: invalid banlist.json format');
-            return array();
+        if (!is_array($data) || !isset($data['cards']) || !is_array($data['cards'])) {
+            throw new RuntimeException('Ban list is malformed at ' . $path . ' (expected a "cards" array)');
         }
 
         return array_map('strtolower', $data['cards']);

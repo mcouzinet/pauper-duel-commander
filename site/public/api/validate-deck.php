@@ -95,7 +95,21 @@ if (strlen($decklist_text) > 50000) {
 // Validate
 // ---------------------------------------------------------------------------
 
-$result = DeckValidator::validate($commander_name, $partner_name, $decklist_text);
+try {
+    $result = DeckValidator::validate($commander_name, $partner_name, $decklist_text);
+} catch (RuntimeException $e) {
+    // The validator could not run a rule it is not allowed to skip (e.g. the ban
+    // list is missing). Fail loudly rather than return a deck we did not fully check.
+    error_log('PDC validate-deck: ' . $e->getMessage());
+    http_response_code(503);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array(
+        'success' => false,
+        'data'    => null,
+        'error'   => 'Le validateur est temporairement indisponible. Reessayez dans quelques instants.',
+    ), JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // ---------------------------------------------------------------------------
 // Response

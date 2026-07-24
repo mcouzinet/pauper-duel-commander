@@ -4,11 +4,15 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-banlist.mjs",
     "dev": "astro dev",
+    "prebuild": "node scripts/copy-banlist.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "lint": "astro check && tsc --noEmit"
+    "lint": "astro check && tsc --noEmit",
+    "pretest": "node scripts/copy-banlist.mjs",
+    "test": "composer install --quiet && vendor/bin/phpunit"
   },
   "dependencies": {
     "astro": "^5.8.0",

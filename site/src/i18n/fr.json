@@ -67,6 +67,7 @@
     "ruleNotFound": "Cartes introuvables",
     "ruleDuplicates": "Doublons",
     "ruleRarity": "Rareté des cartes",
+    "ruleColorIdentity": "Identité de couleur",
     "ruleBanList": "Cartes bannies",
     "errorNoCommander": "Veuillez saisir le nom du général.",
     "errorNoDecklist": "Veuillez saisir votre decklist.",

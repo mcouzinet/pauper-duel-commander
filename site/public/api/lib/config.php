@@ -16,15 +16,22 @@ if (basename($_SERVER['SCRIPT_FILENAME']) === basename(__FILE__)) {
     exit('Forbidden');
 }
 
+// Constants are guarded so tests can point them at fixtures before including
+// this file.
+
 // ---------------------------------------------------------------------------
 // Cache
 // ---------------------------------------------------------------------------
 
-/** Cache root directory (one level above api/) */
-define('PDC_CACHE_DIR', __DIR__ . '/../cache/scryfall');
+/** Scryfall cache directory (api/cache/scryfall) */
+if (!defined('PDC_CACHE_DIR')) {
+    define('PDC_CACHE_DIR', __DIR__ . '/../cache/scryfall');
+}
 
 /** Cache TTL in seconds (30 days) */
-define('PDC_CACHE_TTL', 30 * 24 * 60 * 60);
+if (!defined('PDC_CACHE_TTL')) {
+    define('PDC_CACHE_TTL', 30 * 24 * 60 * 60);
+}
 
 // ---------------------------------------------------------------------------
 // Scryfall
@@ -38,8 +45,35 @@ define('SCRYFALL_RATE_LIMIT_MS', 100);
 // Ban list
 // ---------------------------------------------------------------------------
 
-/** Path to the exported ban list JSON */
-define('PDC_BANLIST_PATH', __DIR__ . '/../../../content/banlist.json');
+/**
+ * Resolve the ban list path.
+ *
+ * `api/data/banlist.json` is the canonical, deployable location: it sits inside
+ * the directory that gets rsynced to the VPS, so it resolves identically in the
+ * repo, in `dist/`, and in production. It is produced by `npm run build`
+ * (scripts/copy-banlist.mjs) from the source of truth, `site/content/banlist.json`.
+ *
+ * The `content/` fallback keeps a checkout that has never been built working.
+ *
+ * @return string First candidate that exists, or the canonical path if none do
+ *                (so the error message names the location we actually want).
+ */
+function pdc_resolve_banlist_path() {
+    $candidates = array(
+        __DIR__ . '/../data/banlist.json',        // deployed / built
+        __DIR__ . '/../../../content/banlist.json', // un-built checkout
+    );
+    foreach ($candidates as $path) {
+        if (file_exists($path)) {
+            return $path;
+        }
+    }
+    return $candidates[0];
+}
+
+if (!defined('PDC_BANLIST_PATH')) {
+    define('PDC_BANLIST_PATH', pdc_resolve_banlist_path());
+}
 
 // ---------------------------------------------------------------------------
 // CORS

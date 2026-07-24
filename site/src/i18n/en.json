@@ -67,6 +67,7 @@
     "ruleNotFound": "Cards not found",
     "ruleDuplicates": "Duplicates",
     "ruleRarity": "Card rarity",
+    "ruleColorIdentity": "Color identity",
     "ruleBanList": "Banned cards",
     "errorNoCommander": "Please enter the commander name.",
     "errorNoDecklist": "Please enter your decklist.",
