@@ -4,9 +4,9 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/copy-banlist.mjs",
+    "predev": "node scripts/copy-banlist.mjs && node scripts/warm-scryfall-cache.mjs",
     "dev": "astro dev",
-    "prebuild": "node scripts/copy-banlist.mjs",
+    "prebuild": "node scripts/copy-banlist.mjs && node scripts/warm-scryfall-cache.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
