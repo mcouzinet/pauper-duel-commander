@@ -273,6 +273,57 @@ class ScryfallService {
     }
 
     /**
+     * Get every rarity this card has ever been printed at.
+     *
+     * A single Scryfall card object describes one printing, so `$card->rarity`
+     * answers "what is this printing's rarity", not "has this card ever been
+     * uncommon" — which is what the PDC commander rule actually asks. Baleful
+     * Strix, for instance, defaults to rare but has an uncommon printing, and is
+     * a legal commander played in tournaments.
+     *
+     * Follows `prints_search_uri`, which lists all printings. Cached like
+     * everything else, keyed separately from the card itself.
+     *
+     * @param object $card_data Scryfall card object
+     * @return array Lowercase rarity strings, e.g. ['rare', 'uncommon']
+     */
+    public static function get_all_rarities($card_data) {
+        if (!$card_data || !isset($card_data->name)) {
+            return array();
+        }
+
+        // A card with no known other printings still has its own rarity.
+        $own = isset($card_data->rarity) ? array($card_data->rarity) : array();
+
+        if (!isset($card_data->prints_search_uri)) {
+            return $own;
+        }
+
+        $cache_key = 'prints_' . pdc_sanitize_key($card_data->name);
+        $cached    = self::cache_get($cache_key);
+        if ($cached !== null) {
+            return array_values(array_unique(array_map('strval', (array) $cached)));
+        }
+
+        $data = self::http_get($card_data->prints_search_uri);
+        if (!$data || !isset($data->data) || !is_array($data->data)) {
+            error_log('Scryfall prints lookup failed for "' . $card_data->name . '"');
+            return $own;   // fall back to the single printing rather than nothing
+        }
+
+        $rarities = $own;
+        foreach ($data->data as $print) {
+            if (isset($print->rarity)) {
+                $rarities[] = $print->rarity;
+            }
+        }
+        $rarities = array_values(array_unique($rarities));
+
+        self::cache_set($cache_key, $rarities);
+        return $rarities;
+    }
+
+    /**
      * @param object $card_data
      * @return string|null e.g. "Creature -- Human Wizard"
      */

@@ -4,8 +4,8 @@
  *
  * Validates a PDC (Pauper Duel Commander) decklist against format rules:
  * 1. Commander required + found on Scryfall
- * 2. Commander must be a Creature (type_line contains "Creature")
- * 3. Commander must be uncommon (rarity === "uncommon")
+ * 2. Commander must be a Creature, Vehicle or Spacecraft (legendary or not)
+ * 3. Commander must have been printed at uncommon at least once
  * 4. Deck size: 99 (solo) or 98 (with partner)
  * 5. All cards found on Scryfall
  * 6. No duplicates except basic lands
@@ -28,6 +28,11 @@ class DeckValidator {
      * Basic land names (allowed in multiple copies).
      */
     const BASIC_LAND_NAMES = array('Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes');
+
+    /**
+     * Card types allowed in the command zone (legendary or not).
+     */
+    const COMMANDER_TYPES = array('Creature', 'Vehicle', 'Spacecraft');
 
     /**
      * Ban list path override. Null means PDC_BANLIST_PATH. Set by the test suite.
@@ -212,30 +217,48 @@ class DeckValidator {
     // -------------------------------------------------------------------------
 
     /**
-     * Rule 2: Commander must be a creature.
+     * Rule 2: Commander must be a creature, a Vehicle or a Spacecraft.
+     *
+     * Vehicles and Spacecraft are eligible per the format framing document:
+     * the command zone is not restricted to creatures.
      */
     private static function check_commander_is_creature($card_data, $card_name, &$errors) {
         $type_line = isset($card_data->type_line) ? $card_data->type_line : '';
-        if (stripos($type_line, 'Creature') === false) {
+
+        $eligible = false;
+        foreach (self::COMMANDER_TYPES as $type) {
+            if (stripos($type_line, $type) !== false) {
+                $eligible = true;
+                break;
+            }
+        }
+
+        if (!$eligible) {
             $type_label = $type_line ? $type_line : 'inconnu';
             $errors[] = array(
                 'rule'    => 'commander_type',
-                'message' => 'Le general "' . $card_name . '" doit etre une creature (type actuel : ' . $type_label . ').',
+                'message' => 'Le general "' . $card_name . '" doit etre une creature, un vehicule ou un vaisseau spatial (type actuel : ' . $type_label . ').',
                 'cards'   => array($card_name),
             );
         }
     }
 
     /**
-     * Rule 3: Commander must be uncommon rarity.
+     * Rule 3: Commander must have been printed at uncommon at least once.
+     *
+     * The rule is "has ever been uncommon", not "this printing is uncommon", so
+     * every printing is checked. Baleful Strix defaults to rare on Scryfall but
+     * has an uncommon printing and is a legal, tournament-played commander.
      */
     private static function check_commander_rarity($card_data, $card_name, &$errors) {
-        $rarity = isset($card_data->rarity) ? $card_data->rarity : null;
-        if ($rarity !== 'uncommon') {
+        $rarities = ScryfallService::get_all_rarities($card_data);
+
+        if (!in_array('uncommon', $rarities, true)) {
+            $rarity = isset($card_data->rarity) ? $card_data->rarity : null;
             $rarity_label = $rarity ? ucfirst($rarity) : 'inconnue';
             $errors[] = array(
                 'rule'    => 'commander_rarity',
-                'message' => 'Le general "' . $card_name . '" doit etre de rarete Uncommon (rarete actuelle : ' . $rarity_label . ').',
+                'message' => 'Le general "' . $card_name . '" doit avoir ete imprime au moins une fois en rarete Uncommon (rarete actuelle : ' . $rarity_label . ').',
                 'cards'   => array($card_name),
             );
         }

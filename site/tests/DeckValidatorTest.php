@@ -116,25 +116,61 @@ class DeckValidatorTest extends TestCase
         $this->assertSame(['format'], $this->ruleNames($result));
     }
 
-    // -- Rule 2: commander must be a creature --------------------------------
+    // -- Rule 2: commander type ----------------------------------------------
 
     public function testNonCreatureCommanderIsRejected(): void
     {
+        // Balance is a Sorcery — not a creature, vehicle or spacecraft.
         $result = DeckValidator::validate('Balance', '', $this->validDeck());
 
         $this->assertFalse($result['is_valid']);
         $this->assertContains('commander_type', $this->ruleNames($result));
     }
 
-    // -- Rule 3: commander must be uncommon ----------------------------------
-
-    public function testNonUncommonCommanderIsRejected(): void
+    /**
+     * The command zone is not restricted to creatures: the format framing
+     * document admits Vehicles and Spacecraft on the same terms.
+     */
+    public function testVehicleCommanderIsAcceptedOnType(): void
     {
-        // Bastion Protector is a rare creature.
-        $result = DeckValidator::validate('Bastion Protector', '', $this->validDeck());
+        $result = DeckValidator::validate("Smuggler's Copter", '', $this->deck(['Island' => 99]));
+
+        $this->assertNotContains('commander_type', $this->ruleNames($result));
+        // ...but it has never been uncommon, so rule 3 still rejects it.
+        $this->assertContains('commander_rarity', $this->ruleNames($result));
+    }
+
+    public function testSpacecraftCommanderIsAccepted(): void
+    {
+        // Fell Gravship is an uncommon Spacecraft: eligible on both type and rarity.
+        $result = DeckValidator::validate('Fell Gravship', '', $this->deck(['Swamp' => 99]));
+
+        $this->assertNotContains('commander_type', $this->ruleNames($result));
+        $this->assertNotContains('commander_rarity', $this->ruleNames($result));
+    }
+
+    // -- Rule 3: commander must have been uncommon at least once -------------
+
+    public function testCommanderNeverPrintedAtUncommonIsRejected(): void
+    {
+        // Grave Titan is a creature that only exists at mythic.
+        $result = DeckValidator::validate('Grave Titan', '', $this->deck(['Swamp' => 99]));
 
         $this->assertFalse($result['is_valid']);
         $this->assertContains('commander_rarity', $this->ruleNames($result));
+    }
+
+    /**
+     * Regression: the rule is "has ever been uncommon", not "this printing is
+     * uncommon". Baleful Strix defaults to rare on Scryfall but has an uncommon
+     * printing, and is a legal commander played in the tournaments listed on the
+     * site — the validator used to reject it.
+     */
+    public function testCommanderWithAnUncommonReprintIsAccepted(): void
+    {
+        $result = DeckValidator::validate('Baleful Strix', '', $this->deck(['Island' => 99]));
+
+        $this->assertNotContains('commander_rarity', $this->ruleNames($result));
     }
 
     // -- Rule 4: deck size ---------------------------------------------------
