@@ -11,6 +11,7 @@ import type { Locale } from './i18n';
  * Keys are stable internal names; they never appear in a URL.
  */
 const SEGMENTS = {
+  rules: { fr: 'regles', en: 'rules' },
   banlist: { fr: 'banlist', en: 'banlist' },
   validator: { fr: 'validateur', en: 'validator' },
   meta: { fr: 'meta', en: 'meta' },

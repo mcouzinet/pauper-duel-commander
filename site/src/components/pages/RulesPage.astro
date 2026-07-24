@@ -1,0 +1,190 @@
+---
+/**
+ * Format rules page (shared by /fr/regles/ and /en/rules/)
+ *
+ * Content comes from the format framing document: which cross-cutting mechanics
+ * the format keeps, and what qualifies for the command zone. The "basics"
+ * section reuses the validator's rule strings so the two never drift apart.
+ */
+import Base from '@/layouts/Base.astro';
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const basics = [
+  { title: 'validator.rule100', desc: 'validator.rule100Desc' },
+  { title: 'validator.ruleUncommon', desc: 'validator.ruleUncommonDesc' },
+  { title: 'validator.ruleCommon', desc: 'validator.ruleCommonDesc' },
+  { title: 'validator.ruleColor', desc: 'validator.ruleColorDesc' },
+  { title: 'validator.ruleSingleton', desc: 'validator.ruleSingletonDesc' },
+  { title: 'validator.ruleBan', desc: 'validator.ruleBanDesc' },
+];
+
+const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
+---
+<Base title={t('rules.title', locale)} description={t('rules.subtitle', locale)}>
+
+  <!-- Hero -->
+  <section class="relative py-32 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+    <div class="absolute inset-0 opacity-5">
+      <img src="/img/artefacts.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+    </div>
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-orange/20 rounded-full blur-[100px] animate-float"></div>
+      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-5xl mx-auto">
+        <div class="inline-block mb-10">
+          <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
+            {t('rules.badge', locale)}
+          </span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
+          <span class="block text-magic-gradient">{t('rules.title', locale)}</span>
+        </h1>
+
+        <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto" style="line-height: 32px;">
+          <p>{t('rules.subtitle', locale)}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-6 justify-center items-center">
+          <a href="#mechanics" class="btn-secondary">{t('rules.mechanicsTitle', locale)}</a>
+          <a href="#command-zone" class="btn-secondary">{t('rules.czTitle', locale)}</a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
+  </section>
+
+  <!-- Basics -->
+  <section id="basics" class="py-24 relative">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+          {t('rules.basicsTitle', locale)}
+        </h2>
+        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+          {t('rules.basicsDesc', locale)}
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {basics.map(rule => (
+          <div class="magic-card p-6">
+            <h3 class="text-xl font-heading font-bold text-magic-gold mb-3">{t(rule.title, locale)}</h3>
+            <p class="text-sm text-text-secondary leading-relaxed">{t(rule.desc, locale)}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mechanics -->
+  <section id="mechanics" class="py-24 relative">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+          {t('rules.mechanicsTitle', locale)}
+        </h2>
+        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+          {t('rules.mechanicsDesc', locale)}
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+
+        <!-- Take the Initiative: excluded -->
+        <article class="magic-card border-red-500/30 p-8">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <h3 class="text-2xl font-heading font-bold text-text-primary">{t('rules.ttiTitle', locale)}</h3>
+            <span class="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-heading font-semibold uppercase tracking-wider">
+              {t('rules.ttiStatus', locale)}
+            </span>
+          </div>
+
+          <p class="text-sm text-text-secondary leading-relaxed mb-5">{t('rules.ttiRecall', locale)}</p>
+
+          <p class="text-sm font-semibold text-text-primary mb-3">{t('rules.ttiObserved', locale)}</p>
+          <ul class="space-y-2 mb-6">
+            {ttiPoints.map(key => (
+              <li class="flex gap-3 text-sm text-text-secondary leading-relaxed">
+                <span class="text-brand-orange shrink-0" aria-hidden="true">—</span>
+                <span>{t(key, locale)}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p class="text-sm font-semibold text-red-400 border-l-2 border-red-500/30 pl-4">
+            {t('rules.ttiDecision', locale)}
+          </p>
+        </article>
+
+        <!-- Monarch: kept, under watch -->
+        <article class="magic-card border-magic-gold/30 p-8">
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <h3 class="text-2xl font-heading font-bold text-text-primary">{t('rules.monarchTitle', locale)}</h3>
+            <span class="px-3 py-1 rounded-full bg-magic-gold/10 border border-magic-gold/30 text-magic-gold text-xs font-heading font-semibold uppercase tracking-wider">
+              {t('rules.monarchStatus', locale)}
+            </span>
+          </div>
+
+          <p class="text-sm text-text-secondary leading-relaxed mb-4">{t('rules.monarchIntro', locale)}</p>
+          <p class="text-sm text-text-secondary leading-relaxed mb-6">{t('rules.monarchBalance', locale)}</p>
+
+          <p class="text-sm font-semibold text-magic-gold border-l-2 border-magic-gold/30 pl-4">
+            {t('rules.monarchWatch', locale)}
+          </p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Command zone -->
+  <section id="command-zone" class="py-24 relative">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+            {t('rules.czTitle', locale)}
+          </h2>
+          <p class="text-lg text-text-secondary leading-relaxed">{t('rules.czDesc', locale)}</p>
+        </div>
+
+        <div class="magic-card p-8">
+          <p class="text-sm font-semibold text-text-primary mb-4">{t('rules.czEligible', locale)}</p>
+
+          <ul class="space-y-4 mb-8">
+            <li class="flex gap-4">
+              <span class="text-magic-gold shrink-0 font-heading font-bold" aria-hidden="true">✦</span>
+              <span class="text-text-secondary leading-relaxed">{t('rules.czCreatures', locale)}</span>
+            </li>
+            <li class="flex gap-4">
+              <span class="text-magic-gold shrink-0 font-heading font-bold" aria-hidden="true">✦</span>
+              <span class="text-text-secondary leading-relaxed">{t('rules.czVehicles', locale)}</span>
+            </li>
+          </ul>
+
+          <p class="text-sm text-text-secondary leading-relaxed border-t border-card-border pt-6">
+            {t('rules.czBans', locale)}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap gap-6 justify-center items-center mt-12">
+          <a href={route('banlist', locale)} class="btn-secondary">{t('rules.ctaBanlist', locale)}</a>
+          <a href={route('validator', locale)} class="btn-primary">{t('rules.ctaValidator', locale)}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</Base>

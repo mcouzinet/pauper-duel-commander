@@ -10,6 +10,7 @@ const { locale, currentPath } = Astro.props;
 
 const navItems = [
   { label: { fr: 'Accueil', en: 'Home' }, href: { fr: '/fr/', en: '/en/' } },
+  { key: 'nav.rules', href: { fr: '/fr/regles/', en: '/en/rules/' } },
   { key: 'nav.banlist', href: { fr: '/fr/banlist/', en: '/en/banlist/' } },
   { key: 'nav.validator', href: { fr: '/fr/validateur/', en: '/en/validator/' } },
   { key: 'nav.tournaments', href: { fr: '/fr/tournois/', en: '/en/tournaments/' } },
