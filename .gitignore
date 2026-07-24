@@ -1,16 +1,5 @@
-# Application
-web/app/plugins/*
-!web/app/plugins/.gitkeep
-web/app/mu-plugins/*/
-web/app/themes/twentytwentythree/
-web/app/upgrade
-web/app/uploads/*
-!web/app/uploads/.gitkeep
-web/app/cache/*
-
-# WordPress
-web/wp
-web/.htaccess
+# macOS
+.DS_Store
 
 # Logs
 *.log
@@ -20,29 +9,9 @@ web/.htaccess
 .env.*
 !.env.example
 
-# Composer
-/vendor
-
-# WP-CLI
-wp-cli.local.yml
-
-# Front
-node_modules
-.budfiles
-
-.DS_Store
-
-# Security
-phpinfo.php
-web/phpinfo.php
-
-# Backup files
-*.po~
-# Migration temp files
-104dbb16-*
-uploads/
-site/.cache/
-site/dist/
-site/node_modules/
+# Database dumps (the WordPress migration source; kept out of git)
 *.sql
 *.dump
+
+# Node / PHP tooling lives under site/ — see site/.gitignore
+node_modules
