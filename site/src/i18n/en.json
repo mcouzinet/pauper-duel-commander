@@ -27,7 +27,8 @@
     "bannedCommander": "Banned commander",
     "bannedDesc": "This commander is currently banned in PDC. This decklist is no longer legal in the format.",
     "manaColors": "Mana Colors",
-    "cardTypes": "Card Types"
+    "cardTypes": "Card Types",
+    "exportCopied": "Copied!"
   },
   "validator": {
     "title": "Deck Validator",
@@ -164,7 +165,8 @@
     "metaLabel": "Meta",
     "commandersPlayed": "Commanders played",
     "colorIdentities": "Color identities",
-    "metaUnavailable": "Meta data unavailable."
+    "metaUnavailable": "Meta data unavailable.",
+    "spots": "spots"
   },
   "archive": {
     "decklistTitle": "Some Decklists",
@@ -190,6 +192,59 @@
     "enchantments": "Enchantments",
     "lands": "Lands",
     "planeswalkers": "Planeswalkers",
-    "other": "Other"
+    "other": "Other",
+    "dateLocale": "en-GB"
+  },
+  "banlist": {
+    "titleTop": "Banned Cards",
+    "titleBottom": "List",
+    "intro": "Banning certain cards aims to preserve the balance and integrity of the format. When a card generates excessive advantage, reduces interaction, or limits strategic diversity, it can harm the quality of games. Bans help maintain a healthy, competitive environment true to the format's spirit.",
+    "asCommander": "Banned as Commander",
+    "inDeck": "Banned in Deck",
+    "asCommanderDesc": "The following cards are banned as commanders in Pauper Duel Commander, as their permanent access from the command zone creates an excessive advantage and harms the balance and diversity of the format.",
+    "inDeckDesc": "The following cards are banned in the deck in Pauper Duel Commander, as their impact is deemed too powerful or too restrictive for the format, harming balance, interaction, and strategic diversity."
+  },
+  "home": {
+    "rejoinsNous": "Join us",
+    "rejoinsLaCommunaut": "Join the community",
+    "lePauperDuelCommander": "Pauper Duel Commander is a community-driven Magic: The Gathering format, bridging Duel Commander and Pauper.",
+    "spCifiquementConU": "Specifically designed for competitive 1v1 play with a regularly updated ban list.",
+    "quEstCeQue": "What is Pauper Duel Commander?",
+    "lesBasesDuFormat": "The format basics in a few key points.",
+    "2Joueurs": "2 Players",
+    "unDuelPurSans": "A pure duel with no politics or alliances. Every decision matters, every game is a direct confrontation.",
+    "100Cartes": "100 Cards",
+    "votreDeckContientExactement": "Your deck contains exactly 100 cards, commander included. Each card can only appear once — except for basic lands.",
+    "unCommandantAuCoeur": "A Commander at the Core",
+    "votreCommandantDFinit": "Your commander defines your strategy and color identity. It must have been printed at uncommon rarity at least once. Choose wisely.",
+    "communesUniquement": "Commons Only",
+    "queDesCommunesDans": "Only commons in the deck. Only your commander is allowed to be uncommon.",
+    "rejoignezLAventure": "Join the adventure",
+    "queVousSoyezUn": "Whether you're a veteran looking for a new challenge or a curious new player, our community welcomes you. Together, let's grow Pauper Duel Commander!",
+    "rejoindreLeDiscord": "Join Discord",
+    "propos": "About",
+    "lePauperDuelCommander2": "Pauper Duel Commander is a competitive variant of Commander in 1v1, where only common cards are allowed. With 20 life points, a dedicated ban list and fast gameplay, the format emphasizes strategy, balance and mastery.",
+    "20PointDeVie": "20 Starting Life",
+    "commeLaPlupartDes": "Like most 1v1 formats, players start the game with 20 life points.",
+    "pur1v1Format": "Pure 1v1 Format",
+    "conUPourDes": "Designed for competitive two-player duels, with strategic depth and no political dimension.",
+    "100CartesUniques": "100 Unique Cards",
+    "crEzDesDecks": "Build unique decks with 1 uncommon commander and 99 unique commons, for guaranteed variety and creativity.",
+    "communautVNements": "Community & Events",
+    "uneCommunautGrandissanteDes": "A growing community, events for all levels.",
+    "tournois": "Tournaments",
+    "participezDesVNements": "Participate in regular events and local tournaments.",
+    "communautActive": "Active Community",
+    "rejoignezDesJoueursPassionn": "Join passionate players, share tips and find opponents.",
+    "discordRSeaux": "Discord & Social",
+    "restezConnectSVia": "Stay connected via our Discord and follow format news.",
+    "espritCompTitif": "Competitive Spirit",
+    "fairPlayCompTition": "Fair play, healthy competition and accessibility: the format's values.",
+    "rejoignezLAventure2": "Join the adventure",
+    "queVousSoyezUn2": "Whether you're a veteran looking for a new challenge or a curious new player, our community welcomes you. Together, let's grow Pauper Duel Commander!",
+    "rejoindreLeDiscord2": "Join Discord",
+    "title": "Home",
+    "description": "Pauper Duel Commander is a community-driven Magic: The Gathering format designed for competitive 1v1 play.",
+    "viewBanlist": "View Ban List"
   }
 }

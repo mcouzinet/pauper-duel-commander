@@ -1,0 +1,90 @@
+---
+import Base from '@/layouts/Base.astro';
+import BanListGrid from '@/components/BanListGrid.astro';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { t, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const banlistPath = join(process.cwd(), 'content', 'banlist.json');
+const banlist = JSON.parse(readFileSync(banlistPath, 'utf-8'));
+const bannedAsCommander: string[] = banlist.bannedAsCommander ?? [];
+const bannedInDeck: string[] = banlist.bannedInDeck ?? [];
+---
+<Base title={t('nav.banlist', locale)}>
+
+  <!-- Hero -->
+  <section class="relative py-32 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+    <div class="absolute inset-0 opacity-5">
+      <img src="/img/artefacts.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+    </div>
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-orange/20 rounded-full blur-[100px] animate-float"></div>
+      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-5xl mx-auto">
+        <div class="inline-block mb-10">
+          <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
+            Banlist
+          </span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
+          <span class="block text-text-primary mb-2">{t('banlist.titleTop', locale)}</span>
+          <span class="block text-magic-gradient">{t('banlist.titleBottom', locale)}</span>
+        </h1>
+
+        <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto" style="line-height: 32px;">
+          <p>{t('banlist.intro', locale)}</p>
+        </div>
+
+        <div class="flex flex-wrap gap-6 justify-center items-center">
+          <a href="#banned-commander" class="btn-secondary">{t('banlist.asCommander', locale)}</a>
+          <a href="#banned-deck" class="btn-secondary">{t('banlist.inDeck', locale)}</a>
+        </div>
+      </div>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
+  </section>
+
+  <!-- Banned as commander -->
+  <section id="banned-commander" class="py-24 relative">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+          {t('banlist.asCommander', locale)}
+        </h2>
+        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+          {t('banlist.asCommanderDesc', locale)}
+        </p>
+      </div>
+
+      <BanListGrid cards={bannedAsCommander} />
+    </div>
+  </section>
+
+  <!-- Banned in deck -->
+  <section id="banned-deck" class="py-24 relative">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
+          {t('banlist.inDeck', locale)}
+        </h2>
+        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
+          {t('banlist.inDeckDesc', locale)}
+        </p>
+      </div>
+
+      <BanListGrid cards={bannedInDeck} />
+    </div>
+  </section>
+
+</Base>

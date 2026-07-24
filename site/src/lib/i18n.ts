@@ -1,5 +1,6 @@
 import fr from '../i18n/fr.json';
 import en from '../i18n/en.json';
+import { translatePath } from './routes';
 
 const messages: Record<string, Record<string, unknown>> = { fr, en };
 
@@ -36,11 +37,14 @@ export function getLocaleFromPath(pathname: string): Locale {
 
 /**
  * Get the equivalent path in the other locale.
+ *
+ * Delegates to the route table: URL segments are translated, not just prefixed
+ * (/fr/tournois/ is /en/tournaments/), so a plain prefix swap would 404.
  */
 export function getAlternateLocalePath(pathname: string, targetLocale: Locale): string {
   const currentLocale = getLocaleFromPath(pathname);
   if (currentLocale === targetLocale) return pathname;
-  return pathname.replace(`/${currentLocale}/`, `/${targetLocale}/`);
+  return translatePath(pathname, targetLocale);
 }
 
 /** Available locales */

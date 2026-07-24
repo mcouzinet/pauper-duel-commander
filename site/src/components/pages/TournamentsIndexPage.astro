@@ -1,0 +1,175 @@
+---
+import Base from '@/layouts/Base.astro';
+import { t } from '@/lib/i18n';
+import { getUpcomingTournaments, getPastTournaments, formatDate } from '@/lib/tournaments';
+import { route } from '@/lib/routes';
+import type { Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+
+const { locale } = Astro.props;
+const upcoming = await getUpcomingTournaments();
+const past = await getPastTournaments();
+---
+<Base title={t('tournament.title', locale)} description={t('tournament.desc', locale)}>
+
+  <!-- Hero -->
+  <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+    <div class="absolute inset-0 opacity-10">
+      <img src="/img/cards-background.png" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+    </div>
+    <div class="container mx-auto px-4 sm:px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+          {t('tournament.title', locale)}
+        </h1>
+        <p class="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+          {t('tournament.desc', locale)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming tournaments -->
+  {upcoming.length > 0 && (
+    <section class="py-10 sm:py-16 bg-bg-primary border-b border-magic-gold/10">
+      <div class="container mx-auto px-4 sm:px-6">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex items-center gap-3 mb-8">
+            <span class="relative flex h-3 w-3">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient">
+              {t('tournament.upcoming', locale)}
+            </h2>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+            {upcoming.map(tournament => (
+              <div class="magic-card p-4 sm:p-6 relative overflow-hidden group">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange via-magic-gold to-brand-orange"></div>
+
+                <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors">
+                    {tournament.title}
+                  </h3>
+                  <span class="flex-shrink-0 ml-3 px-3 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-lg text-sm font-semibold text-brand-orange whitespace-nowrap">
+                    {formatDate(tournament.date, locale)}
+                  </span>
+                </div>
+
+                <div class="space-y-2 text-sm text-text-secondary mb-5">
+                  {tournament.location && (
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
+                    </div>
+                  )}
+                  {tournament.playerCount > 0 && (
+                    <div class="flex items-center gap-2">
+                      <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span>{tournament.playerCount} places</span>
+                    </div>
+                  )}
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                  {tournament.signupUrl && (
+                    <a href={tournament.signupUrl} target="_blank" rel="noopener noreferrer" class="btn-primary text-sm px-5 py-2">
+                      {t('tournament.signUp', locale)}
+                      <svg class="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                    </a>
+                  )}
+                  <a href={route('tournaments', locale, tournament.slug)} class="inline-flex items-center gap-2 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+                    {t('tournament.moreDetails', locale)}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Past tournament results -->
+  <section class="py-10 sm:py-16 bg-bg-primary">
+    <div class="container mx-auto px-4 sm:px-6">
+      <div class="max-w-5xl mx-auto">
+        {past.length > 0 ? (
+          <Fragment>
+            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8">
+              {t('tournament.results', locale)}
+            </h2>
+            <div class="space-y-3 sm:space-y-4">
+              {past.map(tournament => {
+                const playerDisplay = tournament.actualPlayerCount || tournament.playerCount;
+                return (
+                  <a href={route('tournaments', locale, tournament.slug)}
+                     class="magic-card block p-4 sm:p-6 group transition-all duration-300 hover:border-magic-gold/40">
+                    <div class="flex items-center gap-3 sm:gap-4">
+                      <span class="flex-1 min-w-0">
+                        <span class="block text-base sm:text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors truncate">
+                          {tournament.title}
+                        </span>
+                        <span class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm text-text-muted mt-1">
+                          <span>{formatDate(tournament.date, locale)}</span>
+                          {tournament.location && (
+                            <Fragment>
+                              <span class="hidden sm:inline text-text-muted/40">|</span>
+                              <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
+                            </Fragment>
+                          )}
+                          {playerDisplay > 0 && (
+                            <Fragment>
+                              <span class="hidden sm:inline text-text-muted/40">|</span>
+                              <span>{playerDisplay} {t('tournament.players', locale)}</span>
+                            </Fragment>
+                          )}
+                        </span>
+                      </span>
+                      <div class="flex-shrink-0 w-6 h-6 text-magic-gold group-hover:translate-x-1 transition-transform duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </Fragment>
+        ) : upcoming.length === 0 ? (
+          <div class="text-center py-16">
+            <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-4">
+              {t('tournament.noYet', locale)}
+            </h2>
+            <p class="text-text-secondary">
+              {t('tournament.resultsComing', locale)}
+            </p>
+          </div>
+        ) : (
+          <p class="text-center text-text-muted py-8">
+            {t('tournament.noResults', locale)}
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+</Base>

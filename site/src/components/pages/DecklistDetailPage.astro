@@ -1,0 +1,275 @@
+---
+/**
+ * Decklist detail page (shared by /fr/decklist/ and /en/decklist/)
+ *
+ * Rendered by the FR and EN routes, which own getStaticPaths and pass the entry.
+ * Parses the raw card text, enriches via Scryfall at build time, and renders
+ * the full decklist view with stats charts.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from '@/layouts/Base.astro';
+import CardList from '@/components/CardList.astro';
+import DeckStats from '@/components/DeckStats.astro';
+import { t, type Locale } from '@/lib/i18n';
+import { parseDecklist } from '@/lib/decklist-parser';
+import { prepareDeckData } from '@/lib/deck-renderer';
+import { formatManaCost, formatColorSymbols } from '@/lib/mana';
+import '@/styles/decklist.css';
+
+interface Props {
+  locale: Locale;
+  entry: CollectionEntry<'decklists'>;
+}
+
+const { locale, entry } = Astro.props;
+const data = entry.data;
+
+// ---------------------------------------------------------------------------
+// Parse and prepare deck data
+// ---------------------------------------------------------------------------
+const parsedCards = parseDecklist(data.cards);
+const deck = await prepareDeckData(parsedCards, data.commander, data.partner || undefined);
+
+// ---------------------------------------------------------------------------
+// Load banlist and check if commander is banned
+// ---------------------------------------------------------------------------
+const banlistPath = join(process.cwd(), 'content', 'banlist.json');
+const banlistRaw = JSON.parse(readFileSync(banlistPath, 'utf-8')) as { cards: string[] };
+const bannedNames = new Set(banlistRaw.cards.map((n: string) => n.toLowerCase()));
+
+const cmdPartsCheck: string[] = [];
+if (data.commander) {
+  cmdPartsCheck.push(...data.commander.split(' // ').map((s: string) => s.trim()));
+}
+if (data.partner) {
+  cmdPartsCheck.push(...data.partner.split(' // ').map((s: string) => s.trim()));
+}
+const isBanned = cmdPartsCheck.some(part => bannedNames.has(part.toLowerCase()));
+
+// ---------------------------------------------------------------------------
+// Format date
+// ---------------------------------------------------------------------------
+const deckDate = data.date
+  ? new Date(data.date + 'T00:00:00').toLocaleDateString(t('common.dateLocale', locale), { day: '2-digit', month: '2-digit', year: 'numeric' })
+  : null;
+
+// ---------------------------------------------------------------------------
+// Export data for JS buttons
+// ---------------------------------------------------------------------------
+const exportData = JSON.stringify({
+  commander: deck.commander?.name ?? '',
+  partner: deck.partner?.name ?? '',
+  decklist: data.cards,
+});
+
+// ---------------------------------------------------------------------------
+// Precompute commander mana cost HTML
+// ---------------------------------------------------------------------------
+const commanderManaCostHtml = deck.commander?.manaCost
+  ? formatManaCost(deck.commander.manaCost)
+  : '';
+
+// ---------------------------------------------------------------------------
+// Archive URL
+// ---------------------------------------------------------------------------
+const archiveUrl = `/${locale}/decklist/`;
+---
+
+<Base title={data.title} description={`${data.title} — ${t('decklist.title', locale)}`}>
+
+  {/* ---- Header Section ---- */}
+  <article class="decklist-single">
+    <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+      {/* Background Layer */}
+      <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+
+      {deck.commander?.imageUrlArtCrop && (
+        <div class="absolute inset-0 opacity-5">
+          <img
+            src={deck.commander.imageUrlArtCrop}
+            alt={`${deck.commander.name} artwork`}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      <div class="container mx-auto px-6 relative z-10">
+        <div class="max-w-7xl mx-auto">
+          <div class="grid md:grid-cols-12 gap-8 items-start">
+
+            {/* ---- Commander Image ---- */}
+            <div class="md:col-span-4 lg:col-span-3">
+              {deck.commander?.imageUrl && (
+                <div class="sticky top-24">
+                  <div class="group relative">
+                    <img
+                      src={deck.commander.imageUrl}
+                      alt={deck.commander.name}
+                      class={`w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow ${isBanned ? 'grayscale' : ''}`}
+                      loading="eager"
+                    />
+                    {isBanned && (
+                      <div class="absolute top-3 left-3 right-3">
+                        <div class="px-3 py-1.5 bg-red-600/90 border border-red-500/50 rounded-lg text-center shadow-lg">
+                          <span class="text-xs font-bold text-white uppercase tracking-wider">
+                            {t('decklist.bannedCommander', locale)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Partner Card */}
+                  {deck.partner?.imageUrl && (
+                    <div class="magic-card group mt-4">
+                      <img
+                        src={deck.partner.imageUrl}
+                        alt={deck.partner.name}
+                        class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
+                        loading="eager"
+                      />
+                      <div class="mt-4 text-center">
+                        <h3 class="text-lg font-beleren font-bold text-magic-gold">
+                          {deck.partner.name}
+                        </h3>
+                        <p class="text-xs text-text-secondary">
+                          {deck.partner.typeLine}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* ---- Deck Info ---- */}
+            <div class="md:col-span-8 lg:col-span-9 h-full flex flex-col justify-end">
+
+              {/* Archetypes & Colors */}
+              <div class="flex flex-wrap gap-3 mb-6">
+                {data.archetype && (
+                  <span class="px-4 py-2 glass-effect border border-white/10 rounded-lg text-sm font-medium text-text-secondary">
+                    {data.archetype}
+                  </span>
+                )}
+              </div>
+
+              {/* Title */}
+              <h1 class={`text-4xl md:text-5xl lg:text-6xl font-beleren font-bold text-magic-gradient mb-4 ${isBanned ? 'line-through decoration-red-500/70' : ''}`}>
+                {data.title}
+              </h1>
+
+              {/* Banned Warning */}
+              {isBanned && (
+                <div class="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3">
+                  <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <p class="text-sm text-red-300">
+                    {t('decklist.bannedDesc', locale)}
+                  </p>
+                </div>
+              )}
+
+              {/* Date */}
+              <div class="flex flex-wrap gap-3 mb-6">
+                {deckDate && (
+                  <span class="text-sm font-semibold text-text-secondary">
+                    {t('decklist.on', locale)} {deckDate}
+                  </span>
+                )}
+              </div>
+
+              {/* Export Button */}
+              <div class="flex flex-wrap gap-4">
+                <button
+                  id="btn-export-moxfield"
+                  class="text-sm text-text-secondary hover:text-brand-orange transition-colors flex items-center gap-2"
+                  data-label-copied={t('decklist.exportCopied', locale)}
+                  data-label-export={t('decklist.export', locale)}
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  {t('decklist.export', locale)}
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {/* ---- Decklist Section ---- */}
+    <section class="my-8">
+      <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+          <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
+            {t('decklist.title', locale)}
+          </h2>
+
+          <CardList cardsByType={deck.cardsByType} locale={locale} />
+        </div>
+      </div>
+    </section>
+
+    {/* ---- Stats Section ---- */}
+    <section class="my-16">
+      <div class="container mx-auto px-6">
+        <div class="max-w-7xl mx-auto">
+          <DeckStats stats={deck.stats} locale={locale} />
+        </div>
+      </div>
+    </section>
+
+    {/* ---- Hidden export data ---- */}
+    <script id="deck-export-data" type="application/json" set:html={exportData} />
+  </article>
+
+  {/* ---- Client-side export script ---- */}
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn = document.getElementById('btn-export-moxfield');
+      if (!btn) return;
+
+      btn.addEventListener('click', function () {
+        var dataEl = document.getElementById('deck-export-data');
+        if (!dataEl) return;
+
+        try {
+          var data = JSON.parse(dataEl.textContent || '{}');
+          var lines = [];
+
+          if (data.commander) {
+            lines.push('Commander');
+            lines.push('1 ' + data.commander);
+            if (data.partner) lines.push('1 ' + data.partner);
+            lines.push('');
+          }
+
+          if (data.decklist) {
+            lines.push('Deck');
+            lines.push(data.decklist);
+          }
+
+          var text = lines.join('\n');
+          navigator.clipboard.writeText(text).then(function () {
+            // Labels come from data attributes: this script is is:inline, so it
+            // cannot read the page's locale directly.
+            var iconSvg = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> ';
+            btn.textContent = btn.getAttribute('data-label-copied');
+            setTimeout(function () {
+              btn.innerHTML = iconSvg + btn.getAttribute('data-label-export');
+            }, 2000);
+          });
+        } catch (e) {
+          // silent fail
+        }
+      });
+    });
+  </script>
+
+</Base>
