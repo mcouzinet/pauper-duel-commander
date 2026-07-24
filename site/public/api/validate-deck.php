@@ -40,16 +40,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Only accept POST
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
+/**
+ * Emit a JSON error and stop.
+ *
+ * @param int    $status  HTTP status code
+ * @param string $message Human-readable message (shown to the user)
+ * @param array  $headers Extra headers to send
+ */
+function pdc_fail($status, $message, array $headers = array()) {
+    http_response_code($status);
     header('Content-Type: application/json; charset=utf-8');
+    foreach ($headers as $header) {
+        header($header);
+    }
     echo json_encode(array(
         'success' => false,
         'data'    => null,
-        'error'   => 'Method not allowed. Use POST.',
-    ));
+        'error'   => $message,
+    ), JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+// Only accept POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    pdc_fail(405, 'Method not allowed. Use POST.');
+}
+
+// ---------------------------------------------------------------------------
+// Rate limit
+// ---------------------------------------------------------------------------
+
+$rate = RateLimiter::consume(RateLimiter::client_id(), PDC_RATE_LIMIT, PDC_RATE_WINDOW);
+header('X-RateLimit-Limit: ' . PDC_RATE_LIMIT);
+header('X-RateLimit-Remaining: ' . $rate['remaining']);
+
+if (!$rate['allowed']) {
+    pdc_fail(
+        429,
+        'Trop de validations en peu de temps. Reessayez dans ' . $rate['retry_after'] . ' seconde(s).',
+        array('Retry-After: ' . $rate['retry_after'])
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -81,14 +111,19 @@ $decklist_text  = strip_tags($decklist_text);
 
 // Hard limit to prevent abuse (a 100-card decklist is ~3 KB at most)
 if (strlen($decklist_text) > 50000) {
-    http_response_code(413);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(array(
-        'success' => false,
-        'data'    => null,
-        'error'   => 'Decklist too large.',
-    ));
-    exit;
+    pdc_fail(413, 'Decklist too large.');
+}
+
+// Cap distinct card names: each unknown name can cost a Scryfall lookup, so the
+// byte limit above is not enough on its own (50 KB of short junk names is
+// thousands of them). A legal PDC deck has at most 100 distinct cards.
+$unique_names = count(array_unique(array_column(DecklistParser::parse($decklist_text), 'name')));
+if ($unique_names > PDC_MAX_UNIQUE_CARDS) {
+    pdc_fail(
+        422,
+        'La decklist contient trop de cartes differentes (' . $unique_names
+            . '). Un deck PDC en compte au plus 100.'
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -101,14 +136,7 @@ try {
     // The validator could not run a rule it is not allowed to skip (e.g. the ban
     // list is missing). Fail loudly rather than return a deck we did not fully check.
     error_log('PDC validate-deck: ' . $e->getMessage());
-    http_response_code(503);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(array(
-        'success' => false,
-        'data'    => null,
-        'error'   => 'Le validateur est temporairement indisponible. Reessayez dans quelques instants.',
-    ), JSON_UNESCAPED_UNICODE);
-    exit;
+    pdc_fail(503, 'Le validateur est temporairement indisponible. Reessayez dans quelques instants.');
 }
 
 // ---------------------------------------------------------------------------

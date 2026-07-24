@@ -1,0 +1,3 @@
+# Internal to the API. Never served directly.
+Require all denied
+Options -Indexes

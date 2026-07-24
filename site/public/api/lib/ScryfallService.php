@@ -94,6 +94,9 @@ class ScryfallService {
         $result   = array();
         $to_fetch = array();
 
+        // Budget for per-name fallback lookups, shared across every batch below.
+        $fallbacks_used = 0;
+
         foreach ($names as $name) {
             $cache_key = 'name_' . pdc_sanitize_key($name);
             $cached    = self::cache_get($cache_key);
@@ -134,19 +137,32 @@ class ScryfallService {
                 $found[strtolower($card->name)] = $card;
             }
 
-            // Map each requested name; fallback search for missing ones
+            // Map each requested name; fallback search for missing ones.
+            //
+            // The fallback is one HTTP round trip per name, each gated by a 100 ms
+            // sleep, so it is capped: a list of junk names would otherwise hold a
+            // PHP worker open for minutes and hammer Scryfall. Past the cap, names
+            // resolve to null and surface as "card not found", which is the right
+            // answer for a decklist that is mostly unrecognisable anyway.
             foreach ($batch as $name) {
                 $lower = strtolower($name);
                 if (isset($found[$lower])) {
                     $result[$lower] = $found[$lower];
-                } else {
-                    $card = self::search_card_by_name($name);
-                    if ($card) {
-                        $card_cache_key = 'name_' . pdc_sanitize_key($name);
-                        self::cache_set($card_cache_key, $card);
-                    }
-                    $result[$lower] = $card;
+                    continue;
                 }
+
+                if ($fallbacks_used >= PDC_MAX_FALLBACK_LOOKUPS) {
+                    $result[$lower] = null;
+                    continue;
+                }
+
+                $fallbacks_used++;
+                $card = self::search_card_by_name($name);
+                if ($card) {
+                    $card_cache_key = 'name_' . pdc_sanitize_key($name);
+                    self::cache_set($card_cache_key, $card);
+                }
+                $result[$lower] = $card;
             }
         }
 

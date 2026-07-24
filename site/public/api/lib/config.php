@@ -76,6 +76,42 @@ if (!defined('PDC_BANLIST_PATH')) {
 }
 
 // ---------------------------------------------------------------------------
+// Abuse limits
+// ---------------------------------------------------------------------------
+
+/** Rate limit state directory */
+if (!defined('PDC_RATELIMIT_DIR')) {
+    define('PDC_RATELIMIT_DIR', __DIR__ . '/../cache/ratelimit');
+}
+
+/** Max validation requests per IP per window */
+if (!defined('PDC_RATE_LIMIT')) {
+    define('PDC_RATE_LIMIT', 20);
+}
+
+/** Rate limit window in seconds */
+if (!defined('PDC_RATE_WINDOW')) {
+    define('PDC_RATE_WINDOW', 60);
+}
+
+/**
+ * Max distinct card names accepted in one decklist.
+ *
+ * A legal PDC deck has at most 100 distinct cards. The cap matters because every
+ * name Scryfall does not return in the bulk call triggers an individual fallback
+ * search, each gated by a 100 ms sleep — so an unbounded list of junk names is a
+ * way to hold a PHP worker open and hammer Scryfall from a single request.
+ */
+if (!defined('PDC_MAX_UNIQUE_CARDS')) {
+    define('PDC_MAX_UNIQUE_CARDS', 120);
+}
+
+/** Max individual Scryfall fallback lookups per request (see above) */
+if (!defined('PDC_MAX_FALLBACK_LOOKUPS')) {
+    define('PDC_MAX_FALLBACK_LOOKUPS', 20);
+}
+
+// ---------------------------------------------------------------------------
 // CORS
 // ---------------------------------------------------------------------------
 
@@ -118,6 +154,7 @@ function pdc_sanitize_key($key) {
 // Autoload classes
 // ---------------------------------------------------------------------------
 
+require_once __DIR__ . '/RateLimiter.php';
 require_once __DIR__ . '/ScryfallService.php';
 require_once __DIR__ . '/DecklistParser.php';
 require_once __DIR__ . '/DeckValidator.php';

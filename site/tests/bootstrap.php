@@ -16,6 +16,7 @@ define('PDC_SITE_ROOT', dirname(__DIR__));
 
 // Throwaway cache, seeded below. Must be defined before config.php.
 define('PDC_CACHE_DIR', sys_get_temp_dir() . '/pdc-test-cache-' . getmypid());
+define('PDC_RATELIMIT_DIR', sys_get_temp_dir() . '/pdc-test-ratelimit-' . getmypid());
 define('PDC_BANLIST_PATH', PDC_SITE_ROOT . '/content/banlist.json');
 
 if (!is_dir(PDC_CACHE_DIR)) {
@@ -28,10 +29,12 @@ foreach (glob(PDC_TEST_ROOT . '/fixtures/scryfall/*.json') as $fixture) {
 }
 
 register_shutdown_function(function () {
-    foreach (glob(PDC_CACHE_DIR . '/*.json') as $file) {
-        unlink($file);
+    foreach (array(PDC_CACHE_DIR, PDC_RATELIMIT_DIR) as $dir) {
+        foreach (glob($dir . '/*.json') as $file) {
+            unlink($file);
+        }
+        @rmdir($dir);
     }
-    @rmdir(PDC_CACHE_DIR);
 });
 
 require_once PDC_SITE_ROOT . '/public/api/lib/config.php';
