@@ -1,0 +1,98 @@
+{
+    "title": "Anim'Magic #3",
+    "date": "2026-07-19",
+    "location": "Anim'Magic",
+    "city": "Wattrelos (Lille)",
+    "playerCount": 14,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Axel Verkest",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "4-0",
+            "decklistSlug": "gut-animmagic-19-07-26-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Guislain Dubois",
+            "commanderName": "Heartfire Hero",
+            "score": "3-0-1",
+            "decklistSlug": "heartfire-hero-animmagic-19-07-26-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Hervé Verkest",
+            "commanderName": "Balmor, Battlemage Captain",
+            "score": "3-1",
+            "decklistSlug": "balmor-animmagic-19-07-26-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Jordan Tyczynski",
+            "commanderName": "Sedraxis Specter",
+            "score": "2-1-1",
+            "decklistSlug": "sedraxis-specter-animmagic-19-07-26-4eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Glaring Fleshraker",
+            "count": 1
+        },
+        {
+            "name": "Sphinx of the Guildpact",
+            "count": 1
+        },
+        {
+            "name": "Sedraxis Specter",
+            "count": 1
+        },
+        {
+            "name": "Sprouting Thrinax",
+            "count": 1
+        },
+        {
+            "name": "Indulging Patrician",
+            "count": 1
+        },
+        {
+            "name": "Dina, Soul Steeper",
+            "count": 1
+        },
+        {
+            "name": "Brushfire Elemental",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Tenth District Legionnaire",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        },
+        {
+            "name": "Balmor, Battlemage Captain",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Hemosymbic Mite",
+            "count": 1
+        },
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        }
+    ]
+}

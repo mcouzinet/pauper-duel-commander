@@ -1,0 +1,27 @@
+{
+    "title": "Anim'Magic #2",
+    "date": "2026-06-06",
+    "location": "Anim'Magic",
+    "city": "Wattrelos (Lille)",
+    "playerCount": 11,
+    "actualPlayerCount": null,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 2,
+            "playerName": "",
+            "commanderName": "Balmor, Battlemage Captain",
+            "score": "",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": []
+}
