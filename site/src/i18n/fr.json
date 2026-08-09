@@ -202,7 +202,17 @@
     "asCommander": "Interdit en tant que commandant",
     "inDeck": "Interdit dans le deck",
     "asCommanderDesc": "Les cartes suivantes sont bannies en tant que commandant en Pauper Duel Commander, car leur accès permanent depuis la zone de commandement crée un avantage excessif et nuit à l'équilibre et à la diversité du format.",
-    "inDeckDesc": "Les cartes suivantes sont bannies dans le deck en Pauper Duel Commander, car leur impact est jugé trop puissant ou trop restrictif pour le format, nuisant à l'équilibre, à l'interaction et à la diversité des stratégies."
+    "inDeckDesc": "Les cartes suivantes sont bannies dans le deck en Pauper Duel Commander, car leur impact est jugé trop puissant ou trop restrictif pour le format, nuisant à l'équilibre, à l'interaction et à la diversité des stratégies.",
+    "historyTitle": "Historique des changements",
+    "historyCadence": "Le comité publie une annonce sur le format tous les deux mois, le premier lundi des mois pairs.",
+    "kindInitial": "Ban list initiale",
+    "kindUpdate": "Mise à jour",
+    "by": "par",
+    "changeBanned": "Bannie",
+    "changeUnbanned": "Légalisée",
+    "changeRestricted": "Restreinte",
+    "experimental": "expérimental",
+    "details": "Détails"
   },
   "home": {
     "rejoinsNous": "Rejoins-nous",

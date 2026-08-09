@@ -1,0 +1,22 @@
+{
+  "date": "2026-08-03",
+  "source": "Na-O-H",
+  "kind": "update",
+  "changes": [
+    { "card": "Treasure Cruise", "type": "banned" },
+    { "card": "Loyal Drake", "type": "unbanned", "experimental": true },
+    { "card": "Loyal Guardian", "type": "unbanned", "experimental": true },
+    { "card": "Loyal Subordinate", "type": "unbanned", "experimental": true },
+    { "card": "Loyal Unicorn", "type": "unbanned", "experimental": true }
+  ],
+  "notes": [
+    {
+      "fr": "Treasure Cruise : on ne présente plus la carte. Bannie dans quasiment tous les formats, auto-include dans quasiment tous les decks bleus, elle présente une vraie différence de power level avec toutes les autres cartes du format et renverse souvent la partie, notamment en miroir de contrôle. Pour toutes ces raisons, Treasure Cruise est maintenant bannie.",
+      "en": "Treasure Cruise needs no introduction. Banned in nearly every format, an auto-include in nearly every blue deck, it shows a real power-level gap with every other card in the format and often swings the game, especially in the control mirror. For all these reasons, Treasure Cruise is now banned."
+    },
+    {
+      "fr": "Mécanique Lieutenant : elle a d'abord été considérée comme problématique de par la manière dont elle s'active. Cependant nous donnons une chance à toutes ces cartes d'exister (à l'exception de Loyal Apprentice), pour plusieurs raisons : les decks monocolores pourront être plus facilement représentés, notamment le mono-blanc ; et ces decks n'ont pas été testés, tant leur ban a été rapide — nous manquions donc de données pour un avis clair, leur ban étant un dégât collatéral de celui de Loyal Apprentice, à un power level très différent. Si ces changements sont nuisibles au format, nous n'hésiterons pas à revenir sur nos pas ; mais pour toutes ces raisons, Loyal Drake, Loyal Guardian, Loyal Subordinate et Loyal Unicorn sont maintenant légales.",
+      "en": "Lieutenant mechanic: it was first considered problematic because of how it turns on. We are nonetheless giving all of these cards a chance to exist (except Loyal Apprentice), for several reasons: mono-colored decks — mono-white in particular — will be easier to field; and these decks were never really tested, since they were banned so quickly, so we lacked the data for a clear opinion — their ban was collateral damage from banning Loyal Apprentice, whose power level is very different. If these changes prove harmful to the format we will not hesitate to reverse them; but for all these reasons, Loyal Drake, Loyal Guardian, Loyal Subordinate and Loyal Unicorn are now legal."
+    }
+  ]
+}

@@ -39,4 +39,24 @@ const decklists = defineCollection({
   }),
 });
 
-export const collections = { tournaments, decklists };
+// Ban list announcement history — one file per official announcement.
+const banlistHistory = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './content/banlist-history' }),
+  schema: z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    source: z.string(),
+    kind: z.enum(['initial', 'update']).default('update'),
+    changes: z.array(z.object({
+      card: z.string(),
+      type: z.enum(['banned', 'unbanned', 'restricted']),
+      experimental: z.boolean().default(false),
+    })).default([]),
+    // Reasoning paragraphs, bilingual so both /fr/ and /en/ render natively.
+    notes: z.array(z.object({
+      fr: z.string(),
+      en: z.string(),
+    })).default([]),
+  }),
+});
+
+export const collections = { tournaments, decklists, banlistHistory };

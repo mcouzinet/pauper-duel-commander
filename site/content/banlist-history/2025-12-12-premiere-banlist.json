@@ -1,0 +1,28 @@
+{
+  "date": "2025-12-12",
+  "source": "LofiBlue",
+  "kind": "initial",
+  "changes": [
+    { "card": "Aarakocra Sneak", "type": "banned" },
+    { "card": "Avenging Hunter", "type": "banned" },
+    { "card": "Goliath Paladin", "type": "banned" },
+    { "card": "Stirring Bard", "type": "banned" },
+    { "card": "Underdark Explorer", "type": "banned" },
+    { "card": "Vicious Battlerager", "type": "banned" },
+    { "card": "Trailblazer's Torch", "type": "banned" },
+    { "card": "Fall from Favor", "type": "banned" },
+    { "card": "Imprisoned in the Moon", "type": "banned" },
+    { "card": "Oubliette", "type": "banned" },
+    { "card": "Bastion Protector", "type": "banned" },
+    { "card": "Loyal Apprentice", "type": "banned" },
+    { "card": "Loyal Drake", "type": "banned" },
+    { "card": "Loyal Guardian", "type": "banned" },
+    { "card": "Loyal Subordinate", "type": "banned" },
+    { "card": "Loyal Unicorn", "type": "banned" },
+    { "card": "Bloodboil Sorcerer", "type": "banned" },
+    { "card": "Feywild Caretaker", "type": "banned" },
+    { "card": "Passageway Seer", "type": "banned" },
+    { "card": "Rilsa Rael, Kingpin", "type": "banned" }
+  ],
+  "notes": []
+}
