@@ -56,19 +56,19 @@ jobs:
           composer install --no-interaction --quiet
           vendor/bin/phpunit
 
-      # Synchronisation FTPS incrémentale de dist/ vers la racine web OVH (www/).
-      # N'envoie que les fichiers modifiés ; ne supprime pas le cache généré à
-      # l'exécution sous api/cache/. Secrets à définir dans les réglages du dépôt.
-      - name: Deploy to OVH (FTPS)
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+      # Envoi SFTP de dist/ vers la racine web OVH (www/), sur le port 22 avec les
+      # mêmes identifiants FTP-SSH. Le mot de passe ne transite plus en clair.
+      # delete_remote_files: false -> ne supprime rien côté serveur (ni le cache
+      # d'exécution sous api/cache/, ni le .htaccess déjà en place — les dotfiles
+      # ne sont pas repris par le glob dist/*, mais ils sont déjà déployés).
+      - name: Deploy to OVH (SFTP)
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
           server: ${{ secrets.OVH_FTP_SERVER }}
+          port: 22
           username: ${{ secrets.OVH_FTP_USERNAME }}
           password: ${{ secrets.OVH_FTP_PASSWORD }}
-          # OVH mutualisé refuse le FTPS explicite sur cet endpoint
-          # ("500 This security scheme is not implemented"), donc FTP simple.
-          # Durcissement possible en SFTP (port 22) — voir DEPLOY.md.
-          protocol: ftp
-          port: 21
-          local-dir: ./site/dist/
-          server-dir: ./www/
+          local_path: './site/dist/*'
+          remote_path: './www/'
+          sftp_only: true
+          delete_remote_files: false
