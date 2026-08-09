@@ -65,7 +65,10 @@ jobs:
           server: ${{ secrets.OVH_FTP_SERVER }}
           username: ${{ secrets.OVH_FTP_USERNAME }}
           password: ${{ secrets.OVH_FTP_PASSWORD }}
-          protocol: ftps          # si OVH refuse, passer à `ftp`
+          # OVH mutualisé refuse le FTPS explicite sur cet endpoint
+          # ("500 This security scheme is not implemented"), donc FTP simple.
+          # Durcissement possible en SFTP (port 22) — voir DEPLOY.md.
+          protocol: ftp
           port: 21
           local-dir: ./site/dist/
           server-dir: ./www/
