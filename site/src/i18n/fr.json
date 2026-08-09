@@ -276,5 +276,123 @@
     "czBans": "En contrepartie, des bans ciblés sont appliqués pour équilibrer au maximum cette zone.",
     "ctaBanlist": "Voir la ban list",
     "ctaValidator": "Valider un deck"
+  },
+  "rulesDoc": {
+    "badge": "Règlement officiel",
+    "title": "Règles du format",
+    "subtitle": "Le règlement du Pauper Duel Commander France : construction de deck, raretés et règles de jeu.",
+    "refIntro": "Références :",
+    "refComprehensive": "Règles Complètes de Magic",
+    "refScryfall": "Scryfall",
+    "sections": [
+      {
+        "n": "1",
+        "title": "Général",
+        "articles": [
+          {
+            "n": "1.1",
+            "text": "Le Pauper Duel Commander France (PDC Fr) est un format construit de Magic: The Gathering à deux joueurs (1 contre 1)."
+          },
+          {
+            "n": "1.2",
+            "text": "Les parties de Pauper Duel Commander France se jouent selon les Règles Complètes de Magic: The Gathering, sauf modification par le présent règlement.",
+            "link": {
+              "href": "https://magic.wizards.com/en/rules",
+              "label": "Règles Complètes de Magic"
+            }
+          },
+          {
+            "n": "1.3",
+            "text": "Sauf indication contraire, les parties suivent les règles du Commander définies dans les Règles Complètes de Magic: The Gathering."
+          },
+          {
+            "n": "1.4",
+            "text": "Pour l'application du présent règlement, les raretés des cartes sont définies comme suit (vous pouvez vous référer à Scryfall) :",
+            "link": {
+              "href": "https://scryfall.com/",
+              "label": "Scryfall"
+            },
+            "sub": [
+              {
+                "n": "1.4.a",
+                "text": "Une carte commune est une carte imprimée en rareté commune dans au moins une impression papier ou Magic Online légale."
+              },
+              {
+                "n": "1.4.b",
+                "text": "Une carte peu commune est une carte imprimée en rareté peu commune dans au moins une impression papier ou Magic Online légale."
+              },
+              {
+                "n": "1.4.c",
+                "text": "Une carte peut être à la fois une carte commune et une carte peu commune."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "n": "2",
+        "title": "Construction du deck",
+        "articles": [
+          {
+            "n": "2.1",
+            "text": "Un deck est composé d'exactement 100 cartes, général(aux) inclus."
+          },
+          {
+            "n": "2.2",
+            "text": "À l'exception des terrains de base, un deck ne peut pas contenir plus d'une carte portant le même nom anglais."
+          },
+          {
+            "n": "2.3",
+            "text": "Toutes les cartes d'un deck doivent avoir une identité de couleur incluse dans celle de son ou ses généraux."
+          },
+          {
+            "n": "2.4",
+            "text": "Un général doit être une Créature, un Véhicule, un Vaisseau Spatial ou un Background (le cas échéant) de rareté peu commune."
+          },
+          {
+            "n": "2.5",
+            "text": "Un joueur ne peut lancer qu'un seul de ses généraux depuis la zone de commandement par partie (le premier lancé)."
+          },
+          {
+            "n": "2.6",
+            "text": "Toute carte d'un deck autre que le général doit être une carte commune."
+          },
+          {
+            "n": "2.7",
+            "text": "Les cartes figurant sur la liste des cartes bannies du Pauper Duel Commander France ne sont pas autorisées."
+          },
+          {
+            "n": "2.8",
+            "text": "Toute carte non légale en Vintage est bannie."
+          }
+        ]
+      },
+      {
+        "n": "3",
+        "title": "Règles de jeu",
+        "articles": [
+          {
+            "n": "3.1",
+            "text": "Chaque joueur commence la partie avec 20 points de vie."
+          },
+          {
+            "n": "3.2",
+            "text": "Le mulligan de Londres est utilisé."
+          },
+          {
+            "n": "3.3",
+            "text": "Le joueur qui commence saute l'étape de pioche de son premier tour."
+          },
+          {
+            "n": "3.4",
+            "text": "Les blessures de général ne sont pas utilisées."
+          },
+          {
+            "n": "3.5",
+            "text": "Un général peut être lancé depuis la zone de commandement. La taxe de commandant s'applique telle que définie par les règles du Commander."
+          }
+        ]
+      }
+    ]
   }
 }

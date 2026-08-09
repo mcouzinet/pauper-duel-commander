@@ -2,32 +2,51 @@
 /**
  * Format rules page (shared by /fr/regles/ and /en/rules/)
  *
- * Content comes from the format framing document: which cross-cutting mechanics
- * the format keeps, and what qualifies for the command zone. The "basics"
- * section reuses the validator's rule strings so the two never drift apart.
+ * The formal, numbered ruleset comes from i18n `rulesDoc` (imported directly, per
+ * locale, because t() only returns strings). The mechanics section below it
+ * (Take the Initiative, Monarch) is the "why" from the framing document, not part
+ * of the formal ruleset, and stays under the `rules.*` keys.
  */
 import Base from '@/layouts/Base.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
+import fr from '@/i18n/fr.json';
+import en from '@/i18n/en.json';
 
 interface Props {
   locale: Locale;
 }
 
-const { locale } = Astro.props;
+interface Article {
+  n: string;
+  text: string;
+  link?: { href: string; label: string };
+  sub?: { n: string; text: string }[];
+}
+interface RuleSection {
+  n: string;
+  title: string;
+  articles: Article[];
+}
+interface RulesDoc {
+  badge: string;
+  title: string;
+  subtitle: string;
+  refIntro: string;
+  refComprehensive: string;
+  refScryfall: string;
+  sections: RuleSection[];
+}
 
-const basics = [
-  { title: 'validator.rule100', desc: 'validator.rule100Desc' },
-  { title: 'validator.ruleUncommon', desc: 'validator.ruleUncommonDesc' },
-  { title: 'validator.ruleCommon', desc: 'validator.ruleCommonDesc' },
-  { title: 'validator.ruleColor', desc: 'validator.ruleColorDesc' },
-  { title: 'validator.ruleSingleton', desc: 'validator.ruleSingletonDesc' },
-  { title: 'validator.ruleBan', desc: 'validator.ruleBanDesc' },
-];
+const { locale } = Astro.props;
+const doc = (locale === 'en' ? en.rulesDoc : fr.rulesDoc) as RulesDoc;
+
+// Stable anchor per section, in declaration order.
+const sectionIds = ['general', 'deck-construction', 'game-rules'];
 
 const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
 ---
-<Base title={t('rules.title', locale)} description={t('rules.subtitle', locale)}>
+<Base title={doc.title} description={doc.subtitle}>
 
   <!-- Hero -->
   <section class="relative py-32 overflow-hidden">
@@ -44,51 +63,78 @@ const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
       <div class="text-center max-w-5xl mx-auto">
         <div class="inline-block mb-10">
           <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
-            {t('rules.badge', locale)}
+            {doc.badge}
           </span>
         </div>
 
         <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
-          <span class="block text-magic-gradient">{t('rules.title', locale)}</span>
+          <span class="block text-magic-gradient">{doc.title}</span>
         </h1>
 
         <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto" style="line-height: 32px;">
-          <p>{t('rules.subtitle', locale)}</p>
+          <p>{doc.subtitle}</p>
         </div>
 
         <div class="flex flex-wrap gap-6 justify-center items-center">
-          <a href="#mechanics" class="btn-secondary">{t('rules.mechanicsTitle', locale)}</a>
-          <a href="#command-zone" class="btn-secondary">{t('rules.czTitle', locale)}</a>
+          <a href="#deck-construction" class="btn-secondary">{doc.sections[1].title}</a>
+          <a href="#game-rules" class="btn-secondary">{doc.sections[2].title}</a>
         </div>
       </div>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
   </section>
 
-  <!-- Basics -->
-  <section id="basics" class="py-24 relative">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-          {t('rules.basicsTitle', locale)}
-        </h2>
-        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
-          {t('rules.basicsDesc', locale)}
-        </p>
-      </div>
+  <!-- Formal ruleset -->
+  {doc.sections.map((section, i) => (
+    <section id={sectionIds[i]} class="py-16 relative">
+      <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+          <h2 class="text-3xl md:text-4xl font-heading font-bold text-magic-gradient mb-8 flex items-baseline gap-3">
+            <span class="text-brand-orange">{section.n}.</span>
+            <span>{section.title}</span>
+          </h2>
 
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-        {basics.map(rule => (
-          <div class="magic-card p-6">
-            <h3 class="text-xl font-heading font-bold text-magic-gold mb-3">{t(rule.title, locale)}</h3>
-            <p class="text-sm text-text-secondary leading-relaxed">{t(rule.desc, locale)}</p>
+          <div class="magic-card divide-y divide-card-border">
+            {section.articles.map(article => (
+              <div class="flex gap-4 p-5">
+                <span class="font-heading font-bold text-magic-gold tabular-nums shrink-0 w-12">{article.n}</span>
+                <div class="flex-1 min-w-0 space-y-3">
+                  <p class="text-text-secondary leading-relaxed">{article.text}</p>
+
+                  {article.link && (
+                    <a
+                      href={article.link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors"
+                    >
+                      {article.link.label}
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  )}
+
+                  {article.sub && (
+                    <ul class="space-y-2 pt-1">
+                      {article.sub.map(sub => (
+                        <li class="flex gap-3 text-sm text-text-secondary leading-relaxed">
+                          <span class="font-heading font-semibold text-text-muted tabular-nums shrink-0">{sub.n}</span>
+                          <span>{sub.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  ))}
 
-  <!-- Mechanics -->
+  <!-- Mechanics (framing decisions, complementary to the formal rules) -->
   <section id="mechanics" class="py-24 relative">
     <div class="container mx-auto px-6">
       <div class="text-center mb-12">
@@ -146,43 +192,10 @@ const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
         </article>
 
       </div>
-    </div>
-  </section>
 
-  <!-- Command zone -->
-  <section id="command-zone" class="py-24 relative">
-    <div class="container mx-auto px-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-12">
-          <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-            {t('rules.czTitle', locale)}
-          </h2>
-          <p class="text-lg text-text-secondary leading-relaxed">{t('rules.czDesc', locale)}</p>
-        </div>
-
-        <div class="magic-card p-8">
-          <p class="text-sm font-semibold text-text-primary mb-4">{t('rules.czEligible', locale)}</p>
-
-          <ul class="space-y-4 mb-8">
-            <li class="flex gap-4">
-              <span class="text-magic-gold shrink-0 font-heading font-bold" aria-hidden="true">✦</span>
-              <span class="text-text-secondary leading-relaxed">{t('rules.czCreatures', locale)}</span>
-            </li>
-            <li class="flex gap-4">
-              <span class="text-magic-gold shrink-0 font-heading font-bold" aria-hidden="true">✦</span>
-              <span class="text-text-secondary leading-relaxed">{t('rules.czVehicles', locale)}</span>
-            </li>
-          </ul>
-
-          <p class="text-sm text-text-secondary leading-relaxed border-t border-card-border pt-6">
-            {t('rules.czBans', locale)}
-          </p>
-        </div>
-
-        <div class="flex flex-wrap gap-6 justify-center items-center mt-12">
-          <a href={route('banlist', locale)} class="btn-secondary">{t('rules.ctaBanlist', locale)}</a>
-          <a href={route('validator', locale)} class="btn-primary">{t('rules.ctaValidator', locale)}</a>
-        </div>
+      <div class="flex flex-wrap gap-6 justify-center items-center mt-16">
+        <a href={route('banlist', locale)} class="btn-secondary">{t('rules.ctaBanlist', locale)}</a>
+        <a href={route('validator', locale)} class="btn-primary">{t('rules.ctaValidator', locale)}</a>
       </div>
     </div>
   </section>

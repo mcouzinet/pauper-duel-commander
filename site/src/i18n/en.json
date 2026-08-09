@@ -276,5 +276,123 @@
     "czBans": "In exchange, targeted bans keep this zone as balanced as possible.",
     "ctaBanlist": "View the ban list",
     "ctaValidator": "Validate a deck"
+  },
+  "rulesDoc": {
+    "badge": "Official ruleset",
+    "title": "Format Rules",
+    "subtitle": "The Pauper Duel Commander France ruleset: deck construction, rarities and game rules.",
+    "refIntro": "References:",
+    "refComprehensive": "Magic Comprehensive Rules",
+    "refScryfall": "Scryfall",
+    "sections": [
+      {
+        "n": "1",
+        "title": "General",
+        "articles": [
+          {
+            "n": "1.1",
+            "text": "Pauper Duel Commander France (PDC Fr) is a two-player (1vs1) Constructed Magic: The Gathering format."
+          },
+          {
+            "n": "1.2",
+            "text": "Games of Pauper Duel Commander France are played using the Magic: The Gathering Comprehensive Rules, except as modified by these rules.",
+            "link": {
+              "href": "https://magic.wizards.com/en/rules",
+              "label": "Comprehensive Rules"
+            }
+          },
+          {
+            "n": "1.3",
+            "text": "Unless otherwise specified, games follow the Commander rules defined in the Magic: The Gathering Comprehensive Rules."
+          },
+          {
+            "n": "1.4",
+            "text": "For the purpose of these rules, card rarities are defined as follows (you can refer to Scryfall):",
+            "link": {
+              "href": "https://scryfall.com/",
+              "label": "Scryfall"
+            },
+            "sub": [
+              {
+                "n": "1.4.a",
+                "text": "A common card is a card that has been printed at common rarity in any legal paper or Magic Online printing."
+              },
+              {
+                "n": "1.4.b",
+                "text": "An uncommon card is a card that has been printed at uncommon rarity in any legal paper or Magic Online printing."
+              },
+              {
+                "n": "1.4.c",
+                "text": "A card may be both a common card and an uncommon card."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "n": "2",
+        "title": "Deck Construction",
+        "articles": [
+          {
+            "n": "2.1",
+            "text": "A deck consists of exactly 100 cards, including its commander(s)."
+          },
+          {
+            "n": "2.2",
+            "text": "Except for basic lands, a deck may not contain more than one card with the same English name."
+          },
+          {
+            "n": "2.3",
+            "text": "All cards in a deck must have a color identity contained within the color identity of its commander(s)."
+          },
+          {
+            "n": "2.4",
+            "text": "A commander must be an Uncommon Creature, Vehicle, Spacecraft or Background (when applicable)."
+          },
+          {
+            "n": "2.5",
+            "text": "Players may only cast one of their commanders from the command zone per game (the first one cast)."
+          },
+          {
+            "n": "2.6",
+            "text": "Every non-commander card in a deck must be a common card."
+          },
+          {
+            "n": "2.7",
+            "text": "Cards appearing on the Pauper Duel Commander France banned list are not legal."
+          },
+          {
+            "n": "2.8",
+            "text": "Any non-legal cards in Vintage are banned."
+          }
+        ]
+      },
+      {
+        "n": "3",
+        "title": "Game Rules",
+        "articles": [
+          {
+            "n": "3.1",
+            "text": "Each player begins the game with 20 life."
+          },
+          {
+            "n": "3.2",
+            "text": "The London Mulligan is used."
+          },
+          {
+            "n": "3.3",
+            "text": "The starting player skips the draw step of their first turn."
+          },
+          {
+            "n": "3.4",
+            "text": "Commander damage is not used."
+          },
+          {
+            "n": "3.5",
+            "text": "A commander may be cast from the command zone. Commander tax applies as defined by the Commander rules."
+          }
+        ]
+      }
+    ]
   }
 }

@@ -2,6 +2,7 @@ import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import { run, acceptedCategory } from 'vanilla-cookieconsent';
 
 run({
+  hideFromBots: false,
   guiOptions: {
     consentModal: {
       layout: 'box inline',

@@ -359,3 +359,70 @@
   .card-header .mana-cost-wrapper .ms-cost { font-size: 1.3em; }
   .commander-info .mana-cost-wrapper .ms-cost { font-size: 1.4em; }
 }
+
+/* ============================
+   Cookie Consent - Custom Theme
+   ============================ */
+#cc-main {
+  --cc-font-family: "Inter", system-ui, sans-serif;
+  --cc-bg: #141821;
+  --cc-primary-color: #B8BEC8;
+  --cc-secondary-color: #6B7280;
+
+  --cc-btn-primary-bg: #FF5722;
+  --cc-btn-primary-color: #fff;
+  --cc-btn-primary-border-color: #FF5722;
+  --cc-btn-primary-hover-bg: #E64A19;
+  --cc-btn-primary-hover-color: #fff;
+  --cc-btn-primary-hover-border-color: #E64A19;
+
+  --cc-btn-secondary-bg: transparent;
+  --cc-btn-secondary-color: #FF5722;
+  --cc-btn-secondary-border-color: #FF5722;
+  --cc-btn-secondary-hover-bg: rgba(255, 87, 34, 0.1);
+  --cc-btn-secondary-hover-color: #FF7043;
+  --cc-btn-secondary-hover-border-color: #FF7043;
+
+  --cc-separator-border-color: rgba(255, 255, 255, 0.08);
+  --cc-cookie-category-block-bg: #1C212B;
+  --cc-cookie-category-block-border: rgba(255, 255, 255, 0.08);
+  --cc-cookie-category-block-hover-bg: #1C212B;
+  --cc-cookie-category-block-hover-border: rgba(255, 87, 34, 0.3);
+
+  --cc-overlay-bg: rgba(10, 14, 19, 0.7);
+  --cc-modal-border-radius: 0.75rem;
+
+  --cc-toggle-on-bg: #FF5722;
+  --cc-toggle-off-bg: #6B7280;
+  --cc-toggle-readonly-bg: #4B5563;
+
+  --cc-section-border: rgba(255, 255, 255, 0.08);
+}
+
+#cc-main .cm,
+#cc-main .pm {
+  border: 1px solid rgba(255, 87, 34, 0.2);
+  box-shadow: 0 12px 40px -4px rgba(255, 87, 34, 0.15), 0 16px 24px -8px rgba(0, 0, 0, 0.4);
+}
+
+#cc-main .cm__title,
+#cc-main .pm__title {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: #FF5722;
+}
+
+#cc-main .cm__btn,
+#cc-main .pm__btn {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0.5rem;
+}
+
+#cc-main .pm__section-title {
+  font-family: "Barlow Condensed", Impact, sans-serif;
+  text-transform: uppercase;
+}
