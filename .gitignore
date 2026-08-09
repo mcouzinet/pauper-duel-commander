@@ -13,5 +13,8 @@
 *.sql
 *.dump
 
+# Archived WordPress site (moved out of the way, kept locally as a backup)
+/archive/
+
 # Node / PHP tooling lives under site/ — see site/.gitignore
 node_modules
