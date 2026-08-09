@@ -22,17 +22,17 @@ jobs:
     environment: production
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: site/package-lock.json
 
       # Cache des données Scryfall du build : évite de re-télécharger chaque carte
       # à chaque déploiement (et ménage l'API Scryfall).
-      - uses: actions/cache@v4
+      - uses: actions/cache@v6
         with:
           path: site/.cache/scryfall
           key: scryfall-${{ hashFiles('site/content/**/*.json') }}
@@ -60,7 +60,7 @@ jobs:
       # N'envoie que les fichiers modifiés ; ne supprime pas le cache généré à
       # l'exécution sous api/cache/. Secrets à définir dans les réglages du dépôt.
       - name: Deploy to OVH (FTPS)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.OVH_FTP_SERVER }}
           username: ${{ secrets.OVH_FTP_USERNAME }}
