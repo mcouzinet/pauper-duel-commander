@@ -149,6 +149,24 @@ class DeckValidatorTest extends TestCase
         $this->assertNotContains('commander_rarity', $this->ruleNames($result));
     }
 
+    /**
+     * Rule 2.4 lists Background among the eligible commander types. Inspiring
+     * Leader is an uncommon Background and the partner of the deck that won
+     * Anim'Magic #3, listed on this site — the validator used to reject it on
+     * type because a Background is an Enchantment, not a creature.
+     */
+    public function testBackgroundPartnerIsAcceptedOnType(): void
+    {
+        $result = DeckValidator::validate(
+            self::COMMANDER,
+            'Inspiring Leader',
+            $this->deck(['Plains' => 98])
+        );
+
+        $this->assertNotContains('commander_type', $this->ruleNames($result));
+        $this->assertNotContains('commander_rarity', $this->ruleNames($result));
+    }
+
     // -- Rule 3: commander must have been uncommon at least once -------------
 
     public function testCommanderNeverPrintedAtUncommonIsRejected(): void

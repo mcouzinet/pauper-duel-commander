@@ -4,7 +4,7 @@
  *
  * Validates a PDC (Pauper Duel Commander) decklist against format rules:
  * 1. Commander required + found on Scryfall
- * 2. Commander must be a Creature, Vehicle or Spacecraft (legendary or not)
+ * 2. Commander must be a Creature, Vehicle, Spacecraft or Background
  * 3. Commander must have been printed at uncommon at least once
  * 4. Deck size: 99 (solo) or 98 (with partner)
  * 5. All cards found on Scryfall
@@ -30,9 +30,13 @@ class DeckValidator {
     const BASIC_LAND_NAMES = array('Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes');
 
     /**
-     * Card types allowed in the command zone (legendary or not).
+     * Card types allowed in the command zone (rule 2.4).
+     *
+     * A Background is only ever the partner side of a "Choose a Background"
+     * pairing, but the validator checks each commander independently and does not
+     * enforce pairing legality, so listing it here is enough.
      */
-    const COMMANDER_TYPES = array('Creature', 'Vehicle', 'Spacecraft');
+    const COMMANDER_TYPES = array('Creature', 'Vehicle', 'Spacecraft', 'Background');
 
     /**
      * Ban list path override. Null means PDC_BANLIST_PATH. Set by the test suite.
@@ -217,10 +221,9 @@ class DeckValidator {
     // -------------------------------------------------------------------------
 
     /**
-     * Rule 2: Commander must be a creature, a Vehicle or a Spacecraft.
+     * Rule 2.4: Commander must be a Creature, Vehicle, Spacecraft or Background.
      *
-     * Vehicles and Spacecraft are eligible per the format framing document:
-     * the command zone is not restricted to creatures.
+     * The command zone is not restricted to creatures.
      */
     private static function check_commander_is_creature($card_data, $card_name, &$errors) {
         $type_line = isset($card_data->type_line) ? $card_data->type_line : '';
@@ -237,7 +240,7 @@ class DeckValidator {
             $type_label = $type_line ? $type_line : 'inconnu';
             $errors[] = array(
                 'rule'    => 'commander_type',
-                'message' => 'Le general "' . $card_name . '" doit etre une creature, un vehicule ou un vaisseau spatial (type actuel : ' . $type_label . ').',
+                'message' => 'Le general "' . $card_name . '" doit etre une creature, un vehicule, un vaisseau spatial ou un background (type actuel : ' . $type_label . ').',
                 'cards'   => array($card_name),
             );
         }
