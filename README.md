@@ -18,7 +18,10 @@ Site **statique** (Astro) + une **API PHP** réduite au strict minimum.
 | **i18n** | FR / EN, maison (`src/i18n/*.json`) |
 
 Tout le site est pré-rendu. **Le validateur de deck est la seule chose qui
-s'exécute à l'exécution** : le VPS n'a besoin que de PHP, pas de Node.
+s'exécute à l'exécution** : le serveur n'a besoin que de PHP, pas de Node.
+
+Hébergé sur **OVH mutualisé** (Apache + PHP 8), déployé automatiquement par
+**GitHub Actions en SFTP** — voir [`DEPLOY.md`](DEPLOY.md).
 
 > Le site tournait auparavant sous WordPress (Bedrock + Timber + ACF Pro).
 > Cette stack a été supprimée ; voir `SPEC-MIGRATION.md` et l'historique git.
@@ -26,27 +29,37 @@ s'exécute à l'exécution** : le VPS n'a besoin que de PHP, pas de Node.
 ## Structure
 
 ```
+.github/workflows/deploy.yml  # CI/CD : build + tests + envoi SFTP vers OVH
 site/
-├── astro.config.ts
+├── astro.config.ts           # static, site, sitemap, Tailwind
 ├── content/                  # Source de vérité du contenu
 │   ├── banlist.json
+│   ├── banlist-history/*.json  # historique des annonces (collection)
 │   ├── decklists/*.json
 │   └── tournaments/*.json
 ├── public/
+│   ├── .htaccess             # Redirections 301 des anciennes URLs WordPress
+│   ├── robots.txt, favicon.ico
 │   ├── api/                  # API PHP (déployée telle quelle)
 │   │   ├── validate-deck.php # Seul point d'entrée public
+│   │   ├── .htaccess         # N'autorise que validate-deck.php
 │   │   ├── lib/              # Classes internes (accès refusé)
 │   │   ├── data/             # banlist.json généré au build
 │   │   └── cache/            # Cache Scryfall + état du rate limit
 │   └── img/, fonts/
 ├── src/
-│   ├── pages/{fr,en}/        # Routes (slugs localisés)
+│   ├── content.config.ts     # Schémas zod des collections
+│   ├── pages/{fr,en}/        # Routes minces (slugs localisés) -> composants partagés
+│   ├── pages/404.astro
+│   ├── components/pages/     # Une page = un composant partagé, prop `locale`
 │   ├── components/, layouts/
-│   ├── lib/                  # Scryfall, parser, rendu, i18n
+│   ├── lib/                  # Scryfall, parser, rendu, i18n, routes
 │   ├── i18n/{fr,en}.json
 │   ├── scripts/              # JS client
 │   └── styles/
-├── scripts/copy-banlist.mjs  # content/banlist.json -> public/api/data/
+├── scripts/
+│   ├── copy-banlist.mjs        # content/banlist.json -> public/api/data/
+│   └── warm-scryfall-cache.mjs # pré-remplit le cache Scryfall avant le build
 └── tests/                    # PHPUnit (API)
 ```
 
@@ -62,7 +75,7 @@ npm run dev
 
 | Commande | Rôle |
 |---|---|
-| `npm run dev` | Serveur de dev (copie la ban list au préalable) |
+| `npm run dev` | Serveur de dev (copie la ban list + réchauffe le cache Scryfall au préalable) |
 | `npm run build` | Build production dans `site/dist/` |
 | `npm run preview` | Prévisualise le build |
 | `npm run check` | Vérification Astro + TypeScript |
@@ -95,26 +108,26 @@ travers un cache fichier pré-rempli avec de vraies réponses Scryfall
   résout à l'identique dans le dépôt, dans `dist/` et en production.
 - `tournaments/*.json` — top 8, meta, participants (schéma dans `src/content.config.ts`)
 - `decklists/*.json` — decklist au format MTGO dans un champ texte
+- `banlist-history/*.json` — un fichier par annonce officielle, affiché en
+  historique sur la page ban list (changements + raisons, bilingue)
 
 Les données Scryfall (images, coûts de mana, types) sont récupérées au build et
 mises en cache 30 jours dans `site/.cache/scryfall/`.
 
 ## Déploiement
 
-Le build produit `site/dist/`, qui contient déjà `api/`.
+Automatique via **GitHub Actions** (build → tests PHPUnit → envoi SFTP vers OVH
+`www/`). Déclenchement manuel :
 
 ```bash
-cd site && npm run build && rsync -avz --delete dist/ user@vps:/var/www/pdc/
+gh workflow run deploy.yml
 ```
 
-Le serveur doit exposer `/var/www/pdc` en DocumentRoot et exécuter le PHP de
-`/api/`. Seul `validate-deck.php` doit être joignable : `lib/`, `cache/` et
-`data/` sont internes. Les règles Apache sont dans `public/api/.htaccess` ;
-l'équivalent nginx y est documenté en commentaire (`.htaccess` est ignoré par
-nginx).
+Détails, secrets, rollback et smoke tests : [`DEPLOY.md`](DEPLOY.md).
 
-`cache/` doit être accessible en écriture par PHP (cache Scryfall + état du
-rate limit).
+Le build produit `site/dist/`, qui contient déjà `api/`. Seul `validate-deck.php`
+est joignable : `lib/`, `cache/` et `data/` sont internes (bloqués par
+`public/api/.htaccess`). `cache/` doit être inscriptible par PHP.
 
 ## Validateur de deck
 
