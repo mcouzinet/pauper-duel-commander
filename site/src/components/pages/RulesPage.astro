@@ -3,9 +3,7 @@
  * Format rules page (shared by /fr/regles/ and /en/rules/)
  *
  * The formal, numbered ruleset comes from i18n `rulesDoc` (imported directly, per
- * locale, because t() only returns strings). The mechanics section below it
- * (Take the Initiative, Monarch) is the "why" from the framing document, not part
- * of the formal ruleset, and stays under the `rules.*` keys.
+ * locale, because t() only returns strings).
  */
 import Base from '@/layouts/Base.astro';
 import { t, type Locale } from '@/lib/i18n';
@@ -44,7 +42,6 @@ const doc = (locale === 'en' ? en.rulesDoc : fr.rulesDoc) as RulesDoc;
 // Stable anchor per section, in declaration order.
 const sectionIds = ['general', 'deck-construction', 'game-rules'];
 
-const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
 ---
 <Base title={doc.title} description={doc.subtitle}>
 
@@ -134,66 +131,10 @@ const ttiPoints = ['rules.ttiPoint1', 'rules.ttiPoint2', 'rules.ttiPoint3'];
     </section>
   ))}
 
-  <!-- Mechanics (framing decisions, complementary to the formal rules) -->
-  <section id="mechanics" class="py-24 relative">
+  <!-- Call to action -->
+  <section class="py-24 relative">
     <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-          {t('rules.mechanicsTitle', locale)}
-        </h2>
-        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
-          {t('rules.mechanicsDesc', locale)}
-        </p>
-      </div>
-
-      <div class="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-
-        <!-- Take the Initiative: excluded -->
-        <article class="magic-card border-red-500/30 p-8">
-          <div class="flex flex-wrap items-center gap-3 mb-5">
-            <h3 class="text-2xl font-heading font-bold text-text-primary">{t('rules.ttiTitle', locale)}</h3>
-            <span class="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-heading font-semibold uppercase tracking-wider">
-              {t('rules.ttiStatus', locale)}
-            </span>
-          </div>
-
-          <p class="text-sm text-text-secondary leading-relaxed mb-5">{t('rules.ttiRecall', locale)}</p>
-
-          <p class="text-sm font-semibold text-text-primary mb-3">{t('rules.ttiObserved', locale)}</p>
-          <ul class="space-y-2 mb-6">
-            {ttiPoints.map(key => (
-              <li class="flex gap-3 text-sm text-text-secondary leading-relaxed">
-                <span class="text-brand-orange shrink-0" aria-hidden="true">—</span>
-                <span>{t(key, locale)}</span>
-              </li>
-            ))}
-          </ul>
-
-          <p class="text-sm font-semibold text-red-400 border-l-2 border-red-500/30 pl-4">
-            {t('rules.ttiDecision', locale)}
-          </p>
-        </article>
-
-        <!-- Monarch: kept, under watch -->
-        <article class="magic-card border-magic-gold/30 p-8">
-          <div class="flex flex-wrap items-center gap-3 mb-5">
-            <h3 class="text-2xl font-heading font-bold text-text-primary">{t('rules.monarchTitle', locale)}</h3>
-            <span class="px-3 py-1 rounded-full bg-magic-gold/10 border border-magic-gold/30 text-magic-gold text-xs font-heading font-semibold uppercase tracking-wider">
-              {t('rules.monarchStatus', locale)}
-            </span>
-          </div>
-
-          <p class="text-sm text-text-secondary leading-relaxed mb-4">{t('rules.monarchIntro', locale)}</p>
-          <p class="text-sm text-text-secondary leading-relaxed mb-6">{t('rules.monarchBalance', locale)}</p>
-
-          <p class="text-sm font-semibold text-magic-gold border-l-2 border-magic-gold/30 pl-4">
-            {t('rules.monarchWatch', locale)}
-          </p>
-        </article>
-
-      </div>
-
-      <div class="flex flex-wrap gap-6 justify-center items-center mt-16">
+      <div class="flex flex-wrap gap-6 justify-center items-center">
         <a href={route('banlist', locale)} class="btn-secondary">{t('rules.ctaBanlist', locale)}</a>
         <a href={route('validator', locale)} class="btn-primary">{t('rules.ctaValidator', locale)}</a>
       </div>
