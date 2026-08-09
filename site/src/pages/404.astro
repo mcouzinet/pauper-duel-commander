@@ -1,0 +1,31 @@
+---
+/**
+ * 404 page. Served for any unmatched path, so it can't assume a locale — it
+ * shows both languages and links to each home page. Emitted as /404.html;
+ * the web-root .htaccess wires it to ErrorDocument.
+ */
+import Base from '@/layouts/Base.astro';
+---
+<Base title="404" description="Page introuvable / Page not found">
+  <section class="relative py-32 overflow-hidden min-h-[60vh] flex items-center">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+    <div class="absolute inset-0 opacity-30">
+      <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-orange/20 rounded-full blur-[100px] animate-float"></div>
+      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+    </div>
+
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center max-w-2xl mx-auto">
+        <p class="text-8xl md:text-9xl font-heading font-bold text-magic-gradient mb-6">404</p>
+
+        <p class="text-xl md:text-2xl text-text-primary font-heading font-bold mb-2">Page introuvable</p>
+        <p class="text-lg text-text-secondary mb-10">Page not found</p>
+
+        <div class="flex flex-wrap gap-6 justify-center items-center">
+          <a href="/fr/" class="btn-primary">Retour à l'accueil</a>
+          <a href="/en/" class="btn-secondary">Back to home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

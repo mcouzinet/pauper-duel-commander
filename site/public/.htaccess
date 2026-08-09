@@ -1,0 +1,49 @@
+# Web-root redirects for the WordPress -> Astro cutover.
+#
+# The old WordPress site served un-prefixed URLs (/banlist/, /tournois/…); the
+# Astro site serves locale-prefixed ones (/fr/banlist/…). Without these 301s,
+# every existing link, bookmark and search-engine result would 404.
+#
+# Copied into dist/ at build time (Astro ships public/ verbatim), so it deploys
+# with the site. Apache only — the nginx equivalent is at the bottom.
+#
+# The rules match only un-prefixed old paths, so they never touch /fr/… or
+# /en/… and cannot loop.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
+
+# --- Single pages ---
+RedirectMatch 301 ^/banlist/?$                          /fr/banlist/
+RedirectMatch 301 ^/validateur/?$                       /fr/validateur/
+RedirectMatch 301 ^/meta/?$                             /fr/meta/
+RedirectMatch 301 ^/declaration-de-confidentialite/?$   /fr/confidentialite/
+
+# --- Collections: keep the slug, land on the localized route ---
+RedirectMatch 301 ^/tournois/?$        /fr/tournois/
+RedirectMatch 301 ^/tournois/(.+)$     /fr/tournois/$1
+RedirectMatch 301 ^/decklist/?$        /fr/decklist/
+RedirectMatch 301 ^/decklist/(.+)$     /fr/decklist/$1
+
+# --- Home ---
+RedirectMatch 301 ^/$ /fr/
+
+# Serve index.html for directory requests (Astro emits <route>/index.html).
+DirectoryIndex index.html
+
+# Custom 404 (Astro emits /404.html at the web root).
+ErrorDocument 404 /404.html
+
+# ---------------------------------------------------------------------------
+# nginx equivalent (.htaccess is ignored by nginx — add this to the server block):
+#
+#   location = /                              { return 301 /fr/; }
+#   location = /banlist/                      { return 301 /fr/banlist/; }
+#   location = /validateur/                   { return 301 /fr/validateur/; }
+#   location = /meta/                         { return 301 /fr/meta/; }
+#   location = /declaration-de-confidentialite/ { return 301 /fr/confidentialite/; }
+#   location ^~ /tournois/ { rewrite ^/tournois/(.*)$ /fr/tournois/$1 permanent; }
+#   location ^~ /decklist/ { rewrite ^/decklist/(.*)$ /fr/decklist/$1 permanent; }
+#   error_page 404 /404.html;
+# ---------------------------------------------------------------------------

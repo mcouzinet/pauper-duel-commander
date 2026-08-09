@@ -15,6 +15,7 @@
     "test": "composer install --quiet && vendor/bin/phpunit"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^5.8.0",
     "vanilla-cookieconsent": "^3.1.0"
   },
