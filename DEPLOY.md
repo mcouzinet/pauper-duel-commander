@@ -10,6 +10,50 @@ rollback est quasi instantané.
 
 ---
 
+## Déploiement automatique — OVH via GitHub Actions (méthode en place)
+
+Le dépôt est hébergé sur **OVH mutualisé** (Apache + PHP, racine web `www/`), déployé
+en **FTP**. Le workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+build le site et synchronise `site/dist/` vers `www/` en FTPS incrémental (seuls les
+fichiers modifiés partent ; le cache généré à l'exécution sous `api/cache/` n'est pas
+touché). Les tests de l'API PHP bloquent le déploiement s'ils échouent.
+
+**Réglage unique (par toi — ces secrets ne doivent jamais passer par Claude) :**
+dans GitHub → le dépôt → **Settings → Secrets and variables → Actions → New repository secret**,
+créer les trois secrets, avec les identifiants FTP fournis par l'espace client OVH :
+
+| Secret | Valeur |
+|---|---|
+| `OVH_FTP_SERVER` | l'hôte FTP OVH (ex. `ftp.cluster0XX.hosting.ovh.net`) |
+| `OVH_FTP_USERNAME` | le login FTP OVH |
+| `OVH_FTP_PASSWORD` | le mot de passe FTP OVH |
+
+Optionnel mais recommandé : GitHub → **Settings → Environments → `production`** →
+ajouter un *required reviewer* (toi). Ainsi chaque déploiement attend ton approbation
+d'un clic — rien ne part en prod sans validation.
+
+**Déclencher un déploiement** (le déclenchement est manuel par défaut) :
+
+```bash
+gh workflow run deploy.yml        # depuis un terminal, ou lancé par Claude
+```
+
+ou depuis GitHub : onglet **Actions → Deploy to OVH → Run workflow**. Suivre le run :
+
+```bash
+gh run watch
+```
+
+Pour déployer automatiquement à chaque push sur `main`, décommenter le bloc `push:`
+en tête du workflow.
+
+> Le reste de ce document décrit une alternative **VPS (SSH + rsync + symlink)** qui
+> n'est **pas** la méthode utilisée ici — la conserver comme référence si l'hébergement
+> change un jour. Sur OVH mutualisé, il n'y a ni SSH ni symlink : tout passe par le FTP
+> ci-dessus.
+
+---
+
 ## 1. Ce qui tourne en production
 
 | | |

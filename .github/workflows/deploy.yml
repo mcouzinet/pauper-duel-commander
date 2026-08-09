@@ -1,0 +1,71 @@
+name: Deploy to OVH
+
+# Déclenchement MANUEL par défaut : rien ne part en prod sans une action délibérée.
+#   - depuis GitHub : onglet Actions → "Deploy to OVH" → "Run workflow"
+#   - depuis un terminal (ou par Claude) : `gh workflow run deploy.yml`
+# Pour déployer automatiquement à chaque push sur main, décommenter le bloc `push`.
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+# Ne jamais interrompre un envoi FTP en cours (éviterait un déploiement partiel).
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Ajoute un "required reviewer" sur cet environnement (GitHub → Settings →
+    # Environments → production) pour exiger ton approbation avant chaque mise en ligne.
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      # Cache des données Scryfall du build : évite de re-télécharger chaque carte
+      # à chaque déploiement (et ménage l'API Scryfall).
+      - uses: actions/cache@v4
+        with:
+          path: site/.cache/scryfall
+          key: scryfall-${{ hashFiles('site/content/**/*.json') }}
+          restore-keys: scryfall-
+
+      - name: Install & build
+        working-directory: site
+        # Le `|| …` contourne le bug npm des dépendances optionnelles (@rolldown)
+        # déjà rencontré sur ce dépôt ; sans effet si `npm ci` réussit.
+        run: |
+          npm ci || { rm -rf node_modules package-lock.json && npm install; }
+          npm run build
+
+      # Tests de l'API PHP — bloquent le déploiement s'ils échouent.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: API tests
+        working-directory: site
+        run: |
+          composer install --no-interaction --quiet
+          vendor/bin/phpunit
+
+      # Synchronisation FTPS incrémentale de dist/ vers la racine web OVH (www/).
+      # N'envoie que les fichiers modifiés ; ne supprime pas le cache généré à
+      # l'exécution sous api/cache/. Secrets à définir dans les réglages du dépôt.
+      - name: Deploy to OVH (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.OVH_FTP_SERVER }}
+          username: ${{ secrets.OVH_FTP_USERNAME }}
+          password: ${{ secrets.OVH_FTP_PASSWORD }}
+          protocol: ftps          # si OVH refuse, passer à `ftp`
+          port: 21
+          local-dir: ./site/dist/
+          server-dir: ./www/
