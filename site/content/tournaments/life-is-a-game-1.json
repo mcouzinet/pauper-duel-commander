@@ -1,0 +1,94 @@
+{
+    "title": "Life is a Game #1",
+    "date": "2026-08-15",
+    "location": "Life is a Game",
+    "city": "Marcq-en-Barœul (Lille)",
+    "playerCount": 15,
+    "actualPlayerCount": 13,
+    "signupUrl": "",
+    "details": "Première édition dans une nouvelle boutique. 4 rondes, 15 préinscrits pour 13 joueurs présents.",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Guislain Dubois",
+            "commanderName": "Heartfire Hero",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 2,
+            "playerName": "Adrien Froidure",
+            "commanderName": "Tannuk, Memorial Ensign",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 3,
+            "playerName": "Hervé Verkest",
+            "commanderName": "Balmor, Battlemage Captain",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 4,
+            "playerName": "Alexandre Chartier",
+            "commanderName": "Long Feng, Grand Secretariat",
+            "score": "",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        },
+        {
+            "name": "Tannuk, Memorial Ensign",
+            "count": 1
+        },
+        {
+            "name": "Balmor, Battlemage Captain",
+            "count": 1
+        },
+        {
+            "name": "Long Feng, Grand Secretariat",
+            "count": 1
+        },
+        {
+            "name": "Spider-Man India",
+            "count": 1
+        },
+        {
+            "name": "Enigma Drake",
+            "count": 1
+        },
+        {
+            "name": "Fynn, the Fangbearer",
+            "count": 1
+        },
+        {
+            "name": "Dina, Soul Steeper",
+            "count": 1
+        },
+        {
+            "name": "Adeliz, the Cinder Wind",
+            "count": 1
+        },
+        {
+            "name": "Brushfire Elemental",
+            "count": 1
+        },
+        {
+            "name": "Mm'menon, Uthros Exile",
+            "count": 1
+        },
+        {
+            "name": "Skirmish Rhino",
+            "count": 1
+        },
+        {
+            "name": "Kang, Temporal Tyrant",
+            "count": 1
+        }
+    ]
+}
