@@ -205,5 +205,6 @@ require_once __DIR__ . '/ScryfallService.php';
 require_once __DIR__ . '/DecklistParser.php';
 require_once __DIR__ . '/DeckValidator.php';
 require_once __DIR__ . '/GitHubClient.php';
+require_once __DIR__ . '/TurnstileVerifier.php';
 require_once __DIR__ . '/DecklistSubmission.php';
 require_once __DIR__ . '/DecklistSubmissionController.php';

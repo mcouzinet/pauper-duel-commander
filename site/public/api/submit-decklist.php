@@ -48,13 +48,18 @@ if (strlen(json_encode($input)) > 60000) {
     submit_fail(413, 'Soumission trop volumineuse.');
 }
 
-$token = pdc_secret('GITHUB_TOKEN');
-if (!$token) {
-    error_log('PDC submit-decklist: GITHUB_TOKEN missing');
+$token           = pdc_secret('GITHUB_TOKEN');
+$turnstileSecret = pdc_secret('TURNSTILE_SECRET');
+if (!$token || !$turnstileSecret) {
+    // Secrets not placed on the server yet — see docs/external.
+    error_log('PDC submit-decklist: missing secret(s)');
     submit_fail(503, 'Les soumissions sont temporairement indisponibles.');
 }
 
-$controller = new DecklistSubmissionController(new GitHubClient($token, PDC_GITHUB_REPO));
+$controller = new DecklistSubmissionController(
+    new TurnstileVerifier($turnstileSecret),
+    new GitHubClient($token, PDC_GITHUB_REPO)
+);
 
 try {
     $result = $controller->handle($input, RateLimiter::client_id());

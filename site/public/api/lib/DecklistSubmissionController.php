@@ -2,11 +2,13 @@
 /**
  * Orchestrates a decklist submission — SLICE 2 (happy path).
  *
- * Builds the submission, checks the deck is legal (reusing DeckValidator), and
- * opens a PR. Returns a [status, body] pair and does NOT echo — the entry script
- * emits the response. Dependencies are injected so it is testable without network.
+ * Guards, then builds the submission, checks the deck is legal (reusing
+ * DeckValidator), and opens a PR. Returns a [status, body] pair and does NOT echo
+ * — the entry script emits the response. Dependencies are injected so it is
+ * testable without network.
  *
- * The abuse guards (Turnstile, honeypot, rate limit) arrive in slice 3.
+ * Guard order (cheapest first): honeypot -> rate limit -> Turnstile -> shape ->
+ * legality -> PR. A request rejected by any guard never reaches the next.
  *
  * @package PDC_API
  * @since 2.2.0
@@ -19,20 +21,49 @@ if (basename($_SERVER['SCRIPT_FILENAME']) === basename(__FILE__)) {
 
 final class DecklistSubmissionController {
 
+    /** Hidden form field that must stay empty (honeypot). */
+    const HONEYPOT_FIELD = 'website';
+    /** Turnstile token field name (Cloudflare's default). */
+    const TURNSTILE_FIELD = 'cf-turnstile-response';
+
+    /** @var TurnstileVerifier */
+    private $turnstile;
     /** @var GitHubClient */
     private $github;
 
-    public function __construct(GitHubClient $github) {
-        $this->github = $github;
+    public function __construct(TurnstileVerifier $turnstile, GitHubClient $github) {
+        $this->turnstile = $turnstile;
+        $this->github    = $github;
     }
 
     /**
      * @param array  $input     Raw request fields
-     * @param string $client_ip For rate limiting (unused until slice 3)
+     * @param string $client_ip Client identifier for rate limiting
      * @return array{status:int, body:array}
      * @throws RuntimeException on a downstream failure (ban list / GitHub API)
      */
     public function handle(array $input, $client_ip) {
+        // Honeypot: a filled hidden field means a bot. Reject silently-ish.
+        $hp = isset($input[self::HONEYPOT_FIELD]) ? $input[self::HONEYPOT_FIELD] : '';
+        if (is_string($hp) && trim($hp) !== '') {
+            return $this->reply(400, array('error' => 'rejected'));
+        }
+
+        // Rate limit (submissions are expensive: open a PR).
+        $rate = RateLimiter::consume($client_ip, PDC_SUBMIT_RATE_LIMIT, PDC_SUBMIT_RATE_WINDOW);
+        if (empty($rate['allowed'])) {
+            return $this->reply(429, array(
+                'error'       => 'rate_limited',
+                'retry_after' => isset($rate['retry_after']) ? $rate['retry_after'] : PDC_SUBMIT_RATE_WINDOW,
+            ));
+        }
+
+        // Turnstile (fail-closed).
+        $token = isset($input[self::TURNSTILE_FIELD]) ? $input[self::TURNSTILE_FIELD] : '';
+        if (!$this->turnstile->verify(is_string($token) ? $token : '', $client_ip)) {
+            return $this->reply(403, array('error' => 'captcha'));
+        }
+
         // Shape.
         try {
             $submission = DecklistSubmission::from_input($input);
