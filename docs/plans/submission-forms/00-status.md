@@ -7,7 +7,7 @@
 
 ## Slices
 - [x] Slice 1 — tracer bullet : GitHubClient + endpoint minimal ouvrant une PR (tests hermétiques)
-- [ ] Slice 2 — decklist, chemin heureux réel (DecklistSubmission + contrôleur + vraie PR)
+- [x] Slice 2 — decklist, chemin heureux réel (DecklistSubmission + contrôleur + vraie PR)
 - [ ] Slice 3 — garde-fous (Turnstile fail-closed, honeypot, quota 5/h, deck illégal -> 422 sans PR)
 - [ ] Slice 4 — formulaire decklist (UI) : page FR/EN, vérif en direct, succès  => decklists utilisables
 - [ ] Slice 5 — déploiement au merge (push:[main]) + docs/external (secrets, PAT, Turnstile)

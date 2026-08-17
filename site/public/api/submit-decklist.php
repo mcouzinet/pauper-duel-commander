@@ -1,10 +1,12 @@
 <?php
 /**
- * Decklist submission endpoint — SLICE 1 (tracer bullet).
+ * Decklist submission endpoint.
  *
- * For now it only proves the pipeline: POST -> open a GitHub PR adding a trivial
- * file. No input validation, no Turnstile, no rate limit yet — those arrive in
- * slices 2 and 3, when the real DecklistSubmission / Controller replace this body.
+ * POST commander, partner (optional), decklist, author (optional),
+ * archetype (optional). Validates legality (DeckValidator) and opens a PR adding
+ * the decklist JSON. Abuse guards (Turnstile, honeypot, rate limit) land in slice 3.
+ *
+ * Thin wrapper: the logic lives in DecklistSubmissionController.
  *
  * @package PDC_API
  */
@@ -30,29 +32,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     submit_fail(405, 'Method not allowed. Use POST.');
 }
 
+// Read form-encoded or JSON body.
+$content_type = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+if (stripos($content_type, 'application/json') !== false) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($input)) {
+        $input = array();
+    }
+} else {
+    $input = $_POST;
+}
+
+// Coarse size cap (a decklist submission is a few KB at most).
+if (strlen(json_encode($input)) > 60000) {
+    submit_fail(413, 'Soumission trop volumineuse.');
+}
+
 $token = pdc_secret('GITHUB_TOKEN');
 if (!$token) {
-    // Secrets not placed on the server yet — see docs/external.
     error_log('PDC submit-decklist: GITHUB_TOKEN missing');
     submit_fail(503, 'Les soumissions sont temporairement indisponibles.');
 }
 
+$controller = new DecklistSubmissionController(new GitHubClient($token, PDC_GITHUB_REPO));
+
 try {
-    $github = new GitHubClient($token, PDC_GITHUB_REPO);
-
-    $id     = date('Ymd-His') . '-' . substr(bin2hex(random_bytes(3)), 0, 6);
-    $branch = 'submission/tracer-' . $id;
-    $files  = array(
-        "docs/submissions-test/{$id}.txt" =>
-            "Tracer bullet: pipeline de soumission opérationnel.\nCréé le " . date('c') . "\n",
-    );
-
-    $base = $github->base_sha('main');
-    $github->commit_files($branch, $base, $files, "Tracer bullet submission {$id}");
-    $pr = $github->open_pull_request($branch, 'main', "[test] Tracer bullet {$id}", "PR de test générée par l'endpoint de soumission (slice 1).");
-
-    echo json_encode(array('success' => true, 'pr_url' => $pr['html_url']), JSON_UNESCAPED_UNICODE);
+    $result = $controller->handle($input, RateLimiter::client_id());
 } catch (RuntimeException $e) {
+    // Ban list unavailable, or GitHub API error.
     error_log('PDC submit-decklist: ' . $e->getMessage());
     submit_fail(502, "La soumission n'a pas pu être créée. Reessayez plus tard.");
 }
+
+http_response_code($result['status']);
+echo json_encode($result['body'], JSON_UNESCAPED_UNICODE);
