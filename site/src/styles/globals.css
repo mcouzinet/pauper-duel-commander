@@ -425,32 +425,54 @@
   /* Comparison table (Pauper / Duel Commander / PDC). */
   .compare-table {
     @apply w-full text-sm border-collapse;
+    /* Below this the cells wrap two or three times each and the row stops being
+       readable as a row; the wrapper scrolls instead. */
+    min-width: 44rem;
   }
 
   .compare-table th,
   .compare-table td {
-    @apply px-3 py-2.5 text-left align-top border-b border-white/8;
+    @apply px-4 py-3.5 text-left align-top border-b border-white/8 leading-relaxed;
   }
 
   .compare-table thead th {
-    @apply font-heading font-bold uppercase tracking-wide text-xs text-text-secondary whitespace-nowrap;
+    @apply font-heading font-bold uppercase tracking-wide text-xs text-text-muted whitespace-nowrap;
+    @apply pb-2.5 pt-3;
   }
 
+  /* The criterion is a label, not content: keep it narrow and quiet. */
   .compare-table tbody th {
-    @apply font-semibold text-text-secondary whitespace-nowrap;
+    @apply font-heading font-bold uppercase tracking-wide text-xs text-text-muted whitespace-nowrap;
+    width: 1%;
   }
 
   .compare-table td {
     @apply text-text-secondary;
+    width: 32%;
   }
 
-  /* The PDC column is the point of the table. */
+  .compare-table tbody tr:last-child th,
+  .compare-table tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  /* The PDC column is the point of the table: a tint plus a rule down its left
+     edge, so the eye lands on it without reading the other two first. */
   .compare-table .is-pdc {
-    @apply bg-brand-orange/8 text-text-primary;
+    @apply bg-brand-orange/8 text-text-primary border-l border-brand-orange/25;
   }
 
   .compare-table thead .is-pdc {
     @apply text-brand-orange;
+  }
+
+  .compare-table tbody tr:hover td,
+  .compare-table tbody tr:hover th {
+    @apply bg-white/2;
+  }
+
+  .compare-table tbody tr:hover .is-pdc {
+    @apply bg-brand-orange/12;
   }
 
   /* Any wide block scrolls inside itself rather than the page. */
