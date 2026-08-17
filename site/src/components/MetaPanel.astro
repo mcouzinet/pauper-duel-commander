@@ -56,13 +56,13 @@ function splitCmd(name: string): string[] {
       const barWidth = maxPct > 0 ? Math.round(commander.percentage / maxPct * 100) : 0;
 
       return (
-        <div class={`tournament-commander-row ${commander.isBanned ? 'opacity-60' : ''}`}>
+        <div class={`tournament-commander-row ${''}`}>
           {commander.image ? (
             <div class={`w-11 h-11 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 ${commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10'} card-hover-trigger`}
                  data-card-name={commander.name}
                  data-card-image={commander.cardImage ?? commander.image}>
-              <img src={commander.image} alt={commander.name}
-                   class="w-full h-full object-cover" loading="lazy" />
+              <img src={commander.image} alt={commander.name} width="56" height="56" decoding="async"
+                   width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async" />
             </div>
           ) : (
             <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-lg bg-bg-tertiary flex-shrink-0"></div>
@@ -73,18 +73,18 @@ function splitCmd(name: string): string[] {
               <span class={`text-xs sm:text-sm font-beleren text-text-primary truncate ${commander.isBanned ? 'line-through decoration-red-500/70' : ''}`}>{parts[0]}</span>
               <div class="flex items-center gap-1.5 flex-shrink-0">
                 {commander.isBanned && (
-                  <span class="px-1.5 py-0.5 bg-red-500/20 border border-red-500/30 rounded text-[10px] font-bold text-red-400 uppercase tracking-wider leading-none">
+                  <span class="px-1.5 py-0.5 bg-red-500/20 border border-red-500/30 rounded text-xs font-bold text-red-400 uppercase tracking-wider leading-none">
                     {t('meta.banned', locale)}
                   </span>
                 )}
                 <span class="text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                  {commander.count}<span class="text-text-secondary/60">/{playerCount}</span>
+                  {commander.count}<span class="text-text-muted">/{playerCount}</span>
                   <span class="ml-1 text-magic-gold font-semibold">{commander.percentage}%</span>
                 </span>
               </div>
             </div>
             {parts.length > 1 && (
-              <span class={`font-beleren text-text-secondary/60 truncate block leading-tight ${commander.isBanned ? 'line-through decoration-red-500/70' : ''}`} style="font-size:10px">+ {parts[1]}</span>
+              <span class={`text-xs font-beleren text-text-muted truncate block leading-tight ${commander.isBanned ? 'line-through decoration-red-500/70' : ''}`}>+ {parts[1]}</span>
             )}
             <div class="flex items-center gap-0.5 mt-0.5">
               {commander.colors.length > 0 ? (
@@ -138,7 +138,7 @@ function splitCmd(name: string): string[] {
                 <span class="text-xs sm:text-sm font-mono text-text-primary truncate">{label}</span>
               </div>
               <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                {count}<span class="text-text-secondary/60">/{ciTotal}</span>
+                {count}<span class="text-text-muted">/{ciTotal}</span>
                 <span class="ml-1 text-magic-gold font-semibold">{pct}%</span>
               </span>
             </div>
