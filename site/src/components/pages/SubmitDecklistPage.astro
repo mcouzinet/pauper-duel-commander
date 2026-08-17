@@ -1,0 +1,234 @@
+---
+/**
+ * Decklist submission form (shared by /fr/soumettre-decklist/ and /en/submit-decklist/).
+ *
+ * Live legality check reuses /api/validate-deck.php; the submission posts to
+ * /api/submit-decklist.php, which opens a moderated PR. Client strings are
+ * serialized into a JSON block (like the validator page). The Turnstile site key
+ * is public; it comes from PUBLIC_TURNSTILE_SITE_KEY, defaulting to Cloudflare's
+ * always-passing test key so the form works before the real key is configured.
+ */
+import Base from '@/layouts/Base.astro';
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { submissionsEnabled } from '@/lib/features';
+import fr from '@/i18n/fr.json';
+import en from '@/i18n/en.json';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const msgs = locale === 'en' ? en : fr;
+
+// Client-side strings + the validator's rule labels (for the legality display).
+const jsBlob = { ...msgs.submit.js, rules: msgs.js };
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
+const archetypes = msgs.submit.archetypes as Record<string, string>;
+---
+<Base title={t('submit.title', locale)} description={t('submit.subtitle', locale)}>
+
+  <!-- Hero -->
+  <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
+    <div class="container mx-auto px-4 sm:px-6 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-3xl sm:text-5xl font-heading font-bold text-magic-gradient mb-6">{t('submit.title', locale)}</h1>
+        <p class="text-base sm:text-lg text-text-secondary max-w-2xl mx-auto leading-relaxed">{t('submit.subtitle', locale)}</p>
+      </div>
+    </div>
+  </section>
+
+  {!submissionsEnabled && (
+    <section class="py-24 bg-bg-primary">
+      <div class="container mx-auto px-6 text-center">
+        <p class="text-lg text-text-secondary">{t('submit.comingSoon', locale)}</p>
+      </div>
+    </section>
+  )}
+
+  {submissionsEnabled && (
+  <Fragment>
+  <!-- Form -->
+  <section class="py-16 bg-bg-primary">
+    <div class="container mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mx-auto">
+        <form id="submit-decklist-form" class="magic-card p-6 sm:p-8 space-y-6">
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label for="sd-commander" class="block font-heading font-bold text-text-primary uppercase tracking-wide mb-2 text-sm">
+                {t('submit.commander', locale)} <span class="text-brand-orange">*</span>
+              </label>
+              <input type="text" id="sd-commander" name="commander" required placeholder={t('submit.commanderPlaceholder', locale)}
+                class="w-full px-4 py-3 bg-bg-secondary border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50" />
+              <p class="text-xs text-text-muted mt-1">{t('submit.commanderHelp', locale)}</p>
+            </div>
+            <div>
+              <label for="sd-partner" class="block font-heading font-bold text-text-primary uppercase tracking-wide mb-2 text-sm">
+                {t('submit.partner', locale)}
+              </label>
+              <input type="text" id="sd-partner" name="partner" placeholder={t('submit.partnerPlaceholder', locale)}
+                class="w-full px-4 py-3 bg-bg-secondary border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50" />
+            </div>
+          </div>
+
+          <div>
+            <label for="sd-decklist" class="block font-heading font-bold text-text-primary uppercase tracking-wide mb-2 text-sm">
+              {t('submit.decklist', locale)} <span class="text-brand-orange">*</span>
+            </label>
+            <textarea id="sd-decklist" name="decklist" required rows="12" placeholder={"1 Command Tower\n1 Lightning Bolt\n…"}
+              class="w-full px-4 py-3 bg-bg-secondary border border-white/10 rounded-lg text-text-primary placeholder-text-muted font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange/50"></textarea>
+            <p class="text-xs text-text-muted mt-1">{t('submit.decklistHelp', locale)}</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-6">
+            <div>
+              <label for="sd-author" class="block font-heading font-bold text-text-primary uppercase tracking-wide mb-2 text-sm">{t('submit.author', locale)}</label>
+              <input type="text" id="sd-author" name="author" placeholder={t('submit.authorPlaceholder', locale)}
+                class="w-full px-4 py-3 bg-bg-secondary border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-brand-orange/50" />
+            </div>
+            <div>
+              <label for="sd-archetype" class="block font-heading font-bold text-text-primary uppercase tracking-wide mb-2 text-sm">{t('submit.archetype', locale)}</label>
+              <select id="sd-archetype" name="archetype"
+                class="w-full px-4 py-3 bg-bg-secondary border border-white/10 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+                <option value="">{t('submit.archetypeNone', locale)}</option>
+                {Object.entries(archetypes).map(([value, label]) => (<option value={value}>{label}</option>))}
+              </select>
+            </div>
+          </div>
+
+          <!-- Honeypot: must stay empty. Hidden from humans. -->
+          <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden">
+            <label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <!-- Legality result -->
+          <div id="sd-legality" class="hidden"></div>
+
+          <label class="inline-flex items-start gap-2 cursor-pointer">
+            <input type="checkbox" id="sd-consent" class="mt-1 w-4 h-4 rounded border-white/20 bg-bg-secondary text-brand-orange focus:ring-brand-orange/50" />
+            <span class="text-sm text-text-secondary">{t('submit.consent', locale)}</span>
+          </label>
+
+          <div class="cf-turnstile" data-sitekey={siteKey}></div>
+
+          <div class="flex flex-wrap gap-4 items-center">
+            <button type="button" id="sd-check" class="btn-secondary">{t('submit.checkBtn', locale)}</button>
+            <button type="submit" id="sd-submit" class="btn-primary">{t('submit.submitBtn', locale)}</button>
+          </div>
+
+          <p class="text-xs text-text-muted">{t('submit.moderationNote', locale)}</p>
+        </form>
+
+        <!-- Success panel (revealed after submit) -->
+        <div id="sd-success" class="hidden magic-card p-8 text-center">
+          <div class="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-5 text-3xl text-green-400">✓</div>
+          <h2 class="text-2xl font-heading font-bold text-text-primary mb-3">{t('submit.js.successTitle', locale)}</h2>
+          <p class="text-text-secondary mb-5">{t('submit.js.successBody', locale)}</p>
+          <ol class="text-left text-sm text-text-secondary bg-bg-secondary border border-white/10 rounded-lg p-4 space-y-1 max-w-md mx-auto mb-6">
+            <li>1. {t('submit.js.successStep1', locale)}</li>
+            <li>2. {t('submit.js.successStep2', locale)}</li>
+            <li>3. {t('submit.js.successStep3', locale)}</li>
+          </ol>
+          <a href={route('decklists', locale)} class="btn-primary">{t('submit.js.backHome', locale)}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script id="submit-i18n" type="application/json" set:html={JSON.stringify(jsBlob)} />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline></script>
+
+  <script>
+    const i18n = JSON.parse(document.getElementById('submit-i18n')?.textContent ?? '{}');
+    const RULE = {
+      format: i18n.rules.ruleFormat, commander: i18n.rules.ruleCommander,
+      commander_type: i18n.rules.ruleCommanderType, commander_rarity: i18n.rules.ruleCommanderRarity,
+      deck_size: i18n.rules.ruleDeckSize, not_found: i18n.rules.ruleNotFound,
+      duplicates: i18n.rules.ruleDuplicates, rarity: i18n.rules.ruleRarity,
+      color_identity: i18n.rules.ruleColorIdentity, ban_list: i18n.rules.ruleBanList,
+    };
+    const $ = (id) => document.getElementById(id);
+    const form = $('submit-decklist-form');
+    const legality = $('sd-legality');
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function fields() {
+      return {
+        commander: $('sd-commander').value.trim(),
+        partner: $('sd-partner').value.trim(),
+        decklist: $('sd-decklist').value.trim(),
+        author: $('sd-author').value.trim(),
+        archetype: $('sd-archetype').value,
+      };
+    }
+
+    function showLegality(html, ok) {
+      legality.className = 'magic-card p-4 text-sm ' + (ok ? 'border-green-500/30' : 'border-red-500/30');
+      legality.innerHTML = html;
+    }
+
+    // Live legality check (reuses the validator endpoint).
+    $('sd-check').addEventListener('click', async () => {
+      const f = fields();
+      if (!f.commander) { showLegality(esc(i18n.needCommander), false); return; }
+      if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
+      showLegality(esc(i18n.checking), true);
+      try {
+        const body = new URLSearchParams({ commander: f.commander, partner: f.partner, decklist: f.decklist });
+        const res = await fetch('/api/validate-deck.php', { method: 'POST', body });
+        const data = await res.json();
+        if (!res.ok || !data.success) { showLegality(esc(i18n.errServer), false); return; }
+        renderLegality(data.data);
+      } catch { showLegality(esc(i18n.errServer), false); }
+    });
+
+    function renderLegality(result) {
+      if (result.is_valid) { showLegality('<span class="text-green-400 font-semibold">' + esc(i18n.legalOk) + '</span>', true); return; }
+      let html = '<p class="text-red-400 font-semibold mb-2">' + esc(i18n.legalKo) + '</p>';
+      for (const e of (result.errors || [])) {
+        html += '<div class="mb-2"><span class="text-red-400 font-semibold">' + esc(RULE[e.rule] || e.rule) + '</span>';
+        if (e.cards && e.cards.length) html += '<div class="text-text-muted font-mono text-xs mt-1">' + e.cards.map(esc).join('<br>') + '</div>';
+        html += '</div>';
+      }
+      showLegality(html, false);
+    }
+
+    // Submit -> opens a moderated PR.
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const f = fields();
+      if (!f.commander) { showLegality(esc(i18n.needCommander), false); return; }
+      if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
+      if (!$('sd-consent').checked) { showLegality(esc(i18n.needConsent), false); return; }
+      const token = (form.querySelector('[name="cf-turnstile-response"]') || {}).value || '';
+      if (!token) { showLegality(esc(i18n.needCaptcha), false); return; }
+
+      const btn = $('sd-submit');
+      btn.disabled = true;
+      const label = btn.textContent; btn.textContent = i18n.sending;
+      try {
+        const body = new URLSearchParams({ ...f, website: '', 'cf-turnstile-response': token });
+        const res = await fetch('/api/submit-decklist.php', { method: 'POST', body });
+        const data = await res.json().catch(() => ({}));
+        if (res.status === 200 && data.success) {
+          form.classList.add('hidden');
+          $('sd-success').classList.remove('hidden');
+          return;
+        }
+        const map = { 403: i18n.errCaptcha, 429: i18n.errRate, 422: i18n.errInvalid };
+        showLegality(esc(map[res.status] || i18n.errUnexpected), false);
+        if (window.turnstile) window.turnstile.reset();
+      } catch {
+        showLegality(esc(i18n.errServer), false);
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
+  </script>
+  </Fragment>
+  )}
+</Base>

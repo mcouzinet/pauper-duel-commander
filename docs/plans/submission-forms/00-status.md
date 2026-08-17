@@ -7,10 +7,10 @@
 
 ## Slices
 - [x] Slice 1 — tracer bullet : GitHubClient + endpoint minimal ouvrant une PR (tests hermétiques)
-- [ ] Slice 2 — decklist, chemin heureux réel (DecklistSubmission + contrôleur + vraie PR)
-- [ ] Slice 3 — garde-fous (Turnstile fail-closed, honeypot, quota 5/h, deck illégal -> 422 sans PR)
-- [ ] Slice 4 — formulaire decklist (UI) : page FR/EN, vérif en direct, succès  => decklists utilisables
-- [ ] Slice 5 — déploiement au merge (push:[main]) + docs/external (secrets, PAT, Turnstile)
+- [x] Slice 2 — decklist, chemin heureux réel (DecklistSubmission + contrôleur + vraie PR)
+- [x] Slice 3 — garde-fous (Turnstile fail-closed, honeypot, quota 5/h, deck illégal -> 422 sans PR)
+- [x] Slice 4 — formulaire decklist (UI) : page FR/EN, vérif en direct, succès  => decklists utilisables
+- [x] Slice 5 — déploiement au merge (push:[main]) + docs/external (secrets, PAT, Turnstile)
 - [ ] Slice 6 — tournoi (backend) : PR multi-fichiers + code d'accès organisateur
 - [ ] Slice 7 — formulaire tournoi (UI)  => tournois utilisables
 
@@ -37,4 +37,7 @@
   (repo, contents+PR write) et une site Turnstile ; poser les secrets HORS www/ ;
   activer `push:[main]` + protection de branche `main`. Le PR live ne peut être
   prouvé qu'une fois ces secrets posés (Claude ne manipule pas les secrets).
+- ⚠ Le SFTP ne pousse pas les dotfiles : `site/public/api/.htaccess` (qui
+  autorise submit-decklist.php) doit être uploadé À LA MAIN vers www/api/.htaccess
+  une fois, sinon l'endpoint reste en 403. Cf. docs/external/README.md.
 

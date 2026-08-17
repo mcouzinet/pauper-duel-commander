@@ -18,3 +18,6 @@
 
 # Node / PHP tooling lives under site/ — see site/.gitignore
 node_modules
+
+# Submission secrets (never committed; placed on the server outside www/)
+pdc-secrets.php

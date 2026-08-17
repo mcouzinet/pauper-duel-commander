@@ -143,6 +143,15 @@ function pdc_secret($name) {
     if ($store === null) {
         $store = array();
         $file = getenv('PDC_SECRETS_FILE');
+        // Default OVH location: pdc-secrets.php in the account home, i.e. the
+        // directory that CONTAINS www/ (three levels above this file once
+        // deployed: www/api/lib -> home). Outside the web root, never deployed.
+        if (!$file || !is_readable($file)) {
+            $fallback = __DIR__ . '/../../../pdc-secrets.php';
+            if (is_readable($fallback)) {
+                $file = $fallback;
+            }
+        }
         if ($file && is_readable($file)) {
             $loaded = include $file;
             if (is_array($loaded)) {
@@ -205,3 +214,6 @@ require_once __DIR__ . '/ScryfallService.php';
 require_once __DIR__ . '/DecklistParser.php';
 require_once __DIR__ . '/DeckValidator.php';
 require_once __DIR__ . '/GitHubClient.php';
+require_once __DIR__ . '/TurnstileVerifier.php';
+require_once __DIR__ . '/DecklistSubmission.php';
+require_once __DIR__ . '/DecklistSubmissionController.php';

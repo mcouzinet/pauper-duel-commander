@@ -378,5 +378,55 @@
         ]
       }
     ]
+  },
+  "submit": {
+    "title": "Submit a decklist",
+    "subtitle": "Share a Pauper Duel Commander decklist. Its legality is checked before sending; the team reviews it before publication.",
+    "commander": "Commander",
+    "commanderPlaceholder": "E.g.: Mother of Runes",
+    "commanderHelp": "Exact English name (as on Scryfall).",
+    "partnerToggle": "Deck with partner / Background",
+    "partner": "Partner",
+    "partnerPlaceholder": "E.g.: Inspiring Leader",
+    "decklist": "Decklist (MTGO format)",
+    "decklistHelp": "One card per line: “1 Card name”. Do not include your commander in the list.",
+    "author": "Author",
+    "authorPlaceholder": "Your handle (optional)",
+    "archetype": "Archetype",
+    "archetypeNone": "—",
+    "consent": "I confirm I have the right to share this decklist.",
+    "checkBtn": "Check legality",
+    "submitBtn": "Submit",
+    "moderationNote": "After sending, your submission goes to review. Once approved, it appears automatically on the site.",
+    "cta": "Submit a decklist",
+    "js": {
+      "checking": "Checking…",
+      "legalOk": "Legal deck ✓ — ready to submit.",
+      "legalKo": "Invalid deck — fix before submitting:",
+      "sending": "Sending…",
+      "needCommander": "Please enter the commander name.",
+      "needDecklist": "Please enter your decklist.",
+      "needConsent": "Please confirm you may share this deck.",
+      "needCaptcha": "Please complete the anti-bot captcha.",
+      "errCaptcha": "Invalid or expired captcha. Try again.",
+      "errRate": "Too many submissions. Try again later.",
+      "errInvalid": "The deck is not legal: fix it and retry.",
+      "errServer": "Could not reach the server. Try again.",
+      "errUnexpected": "Something went wrong. Try again.",
+      "successTitle": "Submission received",
+      "successBody": "Thanks! Your decklist is awaiting review by the team.",
+      "successStep1": "The team receives your submission and reviews it.",
+      "successStep2": "Once approved, it is published automatically on the site.",
+      "successStep3": "Nothing goes live without that review.",
+      "backHome": "Back to home"
+    },
+    "archetypes": {
+      "Aggro": "Aggro",
+      "Contrôle": "Control",
+      "Midrange": "Midrange",
+      "Tempo": "Tempo",
+      "Combo": "Combo"
+    },
+    "comingSoon": "Submissions are coming soon."
   }
 }

@@ -6,8 +6,12 @@ name: Deploy to OVH
 # Pour déployer automatiquement à chaque push sur main, décommenter le bloc `push`.
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
+  # Auto-deploy when the site changes (e.g. a merged submission PR). Doc-only
+  # changes don't trigger a deploy.
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
 
 # Ne jamais interrompre un envoi FTP en cours (éviterait un déploiement partiel).
 concurrency:
@@ -40,6 +44,12 @@ jobs:
 
       - name: Install & build
         working-directory: site
+        # Variables PUBLIQUES (non secrètes) : clé de site Turnstile + activation
+        # des formulaires de soumission. À définir dans Settings → Secrets and
+        # variables → Actions → Variables. Absentes = captcha de test + formulaires masqués.
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
+          PUBLIC_SUBMISSIONS_ENABLED: ${{ vars.PUBLIC_SUBMISSIONS_ENABLED }}
         # Le `|| …` contourne le bug npm des dépendances optionnelles (@rolldown)
         # déjà rencontré sur ce dépôt ; sans effet si `npm ci` réussit.
         run: |
