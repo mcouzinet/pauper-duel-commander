@@ -112,6 +112,52 @@ if (!defined('PDC_MAX_FALLBACK_LOOKUPS')) {
 }
 
 // ---------------------------------------------------------------------------
+// Submissions (decklist / tournament forms -> GitHub PR)
+// ---------------------------------------------------------------------------
+
+/** Target repository, "owner/name", where submission PRs are opened. */
+if (!defined('PDC_GITHUB_REPO')) {
+    define('PDC_GITHUB_REPO', 'mcouzinet/pauper-duel-commander');
+}
+
+/** Submissions are far more expensive than a validation (they open a PR): tighter cap. */
+if (!defined('PDC_SUBMIT_RATE_LIMIT')) {
+    define('PDC_SUBMIT_RATE_LIMIT', 5);
+}
+if (!defined('PDC_SUBMIT_RATE_WINDOW')) {
+    define('PDC_SUBMIT_RATE_WINDOW', 3600); // 1 hour
+}
+
+/**
+ * Read a secret by name.
+ *
+ * Secrets never live in the deployed tree. In production they sit in a PHP file
+ * OUTSIDE the web root, whose absolute path is given by the PDC_SECRETS_FILE env
+ * var; that file returns an associative array. Falls back to a PDC_<NAME> env var
+ * (handy for local dev / CI). Returns null if absent.
+ *
+ * @return string|null
+ */
+function pdc_secret($name) {
+    static $store = null;
+    if ($store === null) {
+        $store = array();
+        $file = getenv('PDC_SECRETS_FILE');
+        if ($file && is_readable($file)) {
+            $loaded = include $file;
+            if (is_array($loaded)) {
+                $store = $loaded;
+            }
+        }
+    }
+    if (array_key_exists($name, $store)) {
+        return $store[$name];
+    }
+    $env = getenv('PDC_' . $name);
+    return $env === false ? null : $env;
+}
+
+// ---------------------------------------------------------------------------
 // CORS
 // ---------------------------------------------------------------------------
 
@@ -158,3 +204,4 @@ require_once __DIR__ . '/RateLimiter.php';
 require_once __DIR__ . '/ScryfallService.php';
 require_once __DIR__ . '/DecklistParser.php';
 require_once __DIR__ . '/DeckValidator.php';
+require_once __DIR__ . '/GitHubClient.php';
