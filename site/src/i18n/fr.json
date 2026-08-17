@@ -378,5 +378,54 @@
         ]
       }
     ]
+  },
+  "submit": {
+    "title": "Soumettre une decklist",
+    "subtitle": "Partagez une decklist Pauper Duel Commander. Sa légalité est vérifiée avant l'envoi ; l'équipe la relit avant publication.",
+    "commander": "Général",
+    "commanderPlaceholder": "Ex : Mother of Runes",
+    "commanderHelp": "Nom exact en anglais (comme sur Scryfall).",
+    "partnerToggle": "Deck avec partenaire / Background",
+    "partner": "Partenaire",
+    "partnerPlaceholder": "Ex : Inspiring Leader",
+    "decklist": "Decklist (format MTGO)",
+    "decklistHelp": "Une carte par ligne : « 1 Nom de la carte ». Ne mettez pas votre général dans la liste.",
+    "author": "Auteur",
+    "authorPlaceholder": "Votre pseudo (optionnel)",
+    "archetype": "Archétype",
+    "archetypeNone": "—",
+    "consent": "Je confirme avoir le droit de partager cette decklist.",
+    "checkBtn": "Vérifier la légalité",
+    "submitBtn": "Soumettre",
+    "moderationNote": "Après envoi, votre soumission part en relecture. Une fois validée, elle apparaît automatiquement sur le site.",
+    "cta": "Soumettre une decklist",
+    "js": {
+      "checking": "Vérification…",
+      "legalOk": "Deck légal ✓ — prêt à soumettre.",
+      "legalKo": "Deck invalide — corrigez avant de soumettre :",
+      "sending": "Envoi…",
+      "needCommander": "Veuillez saisir le nom du général.",
+      "needDecklist": "Veuillez saisir votre decklist.",
+      "needConsent": "Veuillez confirmer le droit de partage.",
+      "needCaptcha": "Veuillez valider le captcha anti-robot.",
+      "errCaptcha": "Captcha invalide ou expiré. Réessayez.",
+      "errRate": "Trop de soumissions. Réessayez plus tard.",
+      "errInvalid": "Le deck n'est pas légal : corrigez et réessayez.",
+      "errServer": "Impossible de contacter le serveur. Réessayez.",
+      "errUnexpected": "Une erreur est survenue. Réessayez.",
+      "successTitle": "Soumission reçue",
+      "successBody": "Merci ! Votre decklist est en attente de relecture par l'équipe.",
+      "successStep1": "L'équipe reçoit votre soumission et la relit.",
+      "successStep2": "Une fois validée, elle est publiée automatiquement sur le site.",
+      "successStep3": "Rien n'apparaît en ligne sans cette validation.",
+      "backHome": "Retour à l'accueil"
+    },
+    "archetypes": {
+      "Aggro": "Aggro",
+      "Contrôle": "Contrôle",
+      "Midrange": "Midrange",
+      "Tempo": "Tempo",
+      "Combo": "Combo"
+    }
   }
 }

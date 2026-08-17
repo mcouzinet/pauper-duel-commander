@@ -75,6 +75,9 @@ const colorIdentities = [...new Set(decklists.map(d => d.ciKey))].sort();
         <p class="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
           {t('archive.decklistDesc', locale)}
         </p>
+        <div class="mt-8">
+          <a href={route('submitDecklist', locale)} class="btn-primary">{t('submit.cta', locale)}</a>
+        </div>
       </div>
     </div>
   </section>
