@@ -1,13 +1,10 @@
 ---
 /**
- * CardList Component
+ * Deck cards grouped by type.
  *
- * Renders deck cards grouped by type (Creature, Instant, Sorcery, etc.)
- * with mana costs displayed via mana-font icons.
- *
- * Props:
- * - cardsByType: Record<string, EnrichedCard[]> — cards grouped by primary type
- * - locale: 'fr' | 'en' — current locale for type labels
+ * Two columns from 360px up rather than one: at one column, ninety-nine cards
+ * made a 12,700px page on a phone, which is the device this gets read on. Each
+ * group gets a stable anchor so the contents bar above can jump into it.
  */
 import { formatManaCost } from '@/lib/mana';
 import { t, type Locale } from '@/lib/i18n';
@@ -20,7 +17,6 @@ interface Props {
 
 const { cardsByType, locale } = Astro.props;
 
-/** Map English type names to i18n keys. */
 const TYPE_LABEL_KEYS: Record<string, string> = {
   Creature: 'common.creatures',
   Instant: 'common.instants',
@@ -32,49 +28,39 @@ const TYPE_LABEL_KEYS: Record<string, string> = {
   Other: 'common.other',
 };
 
-/** Pre-compute type totals and labels. */
-const typeEntries = Object.entries(cardsByType).map(([type, cards]) => {
-  const total = cards.reduce((sum, card) => sum + card.quantity, 0);
-  const label = t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale);
-  return { type, label, total, cards };
-});
+const groups = Object.entries(cardsByType).map(([type, cards]) => ({
+  type,
+  anchor: `type-${type.toLowerCase()}`,
+  label: t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale),
+  total: cards.reduce((sum, card) => sum + card.quantity, 0),
+  cards,
+}));
 ---
 
-<div>
-  {typeEntries.map(({ label, total, cards }) => (
-    <div class="mb-10">
-      <h3 class="text-2xl font-heading font-bold text-magic-gradient uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/10">
-        {label} <span class="text-text-muted">({total})</span>
-      </h3>
+<div class="space-y-8">
+  {groups.map(group => (
+    <section id={group.anchor}>
+      <h2 class="text-xl sm:text-2xl font-heading font-bold text-magic-gradient uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/15">
+        {group.label} <span class="text-text-muted tabular-nums">({group.total})</span>
+      </h2>
 
-      <div class="columns-1 md:columns-2 lg:columns-3 gap-x-4">
-        {cards.map((card) => (
-          <div
-            class="py-1.5 px-2 hover:bg-brand-orange/5 transition-colors group relative card-hover-trigger cursor-pointer break-inside-avoid"
-            data-card-name={card.name}
-            data-card-image={card.imageUrl ?? ''}
-          >
-            <div class="flex items-center gap-3">
-              {/* Quantity */}
-              <span class="text-base font-mono text-text-muted w-4 text-right flex-shrink-0">
-                {card.quantity}
-              </span>
-
-              {/* Card Name */}
-              <span class="text-base text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1 font-beleren">
-                {card.name}
-              </span>
-
-              {/* Mana Cost */}
-              {card.manaCost && (
-                <div class="flex-shrink-0">
-                  <span set:html={formatManaCost(card.manaCost)} />
-                </div>
-              )}
-            </div>
-          </div>
+      <ul class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-0.5">
+        {group.cards.map(card => (
+          <li class="card-hover-trigger group flex items-center gap-2 py-1.5 px-1.5 -mx-1.5 rounded hover:bg-brand-orange/8 transition-colors cursor-pointer min-w-0"
+              data-card-name={card.name}
+              data-card-image={card.imageUrl ?? ''}>
+            <span class="text-sm font-mono text-text-muted w-4 text-right flex-shrink-0 tabular-nums">
+              {card.quantity}
+            </span>
+            <span class="text-sm sm:text-base text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1 font-beleren" lang="en">
+              {card.name}
+            </span>
+            {card.manaCost && (
+              <span class="flex-shrink-0" set:html={formatManaCost(card.manaCost)} />
+            )}
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </section>
   ))}
 </div>

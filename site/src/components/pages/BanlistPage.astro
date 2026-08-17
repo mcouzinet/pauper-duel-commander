@@ -1,10 +1,27 @@
 ---
+/**
+ * Ban list.
+ *
+ * Probably the most-consulted page on the site, and the one that hid the fact a
+ * player needs first: `lastUpdated` sat in the JSON and was never rendered, so
+ * there was no way to tell whether what you were reading was current.
+ *
+ * Now: freshness and count in the header, the latest announcement summarised at
+ * the top, a search box (the names are in the DOM, so filtering them is free),
+ * and a "new" badge on whatever the last announcement moved.
+ */
 import Base from '@/layouts/Base.astro';
 import BanListGrid from '@/components/BanListGrid.astro';
-import { getCollection } from 'astro:content';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import {
+  getBanlist,
+  getAnnouncements,
+  getBanlistDate,
+  formatBanlistDate,
+  recentlyChangedNames,
+} from '@/lib/banlist';
 
 interface Props {
   locale: Locale;
@@ -12,21 +29,20 @@ interface Props {
 
 const { locale } = Astro.props;
 
-const banlistPath = join(process.cwd(), 'content', 'banlist.json');
-const banlist = JSON.parse(readFileSync(banlistPath, 'utf-8'));
-const bannedAsCommander: string[] = banlist.bannedAsCommander ?? [];
-const bannedInDeck: string[] = banlist.bannedInDeck ?? [];
+const banlist = getBanlist();
+const [history, updatedAt, recentlyChanged] = await Promise.all([
+  getAnnouncements(),
+  getBanlistDate(),
+  recentlyChangedNames(),
+]);
 
-// Announcement history, newest first.
-const history = (await getCollection('banlistHistory'))
-  .sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
+const latest = history[0] ?? null;
 
-// Group an announcement's changes by type, in a fixed display order.
 const CHANGE_ORDER = ['banned', 'unbanned', 'restricted'] as const;
 const CHANGE_STYLE: Record<string, string> = {
-  banned: 'text-red-400 border-red-500/30 bg-red-500/5',
-  unbanned: 'text-green-400 border-green-500/30 bg-green-500/5',
-  restricted: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/5',
+  banned: 'text-red-300 border-red-500/30 bg-red-500/10',
+  unbanned: 'text-green-300 border-green-500/30 bg-green-500/10',
+  restricted: 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10',
 };
 const CHANGE_LABEL: Record<string, string> = {
   banned: t('banlist.changeBanned', locale),
@@ -37,132 +53,179 @@ const CHANGE_LABEL: Record<string, string> = {
 function groupChanges(changes: { card: string; type: string; experimental?: boolean }[]) {
   return CHANGE_ORDER
     .map(type => ({ type, cards: changes.filter(c => c.type === type) }))
-    .filter(g => g.cards.length > 0);
+    .filter(group => group.cards.length > 0);
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso + 'T00:00:00').toLocaleDateString(t('common.dateLocale', locale), {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
+const updatedLabel = formatBanlistDate(updatedAt, locale);
+const title = locale === 'fr'
+  ? `Banlist Pauper Duel Commander (à jour au ${updatedLabel})`
+  : `Pauper Duel Commander ban list (updated ${updatedLabel})`;
+const description = locale === 'fr'
+  ? `Les ${banlist.cards.length} cartes bannies en Pauper Duel Commander : ${banlist.bannedAsCommander.length} interdites comme général, ${banlist.bannedInDeck.length} interdites dans le deck. Dernière annonce du comité le ${updatedLabel}.`
+  : `The ${banlist.cards.length} cards banned in Pauper Duel Commander: ${banlist.bannedAsCommander.length} banned as commander, ${banlist.bannedInDeck.length} banned in the deck. Latest committee announcement on ${updatedLabel}.`;
 ---
-<Base title={t('nav.banlist', locale)}>
+<Base title={title} description={description} bareTitle={true}>
 
-  <!-- Hero -->
-  <section class="relative py-32 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
-    <div class="absolute inset-0 opacity-5">
-      <img src="/img/artefacts.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
-    </div>
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-orange/20 rounded-full blur-[100px] animate-float"></div>
-      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+  <section class="page-head">
+    <div class="page-head__bg"></div>
+    <div class="absolute inset-0 opacity-[0.06] pointer-events-none">
+      <img src="/img/artefacts.webp" alt="" aria-hidden="true"
+           width="1280" height="950" class="w-full h-full object-cover" />
     </div>
 
-    <div class="container mx-auto px-6 relative z-10">
-      <div class="text-center max-w-5xl mx-auto">
-        <div class="inline-block mb-10">
-          <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
-            Banlist
-          </span>
-        </div>
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <div class="max-w-4xl">
+        <Breadcrumb locale={locale} items={[{ label: t('nav.banlist', locale) }]} />
 
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
-          <span class="block text-text-primary mb-2">{t('banlist.titleTop', locale)}</span>
-          <span class="block text-magic-gradient">{t('banlist.titleBottom', locale)}</span>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold mt-3 mb-4">
+          <span class="text-text-primary">{t('banlist.titleTop', locale)} </span>
+          <span class="text-magic-gradient">{t('banlist.titleBottom', locale)}</span>
         </h1>
 
-        <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto" style="line-height: 32px;">
-          <p>{t('banlist.intro', locale)}</p>
+        <!-- Freshness first: this is the reason the page gets opened. -->
+        <div class="flex flex-wrap items-center gap-2 mb-5">
+          <span class="stat-pill">
+            <svg class="w-3.5 h-3.5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            {t('banlist.lastUpdate', locale)} <strong>{updatedLabel}</strong>
+          </span>
+          <span class="stat-pill"><strong>{banlist.cards.length}</strong> {t('banlist.cardCount', locale)}</span>
+          <a href={route('rules', locale)} class="stat-pill hover:border-brand-orange/50 hover:text-brand-orange transition-colors no-underline">
+            {t('banlist.seeRules', locale)}
+          </a>
+          <a href={route('validator', locale)} class="stat-pill hover:border-brand-orange/50 hover:text-brand-orange transition-colors no-underline">
+            {t('banlist.checkDeck', locale)}
+          </a>
         </div>
 
-        <div class="flex flex-wrap gap-6 justify-center items-center">
-          <a href="#banned-commander" class="btn-secondary">{t('banlist.asCommander', locale)}</a>
-          <a href="#banned-deck" class="btn-secondary">{t('banlist.inDeck', locale)}</a>
-          {history.length > 0 && (
-            <a href="#history" class="btn-secondary">{t('banlist.historyTitle', locale)}</a>
-          )}
-        </div>
+        <p class="text-text-secondary leading-relaxed max-w-3xl">{t('banlist.intro', locale)}</p>
       </div>
-    </div>
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
-  </section>
-
-  <!-- Banned as commander -->
-  <section id="banned-commander" class="py-24 relative">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-          {t('banlist.asCommander', locale)}
-        </h2>
-        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
-          {t('banlist.asCommanderDesc', locale)}
-        </p>
-      </div>
-
-      <BanListGrid cards={bannedAsCommander} />
     </div>
   </section>
 
-  <!-- Banned in deck -->
-  <section id="banned-deck" class="py-24 relative">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-          {t('banlist.inDeck', locale)}
-        </h2>
-        <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
-          {t('banlist.inDeckDesc', locale)}
-        </p>
-      </div>
+  <!-- Latest announcement: what changed, for the reader who already knows the list -->
+  {latest && (
+    <section class="border-b border-card-border/25 bg-bg-secondary/50">
+      <div class="container mx-auto px-4 md:px-6 py-6">
+        <div class="max-w-4xl">
+          <div class="panel p-5">
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
+              <span class="eyebrow">{t('banlist.latestAnnouncement', locale)}</span>
+              <span class="text-text-primary font-semibold">{formatBanlistDate(latest.date, locale)}</span>
+              <span class="text-sm text-text-muted">{t('banlist.by', locale)} {latest.source}</span>
+            </div>
 
-      <BanListGrid cards={bannedInDeck} />
-    </div>
-  </section>
+            <div class="space-y-3">
+              {groupChanges(latest.changes).map(group => (
+                <div class="flex flex-col sm:flex-row sm:items-start gap-x-3 gap-y-2">
+                  <span class={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-heading font-bold uppercase tracking-wider ${CHANGE_STYLE[group.type]}`}>
+                    {CHANGE_LABEL[group.type]}
+                  </span>
+                  <div class="flex flex-wrap gap-1.5">
+                    {group.cards.map(card => (
+                      <span class="inline-flex items-center gap-1.5 text-sm font-beleren text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1" lang="en">
+                        {card.card}
+                        {card.experimental && (
+                          <span class="text-xs font-heading font-semibold uppercase tracking-wider text-yellow-400">
+                            {t('banlist.experimental', locale)}
+                          </span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
 
-  <!-- Announcement history -->
-  {history.length > 0 && (
-    <section id="history" class="py-24 relative">
-      <div class="container mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-          <div class="text-center mb-12">
-            <h2 class="text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-6">
-              {t('banlist.historyTitle', locale)}
-            </h2>
-            <p class="text-lg text-text-secondary max-w-3xl mx-auto leading-relaxed">
-              {t('banlist.historyCadence', locale)}
+            <p class="mt-4">
+              <a href="#history" class="text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+                {t('banlist.seeHistory', locale)} →
+              </a>
             </p>
           </div>
+        </div>
+      </div>
+    </section>
+  )}
 
-          <div class="relative border-l border-card-border pl-6 md:pl-8 space-y-8 ml-2">
+  <!-- Search: names are text in the DOM, so this is a filter, not a query -->
+  <section class="border-b border-card-border/25 bg-bg-secondary/30 sticky top-[68px] md:top-[76px] z-30 backdrop-blur-sm">
+    <div class="container mx-auto px-4 md:px-6 py-3">
+      <div class="max-w-4xl flex items-center gap-3">
+        <label for="banlist-search" class="sr-only">{t('banlist.searchLabel', locale)}</label>
+        <div class="relative flex-1 max-w-md">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input id="banlist-search" type="search" autocomplete="off"
+                 placeholder={t('banlist.searchPlaceholder', locale)}
+                 class="w-full pl-9 pr-3 py-2 bg-bg-primary border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:border-brand-orange/60 focus:outline-none transition-colors text-sm" />
+        </div>
+        <p id="banlist-count" class="text-sm text-text-muted tabular-nums" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="banned-commander" class="py-10 md:py-12">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="mb-6 max-w-3xl">
+        <h2 class="section-title !text-2xl sm:!text-3xl !mb-2">{t('banlist.asCommander', locale)}</h2>
+        <p class="text-sm text-text-secondary leading-relaxed">{t('banlist.asCommanderDesc', locale)}</p>
+      </div>
+      <BanListGrid cards={banlist.bannedAsCommander} locale={locale} recentlyChanged={recentlyChanged} />
+    </div>
+  </section>
+
+  <section id="banned-deck" class="py-10 md:py-12 border-t border-card-border/20">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="mb-6 max-w-3xl">
+        <h2 class="section-title !text-2xl sm:!text-3xl !mb-2">{t('banlist.inDeck', locale)}</h2>
+        <p class="text-sm text-text-secondary leading-relaxed">{t('banlist.inDeckDesc', locale)}</p>
+      </div>
+      <BanListGrid cards={banlist.bannedInDeck} locale={locale} recentlyChanged={recentlyChanged} />
+    </div>
+  </section>
+
+  <p id="banlist-empty" class="hidden container mx-auto px-4 md:px-6 py-10 text-center text-text-secondary">
+    {t('banlist.searchNoResult', locale)}
+  </p>
+
+  {history.length > 0 && (
+    <section id="history" class="py-12 md:py-16 border-t border-card-border/20 bg-bg-secondary/40">
+      <div class="container mx-auto px-4 md:px-6">
+        <div class="max-w-4xl">
+          <h2 class="section-title !text-2xl sm:!text-3xl !mb-2">{t('banlist.historyTitle', locale)}</h2>
+          <p class="text-sm text-text-secondary mb-8">{t('banlist.historyCadence', locale)}</p>
+
+          <ol class="relative border-l border-card-border/40 pl-6 md:pl-8 space-y-6 ml-2">
             {history.map(entry => (
-              <article class="relative">
-                {/* timeline dot */}
-                <span class="absolute -left-[31px] md:-left-[39px] top-1.5 w-3 h-3 rounded-full bg-brand-orange ring-4 ring-bg-primary"></span>
+              <li class="relative">
+                <span class="absolute -left-[31px] md:-left-[39px] top-2 w-3 h-3 rounded-full bg-brand-orange ring-4 ring-bg-secondary" aria-hidden="true"></span>
 
-                <div class="magic-card p-6">
-                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-5">
-                    <span class="text-xs font-heading font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border border-magic-purple/30 text-magic-gold">
-                      {entry.data.kind === 'initial' ? t('banlist.kindInitial', locale) : t('banlist.kindUpdate', locale)}
+                <article class="panel p-5">
+                  <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-4">
+                    <span class="badge badge--gold uppercase tracking-wider">
+                      {entry.kind === 'initial' ? t('banlist.kindInitial', locale) : t('banlist.kindUpdate', locale)}
                     </span>
-                    <span class="text-text-primary font-semibold">{formatDate(entry.data.date)}</span>
-                    <span class="text-sm text-text-muted">{t('banlist.by', locale)} {entry.data.source}</span>
+                    <span class="text-text-primary font-semibold">{formatBanlistDate(entry.date, locale)}</span>
+                    <span class="text-sm text-text-muted">{t('banlist.by', locale)} {entry.source}</span>
                   </div>
 
-                  <div class="space-y-4">
-                    {groupChanges(entry.data.changes).map(group => (
-                      <div class="flex flex-col sm:flex-row sm:items-start gap-x-4 gap-y-2">
-                        <span class={`shrink-0 text-xs font-heading font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${CHANGE_STYLE[group.type]}`}>
+                  <div class="space-y-3">
+                    {groupChanges(entry.changes).map(group => (
+                      <div class="flex flex-col sm:flex-row sm:items-start gap-x-3 gap-y-2">
+                        <span class={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-heading font-bold uppercase tracking-wider ${CHANGE_STYLE[group.type]}`}>
                           {CHANGE_LABEL[group.type]}
                         </span>
-                        <div class="flex flex-wrap gap-2">
-                          {group.cards.map(c => (
-                            <span class="inline-flex items-center gap-1.5 text-sm font-beleren text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1">
-                              {c.card}
-                              {c.experimental && (
-                                <span class="text-[10px] font-heading font-semibold uppercase tracking-wider text-yellow-400/90">{t('banlist.experimental', locale)}</span>
+                        <div class="flex flex-wrap gap-1.5">
+                          {group.cards.map(card => (
+                            <span class="inline-flex items-center gap-1.5 text-sm font-beleren text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1" lang="en">
+                              {card.card}
+                              {card.experimental && (
+                                <span class="text-xs font-heading font-semibold uppercase tracking-wider text-yellow-400">
+                                  {t('banlist.experimental', locale)}
+                                </span>
                               )}
                             </span>
                           ))}
@@ -171,25 +234,73 @@ function formatDate(iso: string): string {
                     ))}
                   </div>
 
-                  {entry.data.notes.length > 0 && (
-                    <details class="mt-5 group">
+                  {entry.notes.length > 0 && (
+                    <details class="mt-4" data-analytics="banlist_history_open">
                       <summary class="cursor-pointer text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors select-none">
                         {t('banlist.details', locale)}
                       </summary>
-                      <div class="mt-3 space-y-3 border-l-2 border-card-border pl-4">
-                        {entry.data.notes.map(note => (
+                      <div class="mt-3 space-y-3 border-l-2 border-card-border/40 pl-4">
+                        {entry.notes.map(note => (
                           <p class="text-sm text-text-secondary leading-relaxed">{note[locale]}</p>
                         ))}
                       </div>
                     </details>
                   )}
-                </div>
-              </article>
+                </article>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </div>
     </section>
   )}
 
+  <script>
+    // Card names are rendered as text, so searching them is a DOM filter. Section
+    // headings hide when the section empties, and the whole thing degrades to a
+    // fully visible list without JS.
+    const input = document.getElementById('banlist-search') as HTMLInputElement | null;
+    const count = document.getElementById('banlist-count');
+    const empty = document.getElementById('banlist-empty');
+    const sections = ['banned-commander', 'banned-deck']
+      .map(id => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const items = sections.flatMap(section =>
+      [...section.querySelectorAll<HTMLElement>('[data-card-name]')],
+    );
+    const total = items.length;
+
+    let debounce: number | undefined;
+
+    function apply() {
+      const query = (input?.value ?? '').trim().toLowerCase();
+      let visible = 0;
+
+      for (const item of items) {
+        const match = !query || (item.dataset.cardName ?? '').includes(query);
+        item.hidden = !match;
+        if (match) visible++;
+      }
+
+      for (const section of sections) {
+        const anyVisible = [...section.querySelectorAll<HTMLElement>('[data-card-name]')]
+          .some(item => !item.hidden);
+        section.hidden = !anyVisible;
+      }
+
+      if (empty) empty.classList.toggle('hidden', visible > 0);
+      if (count) count.textContent = query ? `${visible}/${total}` : '';
+
+      if (query) {
+        window.clearTimeout(debounce);
+        debounce = window.setTimeout(() => {
+          window.pdcTrack?.('banlist_search', { query_length: query.length, results: visible });
+        }, 800);
+      }
+    }
+
+    input?.addEventListener('input', apply);
+    window.pdcTrack?.('banlist_view', {});
+  </script>
 </Base>

@@ -1,13 +1,26 @@
 ---
 /**
- * Format rules page (shared by /fr/regles/ and /en/rules/)
+ * Format rules.
  *
- * The formal, numbered ruleset comes from i18n `rulesDoc` (imported directly, per
- * locale, because t() only returns strings).
+ * Read as a product rather than as documentation, this page had one job it did
+ * not do: let someone learn to play without reading a numbered legal ruleset.
+ * It now has three strata —
+ *
+ *   1. the rules in 30 seconds (six cards, shared with the validator)
+ *   2. how it differs from Pauper and Duel Commander
+ *   3. the official ruleset (unchanged), with a sticky contents list
+ *   4. edge cases / FAQ, answering what actually gets asked at tournaments
+ *
+ * The formal ruleset comes from i18n `rulesDoc`, imported directly because `t()`
+ * only returns strings. The FAQ does the same.
  */
 import Base from '@/layouts/Base.astro';
+import RulesSummary from '@/components/RulesSummary.astro';
+import FormatComparison from '@/components/FormatComparison.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
+import { getBanlistDate, formatBanlistDate, getBanlist } from '@/lib/banlist';
 import fr from '@/i18n/fr.json';
 import en from '@/i18n/en.json';
 
@@ -30,115 +43,212 @@ interface RulesDoc {
   badge: string;
   title: string;
   subtitle: string;
-  refIntro: string;
-  refComprehensive: string;
-  refScryfall: string;
   sections: RuleSection[];
 }
 
 const { locale } = Astro.props;
-const doc = (locale === 'en' ? en.rulesDoc : fr.rulesDoc) as RulesDoc;
+const messages = locale === 'en' ? en : fr;
+const doc = messages.rulesDoc as unknown as RulesDoc;
+const faq = messages.rules.faq as unknown as { q: string; a: string }[];
 
-// Stable anchor per section, in declaration order.
 const sectionIds = ['general', 'deck-construction', 'game-rules'];
 
+const banlist = getBanlist();
+const banlistDate = await getBanlistDate();
+
+/** In-page contents, in reading order. */
+const toc = [
+  { id: 'essentiel', label: t('rulesSummary.title', locale) },
+  { id: 'comparison', label: t('compare.title', locale) },
+  ...doc.sections.map((section, i) => ({ id: sectionIds[i], label: `${section.n}. ${section.title}` })),
+  { id: 'faq', label: t('rules.faqTitle', locale) },
+];
+
+const title = locale === 'fr'
+  ? 'Règles du Pauper Duel Commander'
+  : 'Pauper Duel Commander rules';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map(item => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
+/**
+ * Rule 2.7 points at the ban list and 2.8 at Vintage legality; both were dead
+ * text. Anything mentioning the banned list gets a link appended.
+ */
+function articleLink(article: Article): { href: string; label: string } | null {
+  if (article.link) return article.link;
+  if (article.n === '2.7') {
+    return { href: route('banlist', locale), label: t('nav.banlist', locale) };
+  }
+  return null;
+}
 ---
-<Base title={doc.title} description={doc.subtitle}>
+<Base title={title} description={doc.subtitle} bareTitle={false} schemas={[faqSchema]}>
 
-  <!-- Hero -->
-  <section class="relative py-32 overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
-    <div class="absolute inset-0 opacity-5">
-      <img src="/img/artefacts.jpg" alt="" aria-hidden="true" class="w-full h-full object-cover" />
-    </div>
-    <div class="absolute inset-0 opacity-30">
-      <div class="absolute top-1/4 left-10 w-64 h-64 bg-brand-orange/20 rounded-full blur-[100px] animate-float"></div>
-      <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-magic-gold/20 rounded-full blur-[120px] animate-float" style="animation-delay: -3s;"></div>
+  <section class="page-head">
+    <div class="page-head__bg"></div>
+    <div class="absolute inset-0 opacity-[0.06] pointer-events-none">
+      <img src="/img/artefacts.webp" alt="" aria-hidden="true"
+           width="1280" height="950" class="w-full h-full object-cover" />
     </div>
 
-    <div class="container mx-auto px-6 relative z-10">
-      <div class="text-center max-w-5xl mx-auto">
-        <div class="inline-block mb-10">
-          <span class="px-6 py-3 glass-effect border border-magic-purple/30 rounded-full text-magic-gold text-sm font-heading font-semibold tracking-wider uppercase shadow-card">
-            {doc.badge}
-          </span>
-        </div>
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <div class="max-w-4xl">
+        <Breadcrumb locale={locale} items={[{ label: doc.title }]} />
 
-        <h1 class="text-5xl md:text-7xl lg:text-8xl font-heading font-bold mb-8 leading-tight">
-          <span class="block text-magic-gradient">{doc.title}</span>
+        <p class="eyebrow mt-3 mb-2">{doc.badge}</p>
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-magic-gradient mb-4">
+          {doc.title}
         </h1>
+        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mb-5">
+          {doc.subtitle}
+        </p>
 
-        <div class="text-xl md:text-2xl text-text-secondary mb-14 max-w-3xl mx-auto" style="line-height: 32px;">
-          <p>{doc.subtitle}</p>
-        </div>
-
-        <div class="flex flex-wrap gap-6 justify-center items-center">
-          <a href="#deck-construction" class="btn-secondary">{doc.sections[1].title}</a>
-          <a href="#game-rules" class="btn-secondary">{doc.sections[2].title}</a>
+        <div class="flex flex-wrap gap-2">
+          <a href="#essentiel" class="stat-pill hover:border-brand-orange/50 hover:text-brand-orange transition-colors no-underline">
+            {t('rulesSummary.title', locale)}
+          </a>
+          <a href={route('banlist', locale)} class="stat-pill hover:border-brand-orange/50 hover:text-brand-orange transition-colors no-underline">
+            {t('nav.banlist', locale)} · <strong>{banlist.cards.length}</strong>
+          </a>
+          <a href={route('validator', locale)} class="stat-pill hover:border-brand-orange/50 hover:text-brand-orange transition-colors no-underline">
+            {t('rules.ctaValidator', locale)}
+          </a>
         </div>
       </div>
     </div>
-    <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-primary to-transparent"></div>
   </section>
 
-  <!-- Formal ruleset -->
-  {doc.sections.map((section, i) => (
-    <section id={sectionIds[i]} class="py-16 relative">
-      <div class="container mx-auto px-6">
-        <div class="max-w-4xl mx-auto">
-          <h2 class="text-3xl md:text-4xl font-heading font-bold text-magic-gradient mb-8 flex items-baseline gap-3">
-            <span class="text-brand-orange">{section.n}.</span>
-            <span>{section.title}</span>
+  <!-- 1. The rules in 30 seconds ---------------------------------------------->
+  <section id="essentiel" class="py-12 md:py-14">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl">
+        <RulesSummary locale={locale} showRulesLink={false} />
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Comparison ----------------------------------------------------------->
+  <section id="comparison" class="py-12 md:py-14 bg-bg-secondary/50 border-y border-card-border/25">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl">
+        <FormatComparison locale={locale} />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Official ruleset ----------------------------------------------------->
+  <div class="container mx-auto px-4 md:px-6 py-12 md:py-14">
+    <div class="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-10 max-w-5xl">
+
+      <nav class="hidden lg:block" aria-label={t('rules.toc', locale)}>
+        <div class="sticky top-24">
+          <p class="eyebrow mb-3">{t('rules.toc', locale)}</p>
+          <ol class="space-y-1.5 text-sm">
+            {toc.map(item => (
+              <li>
+                <a href={`#${item.id}`} class="block text-text-secondary hover:text-brand-orange transition-colors leading-snug">
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </nav>
+
+      <div class="min-w-0 space-y-10">
+        {doc.sections.map((section, i) => (
+          <section id={sectionIds[i]}>
+            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-5 flex items-baseline gap-3">
+              <span class="text-brand-orange tabular-nums">{section.n}.</span>
+              <span>{section.title}</span>
+            </h2>
+
+            <div class="panel divide-y divide-white/8">
+              {section.articles.map(article => {
+                const link = articleLink(article);
+                return (
+                  <div class="flex gap-4 p-4 sm:p-5">
+                    <span class="font-heading font-bold text-magic-gold tabular-nums shrink-0 w-11">{article.n}</span>
+                    <div class="flex-1 min-w-0 space-y-2.5">
+                      <p class="text-text-secondary leading-relaxed">{article.text}</p>
+
+                      {link && (
+                        <a href={link.href}
+                           target={link.href.startsWith('http') ? '_blank' : undefined}
+                           rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                           class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+                          {link.label}
+                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            {link.href.startsWith('http')
+                              ? <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              : <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />}
+                          </svg>
+                        </a>
+                      )}
+
+                      {article.sub && (
+                        <ul class="space-y-2 pt-1">
+                          {article.sub.map(sub => (
+                            <li class="flex gap-3 text-sm text-text-secondary leading-relaxed">
+                              <span class="font-heading font-semibold text-text-muted tabular-nums shrink-0">{sub.n}</span>
+                              <span>{sub.text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+
+        <!-- 4. Edge cases -------------------------------------------------------->
+        <section id="faq">
+          <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
+            {t('rules.faqTitle', locale)}
           </h2>
+          <p class="text-text-secondary mb-5">{t('rules.faqSubtitle', locale)}</p>
 
-          <div class="magic-card divide-y divide-card-border">
-            {section.articles.map(article => (
-              <div class="flex gap-4 p-5">
-                <span class="font-heading font-bold text-magic-gold tabular-nums shrink-0 w-12">{article.n}</span>
-                <div class="flex-1 min-w-0 space-y-3">
-                  <p class="text-text-secondary leading-relaxed">{article.text}</p>
-
-                  {article.link && (
-                    <a
-                      href={article.link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors"
-                    >
-                      {article.link.label}
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  )}
-
-                  {article.sub && (
-                    <ul class="space-y-2 pt-1">
-                      {article.sub.map(sub => (
-                        <li class="flex gap-3 text-sm text-text-secondary leading-relaxed">
-                          <span class="font-heading font-semibold text-text-muted tabular-nums shrink-0">{sub.n}</span>
-                          <span>{sub.text}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              </div>
+          <div class="panel divide-y divide-white/8">
+            {faq.map(item => (
+              <details class="group">
+                <summary class="flex items-start justify-between gap-3 p-4 sm:p-5 cursor-pointer select-none list-none">
+                  <span class="font-semibold text-text-primary leading-snug">{item.q}</span>
+                  <svg class="w-5 h-5 flex-shrink-0 text-brand-orange transition-transform duration-200 group-open:rotate-45 mt-0.5"
+                       fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                </summary>
+                <p class="px-4 sm:px-5 pb-5 -mt-1 text-sm text-text-secondary leading-relaxed">{item.a}</p>
+              </details>
             ))}
           </div>
-        </div>
-      </div>
-    </section>
-  ))}
+        </section>
 
-  <!-- Call to action -->
-  <section class="py-24 relative">
-    <div class="container mx-auto px-6">
-      <div class="flex flex-wrap gap-6 justify-center items-center">
-        <a href={route('banlist', locale)} class="btn-secondary">{t('rules.ctaBanlist', locale)}</a>
-        <a href={route('validator', locale)} class="btn-primary">{t('rules.ctaValidator', locale)}</a>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <a href={route('banlist', locale)} class="btn-secondary">
+            {t('rules.ctaBanlist', locale)}
+          </a>
+          <a href={route('validator', locale)} class="btn-primary">
+            {t('rules.ctaValidator', locale)}
+          </a>
+        </div>
+
+        <p class="text-xs text-text-muted">
+          {t('banlist.lastUpdate', locale)} {formatBanlistDate(banlistDate, locale)} — {banlist.cards.length} {t('banlist.cardCount', locale)}.
+        </p>
       </div>
     </div>
-  </section>
+  </div>
 
 </Base>

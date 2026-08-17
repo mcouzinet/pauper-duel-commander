@@ -1,21 +1,30 @@
 ---
 /**
- * Decklist detail page (shared by /fr/decklist/ and /en/decklist/)
+ * Decklist detail.
  *
- * Rendered by the FR and EN routes, which own getStaticPaths and pass the entry.
- * Parses the raw card text, enriches via Scryfall at build time, and renders
- * the full decklist view with stats charts.
+ * The page a player opens next to their play mat, and the one the audit found
+ * hardest to use there: 1,200px of commander art before the title, ninety-nine
+ * cards in a single column (a 12,700px page), no contents, and an `author` field
+ * that the data carried but the page never printed.
+ *
+ * Rebuilt mobile-first — title and facts first, art beside them on desktop and
+ * after them on mobile — and wired into the rest of the site: the tournament it
+ * came from, the other decks piloting the same commander, and the validator.
  */
 import type { CollectionEntry } from 'astro:content';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
 import Base from '@/layouts/Base.astro';
 import CardList from '@/components/CardList.astro';
 import DeckStats from '@/components/DeckStats.astro';
+import DeckCard from '@/components/DeckCard.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
+import { route, homeRoute } from '@/lib/routes';
 import { parseDecklist } from '@/lib/decklist-parser';
 import { prepareDeckData } from '@/lib/deck-renderer';
-import { formatManaCost, formatColorSymbols } from '@/lib/mana';
+import { formatColorSymbols } from '@/lib/mana';
+import { getDecklist, getSiblingDecklists, placeLabel } from '@/lib/decklists';
+import { formatBanlistDate } from '@/lib/banlist';
+import { SITE_ORIGIN } from '@/lib/site';
 import '@/styles/decklist.css';
 
 interface Props {
@@ -26,250 +35,320 @@ interface Props {
 const { locale, entry } = Astro.props;
 const data = entry.data;
 
-// ---------------------------------------------------------------------------
-// Parse and prepare deck data
-// ---------------------------------------------------------------------------
+const [enriched, siblings] = await Promise.all([
+  getDecklist(entry.id),
+  getSiblingDecklists(entry.id),
+]);
+
 const parsedCards = parseDecklist(data.cards);
 const deck = await prepareDeckData(parsedCards, data.commander, data.partner || undefined);
 
-// ---------------------------------------------------------------------------
-// Load banlist and check if commander is banned
-// ---------------------------------------------------------------------------
-const banlistPath = join(process.cwd(), 'content', 'banlist.json');
-const banlistRaw = JSON.parse(readFileSync(banlistPath, 'utf-8')) as { cards: string[] };
-const bannedNames = new Set(banlistRaw.cards.map((n: string) => n.toLowerCase()));
+const isBanned = enriched?.isBanned ?? false;
+const result = enriched?.result ?? null;
 
-const cmdPartsCheck: string[] = [];
-if (data.commander) {
-  cmdPartsCheck.push(...data.commander.split(' // ').map((s: string) => s.trim()));
-}
-if (data.partner) {
-  cmdPartsCheck.push(...data.partner.split(' // ').map((s: string) => s.trim()));
-}
-const isBanned = cmdPartsCheck.some(part => bannedNames.has(part.toLowerCase()));
+const deckDate = data.date ? formatBanlistDate(data.date, locale) : null;
+const totalCards = parsedCards.reduce((sum, card) => sum + card.quantity, 0);
 
-// ---------------------------------------------------------------------------
-// Format date
-// ---------------------------------------------------------------------------
-const deckDate = data.date
-  ? new Date(data.date + 'T00:00:00').toLocaleDateString(t('common.dateLocale', locale), { day: '2-digit', month: '2-digit', year: 'numeric' })
-  : null;
+const commanderManaCostHtml = deck.commander?.manaCost ? '' : '';
 
-// ---------------------------------------------------------------------------
-// Export data for JS buttons
-// ---------------------------------------------------------------------------
+// Export payload, also used to prefill the validator.
 const exportData = JSON.stringify({
-  commander: deck.commander?.name ?? '',
-  partner: deck.partner?.name ?? '',
+  commander: deck.commander?.name ?? data.commander,
+  partner: deck.partner?.name ?? data.partner ?? '',
   decklist: data.cards,
+  filename: `${entry.id}.txt`,
 });
 
-// ---------------------------------------------------------------------------
-// Precompute commander mana cost HTML
-// ---------------------------------------------------------------------------
-const commanderManaCostHtml = deck.commander?.manaCost
-  ? formatManaCost(deck.commander.manaCost)
-  : '';
+const typeOrder = Object.keys(deck.cardsByType);
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  Creature: 'common.creatures',
+  Instant: 'common.instants',
+  Sorcery: 'common.sorceries',
+  Artifact: 'common.artifacts',
+  Enchantment: 'common.enchantments',
+  Land: 'common.lands',
+  Planeswalker: 'common.planeswalkers',
+  Other: 'common.other',
+};
+const typeAnchor = (type: string) => `type-${type.toLowerCase()}`;
 
-// ---------------------------------------------------------------------------
-// Archive URL
-// ---------------------------------------------------------------------------
-const archiveUrl = `/${locale}/decklist/`;
+const resultText = result
+  ? `${placeLabel(result.place, locale)} · ${result.title}`
+  : null;
+
+const description = [
+  data.commander + (data.partner ? ` // ${data.partner}` : ''),
+  data.archetype,
+  resultText,
+  data.author,
+]
+  .filter(Boolean)
+  .join(' — ');
+
+const schemas: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: locale === 'fr' ? 'Accueil' : 'Home', item: SITE_ORIGIN + homeRoute(locale) },
+      { '@type': 'ListItem', position: 2, name: t('archive.title', locale), item: SITE_ORIGIN + route('decklists', locale) },
+      { '@type': 'ListItem', position: 3, name: data.title },
+    ],
+  },
+];
 ---
+<Base
+  title={data.title}
+  description={description}
+  image={deck.commander?.imageUrlArtCrop ?? null}
+  ogType="article"
+  schemas={schemas}
+>
 
-<Base title={data.title} description={`${data.title} — ${t('decklist.title', locale)}`}>
-
-  {/* ---- Header Section ---- */}
   <article class="decklist-single">
-    <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
-      {/* Background Layer */}
-      <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
 
+    <!-- Header: facts before art. On a phone the previous version opened with
+         1,200px of card scans, so the deck's own name was off-screen. -->
+    <section class="page-head">
+      <div class="page-head__bg"></div>
       {deck.commander?.imageUrlArtCrop && (
-        <div class="absolute inset-0 opacity-5">
-          <img
-            src={deck.commander.imageUrlArtCrop}
-            alt={`${deck.commander.name} artwork`}
-            class="w-full h-full object-cover"
-          />
+        <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
+          <img src={deck.commander.imageUrlArtCrop} alt="" aria-hidden="true"
+               width="626" height="457" class="w-full h-full object-cover" />
         </div>
       )}
 
-      <div class="container mx-auto px-6 relative z-10">
-        <div class="max-w-7xl mx-auto">
-          <div class="grid md:grid-cols-12 gap-8 items-start">
+      <div class="container mx-auto px-4 md:px-6 relative z-10">
+        <Breadcrumb locale={locale} items={[
+          { label: t('archive.title', locale), href: route('decklists', locale) },
+          { label: data.commander },
+        ]} />
 
-            {/* ---- Commander Image ---- */}
-            <div class="md:col-span-4 lg:col-span-3">
-              {deck.commander?.imageUrl && (
-                <div class="sticky top-24">
-                  <div class="group relative">
-                    <img
-                      src={deck.commander.imageUrl}
-                      alt={deck.commander.name}
-                      class={`w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow ${isBanned ? 'grayscale' : ''}`}
-                      loading="eager"
-                    />
-                    {isBanned && (
-                      <div class="absolute top-3 left-3 right-3">
-                        <div class="px-3 py-1.5 bg-red-600/90 border border-red-500/50 rounded-lg text-center shadow-lg">
-                          <span class="text-xs font-bold text-white uppercase tracking-wider">
-                            {t('decklist.bannedCommander', locale)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+        <div class="grid md:grid-cols-[minmax(0,1fr)_240px] gap-6 md:gap-8 items-start mt-4">
 
-                  {/* Partner Card */}
-                  {deck.partner?.imageUrl && (
-                    <div class="magic-card group mt-4">
-                      <img
-                        src={deck.partner.imageUrl}
-                        alt={deck.partner.name}
-                        class="w-full rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
-                        loading="eager"
-                      />
-                      <div class="mt-4 text-center">
-                        <h3 class="text-lg font-beleren font-bold text-magic-gold">
-                          {deck.partner.name}
-                        </h3>
-                        <p class="text-xs text-text-secondary">
-                          {deck.partner.typeLine}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
+          <div class="min-w-0 order-1">
+            <div class="flex flex-wrap items-center gap-2 mb-3">
+              <span class="inline-flex items-center gap-1">
+                <span class="sr-only">{t('a11y.colors', locale)}</span>
+                <span set:html={formatColorSymbols(enriched?.colors ?? [])} />
+              </span>
+              {data.archetype && <span class="badge">{data.archetype}</span>}
+              {result && (
+                <a href={route('tournaments', locale, result.slug)} class="badge badge--gold no-underline hover:border-magic-gold/60 transition-colors">
+                  {placeLabel(result.place, locale)} · {result.title}
+                </a>
+              )}
+              {enriched?.tags.includes('debutant') && (
+                <span class="badge badge--new">{t('archive.shelfBeginner', locale)}</span>
               )}
             </div>
 
-            {/* ---- Deck Info ---- */}
-            <div class="md:col-span-8 lg:col-span-9 h-full flex flex-col justify-end">
+            <h1 class:list={[
+              'text-2xl sm:text-3xl md:text-4xl font-beleren font-bold text-magic-gradient mb-3 leading-tight',
+              isBanned && 'line-through decoration-red-500/70',
+            ]}>{data.title}</h1>
 
-              {/* Archetypes & Colors */}
-              <div class="flex flex-wrap gap-3 mb-6">
-                {data.archetype && (
-                  <span class="px-4 py-2 glass-effect border border-white/10 rounded-lg text-sm font-medium text-text-secondary">
-                    {data.archetype}
-                  </span>
-                )}
-              </div>
-
-              {/* Title */}
-              <h1 class={`text-4xl md:text-5xl lg:text-6xl font-beleren font-bold text-magic-gradient mb-4 ${isBanned ? 'line-through decoration-red-500/70' : ''}`}>
-                {data.title}
-              </h1>
-
-              {/* Banned Warning */}
-              {isBanned && (
-                <div class="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-center gap-3">
-                  <svg class="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                  <p class="text-sm text-red-300">
+            {isBanned && (
+              <div class="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
+                <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <div class="min-w-0">
+                  <p class="text-sm text-red-200 font-semibold mb-0.5">{t('decklist.bannedCommander', locale)}</p>
+                  <p class="text-sm text-red-200/80 leading-relaxed">
                     {t('decklist.bannedDesc', locale)}
+                    {' '}
+                    <a href={route('banlist', locale)} class="underline hover:no-underline">{t('nav.banlist', locale)}</a>
                   </p>
                 </div>
+              </div>
+            )}
+
+            <dl class="flex flex-wrap gap-2 mb-5 text-sm">
+              <div class="stat-pill">
+                <dt class="sr-only">{t('decklist.commanderLabel', locale)}</dt>
+                <dd class="font-beleren text-text-primary" lang="en">{data.commander}</dd>
+              </div>
+              {data.partner && (
+                <div class="stat-pill">
+                  <dt class="sr-only">{t('decklist.partnerLabel', locale)}</dt>
+                  <dd class="font-beleren text-text-primary" lang="en">+ {data.partner}</dd>
+                </div>
               )}
-
-              {/* Date */}
-              <div class="flex flex-wrap gap-3 mb-6">
-                {deckDate && (
-                  <span class="text-sm font-semibold text-text-secondary">
-                    {t('decklist.on', locale)} {deckDate}
-                  </span>
-                )}
+              {data.author && (
+                <div class="stat-pill">
+                  <dt class="text-text-muted">{t('decklist.author', locale)}</dt>
+                  <dd><strong>{data.author}</strong></dd>
+                </div>
+              )}
+              {deckDate && (
+                <div class="stat-pill">
+                  <dt class="sr-only">{t('common.on', locale)}</dt>
+                  <dd>{deckDate}</dd>
+                </div>
+              )}
+              <div class="stat-pill">
+                <dt class="sr-only">{t('decklist.cardCount', locale)}</dt>
+                <dd><strong>{totalCards + (data.partner ? 2 : 1)}</strong> {t('decklist.cardCount', locale)}</dd>
               </div>
+            </dl>
 
-              {/* Export Button */}
-              <div class="flex flex-wrap gap-4">
-                <button
-                  id="btn-export-moxfield"
-                  class="text-sm text-text-secondary hover:text-brand-orange transition-colors flex items-center gap-2"
-                  data-label-copied={t('decklist.exportCopied', locale)}
-                  data-label-export={t('decklist.export', locale)}
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  {t('decklist.export', locale)}
-                </button>
-              </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btn-copy" type="button" class="btn-secondary !px-4 !py-2.5 !text-sm"
+                      data-label-default={t('decklist.copy', locale)}
+                      data-label-done={t('decklist.exportCopied', locale)}
+                      data-analytics="decklist_export" data-analytics-format="clipboard">
+                {t('decklist.copy', locale)}
+              </button>
+              <button id="btn-download" type="button" class="btn-secondary !px-4 !py-2.5 !text-sm"
+                      data-analytics="decklist_export" data-analytics-format="txt">
+                {t('decklist.download', locale)}
+              </button>
+              <a id="btn-validate" href={route('validator', locale)} class="btn-secondary !px-4 !py-2.5 !text-sm"
+                 data-analytics="decklist_validate_click">
+                {t('decklist.validate', locale)}
+              </a>
+              {result && (
+                <a href={route('tournaments', locale, result.slug)} class="btn-secondary !px-4 !py-2.5 !text-sm">
+                  {t('decklist.viewTournament', locale)}
+                </a>
+              )}
             </div>
+          </div>
 
+          <!-- Art: to the right on desktop, below the facts on mobile. -->
+          <div class="order-2 min-w-0">
+            <div class="flex md:flex-col gap-3">
+              {deck.commander?.imageUrl && (
+                <img src={deck.commander.imageUrl}
+                     alt={deck.commander.name}
+                     width="488" height="680"
+                     class:list={['w-1/2 md:w-full h-auto rounded-xl shadow-card', isBanned && 'grayscale']}
+                     loading="eager" fetchpriority="high" decoding="async" />
+              )}
+              {deck.partner?.imageUrl && (
+                <img src={deck.partner.imageUrl}
+                     alt={deck.partner.name}
+                     width="488" height="680"
+                     class="w-1/2 md:w-full h-auto rounded-xl shadow-card"
+                     loading="lazy" decoding="async" />
+              )}
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    {/* ---- Decklist Section ---- */}
-    <section class="my-8">
-      <div class="container mx-auto px-6">
-        <div class="max-w-7xl mx-auto">
-          <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8">
-            {t('decklist.title', locale)}
-          </h2>
+    <!-- Contents: 99 cards need a way in other than scrolling -->
+    <nav class="border-b border-card-border/25 bg-bg-secondary/50 sticky top-[68px] md:top-[76px] z-30 backdrop-blur-sm"
+         aria-label={t('decklist.contents', locale)}>
+      <div class="container mx-auto px-4 md:px-6 py-2.5">
+        <ul class="flex items-center gap-2 overflow-x-auto scroll-x text-sm">
+          {typeOrder.map(type => {
+            const cards = deck.cardsByType[type];
+            const total = cards.reduce((sum, card) => sum + card.quantity, 0);
+            return (
+              <li class="flex-shrink-0">
+                <a href={`#${typeAnchor(type)}`}
+                   class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-text-secondary hover:text-brand-orange hover:bg-brand-orange/10 transition-colors whitespace-nowrap">
+                  {t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale)}
+                  <span class="text-text-muted tabular-nums">{total}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </nav>
 
-          <CardList cardsByType={deck.cardsByType} locale={locale} />
-        </div>
+    <section class="py-8 md:py-10">
+      <div class="container mx-auto px-4 md:px-6">
+        <CardList cardsByType={deck.cardsByType} locale={locale} />
       </div>
     </section>
 
-    {/* ---- Stats Section ---- */}
-    <section class="my-16">
-      <div class="container mx-auto px-6">
-        <div class="max-w-7xl mx-auto">
-          <DeckStats stats={deck.stats} locale={locale} />
-        </div>
+    <section class="py-8 md:py-10 border-t border-card-border/20 bg-bg-secondary/40">
+      <div class="container mx-auto px-4 md:px-6">
+        <DeckStats stats={deck.stats} locale={locale} />
       </div>
     </section>
 
-    {/* ---- Hidden export data ---- */}
-    <script id="deck-export-data" type="application/json" set:html={exportData} />
+    {siblings.length > 0 && (
+      <section class="py-10 md:py-12 border-t border-card-border/20">
+        <div class="container mx-auto px-4 md:px-6">
+          <h2 class="section-title !text-xl sm:!text-2xl">{t('decklist.siblings', locale)}</h2>
+          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {siblings.map(sibling => (
+              <DeckCard deck={sibling} locale={locale} from="sibling" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <script id="deck-export-data" type="application/json" set:html={exportData} is:inline />
   </article>
 
-  {/* ---- Client-side export script ---- */}
-  <script is:inline>
-    document.addEventListener('DOMContentLoaded', function () {
-      var btn = document.getElementById('btn-export-moxfield');
-      if (!btn) return;
+  <script>
+    // Export and validator prefill. The list is already in the page; these are
+    // three ways of getting it out of it.
+    const node = document.getElementById('deck-export-data');
+    const data = node ? JSON.parse(node.textContent || '{}') : null;
 
-      btn.addEventListener('click', function () {
-        var dataEl = document.getElementById('deck-export-data');
-        if (!dataEl) return;
+    /** Moxfield/Archidekt-compatible text: commander block, then the deck. */
+    function asText(): string {
+      if (!data) return '';
+      const lines: string[] = [];
+      if (data.commander) {
+        lines.push('Commander');
+        lines.push(`1 ${data.commander}`);
+        if (data.partner) lines.push(`1 ${data.partner}`);
+        lines.push('');
+      }
+      lines.push('Deck');
+      lines.push(String(data.decklist ?? '').replace(/\r\n/g, '\n').trim());
+      return lines.join('\n');
+    }
 
-        try {
-          var data = JSON.parse(dataEl.textContent || '{}');
-          var lines = [];
+    const copyButton = document.getElementById('btn-copy');
+    copyButton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(asText());
+        const done = copyButton.dataset.labelDone ?? 'OK';
+        const previous = copyButton.textContent;
+        copyButton.textContent = done;
+        window.setTimeout(() => { copyButton.textContent = previous; }, 2000);
+      } catch {
+        // Clipboard denied (insecure context, or the user refused): the download
+        // button below is the fallback, so fail quietly rather than alerting.
+      }
+    });
 
-          if (data.commander) {
-            lines.push('Commander');
-            lines.push('1 ' + data.commander);
-            if (data.partner) lines.push('1 ' + data.partner);
-            lines.push('');
-          }
+    document.getElementById('btn-download')?.addEventListener('click', () => {
+      const blob = new Blob([asText()], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = data?.filename ?? 'decklist.txt';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    });
 
-          if (data.decklist) {
-            lines.push('Deck');
-            lines.push(data.decklist);
-          }
-
-          var text = lines.join('\n');
-          navigator.clipboard.writeText(text).then(function () {
-            // Labels come from data attributes: this script is is:inline, so it
-            // cannot read the page's locale directly.
-            var iconSvg = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> ';
-            btn.textContent = btn.getAttribute('data-label-copied');
-            setTimeout(function () {
-              btn.innerHTML = iconSvg + btn.getAttribute('data-label-export');
-            }, 2000);
-          });
-        } catch (e) {
-          // silent fail
-        }
-      });
+    // Hand the list to the validator through sessionStorage: a 99-card decklist
+    // does not belong in a query string.
+    document.getElementById('btn-validate')?.addEventListener('click', () => {
+      if (!data) return;
+      try {
+        sessionStorage.setItem('pdc:prefill', JSON.stringify({
+          commander: data.commander,
+          partner: data.partner,
+          decklist: data.decklist,
+        }));
+      } catch {
+        // Private browsing can refuse storage; the validator then opens empty.
+      }
     });
   </script>
-
 </Base>
