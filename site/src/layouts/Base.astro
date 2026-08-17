@@ -1,24 +1,93 @@
 ---
+/**
+ * The only layout.
+ *
+ * Beyond the shell, this owns everything a page needs to be found and shared.
+ * None of it existed before: no canonical, no hreflang (so FR and EN competed
+ * with each other), and no Open Graph — every link posted to the Discord where
+ * this format actually lives rendered as a bare URL.
+ *
+ * `image` accepts a site-relative or absolute URL and is resolved against
+ * `Astro.site`; pages that have a commander pass its art, everything else falls
+ * back to the logo.
+ */
 import '@/styles/globals.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { getLocaleFromPath, type Locale } from '@/lib/i18n';
+import { getLocaleFromPath, t } from '@/lib/i18n';
+import { translatePath } from '@/lib/routes';
 
-interface Props {
+export interface Props {
   title: string;
   description?: string;
+  /** Social preview image. Defaults to the logo. */
+  image?: string | null;
+  /** Open Graph type. `article` for decklists and tournament reports. */
+  ogType?: 'website' | 'article';
+  /** Extra JSON-LD documents, injected as-is. */
+  schemas?: Record<string, unknown>[];
+  /** Suffix the site name onto the tab title. Off for pages that self-title. */
+  bareTitle?: boolean;
 }
 
-const { title, description } = Astro.props;
+const {
+  title,
+  description,
+  image = null,
+  ogType = 'website',
+  schemas = [],
+  bareTitle = false,
+} = Astro.props;
+
 const locale = getLocaleFromPath(Astro.url.pathname);
+const path = Astro.url.pathname;
+
+const site = Astro.site ?? new URL('https://pauperduelcommander.fr');
+const canonical = new URL(path, site).href;
+const altPath = translatePath(path, locale === 'fr' ? 'en' : 'fr');
+const frHref = new URL(locale === 'fr' ? path : altPath, site).href;
+const enHref = new URL(locale === 'en' ? path : altPath, site).href;
+
+const fullTitle = bareTitle ? title : `${title} — Pauper Duel Commander`;
+const ogImage = new URL(image ?? '/img/logo.png', site).href;
+const metaDescription = description ?? t('site.description', locale);
+
+// Site-wide JSON-LD. Page-level documents (Event, BreadcrumbList…) come in via
+// `schemas` so each page describes only what it actually is.
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Pauper Duel Commander',
+  alternateName: 'PDC',
+  url: site.href,
+  inLanguage: locale === 'fr' ? 'fr-FR' : 'en-GB',
+  description: metaDescription,
+};
 ---
 <!DOCTYPE html>
 <html lang={locale}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{title} — Pauper Duel Commander</title>
-  {description && <meta name="description" content={description} />}
+  <title>{fullTitle}</title>
+  <meta name="description" content={metaDescription} />
+
+  <link rel="canonical" href={canonical} />
+  <link rel="alternate" hreflang="fr" href={frHref} />
+  <link rel="alternate" hreflang="en" href={enHref} />
+  <link rel="alternate" hreflang="x-default" href={frHref} />
+
+  <meta property="og:type" content={ogType} />
+  <meta property="og:site_name" content="Pauper Duel Commander" />
+  <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_GB'} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={metaDescription} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={metaDescription} />
+  <meta name="twitter:image" content={ogImage} />
 
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png" />
@@ -27,12 +96,21 @@ const locale = getLocaleFromPath(Astro.url.pathname);
   <link rel="manifest" href="/img/site.webmanifest" />
   <meta name="theme-color" content="#FF5722" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mana-font@latest/css/mana.min.css" />
+  {/* Headings are the first thing painted; the body face follows. */}
+  <link rel="preload" href="/fonts/webfonts/barlow-condensed-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/webfonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} is:inline />
+  {schemas.map(schema => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+  ))}
 </head>
 <body>
-  <Header locale={locale} currentPath={Astro.url.pathname} />
+  <a href="#main" class="skip-link">{t('a11y.skipToContent', locale)}</a>
 
-  <main class="site-main pt-16 md:pt-24">
+  <Header locale={locale} currentPath={path} />
+
+  <main id="main" class="site-main pt-[68px] md:pt-[76px]">
     <slot />
   </main>
 
@@ -41,6 +119,7 @@ const locale = getLocaleFromPath(Astro.url.pathname);
   <!-- Global scripts -->
   <script src="@/scripts/cookieconsent-config.ts"></script>
   <script src="@/scripts/mobile-menu.ts"></script>
-  <script src="@/scripts/card-hover.ts"></script>
+  <script src="@/scripts/card-preview.ts"></script>
+  <script src="@/scripts/analytics.ts"></script>
 </body>
 </html>

@@ -1,5 +1,15 @@
 ---
+/**
+ * Site footer.
+ *
+ * It used to contain a logo, a tagline and a copyright line — not one link. That
+ * left the privacy policy reachable only from inside the cookie modal, and it
+ * wasted the one place on every page where a reader who has finished reading is
+ * looking for somewhere to go next.
+ */
 import { t, type Locale } from '@/lib/i18n';
+import { route, homeRoute } from '@/lib/routes';
+import { DISCORD_URL } from '@/lib/site';
 
 interface Props {
   locale: Locale;
@@ -7,30 +17,90 @@ interface Props {
 
 const { locale } = Astro.props;
 const year = new Date().getFullYear();
-const homeHref = locale === 'fr' ? '/fr/' : '/en/';
+const home = homeRoute(locale);
+
+const columns = [
+  {
+    title: t('footer.colFormat', locale),
+    links: [
+      { label: t('nav.rules', locale), href: route('rules', locale) },
+      { label: t('nav.banlist', locale), href: route('banlist', locale) },
+      { label: t('nav.validator', locale), href: route('validator', locale) },
+    ],
+  },
+  {
+    title: t('footer.colPlay', locale),
+    links: [
+      { label: t('nav.decklists', locale), href: route('decklists', locale) },
+      { label: t('nav.meta', locale), href: route('meta', locale) },
+      { label: t('nav.tournaments', locale), href: route('tournaments', locale) },
+    ],
+  },
+  {
+    title: t('footer.colCommunity', locale),
+    links: [
+      { label: t('nav.community', locale), href: route('community', locale) },
+      { label: 'Discord', href: DISCORD_URL, external: true },
+      { label: t('footer.privacy', locale), href: route('privacy', locale) },
+    ],
+  },
+];
 ---
 
-<footer class="relative border-t border-card-border bg-bg-secondary">
-  <div class="container mx-auto px-6 py-12">
-    <div class="text-center space-y-4">
-      <div class="flex justify-center items-center mb-6">
-        <a href={homeHref} class="block hover:scale-105 transition-transform duration-300">
-          <img src="/img/PauperDuelCommander.png"
-               alt="Pauper Duel Commander"
-               class="h-24 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
+<footer class="relative border-t border-card-border/40 bg-bg-secondary mt-16">
+  <div class="container mx-auto px-4 md:px-6 py-12">
+    <div class="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
+
+      <div>
+        <a href={home} class="inline-flex items-center gap-3 mb-4" aria-label="Pauper Duel Commander">
+          <img src="/img/logo.webp" alt="" width="56" height="55" aria-hidden="true" class="h-14 w-auto" loading="lazy" />
+          <span class="font-heading font-bold uppercase leading-[0.95] text-text-primary">
+            Pauper Duel<br /><span class="text-brand-orange">Commander</span>
+          </span>
         </a>
+        <p class="text-sm text-text-secondary leading-relaxed max-w-xs">
+          {t('footer.tagline', locale)}
+        </p>
+        <p class="text-xs text-text-muted mt-3 leading-relaxed max-w-xs">
+          {t('footer.cadence', locale)}
+        </p>
       </div>
-      <p class="text-text-secondary font-body">
-        {t('footer.tagline', locale)}
+
+      {columns.map(column => (
+        <nav aria-label={column.title}>
+          <p class="font-heading font-bold uppercase tracking-wider text-xs text-magic-gold mb-3">
+            {column.title}
+          </p>
+          <ul class="space-y-2">
+            {column.links.map(link => (
+              <li>
+                <a href={link.href}
+                   target={link.external ? '_blank' : undefined}
+                   rel={link.external ? 'noopener noreferrer' : undefined}
+                   data-analytics={link.label === 'Discord' ? 'discord_click' : undefined}
+                   data-analytics-placement={link.label === 'Discord' ? 'footer' : undefined}
+                   class="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-brand-orange transition-colors">
+                  {link.label}
+                  {link.external && (
+                    <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))}
+    </div>
+
+    <div class="mt-10 pt-6 border-t border-card-border/25 space-y-2">
+      <p class="text-text-muted text-sm">
+        &copy; {year} Pauper Duel Commander. {t('footer.rights', locale)}
       </p>
-      <div class="pt-6 border-t border-card-border/50 mt-8">
-        <p class="text-text-muted text-sm">
-          &copy; {year} Pauper Duel Commander. {t('footer.rights', locale)}
-        </p>
-        <p class="text-text-muted text-xs mt-2">
-          {t('footer.legal', locale)}
-        </p>
-      </div>
+      <p class="text-text-muted text-xs leading-relaxed max-w-3xl">
+        {t('footer.legal', locale)}
+      </p>
     </div>
   </div>
 </footer>

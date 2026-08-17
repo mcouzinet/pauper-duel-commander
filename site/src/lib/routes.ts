@@ -18,6 +18,7 @@ const SEGMENTS = {
   privacy: { fr: 'confidentialite', en: 'privacy' },
   decklists: { fr: 'decklist', en: 'decklist' },
   tournaments: { fr: 'tournois', en: 'tournaments' },
+  community: { fr: 'communaute', en: 'community' },
   // Single-segment slugs on purpose: two-level paths would break the language
   // switcher, which only translates the first segment after the locale.
   submitDecklist: { fr: 'soumettre-decklist', en: 'submit-decklist' },

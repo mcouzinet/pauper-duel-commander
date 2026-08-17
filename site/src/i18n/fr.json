@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Pauper Duel Commander"
+    "name": "Pauper Duel Commander",
+    "description": "Le Commander compétitif en 1 contre 1, avec des communes. 100 cartes, un général peu commun, 20 points de vie : règles, ban list, decklists, méta et tournois du format Pauper Duel Commander."
   },
   "nav": {
     "rules": "Règles",
@@ -8,12 +9,18 @@
     "tournaments": "Tournois",
     "decklists": "Decklists",
     "validator": "Validateur",
-    "meta": "Méta"
+    "meta": "Méta",
+    "community": "Communauté"
   },
   "footer": {
     "tagline": "Un format Commander accessible et compétitif",
     "rights": "Tous droits réservés.",
-    "legal": "Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC."
+    "legal": "Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.",
+    "colFormat": "Le format",
+    "colPlay": "Jouer",
+    "colCommunity": "Communauté",
+    "privacy": "Confidentialité",
+    "cadence": "Le comité publie une annonce sur le format tous les deux mois, le premier lundi des mois pairs."
   },
   "header": {
     "language": "Langue"
@@ -28,7 +35,20 @@
     "bannedDesc": "Ce commandant est actuellement banni en PDC. Cette decklist n'est plus légale dans le format.",
     "manaColors": "Couleurs de Mana",
     "cardTypes": "Types de Cartes",
-    "exportCopied": "Copie !"
+    "exportCopied": "Copie !",
+    "author": "Auteur",
+    "result": "Résultat",
+    "atTournament": "à",
+    "viewTournament": "Voir le tournoi",
+    "siblings": "Autres decks avec ce général",
+    "contents": "Sommaire",
+    "copy": "Copier la liste",
+    "download": "Télécharger (.txt)",
+    "openMoxfield": "Ouvrir dans Moxfield",
+    "validate": "Valider ce deck",
+    "cardCount": "cartes",
+    "commanderLabel": "Général",
+    "partnerLabel": "Partenaire"
   },
   "validator": {
     "title": "Validateur de Deck",
@@ -166,7 +186,18 @@
     "commandersPlayed": "Généraux joués",
     "colorIdentities": "Identités de couleur",
     "metaUnavailable": "Données de méta non disponibles.",
-    "spots": "places"
+    "spots": "places",
+    "upcomingNone": "Aucun tournoi annoncé pour l’instant",
+    "upcomingNoneText": "Les prochaines dates sont annoncées sur le Discord. Vous organisez un tournoi PDC ? Faites-le nous savoir.",
+    "resultsPublished": "Résultats",
+    "resultsPending": "Résultats à venir",
+    "winner": "Vainqueur",
+    "filterCity": "Lieu",
+    "allCities": "Tous les lieux",
+    "noneForFilter": "Aucun tournoi pour ce lieu.",
+    "countAll": "%n% tournois",
+    "backToList": "Tous les tournois",
+    "decklistsCount": "%n% decklists publiées"
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
@@ -182,7 +213,29 @@
     "noDecklistFound": "Aucune decklist trouvée",
     "noDecklistHint": "Essayez de modifier vos filtres pour voir plus de résultats.",
     "viewAll": "Voir toutes les decklists",
-    "viewAllDecklists": "Voir toutes les decklists"
+    "viewAllDecklists": "Voir toutes les decklists",
+    "title": "Decklists",
+    "subtitle": "%total% decklists, dont %fromTournaments% issues d’un top 8.",
+    "searchLabel": "Général",
+    "searchPlaceholder": "Ex : Balmor, Gut, Crackling Drake…",
+    "sortLabel": "Tri",
+    "sortRecent": "Plus récentes",
+    "sortResult": "Meilleur résultat",
+    "sortCommander": "Général (A-Z)",
+    "onlyTournaments": "Issues de tournois seulement",
+    "countAll": "%n% decklists",
+    "countFiltered": "%n% sur %total%",
+    "allDecklists": "Toutes les decklists",
+    "shelfMoment": "Les decks du moment",
+    "shelfMomentHint": "Le top 8 des derniers tournois.",
+    "shelfPerforming": "Decks performants",
+    "shelfPerformingHint": "Finalistes et vainqueurs.",
+    "shelfNew": "Nouveaux decks",
+    "shelfNewHint": "Les dernières listes ajoutées.",
+    "shelfOriginal": "Decks originaux",
+    "shelfOriginalHint": "Des généraux vus une seule fois en tournoi.",
+    "shelfBeginner": "Pour commencer",
+    "shelfBeginnerHint": "Simples à piloter, faciles à réunir."
   },
   "common": {
     "creatures": "Créatures",
@@ -193,7 +246,19 @@
     "lands": "Terrains",
     "planeswalkers": "Planeswalkers",
     "other": "Autres",
-    "dateLocale": "fr-FR"
+    "dateLocale": "fr-FR",
+    "viewAll": "Tout voir",
+    "seeMore": "Voir plus",
+    "search": "Rechercher",
+    "sortBy": "Trier par",
+    "filters": "Filtres",
+    "results": "résultats",
+    "result": "résultat",
+    "updated": "Mise à jour",
+    "by": "par",
+    "on": "le",
+    "close": "Fermer",
+    "none": "Aucun"
   },
   "banlist": {
     "titleTop": "Liste des cartes",
@@ -212,7 +277,20 @@
     "changeUnbanned": "Légalisée",
     "changeRestricted": "Restreinte",
     "experimental": "expérimental",
-    "details": "Détails"
+    "details": "Détails",
+    "lastUpdate": "Mise à jour le",
+    "cardCount": "cartes bannies",
+    "searchLabel": "Chercher une carte",
+    "searchPlaceholder": "Nom de la carte…",
+    "searchNoResult": "Aucune carte ne correspond.",
+    "searchCleared": "Effacer",
+    "isNew": "Nouveau",
+    "latestAnnouncement": "Dernière annonce",
+    "seeHistory": "Voir l’historique",
+    "seeRules": "Règles 2.7 et 2.8",
+    "checkDeck": "Vérifier un deck",
+    "imageMissing": "Illustration indisponible",
+    "viewOnScryfall": "Voir sur Scryfall"
   },
   "home": {
     "rejoinsNous": "Rejoins-nous",
@@ -255,11 +333,56 @@
     "rejoindreLeDiscord2": "Rejoindre le discord",
     "title": "Accueil",
     "description": "Le Pauper Duel Commander est un format Magic: The Gathering piloté par la communauté, conçu pour le jeu compétitif en 1v1.",
-    "viewBanlist": "Voir la banlist"
+    "viewBanlist": "Voir la banlist",
+    "metaTitle": "La méta en ce moment",
+    "metaSubtitle": "Les généraux les plus joués dans les tournois publiés ici.",
+    "metaCta": "Toute la méta",
+    "resultsTitle": "Résultats récents",
+    "resultsCta": "Tous les tournois",
+    "upcomingTitle": "Prochains tournois",
+    "decklistsTitle": "Des decks à essayer",
+    "decklistsSubtitle": "Les listes qui ont gagné, et celles qui sortent des sentiers battus.",
+    "decklistsCta": "Toutes les decklists",
+    "communityTitle": "Trouve des joueurs",
+    "communitySubtitle": "Le format vit sur son Discord et dans les boutiques qui l’accueillent.",
+    "communityCta": "La page communauté"
   },
   "rules": {
     "ctaBanlist": "Voir la ban list",
-    "ctaValidator": "Valider un deck"
+    "ctaValidator": "Valider un deck",
+    "toc": "Sommaire",
+    "faqTitle": "Cas particuliers",
+    "faqSubtitle": "Les questions qui reviennent en tournoi.",
+    "faq": [
+      {
+        "q": "Puis-je jouer un partenaire ou un Background ?",
+        "a": "Oui. Un Background compte comme général (règle 2.4) et les mécaniques de partenaire fonctionnent normalement. Le deck contient alors 98 cartes plus les deux généraux, pour un total de 100. Attention : un seul de vos généraux peut être lancé depuis la zone de commandement par partie, le premier lancé (règle 2.5)."
+      },
+      {
+        "q": "Une carte imprimée en commune seulement sur Arena est-elle légale ?",
+        "a": "Non. La rareté se lit sur les impressions papier ou Magic Online légales (règle 1.4). Une rareté propre à Arena ne compte pas, ni pour rendre une carte commune, ni pour rendre un général peu commun."
+      },
+      {
+        "q": "Mon général doit-il être légendaire ?",
+        "a": "Non, et c’est la particularité du format. Toute Créature, tout Véhicule, tout Vaisseau Spatial ou tout Background imprimé au moins une fois en peu commune peut être votre général (règle 2.4)."
+      },
+      {
+        "q": "Une carte peut-elle être à la fois commune et peu commune ?",
+        "a": "Oui (règle 1.4.c). Une carte imprimée en commune dans une édition et en peu commune dans une autre peut donc être jouée dans le deck comme figurer parmi les généraux possibles."
+      },
+      {
+        "q": "Les cartes non légales en Vintage sont-elles jouables ?",
+        "a": "Non : toute carte non légale en Vintage est bannie (règle 2.8). Cela couvre notamment les cartes Un-sets et les cartes réservées à des formats spécifiques."
+      },
+      {
+        "q": "Comment vérifier qu’un deck est légal ?",
+        "a": "Le validateur du site applique les neuf contrôles du format — taille, singleton, raretés, identité de couleur, ban list — sur une liste au format MTGO."
+      },
+      {
+        "q": "Qui commence, et pioche-t-il ?",
+        "a": "Le joueur qui commence saute l’étape de pioche de son premier tour (règle 3.3). Le mulligan de Londres est utilisé (règle 3.2)."
+      }
+    ]
   },
   "rulesDoc": {
     "badge": "Règlement officiel",
@@ -428,5 +551,151 @@
       "Combo": "Combo"
     },
     "comingSoon": "Les soumissions arrivent bientôt."
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu",
+    "mainNav": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "breadcrumb": "Fil d'Ariane",
+    "colors": "Couleurs"
+  },
+  "value": {
+    "tagline": "Le Commander compétitif en 1 contre 1, avec des communes.",
+    "pitch": "100 cartes, un général peu commun, 20 points de vie : la profondeur du Commander, l’accessibilité du Pauper.",
+    "eyebrow": "Format communautaire · Magic: The Gathering · 1 contre 1",
+    "why": "Pourquoi jouer au PDC ?",
+    "duelTitle": "Un vrai duel",
+    "duelText": "1 contre 1, 20 points de vie, aucune politique et pas de blessures de général : chaque décision compte.",
+    "accessTitle": "Accessible",
+    "accessText": "99 cartes communes et un seul général peu commun. Le pool du Pauper, sans les raretés qui font le prix des autres formats.",
+    "commandersTitle": "Des milliers de généraux",
+    "commandersText": "N’importe quelle créature peu commune peut être générale — pas besoin d’être légendaire. C’est la vraie différence avec le Duel Commander.",
+    "singletonTitle": "Singleton, 100 cartes",
+    "singletonText": "Un exemplaire par carte. Le deckbuilding remet en jeu des communes oubliées depuis vingt ans.",
+    "livingTitle": "Un format vivant",
+    "livingText": "Un comité, une ban list argumentée, une annonce tous les deux mois, et des tournois dans toute la France."
+  },
+  "hero": {
+    "ctaPrimary": "Découvrir le format",
+    "ctaDecklists": "Voir les decklists",
+    "ctaDiscord": "Rejoindre le Discord"
+  },
+  "quick": {
+    "banlist": "Ban list",
+    "banlistHint": "Dernière annonce",
+    "nextEvent": "Prochain tournoi",
+    "nextEventNone": "Aucun annoncé",
+    "nextEventHint": "Proposez le vôtre",
+    "lastResult": "Dernier résultat",
+    "lastResultHint": "Voir le top 8",
+    "meta": "Méta",
+    "metaHint": "entrées joueurs",
+    "tournamentsShort": "tournois"
+  },
+  "onboarding": {
+    "title": "Nouveau ici ?",
+    "subtitle": "Quatre étapes pour passer de « c’est quoi ce format ? » à votre première partie.",
+    "step1": "Comprendre les règles",
+    "step1Text": "100 cartes, un général peu commun, 20 points de vie, des communes. Le résumé tient en trente secondes.",
+    "step1Cta": "Les règles en 30 secondes",
+    "step2": "Choisir un général",
+    "step2Text": "N’importe quelle créature peu commune, un Véhicule, un Vaisseau ou un Background. Regardez ce qui se joue.",
+    "step2Cta": "Les généraux les plus joués",
+    "step3": "Construire son deck",
+    "step3Text": "Partez d’une liste qui a fait ses preuves, puis vérifiez la légalité de la vôtre.",
+    "step3Cta": "Parcourir les decklists",
+    "step4": "Trouver des joueurs",
+    "step4Text": "Le Discord pour les adversaires et les questions, les tournois pour jouer en vrai.",
+    "step4Cta": "Rejoindre la communauté"
+  },
+  "basics": {
+    "title": "Le format en quatre chiffres",
+    "players": "2 joueurs",
+    "playersText": "Un duel, sans alliances.",
+    "cards": "100 cartes",
+    "cardsText": "Général inclus, un exemplaire chacune.",
+    "commander": "1 général",
+    "commanderText": "Peu commun, pas forcément légendaire.",
+    "life": "20 points de vie",
+    "lifeText": "Des parties rapides et tranchées."
+  },
+  "compare": {
+    "title": "Vous venez du Pauper ou du Duel Commander ?",
+    "subtitle": "Ce qui change, ligne par ligne.",
+    "criterion": "Critère",
+    "pauper": "Pauper",
+    "duelCommander": "Duel Commander",
+    "pdc": "Pauper Duel Commander",
+    "rowPlayers": "Joueurs",
+    "rowPlayersPauper": "1 contre 1",
+    "rowPlayersDc": "1 contre 1",
+    "rowPlayersPdc": "1 contre 1",
+    "rowDeck": "Deck",
+    "rowDeckPauper": "60 cartes minimum + réserve de 15",
+    "rowDeckDc": "100 cartes exactement, général inclus",
+    "rowDeckPdc": "100 cartes exactement, général(aux) inclus",
+    "rowCopies": "Exemplaires",
+    "rowCopiesPauper": "Jusqu'à 4 par carte",
+    "rowCopiesDc": "Singleton (sauf terrains de base)",
+    "rowCopiesPdc": "Singleton (sauf terrains de base)",
+    "rowCommander": "Commandant",
+    "rowCommanderPauper": "Aucun",
+    "rowCommanderDc": "Créature légendaire, planeswalker « peut être votre commandant », Véhicule ou Vaisseau légendaire, Background — toutes raretés",
+    "rowCommanderPdc": "Créature, Véhicule, Vaisseau ou Background imprimé en peu commune — pas besoin d’être légendaire",
+    "rowRarity": "Rareté",
+    "rowRarityPauper": "Communes uniquement",
+    "rowRarityDc": "Aucune restriction",
+    "rowRarityPdc": "99 communes + un général peu commun",
+    "rowLife": "Points de vie",
+    "rowLifePauper": "20",
+    "rowLifeDc": "20",
+    "rowLifePdc": "20",
+    "rowCmdDamage": "Blessures de général",
+    "rowCmdDamagePauper": "—",
+    "rowCmdDamageDc": "Non",
+    "rowCmdDamagePdc": "Non (règle 3.4)",
+    "rowBanlist": "Ban list",
+    "rowBanlistPauper": "Pauper Format Panel",
+    "rowBanlistDc": "Comité Duel Commander",
+    "rowBanlistPdc": "Comité PDC France — bannies comme général / dans le deck, annonce tous les deux mois",
+    "sources": "Sources : règlement PDC ci-dessus, duelcommander.org pour le Duel Commander, règles officielles du Pauper.",
+    "cta": "Voir la comparaison complète"
+  },
+  "rulesSummary": {
+    "title": "Les règles en 30 secondes",
+    "subtitle": "De quoi jouer votre première partie. Le règlement complet suit.",
+    "fullRuleset": "Lire le règlement complet"
+  },
+  "metaPage": {
+    "sample": "%tournaments% tournois · %entries% entrées joueurs · du %from% au %to%",
+    "freshness": "Mis à jour à chaque tournoi publié.",
+    "sampleWarning": "Ces chiffres décrivent les tournois publiés sur ce site, pas l’intégralité du format.",
+    "showAll": "Voir les %n% autres généraux",
+    "hideAll": "Réduire la liste",
+    "trendUp": "en hausse",
+    "trendDown": "en baisse",
+    "trendHint": "Évolution en points par rapport aux tournois précédents.",
+    "seeDecklists": "Ses decklists",
+    "playedOnce": "joué une fois"
+  },
+  "community": {
+    "title": "Communauté",
+    "subtitle": "Le Pauper Duel Commander se joue en ligne et en boutique. Voici où trouver des adversaires.",
+    "discordTitle": "Discord",
+    "discordText": "Le cœur du format : discussions, decklists, questions de règles, recherche d’adversaires et annonces du comité.",
+    "joinDiscord": "Rejoindre le Discord",
+    "eventsTitle": "Événements",
+    "eventsText": "Les prochains tournois et les résultats des précédents.",
+    "venuesTitle": "Où jouer ?",
+    "venuesText": "Les lieux qui ont déjà accueilli un tournoi Pauper Duel Commander.",
+    "venueTournaments": "tournoi",
+    "venueTournamentsPlural": "tournois",
+    "venueLastEvent": "dernier",
+    "organiseTitle": "Organiser un tournoi",
+    "organiseText": "Boutique, association ou joueur : le format se prête aux petits tournois. Passez par le Discord, nous aidons pour le format, les règles et la publication des résultats.",
+    "committeeTitle": "Le comité",
+    "committeeText": "Une équipe de joueurs maintient la ban list et le règlement. Chaque changement est annoncé et argumenté publiquement, tous les deux mois, le premier lundi des mois pairs.",
+    "committeeCta": "Lire les annonces"
   }
 }

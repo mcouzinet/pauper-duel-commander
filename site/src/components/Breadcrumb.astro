@@ -1,0 +1,43 @@
+---
+/**
+ * Breadcrumb, with the matching JSON-LD emitted by the caller.
+ *
+ * Detail pages (a decklist, a tournament) had no way back other than the browser
+ * button and no positional signal for search engines.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { homeRoute } from '@/lib/routes';
+
+export interface Crumb {
+  label: string;
+  /** Omit on the current page — the last crumb is not a link. */
+  href?: string;
+}
+
+interface Props {
+  locale: Locale;
+  items: Crumb[];
+}
+
+const { locale, items } = Astro.props;
+const crumbs: Crumb[] = [{ label: locale === 'fr' ? 'Accueil' : 'Home', href: homeRoute(locale) }, ...items];
+---
+
+<nav aria-label={t('a11y.breadcrumb', locale)}>
+  <ol class="flex flex-wrap items-center gap-1.5 text-xs text-text-muted font-heading uppercase tracking-wider">
+    {crumbs.map((crumb, i) => (
+      <li class="flex items-center gap-1.5 min-w-0">
+        {i > 0 && (
+          <svg class="w-3 h-3 flex-shrink-0 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {crumb.href ? (
+          <a href={crumb.href} class="hover:text-brand-orange transition-colors truncate">{crumb.label}</a>
+        ) : (
+          <span class="text-text-secondary truncate" aria-current="page">{crumb.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

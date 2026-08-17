@@ -35,6 +35,9 @@ const decklists = defineCollection({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
     author: z.string().optional(),
     archetype: z.string().optional(),
+    // Editorial labels, used to build the discovery shelves on the index page.
+    // Known value: "debutant" — a list the team recommends as a first deck.
+    tags: z.array(z.string()).default([]),
     cards: z.string(),
   }),
 });

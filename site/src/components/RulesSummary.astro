@@ -1,0 +1,95 @@
+---
+/**
+ * "The rules in 30 seconds" — the six format rules as cards.
+ *
+ * This markup existed only on the validator page, at the bottom, below a form.
+ * It is the clearest short explanation of the format on the site, so the rules
+ * page (which opens straight into a numbered legal ruleset) and the home page
+ * needed it too. One component, three callers.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+
+interface Props {
+  locale: Locale;
+  /** Heading level, so the component fits whatever outline hosts it. */
+  as?: 'h2' | 'h3';
+  /** Show the "read the full ruleset" link (off on the rules page itself). */
+  showRulesLink?: boolean;
+  compact?: boolean;
+}
+
+const { locale, as = 'h2', showRulesLink = true, compact = false } = Astro.props;
+const Heading = as;
+
+/** Icon paths kept inline: six small glyphs, no sprite worth the indirection. */
+const rules = [
+  {
+    key: 'rule100',
+    icon: '<path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/>',
+  },
+  {
+    key: 'ruleUncommon',
+    icon: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  },
+  {
+    key: 'ruleCommon',
+    icon: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16"/><path d="M2 12h20"/>',
+  },
+  {
+    key: 'ruleColor',
+    icon: '<circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 1 0 14"/><path d="M12 22a7 7 0 0 1 0-14"/>',
+  },
+  {
+    key: 'ruleSingleton',
+    icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  },
+  {
+    key: 'ruleBan',
+    icon: '<path d="M12 2 2 7v10l10 5 10-5V7z"/><path d="M2 7l10 5 10-5"/><path d="M12 12v10"/>',
+  },
+] as const;
+---
+
+<div>
+  {!compact && (
+    <div class="mb-8">
+      <Heading class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
+        {t('rulesSummary.title', locale)}
+      </Heading>
+      <p class="text-text-secondary">{t('rulesSummary.subtitle', locale)}</p>
+    </div>
+  )}
+
+  <ul class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    {rules.map(rule => (
+      <li class="panel p-4 flex items-start gap-3">
+        <span class="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
+          <svg class="w-4.5 h-4.5 text-brand-orange" style="width:18px;height:18px" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" set:html={rule.icon} />
+        </span>
+        <div class="min-w-0">
+          <p class="font-heading font-bold uppercase tracking-wide text-text-primary text-sm mb-1">
+            {t(`validator.${rule.key}`, locale)}
+          </p>
+          <p class="text-xs text-text-secondary leading-relaxed">
+            {t(`validator.${rule.key}Desc`, locale)}
+          </p>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  {showRulesLink && (
+    <p class="mt-5">
+      <a href={route('rules', locale)}
+         class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+        {t('rulesSummary.fullRuleset', locale)}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </p>
+  )}
+</div>
