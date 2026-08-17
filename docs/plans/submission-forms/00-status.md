@@ -41,3 +41,9 @@
   autorise submit-decklist.php) doit être uploadé À LA MAIN vers www/api/.htaccess
   une fois, sinon l'endpoint reste en 403. Cf. docs/external/README.md.
 
+## Mise en ligne
+- **Decklists EN LIGNE le 2026-08-17** : secrets OVH posés (PAT + Turnstile),
+  api/.htaccess mis à jour, variables GitHub PUBLIC_TURNSTILE_SITE_KEY +
+  PUBLIC_SUBMISSIONS_ENABLED=true, déployé. Endpoint vérifié (secrets chargés).
+  Reste : test humain d'une vraie soumission (captcha) + protéger main.
+
