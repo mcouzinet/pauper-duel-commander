@@ -11,6 +11,7 @@
 import Base from '@/layouts/Base.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
+import { submissionsEnabled } from '@/lib/features';
 import fr from '@/i18n/fr.json';
 import en from '@/i18n/en.json';
 
@@ -40,6 +41,16 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
     </div>
   </section>
 
+  {!submissionsEnabled && (
+    <section class="py-24 bg-bg-primary">
+      <div class="container mx-auto px-6 text-center">
+        <p class="text-lg text-text-secondary">{t('submit.comingSoon', locale)}</p>
+      </div>
+    </section>
+  )}
+
+  {submissionsEnabled && (
+  <Fragment>
   <!-- Form -->
   <section class="py-16 bg-bg-primary">
     <div class="container mx-auto px-4 sm:px-6">
@@ -218,4 +229,6 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       }
     });
   </script>
+  </Fragment>
+  )}
 </Base>

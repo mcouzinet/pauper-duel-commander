@@ -8,6 +8,7 @@ import { formatColorSymbols } from '@/lib/mana';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { route } from '@/lib/routes';
+import { submissionsEnabled } from '@/lib/features';
 import type { Locale } from '@/lib/i18n';
 
 interface Props {
@@ -75,9 +76,11 @@ const colorIdentities = [...new Set(decklists.map(d => d.ciKey))].sort();
         <p class="text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
           {t('archive.decklistDesc', locale)}
         </p>
-        <div class="mt-8">
-          <a href={route('submitDecklist', locale)} class="btn-primary">{t('submit.cta', locale)}</a>
-        </div>
+        {submissionsEnabled && (
+          <div class="mt-8">
+            <a href={route('submitDecklist', locale)} class="btn-primary">{t('submit.cta', locale)}</a>
+          </div>
+        )}
       </div>
     </div>
   </section>
