@@ -27,7 +27,11 @@ class DeckValidator {
     /**
      * Basic land names (allowed in multiple copies).
      */
-    const BASIC_LAND_NAMES = array('Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes');
+    const BASIC_LAND_NAMES = array(
+        'Plains', 'Island', 'Swamp', 'Mountain', 'Forest', 'Wastes',
+        'Snow-Covered Plains', 'Snow-Covered Island', 'Snow-Covered Swamp',
+        'Snow-Covered Mountain', 'Snow-Covered Forest', 'Snow-Covered Wastes',
+    );
 
     /**
      * Card types allowed in the command zone (rule 2.4).
@@ -539,14 +543,32 @@ class DeckValidator {
     /**
      * Determine if a card is a basic land (allowed in multiple copies).
      *
+     * Reads the supertypes rather than matching the literal string "Basic Land":
+     * a Snow-Covered Plains is "Basic Snow Land - Plains", so "Snow" sits between
+     * the two words and the substring is never found. Those decks were rejected
+     * for duplicate lands even though rule 2.2 exempts every basic.
+     *
+     * Supertypes are whatever precedes the em dash ("Basic Snow Land" in
+     * "Basic Snow Land - Plains"), or the whole line when there is none
+     * ("Basic Land" for Wastes). Requiring both words there also keeps
+     * Dryad Arbor out: "Land Creature - Forest Dryad" is not Basic.
+     *
      * @param array $card Enriched card array
      * @return bool
      */
     private static function is_basic_land($card) {
         $type_line = isset($card['type_line']) ? $card['type_line'] : '';
-        if (stripos($type_line, 'Basic Land') !== false) {
-            return true;
+
+        if ($type_line !== '') {
+            // Scryfall uses an em dash; accept a hyphen too, in case a caller
+            // hands us a hand-typed type line.
+            $supertypes = preg_split('/\x{2014}|--|\s-\s/u', $type_line)[0];
+            if (preg_match('/\bBasic\b/i', $supertypes) && preg_match('/\bLand\b/i', $supertypes)) {
+                return true;
+            }
         }
+
+        // No Scryfall data: fall back to the names, snow variants included.
         return in_array($card['name'], self::BASIC_LAND_NAMES, true);
     }
 
