@@ -12,28 +12,75 @@
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Canonical host. Both www and the apex resolve, which served the whole site
+    # twice to search engines.
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 </IfModule>
 
+# Absolute targets on purpose: a path-only target made Apache emit
+# "https://host:443/fr/..." in Location, which is valid but ugly in every log,
+# analytics report and shared link.
+
 # --- Single pages ---
-RedirectMatch 301 ^/banlist/?$                          /fr/banlist/
-RedirectMatch 301 ^/validateur/?$                       /fr/validateur/
-RedirectMatch 301 ^/meta/?$                             /fr/meta/
-RedirectMatch 301 ^/declaration-de-confidentialite/?$   /fr/confidentialite/
+RedirectMatch 301 ^/banlist/?$                          https://pauperduelcommander.fr/fr/banlist/
+RedirectMatch 301 ^/validateur/?$                       https://pauperduelcommander.fr/fr/validateur/
+RedirectMatch 301 ^/meta/?$                             https://pauperduelcommander.fr/fr/meta/
+RedirectMatch 301 ^/declaration-de-confidentialite/?$   https://pauperduelcommander.fr/fr/confidentialite/
 
 # --- Collections: keep the slug, land on the localized route ---
-RedirectMatch 301 ^/tournois/?$        /fr/tournois/
-RedirectMatch 301 ^/tournois/(.+)$     /fr/tournois/$1
-RedirectMatch 301 ^/decklist/?$        /fr/decklist/
-RedirectMatch 301 ^/decklist/(.+)$     /fr/decklist/$1
+RedirectMatch 301 ^/tournois/?$        https://pauperduelcommander.fr/fr/tournois/
+RedirectMatch 301 ^/tournois/(.+)$     https://pauperduelcommander.fr/fr/tournois/$1
+RedirectMatch 301 ^/decklist/?$        https://pauperduelcommander.fr/fr/decklist/
+RedirectMatch 301 ^/decklist/(.+)$     https://pauperduelcommander.fr/fr/decklist/$1
 
 # --- Home ---
-RedirectMatch 301 ^/$ /fr/
+RedirectMatch 301 ^/$ https://pauperduelcommander.fr/fr/
 
 # Serve index.html for directory requests (Astro emits <route>/index.html).
 DirectoryIndex index.html
 
 # Custom 404 (Astro emits /404.html at the web root).
 ErrorDocument 404 /404.html
+
+# ---------------------------------------------------------------------------
+# Caching
+#
+# The host answered `max-age=900` for everything, so a returning visitor
+# re-downloaded the hashed bundles and the fonts on any visit fifteen minutes
+# apart. Astro fingerprints /_astro/, and the fonts are versioned in their
+# filenames, so both can be cached indefinitely; HTML must not be.
+# ---------------------------------------------------------------------------
+<IfModule mod_headers.c>
+    # Fingerprinted build output — the filename changes when the bytes do.
+    <LocationMatch "^/_astro/">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </LocationMatch>
+
+    # Fonts: filenames carry the subset and version.
+    <LocationMatch "^/fonts/">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </LocationMatch>
+
+    # Images are stable but not fingerprinted: a month, revalidated after.
+    <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|woff2)$">
+        Header set Cache-Control "public, max-age=2592000, stale-while-revalidate=86400"
+    </FilesMatch>
+
+    # HTML always revalidates: the ban list date must never be stale.
+    <FilesMatch "\.html$">
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </FilesMatch>
+
+    <FilesMatch "\.(xml|txt)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/xml
+</IfModule>
 
 # ---------------------------------------------------------------------------
 # nginx equivalent (.htaccess is ignored by nginx — add this to the server block):
@@ -46,4 +93,7 @@ ErrorDocument 404 /404.html
 #   location ^~ /tournois/ { rewrite ^/tournois/(.*)$ /fr/tournois/$1 permanent; }
 #   location ^~ /decklist/ { rewrite ^/decklist/(.*)$ /fr/decklist/$1 permanent; }
 #   error_page 404 /404.html;
+#   if ($host ~* ^www\.(.*)$) { return 301 https://$1$request_uri; }
+#   location ^~ /_astro/ { add_header Cache-Control "public, max-age=31536000, immutable"; }
+#   location ^~ /fonts/  { add_header Cache-Control "public, max-age=31536000, immutable"; }
 # ---------------------------------------------------------------------------

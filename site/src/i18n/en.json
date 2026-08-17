@@ -1,6 +1,7 @@
 {
   "site": {
-    "name": "Pauper Duel Commander"
+    "name": "Pauper Duel Commander",
+    "description": "Competitive 1v1 Commander, played with commons. 100 cards, an uncommon commander, 20 life: rules, ban list, decklists, metagame and tournaments for the Pauper Duel Commander format."
   },
   "nav": {
     "rules": "Rules",
@@ -8,12 +9,18 @@
     "tournaments": "Tournaments",
     "decklists": "Decklists",
     "validator": "Validator",
-    "meta": "Meta"
+    "meta": "Meta",
+    "community": "Community"
   },
   "footer": {
     "tagline": "An accessible and competitive Commander format",
     "rights": "All rights reserved.",
-    "legal": "Wizards of the Coast, Magic: The Gathering, and their respective logos are trademarks of Wizards of the Coast LLC."
+    "legal": "Wizards of the Coast, Magic: The Gathering, and their respective logos are trademarks of Wizards of the Coast LLC.",
+    "colFormat": "The format",
+    "colPlay": "Play",
+    "colCommunity": "Community",
+    "privacy": "Privacy",
+    "cadence": "The committee publishes a format announcement every two months, on the first Monday of even months."
   },
   "header": {
     "language": "Language"
@@ -28,7 +35,26 @@
     "bannedDesc": "This commander is currently banned in PDC. This decklist is no longer legal in the format.",
     "manaColors": "Mana Colors",
     "cardTypes": "Card Types",
-    "exportCopied": "Copied!"
+    "exportCopied": "Copied!",
+    "author": "Author",
+    "result": "Finish",
+    "atTournament": "at",
+    "viewTournament": "View the tournament",
+    "siblings": "Other decks with this commander",
+    "contents": "Contents",
+    "copy": "Copy the list",
+    "download": "Download (.txt)",
+    "openMoxfield": "Open in Moxfield",
+    "validate": "Check this deck",
+    "cardCount": "cards",
+    "commanderLabel": "Commander",
+    "partnerLabel": "Partner",
+    "bannedCards": "This list holds %n% cards that have since been banned",
+    "bannedCardsHelp": "It was legal on the day it was played. The format has changed since: as it stands, it no longer passes the validator.",
+    "bannedCardTitle": "Banned in Pauper Duel Commander",
+    "bannedCardsShort": "banned cards",
+    "bannedCardsOne": "This list holds a card that has since been banned",
+    "bannedCardsShortOne": "banned card"
   },
   "validator": {
     "title": "Deck Validator",
@@ -166,7 +192,20 @@
     "commandersPlayed": "Commanders played",
     "colorIdentities": "Color identities",
     "metaUnavailable": "Meta data unavailable.",
-    "spots": "spots"
+    "spots": "spots",
+    "upcomingNone": "No tournament announced yet",
+    "upcomingNoneText": "Upcoming dates are announced on the Discord. Running a PDC tournament? Let us know.",
+    "resultsPublished": "Results",
+    "resultsPending": "Results pending",
+    "winner": "Winner",
+    "filterCity": "Venue",
+    "allCities": "All venues",
+    "noneForFilter": "No tournament for this venue.",
+    "countAll": "%n% tournaments",
+    "backToList": "All tournaments",
+    "decklistsCount": "%n% decklists published",
+    "unknownCommander": "Commander not recorded",
+    "unattributed": "%n% place(s) with no commander recorded"
   },
   "archive": {
     "decklistTitle": "Some Decklists",
@@ -182,7 +221,29 @@
     "noDecklistFound": "No decklist found",
     "noDecklistHint": "Try adjusting your filters to see more results.",
     "viewAll": "View all decklists",
-    "viewAllDecklists": "View all decklists"
+    "viewAllDecklists": "View all decklists",
+    "title": "Decklists",
+    "subtitle": "%total% decklists, %fromTournaments% of them from a top 8.",
+    "searchLabel": "Commander",
+    "searchPlaceholder": "e.g. Balmor, Gut, Crackling Drake…",
+    "sortLabel": "Sort",
+    "sortRecent": "Most recent",
+    "sortResult": "Best finish",
+    "sortCommander": "Commander (A-Z)",
+    "onlyTournaments": "From tournaments only",
+    "countAll": "%n% decklists",
+    "countFiltered": "%n% of %total%",
+    "allDecklists": "All decklists",
+    "shelfMoment": "Decks of the moment",
+    "shelfMomentHint": "The top 8 of the latest tournaments.",
+    "shelfPerforming": "Top finishers",
+    "shelfPerformingHint": "Winners and runners-up.",
+    "shelfNew": "New decks",
+    "shelfNewHint": "The most recently added lists.",
+    "shelfOriginal": "Offbeat decks",
+    "shelfOriginalHint": "Commanders seen only once in tournaments.",
+    "shelfBeginner": "Good first decks",
+    "shelfBeginnerHint": "Simple to pilot, easy to assemble."
   },
   "common": {
     "creatures": "Creatures",
@@ -193,7 +254,19 @@
     "lands": "Lands",
     "planeswalkers": "Planeswalkers",
     "other": "Other",
-    "dateLocale": "en-GB"
+    "dateLocale": "en-GB",
+    "viewAll": "View all",
+    "seeMore": "See more",
+    "search": "Search",
+    "sortBy": "Sort by",
+    "filters": "Filters",
+    "results": "results",
+    "result": "result",
+    "updated": "Updated",
+    "by": "by",
+    "on": "on",
+    "close": "Close",
+    "none": "None"
   },
   "banlist": {
     "titleTop": "Banned Cards",
@@ -212,7 +285,20 @@
     "changeUnbanned": "Made legal",
     "changeRestricted": "Restricted",
     "experimental": "experimental",
-    "details": "Details"
+    "details": "Details",
+    "lastUpdate": "Updated on",
+    "cardCount": "banned cards",
+    "searchLabel": "Search for a card",
+    "searchPlaceholder": "Card name…",
+    "searchNoResult": "No card matches.",
+    "searchCleared": "Clear",
+    "isNew": "New",
+    "latestAnnouncement": "Latest announcement",
+    "seeHistory": "View the history",
+    "seeRules": "Rules 2.7 and 2.8",
+    "checkDeck": "Check a deck",
+    "imageMissing": "Artwork unavailable",
+    "viewOnScryfall": "View on Scryfall"
   },
   "home": {
     "rejoinsNous": "Join us",
@@ -255,11 +341,56 @@
     "rejoindreLeDiscord2": "Join Discord",
     "title": "Home",
     "description": "Pauper Duel Commander is a community-driven Magic: The Gathering format designed for competitive 1v1 play.",
-    "viewBanlist": "View Ban List"
+    "viewBanlist": "View Ban List",
+    "metaTitle": "The metagame right now",
+    "metaSubtitle": "The most played commanders across the tournaments published here.",
+    "metaCta": "The full metagame",
+    "resultsTitle": "Recent results",
+    "resultsCta": "All tournaments",
+    "upcomingTitle": "Upcoming tournaments",
+    "decklistsTitle": "Decks to try",
+    "decklistsSubtitle": "Lists that have won, and lists off the beaten track.",
+    "decklistsCta": "All decklists",
+    "communityTitle": "Find players",
+    "communitySubtitle": "The format lives on its Discord and in the stores that host it.",
+    "communityCta": "The community page"
   },
   "rules": {
     "ctaBanlist": "View the ban list",
-    "ctaValidator": "Validate a deck"
+    "ctaValidator": "Validate a deck",
+    "toc": "Contents",
+    "faqTitle": "Edge cases",
+    "faqSubtitle": "The questions that come up at tournaments.",
+    "faq": [
+      {
+        "q": "Can I play a partner or a Background?",
+        "a": "Yes. A Background counts as a commander (rule 2.4) and partner mechanics work normally. The deck then holds 98 cards plus both commanders, for 100 total. Note that only one of your commanders may be cast from the command zone per game — the first one cast (rule 2.5)."
+      },
+      {
+        "q": "Is a card printed at common only on Arena legal?",
+        "a": "No. Rarity is read from legal paper or Magic Online printings (rule 1.4). An Arena-only rarity counts for nothing: it cannot make a card common, nor make a commander uncommon."
+      },
+      {
+        "q": "Does my commander have to be legendary?",
+        "a": "No, and that is what makes the format. Any Creature, Vehicle, Spacecraft or Background printed at uncommon at least once can be your commander (rule 2.4)."
+      },
+      {
+        "q": "Can a card be both common and uncommon?",
+        "a": "Yes (rule 1.4.c). A card printed at common in one set and at uncommon in another can therefore be played in the deck as well as be a legal commander."
+      },
+      {
+        "q": "Are cards that are not Vintage-legal playable?",
+        "a": "No: any card that is not legal in Vintage is banned (rule 2.8). That covers Un-set cards and cards restricted to specific formats."
+      },
+      {
+        "q": "How do I check that a deck is legal?",
+        "a": "The site validator runs the format’s nine checks — size, singleton, rarities, color identity, ban list — against a decklist in MTGO format."
+      },
+      {
+        "q": "Who goes first, and do they draw?",
+        "a": "The starting player skips the draw step of their first turn (rule 3.3). The London mulligan is used (rule 3.2)."
+      }
+    ]
   },
   "rulesDoc": {
     "badge": "Official ruleset",
@@ -428,5 +559,151 @@
       "Combo": "Combo"
     },
     "comingSoon": "Submissions are coming soon."
+  },
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "mainNav": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "breadcrumb": "Breadcrumb",
+    "colors": "Colors"
+  },
+  "value": {
+    "tagline": "Competitive 1v1 Commander, played with commons.",
+    "pitch": "100 cards, an uncommon commander, 20 life: the depth of Commander, the accessibility of Pauper.",
+    "eyebrow": "Community format · Magic: The Gathering · 1 versus 1",
+    "why": "Why play PDC?",
+    "duelTitle": "A real duel",
+    "duelText": "1v1, 20 life, no politics and no commander damage: every decision counts.",
+    "accessTitle": "Accessible",
+    "accessText": "99 commons and a single uncommon commander. The Pauper card pool, without the rarities that drive other formats’ prices.",
+    "commandersTitle": "Thousands of commanders",
+    "commandersText": "Any uncommon creature can be your commander — it does not need to be legendary. That is the real difference from Duel Commander.",
+    "singletonTitle": "Singleton, 100 cards",
+    "singletonText": "One copy per card. Deckbuilding brings back commons forgotten for twenty years.",
+    "livingTitle": "A living format",
+    "livingText": "A committee, a ban list with published reasoning, an announcement every two months, and tournaments across France."
+  },
+  "hero": {
+    "ctaPrimary": "Discover the format",
+    "ctaDecklists": "View decklists",
+    "ctaDiscord": "Join the Discord"
+  },
+  "quick": {
+    "banlist": "Ban list",
+    "banlistHint": "Latest announcement",
+    "nextEvent": "Next tournament",
+    "nextEventNone": "None announced",
+    "nextEventHint": "Submit yours",
+    "lastResult": "Latest result",
+    "lastResultHint": "View the top 8",
+    "meta": "Metagame",
+    "metaHint": "player entries",
+    "tournamentsShort": "tournaments"
+  },
+  "onboarding": {
+    "title": "New here?",
+    "subtitle": "Four steps from “what is this format?” to your first game.",
+    "step1": "Learn the rules",
+    "step1Text": "100 cards, an uncommon commander, 20 life, commons only. The summary takes thirty seconds.",
+    "step1Cta": "The rules in 30 seconds",
+    "step2": "Pick a commander",
+    "step2Text": "Any uncommon creature, a Vehicle, a Spacecraft or a Background. See what people are playing.",
+    "step2Cta": "Most played commanders",
+    "step3": "Build your deck",
+    "step3Text": "Start from a list that has proven itself, then check your own for legality.",
+    "step3Cta": "Browse decklists",
+    "step4": "Find players",
+    "step4Text": "The Discord for opponents and questions, the tournaments to play in person.",
+    "step4Cta": "Join the community"
+  },
+  "basics": {
+    "title": "The format in four numbers",
+    "players": "2 players",
+    "playersText": "A duel, with no alliances.",
+    "cards": "100 cards",
+    "cardsText": "Commander included, one copy each.",
+    "commander": "1 commander",
+    "commanderText": "Uncommon, not necessarily legendary.",
+    "life": "20 life",
+    "lifeText": "Fast, decisive games."
+  },
+  "compare": {
+    "title": "Coming from Pauper or Duel Commander?",
+    "subtitle": "What changes, line by line.",
+    "criterion": "Criterion",
+    "pauper": "Pauper",
+    "duelCommander": "Duel Commander",
+    "pdc": "Pauper Duel Commander",
+    "rowPlayers": "Players",
+    "rowPlayersPauper": "1v1",
+    "rowPlayersDc": "1v1",
+    "rowPlayersPdc": "1v1",
+    "rowDeck": "Deck",
+    "rowDeckPauper": "60 cards minimum + 15-card sideboard",
+    "rowDeckDc": "Exactly 100 cards, commander included",
+    "rowDeckPdc": "Exactly 100 cards, commander(s) included",
+    "rowCopies": "Copies",
+    "rowCopiesPauper": "Up to 4 per card",
+    "rowCopiesDc": "Singleton (basic lands excepted)",
+    "rowCopiesPdc": "Singleton (basic lands excepted)",
+    "rowCommander": "Commander",
+    "rowCommanderPauper": "None",
+    "rowCommanderDc": "Legendary creature, planeswalker with “can be your commander”, legendary Vehicle or Spacecraft, Background — any rarity",
+    "rowCommanderPdc": "Creature, Vehicle, Spacecraft or Background printed at uncommon — no need to be legendary",
+    "rowRarity": "Rarity",
+    "rowRarityPauper": "Commons only",
+    "rowRarityDc": "No restriction",
+    "rowRarityPdc": "99 commons + an uncommon commander",
+    "rowLife": "Life total",
+    "rowLifePauper": "20",
+    "rowLifeDc": "20",
+    "rowLifePdc": "20",
+    "rowCmdDamage": "Commander damage",
+    "rowCmdDamagePauper": "—",
+    "rowCmdDamageDc": "No",
+    "rowCmdDamagePdc": "No (rule 3.4)",
+    "rowBanlist": "Ban list",
+    "rowBanlistPauper": "Pauper Format Panel",
+    "rowBanlistDc": "Duel Commander committee",
+    "rowBanlistPdc": "PDC France committee — banned as commander / in deck, announcement every two months",
+    "sources": "Sources: the PDC ruleset above, duelcommander.org for Duel Commander, the official Pauper rules.",
+    "cta": "See the full comparison"
+  },
+  "rulesSummary": {
+    "title": "The rules in 30 seconds",
+    "subtitle": "Enough to play your first game. The full ruleset follows.",
+    "fullRuleset": "Read the full ruleset"
+  },
+  "metaPage": {
+    "sample": "%tournaments% tournaments · %entries% player entries · %from% to %to%",
+    "freshness": "Updated whenever a tournament is published.",
+    "sampleWarning": "These numbers describe the tournaments published on this site, not the format as a whole.",
+    "showAll": "Show the %n% other commanders",
+    "hideAll": "Collapse the list",
+    "trendUp": "trending up",
+    "trendDown": "trending down",
+    "trendHint": "Change in percentage points against earlier tournaments.",
+    "seeDecklists": "Its decklists",
+    "playedOnce": "played once"
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Pauper Duel Commander is played online and in stores. Here is where to find opponents.",
+    "discordTitle": "Discord",
+    "discordText": "The heart of the format: discussion, decklists, rules questions, opponent finding and committee announcements.",
+    "joinDiscord": "Join the Discord",
+    "eventsTitle": "Events",
+    "eventsText": "Upcoming tournaments and past results.",
+    "venuesTitle": "Where to play",
+    "venuesText": "Venues that have already hosted a Pauper Duel Commander tournament.",
+    "venueTournaments": "tournament",
+    "venueTournamentsPlural": "tournaments",
+    "venueLastEvent": "latest",
+    "organiseTitle": "Run a tournament",
+    "organiseText": "Store, club or player: the format suits small tournaments. Reach out on the Discord — we help with format, rules and publishing results.",
+    "committeeTitle": "The committee",
+    "committeeText": "A team of players maintains the ban list and the ruleset. Every change is announced with public reasoning, every two months, on the first Monday of even months.",
+    "committeeCta": "Read the announcements"
   }
 }

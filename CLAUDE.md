@@ -9,6 +9,7 @@ Tout vit dans `site/`. La racine ne contient que la documentation.
 ## Stack Technique
 - **Framework**: Astro 5, `output: 'static'` (aucun adaptateur, aucun SSR)
 - **CSS**: Tailwind CSS 4 via `@tailwindcss/vite` — config CSS-first, pas de `tailwind.config.js`
+- **Polices**: auto-hébergées (`site/public/fonts/`) — aucun CDN tiers
 - **JS**: TypeScript vanilla, aucun framework UI
 - **Contenu**: JSON dans `site/content/` (content collections Astro)
 - **API**: PHP 8 standalone, sans framework — un seul endpoint
@@ -87,7 +88,16 @@ Les JSON de `site/content/` sont édités à la main. Schémas dans
 
 `banlist.json` a deux listes d'affichage (`bannedAsCommander`, `bannedInDeck`) et
 `cards`, leur **union**, seule utilisée par le validateur. En ajoutant une carte,
-mettre à jour `cards` aussi, sinon elle ne sera pas rejetée.
+mettre à jour `cards` aussi, sinon elle ne sera pas rejetée. `lastUpdated` et
+`content/banlist-history/` alimentent la date affichée et le badge « Nouveau ».
+
+Les decklists acceptent un champ `tags` (éditorial). Seule valeur reconnue
+aujourd'hui : `"debutant"`, qui place la liste dans le rayon « Pour commencer »
+de l'index. C'est un choix humain, à revoir quand la collection grossit.
+
+**Ne jamais lire `content/banlist.json` directement depuis une page** : passer par
+`lib/banlist.ts`. C'était copié dans cinq pages, chacune reconstruisant son propre
+Set.
 
 `banlist-history/` est une collection (un fichier par annonce) affichée en
 historique sur la page ban list. Modèle : `date`, `source`, `kind`
@@ -100,7 +110,8 @@ Noms de cartes : toujours l'orthographe canonique Scryfall (union `cards`,
 
 ## API / Validateur
 
-`POST /api/validate-deck.php` — `commander`, `partner` (optionnel), `decklist`.
+`POST /api/validate-deck.php` — `commander`, `partner` (optionnel), `decklist`,
+`locale` (optionnel : `fr` par défaut, `en` accepté).
 Réponse : `{success, data: {is_valid, errors[], warnings[], stats{}}}`.
 
 Les 9 règles sont documentées en tête de `DeckValidator.php`.
@@ -136,7 +147,9 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
 - Constantes définies avec un garde `if (!defined(...))` pour que les tests
   puissent les surcharger
 - Chaque classe refuse d'être appelée directement (garde `basename()`)
-- Messages d'erreur utilisateur en français, sans accents (l'existant est ainsi)
+- Messages d'erreur utilisateur dans `DeckValidator::MESSAGES` (fr + en), sans
+  accents côté français. Ne pas écrire de littéral dans un message : passer par
+  `self::msg('id', ...)`, sinon la version EN reparlera français.
 
 ### Tests
 - **Hermétiques, jamais de réseau.** `ScryfallService` lit à travers un cache
@@ -159,12 +172,21 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
 - Traductions via `t(key, locale)` de `src/lib/i18n.ts`, fallback FR
 - Ajouter une clé dans `fr.json` **et** `en.json` (une clé manquante s'affiche
   brute côté client)
+- Construire les URL avec `route()` de `lib/routes.ts`, jamais par interpolation :
+  c'est une URL en dur qui avait mis les 15 liens « Deck » des top 8 en 404
+- Une nouvelle page = un composant dans `components/pages/`, monté par deux
+  routes minces (`pages/fr/…` et `pages/en/…`)
 - Un script client `is:inline` ne voit pas les variables Astro : passer les
   valeurs par des `data-*` attributs (cf. bouton d'export de decklist)
 
 ### CSS
 - Tailwind 4 : tokens dans `@theme {}` de `globals.css`, pas de fichier de config
-- Mobile-first ; classes composites (`magic-card`, `btn-primary`) en `@apply`
+- Mobile-first ; classes composites (`magic-card`, `btn-primary`, `page-head`,
+  `panel`, `deck-card`, `badge`, `stat-pill`, `quick-tile`) en `@apply`
+- `magic-card` (bordure orange) est réservée aux objets cliquables ; utiliser
+  `panel` pour un simple conteneur, sinon l'orange perd sa fonction d'accent
+- `--color-text-muted` est le plancher de contraste (4,9:1) : ne pas le diluer
+  avec une opacité
 
 ## Points d'Attention
 - `site/dist/`, `site/public/api/{data,cache}/` et `public/api/data/banlist.json`
@@ -182,5 +204,9 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
   (OVH mutualisé) ; équivalent nginx en commentaire.
 - Le déploiement SFTP n'envoie pas les fichiers cachés (`dist/*`) : un `.htaccess`
   modifié doit être poussé à la main une fois (cf. `DEPLOY.md`).
-- Les messages d'erreur du validateur PHP sont en français uniquement, y compris
-  côté page EN pour ceux qui ne passent pas par `RULE_LABELS`
+- Le site est **entièrement généré au build**, « aujourd'hui » compris : un
+  tournoi passé reste « à venir » jusqu'au prochain build. D'où le rebuild
+  hebdomadaire (cron dans `deploy.yml`) en plus du déploiement au push
+- Les images de cartes viennent de Scryfall : prévoir toujours un repli texte
+  quand l'illustration manque (leçon de la ban list, où une carte sans image
+  n'était pas rendue du tout)

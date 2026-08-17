@@ -1,4 +1,5 @@
 import { getCardsByNames, getCardByName, getCardImage, getManaCost, getCmc, getColors, getTypeLine, getPrimaryType } from './scryfall';
+import { bannedNameSet } from './banlist';
 import type { ScryfallCard } from '../types/scryfall';
 import type { ParsedCard, EnrichedCard, DeckStats, DeckData } from '../types/decklist';
 
@@ -19,6 +20,7 @@ const TYPE_ORDER: Record<string, number> = {
 export async function fetchCardData(parsedCards: ParsedCard[]): Promise<EnrichedCard[]> {
   const names = [...new Set(parsedCards.map(c => c.name))];
   const cardsMap = await getCardsByNames(names);
+  const banned = bannedNameSet();
 
   return parsedCards.map(card => {
     const data = cardsMap.get(card.name.toLowerCase()) ?? null;
@@ -33,6 +35,7 @@ export async function fetchCardData(parsedCards: ParsedCard[]): Promise<Enriched
       colors: getColors(data),
       imageUrl: getCardImage(data, 'normal'),
       imageUrlSmall: getCardImage(data, 'small'),
+      isBanned: banned.has(card.name.toLowerCase()),
     };
   });
 }
@@ -128,6 +131,7 @@ export async function prepareDeckData(
   const sorted = sortCards(enriched);
   const cardsByType = groupByType(sorted);
   const stats = calculateStats(enriched);
+  const bannedCards = sorted.filter(card => card.isBanned);
 
   // Fetch commander
   let commander: DeckData['commander'] = null;
@@ -160,5 +164,5 @@ export async function prepareDeckData(
     }
   }
 
-  return { cards: sorted, cardsByType, commander, partner, stats };
+  return { cards: sorted, cardsByType, commander, partner, stats, bannedCards };
 }

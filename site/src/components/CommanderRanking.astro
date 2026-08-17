@@ -1,0 +1,190 @@
+---
+/**
+ * Ranked commander list.
+ *
+ * The meta page inlined this row markup twice (global and top 4), so the home page
+ * could not show a five-line summary without a third copy. It also had no way out:
+ * the most-played commander in the format was a picture and a percentage, not a
+ * link to the decks playing it.
+ *
+ * `limit` + `foldRest` render the tail inside a `<details>` — the page listed 68
+ * commanders, 39 of them played exactly once, as one 7,500px scroll.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { formatColorSymbols } from '@/lib/mana';
+import type { CommanderStat } from '@/lib/meta';
+
+interface Props {
+  commanders: CommanderStat[];
+  total: number;
+  locale: Locale;
+  /** Rows shown before folding. */
+  limit?: number;
+  /** Fold the remainder into a details element instead of dropping it. */
+  foldRest?: boolean;
+  /** Link each commander to its decklists. */
+  linkToDecklists?: boolean;
+  showTrend?: boolean;
+}
+
+const {
+  commanders,
+  total,
+  locale,
+  limit = commanders.length,
+  foldRest = false,
+  linkToDecklists = true,
+  showTrend = false,
+} = Astro.props;
+
+const head = commanders.slice(0, limit);
+const rest = foldRest ? commanders.slice(limit) : [];
+
+const maxPct = commanders.reduce((max, c) => Math.max(max, c.percentage), 0);
+const barWidth = (pct: number) => (maxPct > 0 ? Math.round((pct / maxPct) * 100) : 0);
+
+function rankClass(rank: number): string {
+  if (rank === 1) return 'bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-500/30';
+  if (rank === 2) return 'bg-gray-400/15 text-gray-200 ring-1 ring-gray-400/25';
+  if (rank === 3) return 'bg-amber-700/25 text-amber-400 ring-1 ring-amber-700/30';
+  return 'bg-bg-tertiary text-text-secondary';
+}
+
+/** Decklists filtered to this commander; the index reads ?commander= on load. */
+function decklistHref(name: string): string {
+  return `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
+}
+---
+
+{/* Banned rows carry no row-level opacity: it diluted every token inside them
+    below the contrast floor. Banned is signalled by the strikethrough, the badge
+    and the greyscale art instead. */}
+<ol class="space-y-2.5">
+  {head.map(commander => (
+    <li class="flex items-center gap-2.5">
+      <span class:list={[
+        'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold tabular-nums',
+        rankClass(commander.rank),
+      ]} aria-hidden="true">{commander.rank}</span>
+
+      {commander.image ? (
+        <span class:list={[
+          'relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 card-hover-trigger',
+          commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10',
+        ]}
+              data-card-name={commander.mainName}
+              data-card-image={commander.cardImage ?? commander.image}>
+          <img src={commander.image} alt="" width="56" height="56"
+               class="w-full h-full object-cover" loading="lazy" decoding="async" />
+        </span>
+      ) : (
+        <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-tertiary flex-shrink-0" aria-hidden="true"></span>
+      )}
+
+      <span class="flex-1 min-w-0">
+        <span class="flex items-baseline justify-between gap-2">
+          {linkToDecklists ? (
+            <a href={decklistHref(commander.mainName)}
+               data-analytics="meta_commander_click"
+               data-analytics-commander={commander.mainName}
+               class:list={[
+                 'font-beleren text-sm sm:text-base text-text-primary hover:text-brand-orange transition-colors truncate',
+                 commander.isBanned && 'line-through decoration-red-500/70',
+               ]}>
+              <span lang="en">{commander.mainName}</span>
+            </a>
+          ) : (
+            <span class:list={[
+              'font-beleren text-sm sm:text-base text-text-primary truncate',
+              commander.isBanned && 'line-through decoration-red-500/70',
+            ]} lang="en">{commander.mainName}</span>
+          )}
+
+          <span class="flex items-center gap-1.5 flex-shrink-0 text-xs sm:text-sm">
+            {commander.isBanned && (
+              <span class="badge badge--danger uppercase tracking-wider text-xs">{t('meta.banned', locale)}</span>
+            )}
+            {showTrend && commander.trend !== null && commander.trend !== 0 && (
+              <span class:list={[
+                'inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums',
+                commander.trend > 0 ? 'text-green-400' : 'text-text-muted',
+              ]} title={commander.trend > 0 ? t('metaPage.trendUp', locale) : t('metaPage.trendDown', locale)}>
+                {commander.trend > 0 ? '▲' : '▼'}{Math.abs(commander.trend)}
+              </span>
+            )}
+            <span class="text-text-secondary tabular-nums whitespace-nowrap">
+              {commander.count}<span class="text-text-muted">/{total}</span>
+              <span class="ml-1 text-magic-gold font-semibold">{commander.percentage}%</span>
+            </span>
+          </span>
+        </span>
+
+        {commander.partnerName && (
+          <span class:list={[
+            'block font-beleren text-[11px] text-text-muted truncate leading-tight',
+            commander.isBanned && 'line-through decoration-red-500/70',
+          ]} lang="en">+ {commander.partnerName}</span>
+        )}
+
+        <span class="flex items-center gap-1 mt-0.5">
+          <span class="sr-only">{t('a11y.colors', locale)}</span>
+          <span set:html={formatColorSymbols(commander.colors)} />
+        </span>
+      </span>
+
+      <span class="hidden sm:block flex-shrink-0 w-20 h-2 bg-bg-primary/60 rounded-full overflow-hidden self-center" aria-hidden="true">
+        <span class="block h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
+              style={`width: ${barWidth(commander.percentage)}%`}></span>
+      </span>
+    </li>
+  ))}
+</ol>
+
+{rest.length > 0 && (
+  <details class="mt-4 group">
+    <summary class="cursor-pointer select-none text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors"
+             data-analytics="meta_expand">
+      <span class="group-open:hidden">{t('metaPage.showAll', locale).replace('%n%', String(rest.length))}</span>
+      <span class="hidden group-open:inline">{t('metaPage.hideAll', locale)}</span>
+    </summary>
+
+    <ol class="space-y-2 mt-4 pt-4 border-t border-white/8">
+      {rest.map(commander => (
+        <li class="flex items-center gap-2.5 text-sm">
+          <span class="w-7 text-right text-xs text-text-muted tabular-nums flex-shrink-0" aria-hidden="true">{commander.rank}</span>
+
+          {commander.image ? (
+            <span class:list={[
+              'w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 card-hover-trigger',
+              commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10',
+            ]}
+                  data-card-name={commander.mainName}
+                  data-card-image={commander.cardImage ?? commander.image}>
+              <img src={commander.image} alt="" width="32" height="32"
+                   class="w-full h-full object-cover" loading="lazy" decoding="async" />
+            </span>
+          ) : (
+            <span class="w-8 h-8 rounded bg-bg-tertiary flex-shrink-0" aria-hidden="true"></span>
+          )}
+
+          <span class="flex-1 min-w-0 flex items-baseline justify-between gap-2">
+            {linkToDecklists ? (
+              <a href={decklistHref(commander.mainName)}
+                 class:list={[
+                   'font-beleren text-text-secondary hover:text-brand-orange transition-colors truncate',
+                   commander.isBanned && 'line-through decoration-red-500/70',
+                 ]} lang="en">{commander.mainName}</a>
+            ) : (
+              <span class="font-beleren text-text-secondary truncate" lang="en">{commander.mainName}</span>
+            )}
+            <span class="text-text-muted tabular-nums flex-shrink-0 text-xs">
+              {commander.count}
+              <span class="ml-1 text-magic-gold/80">{commander.percentage}%</span>
+            </span>
+          </span>
+        </li>
+      ))}
+    </ol>
+  </details>
+)}

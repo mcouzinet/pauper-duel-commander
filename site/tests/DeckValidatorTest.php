@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
  *   Prophetic Prism    common Artifact, colorless -> non-basic filler
  *   Lightning Bolt     R, pauper legal            -> off-colour for a W commander
  *   Goliath Paladin    common Creature, W, legal  -> banned in deck
+ *   Snow-Covered Plains "Basic Snow Land - Plains" -> basic, but not "Basic Land"
  *
  * Each fixture isolates one rule: Lightning Bolt is Pauper-legal so it can only
  * trip rule 8, Goliath Paladin is legal and on-colour so it can only trip rule 9.
@@ -35,6 +36,7 @@ class DeckValidatorTest extends TestCase
     protected function tearDown(): void
     {
         DeckValidator::$banlist_path = null;
+        DeckValidator::$locale = 'fr';
     }
 
     /**
@@ -303,5 +305,117 @@ class DeckValidatorTest extends TestCase
         $this->expectExceptionMessage('Ban list not found');
 
         DeckValidator::validate(self::COMMANDER, '', $this->deck(['Plains' => 98, 'Goliath Paladin' => 1]));
+    }
+
+    // ---- Message locale ---------------------------------------------------
+
+    /**
+     * The endpoint answers in French by default, so nothing that already calls it
+     * changes behaviour.
+     */
+    public function test_messages_default_to_french(): void
+    {
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertFalse($result['is_valid']);
+        $this->assertSame('Le nom du general est obligatoire.', $result['errors'][0]['message']);
+    }
+
+    /**
+     * With locale=en the same rule reports in English. The EN page used to render
+     * English rule labels wrapped around French sentences.
+     */
+    public function test_messages_can_be_english(): void
+    {
+        DeckValidator::$locale = 'en';
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertFalse($result['is_valid']);
+        $this->assertSame('The commander name is required.', $result['errors'][0]['message']);
+    }
+
+    /** Placeholders are filled in whichever language is selected. */
+    public function test_english_messages_interpolate_values(): void
+    {
+        DeckValidator::$locale = 'en';
+        $result = DeckValidator::validate(self::COMMANDER, '', '1 Plains');
+
+        $sizeError = null;
+        foreach ($result['errors'] as $error) {
+            if ($error['rule'] === 'deck_size') {
+                $sizeError = $error;
+            }
+        }
+
+        $this->assertNotNull($sizeError, 'expected a deck_size error for a one-card deck');
+        $this->assertSame(
+            'The deck holds 1 card(s). A PDC deck must hold 99 cards (plus 1 commander).',
+            $sizeError['message']
+        );
+    }
+
+    /** An unknown locale falls back to French rather than blanking the message. */
+    public function test_unknown_locale_falls_back_to_french(): void
+    {
+        DeckValidator::$locale = 'de';
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertSame('Le nom du general est obligatoire.', $result['errors'][0]['message']);
+    }
+
+    // ---- Basic lands ------------------------------------------------------
+
+    /**
+     * Snow-covered basics are basic lands, so rule 2.2 lets a deck run several.
+     *
+     * They were rejected as duplicates: the check matched the literal string
+     * "Basic Land" against a type line that reads "Basic Snow Land - Plains",
+     * where "Snow" sits between the two words.
+     */
+    public function test_snow_covered_basics_may_be_duplicated(): void
+    {
+        $decklist = "20 Snow-Covered Plains\n" . self::filler(79);
+        $result = DeckValidator::validate(self::COMMANDER, '', $decklist);
+
+        $this->assertSame([], self::rulesOf($result), 'a deck of snow-covered basics should raise nothing');
+    }
+
+    /** Plain basics keep working, of course. */
+    public function test_plain_basics_may_be_duplicated(): void
+    {
+        $decklist = "20 Plains\n" . self::filler(79);
+        $result = DeckValidator::validate(self::COMMANDER, '', $decklist);
+
+        $this->assertSame([], self::rulesOf($result));
+    }
+
+    /** A non-basic in multiple copies is still a duplicate. */
+    public function test_non_basic_duplicates_are_still_rejected(): void
+    {
+        $decklist = "2 Prophetic Prism\n" . self::filler(97);
+        $result = DeckValidator::validate(self::COMMANDER, '', $decklist);
+
+        $this->assertContains('duplicates', self::rulesOf($result));
+    }
+
+    /** Rule codes raised by a validation, deduplicated. */
+    private static function rulesOf(array $result): array
+    {
+        $rules = array_values(array_unique(array_column($result['errors'], 'rule')));
+        sort($rules);
+        return $rules;
+    }
+
+    /**
+     * `$n` filler cards, to bring a deck to the required 99.
+     *
+     * Padding with basic Plains: they are the only cards that may legally repeat,
+     * they are on-colour for the mono-white test commander, and they are neither
+     * banned nor non-common — so the padding itself can never raise a rule and
+     * muddy what the test is asserting.
+     */
+    private static function filler(int $n): string
+    {
+        return $n > 0 ? "{$n} Plains\n" : '';
     }
 }

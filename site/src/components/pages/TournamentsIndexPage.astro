@@ -1,175 +1,289 @@
 ---
+/**
+ * Tournament index.
+ *
+ * The "upcoming" section only rendered when a future event existed, so with none
+ * scheduled the page looked like a dead archive rather than a live format with a
+ * gap in its calendar. It also gave no way to tell the four tournaments published
+ * without results from the eleven with them, and never named a winner.
+ */
 import Base from '@/layouts/Base.astro';
-import { t } from '@/lib/i18n';
-import { getUpcomingTournaments, getPastTournaments, formatDate } from '@/lib/tournaments';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
-import type { Locale } from '@/lib/i18n';
+import { getUpcomingTournaments, getPastTournaments, formatDate, isPlaceholder } from '@/lib/tournaments';
+import { getMeta } from '@/lib/meta';
 
 interface Props {
   locale: Locale;
 }
 
-
 const { locale } = Astro.props;
-const upcoming = await getUpcomingTournaments();
-const past = await getPastTournaments();
----
-<Base title={t('tournament.title', locale)} description={t('tournament.desc', locale)}>
 
-  <!-- Hero -->
-  <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
-    <div class="absolute inset-0 opacity-10">
-      <img src="/img/cards-background.png" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+const [upcoming, past, meta] = await Promise.all([
+  getUpcomingTournaments(),
+  getPastTournaments(),
+  getMeta(),
+]);
+
+/** Venue options for the filter, ordered by how often they have hosted. */
+const venues = [...past, ...upcoming]
+  .reduce((map, tournament) => {
+    const key = tournament.location || tournament.city;
+    if (!key) return map;
+    map.set(key, (map.get(key) ?? 0) + 1);
+    return map;
+  }, new Map<string, number>());
+const venueOptions = [...venues.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+const withResults = past.filter(tournament => tournament.top8.length > 0).length;
+
+const title = locale === 'fr' ? 'Tournois Pauper Duel Commander' : 'Pauper Duel Commander tournaments';
+const description = locale === 'fr'
+  ? `${past.length} tournois Pauper Duel Commander référencés, dont ${withResults} avec résultats et méta. Top 8, decklists et statistiques par événement.`
+  : `${past.length} Pauper Duel Commander tournaments on record, ${withResults} of them with results and metagame. Top 8, decklists and statistics per event.`;
+---
+<Base title={title} description={description} bareTitle={false}>
+
+  <section class="page-head">
+    <div class="page-head__bg"></div>
+    <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
+      <img src="/img/cards-background.webp" alt="" aria-hidden="true"
+           width="1024" height="356" class="w-full h-full object-cover" />
     </div>
-    <div class="container mx-auto px-4 sm:px-6 relative z-10">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <div class="max-w-4xl">
+        <Breadcrumb locale={locale} items={[{ label: t('tournament.title', locale) }]} />
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-magic-gradient mt-3 mb-3">
           {t('tournament.title', locale)}
         </h1>
-        <p class="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mb-5">
           {t('tournament.desc', locale)}
         </p>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="stat-pill"><strong>{past.length}</strong> {t('quick.tournamentsShort', locale)}</span>
+          <span class="stat-pill"><strong>{venueOptions.length}</strong> {locale === 'fr' ? 'lieux' : 'venues'}</span>
+          <a href={route('meta', locale)} class="stat-pill no-underline hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
+            {t('meta.title', locale)}
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Upcoming tournaments -->
-  {upcoming.length > 0 && (
-    <section class="py-10 sm:py-16 bg-bg-primary border-b border-magic-gold/10">
-      <div class="container mx-auto px-4 sm:px-6">
-        <div class="max-w-5xl mx-auto">
-          <div class="flex items-center gap-3 mb-8">
-            <span class="relative flex h-3 w-3">
+  <!-- Upcoming: always present, with a real empty state ---------------------->
+  <section class="py-10 md:py-12 border-b border-card-border/25">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-5xl">
+        <div class="flex items-center gap-3 mb-5">
+          {upcoming.length > 0 && (
+            <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-orange"></span>
             </span>
-            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient">
-              {t('tournament.upcoming', locale)}
-            </h2>
-          </div>
+          )}
+          <h2 class="text-2xl font-heading font-bold text-magic-gradient">{t('tournament.upcoming', locale)}</h2>
+        </div>
 
-          <div class="grid md:grid-cols-2 gap-4 sm:gap-6">
+        {upcoming.length > 0 ? (
+          <ul class="grid md:grid-cols-2 gap-4">
             {upcoming.map(tournament => (
-              <div class="magic-card p-4 sm:p-6 relative overflow-hidden group">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-orange via-magic-gold to-brand-orange"></div>
+              <li>
+                <article class="magic-card p-5 h-full">
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <h3 class="text-lg font-heading font-bold text-text-primary">{tournament.title}</h3>
+                    <span class="badge badge--orange flex-shrink-0 whitespace-nowrap">
+                      {formatDate(tournament.date, locale)}
+                    </span>
+                  </div>
 
-                <div class="flex items-start justify-between mb-4">
-                  <h3 class="text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors">
-                    {tournament.title}
-                  </h3>
-                  <span class="flex-shrink-0 ml-3 px-3 py-1 bg-brand-orange/10 border border-brand-orange/30 rounded-lg text-sm font-semibold text-brand-orange whitespace-nowrap">
-                    {formatDate(tournament.date, locale)}
-                  </span>
-                </div>
+                  <dl class="space-y-1.5 text-sm text-text-secondary mb-4">
+                    {tournament.location && (
+                      <div class="flex items-center gap-2">
+                        <dt class="sr-only">{t('tournament.filterCity', locale)}</dt>
+                        <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <dd>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</dd>
+                      </div>
+                    )}
+                    {tournament.playerCount > 0 && (
+                      <div class="flex items-center gap-2">
+                        <dt class="sr-only">{t('tournament.spots', locale)}</dt>
+                        <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <dd>{tournament.playerCount} {t('tournament.spots', locale)}</dd>
+                      </div>
+                    )}
+                  </dl>
 
-                <div class="space-y-2 text-sm text-text-secondary mb-5">
-                  {tournament.location && (
-                    <div class="flex items-center gap-2">
-                      <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                      <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
-                    </div>
-                  )}
-                  {tournament.playerCount > 0 && (
-                    <div class="flex items-center gap-2">
-                      <svg class="w-4 h-4 text-magic-gold/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                      <span>{tournament.playerCount} places</span>
-                    </div>
-                  )}
-                </div>
-
-                <div class="flex flex-wrap items-center gap-3">
-                  {tournament.signupUrl && (
-                    <a href={tournament.signupUrl} target="_blank" rel="noopener noreferrer" class="btn-primary text-sm px-5 py-2">
-                      {t('tournament.signUp', locale)}
-                      <svg class="w-4 h-4 ml-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                  <div class="flex flex-wrap items-center gap-3">
+                    {tournament.signupUrl && (
+                      <a href={tournament.signupUrl} target="_blank" rel="noopener noreferrer"
+                         data-analytics="tournament_signup_click" data-analytics-slug={tournament.slug}
+                         class="btn-primary !px-5 !py-2.5 !text-sm">
+                        {t('tournament.signUp', locale)}
+                      </a>
+                    )}
+                    <a href={route('tournaments', locale, tournament.slug)}
+                       class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+                      {t('tournament.moreDetails', locale)}
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                       </svg>
                     </a>
-                  )}
-                  <a href={route('tournaments', locale, tournament.slug)} class="inline-flex items-center gap-2 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
-                    {t('tournament.moreDetails', locale)}
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
+                  </div>
+                </article>
+              </li>
             ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- Past tournament results -->
-  <section class="py-10 sm:py-16 bg-bg-primary">
-    <div class="container mx-auto px-4 sm:px-6">
-      <div class="max-w-5xl mx-auto">
-        {past.length > 0 ? (
-          <Fragment>
-            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-text-primary mb-8">
-              {t('tournament.results', locale)}
-            </h2>
-            <div class="space-y-3 sm:space-y-4">
-              {past.map(tournament => {
-                const playerDisplay = tournament.actualPlayerCount || tournament.playerCount;
-                return (
-                  <a href={route('tournaments', locale, tournament.slug)}
-                     class="magic-card block p-4 sm:p-6 group transition-all duration-300 hover:border-magic-gold/40">
-                    <div class="flex items-center gap-3 sm:gap-4">
-                      <span class="flex-1 min-w-0">
-                        <span class="block text-base sm:text-xl font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors truncate">
-                          {tournament.title}
-                        </span>
-                        <span class="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-1 text-xs sm:text-sm text-text-muted mt-1">
-                          <span>{formatDate(tournament.date, locale)}</span>
-                          {tournament.location && (
-                            <Fragment>
-                              <span class="hidden sm:inline text-text-muted/40">|</span>
-                              <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
-                            </Fragment>
-                          )}
-                          {playerDisplay > 0 && (
-                            <Fragment>
-                              <span class="hidden sm:inline text-text-muted/40">|</span>
-                              <span>{playerDisplay} {t('tournament.players', locale)}</span>
-                            </Fragment>
-                          )}
-                        </span>
-                      </span>
-                      <div class="flex-shrink-0 w-6 h-6 text-magic-gold group-hover:translate-x-1 transition-transform duration-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                        </svg>
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
-          </Fragment>
-        ) : upcoming.length === 0 ? (
-          <div class="text-center py-16">
-            <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-4">
-              {t('tournament.noYet', locale)}
-            </h2>
-            <p class="text-text-secondary">
-              {t('tournament.resultsComing', locale)}
-            </p>
-          </div>
+          </ul>
         ) : (
-          <p class="text-center text-text-muted py-8">
-            {t('tournament.noResults', locale)}
-          </p>
+          <div class="panel p-6 max-w-2xl">
+            <p class="font-heading font-bold uppercase tracking-wide text-text-primary mb-2">
+              {t('tournament.upcomingNone', locale)}
+            </p>
+            <p class="text-sm text-text-secondary leading-relaxed mb-4">
+              {t('tournament.upcomingNoneText', locale)}
+            </p>
+            <a href={route('community', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
+              {t('community.organiseTitle', locale)}
+            </a>
+          </div>
         )}
       </div>
     </div>
   </section>
 
+  <!-- Past results ----------------------------------------------------------->
+  <section class="py-10 md:py-12">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-5xl">
+        <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+          <h2 class="text-2xl font-heading font-bold text-text-primary uppercase tracking-wide">
+            {t('tournament.results', locale)}
+          </h2>
+
+          {venueOptions.length > 1 && (
+            <div class="flex items-center gap-2">
+              <label for="filter-venue" class="text-xs font-heading font-bold uppercase tracking-wider text-text-muted">
+                {t('tournament.filterCity', locale)}
+              </label>
+              <select id="filter-venue"
+                      class="px-3 py-2 bg-bg-primary border border-white/10 rounded-lg text-text-primary focus:border-brand-orange/60 focus:outline-none transition-colors text-sm">
+                <option value="">{t('tournament.allCities', locale)}</option>
+                {venueOptions.map(([venue, count]) => (
+                  <option value={venue}>{venue} ({count})</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+
+        {past.length > 0 ? (
+          <ul class="space-y-2.5" id="tournament-list">
+            {past.map(tournament => {
+              const players = tournament.actualPlayerCount || tournament.playerCount;
+              const winner = tournament.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName));
+              const hasResults = tournament.top8.length > 0;
+              const decklistCount = tournament.top8.filter(entry => entry.decklistSlug).length;
+              const isRecent = meta.recentSlugs.includes(tournament.slug);
+
+              return (
+                <li data-venue={tournament.location || tournament.city}>
+                  <a href={route('tournaments', locale, tournament.slug)}
+                     data-analytics="tournament_view" data-analytics-slug={tournament.slug}
+                     class="panel block p-4 sm:p-5 hover:border-brand-orange/40 transition-colors no-underline group">
+                    <div class="flex items-start gap-3 sm:gap-4">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                          <h3 class="text-base sm:text-lg font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors">
+                            {tournament.title}
+                          </h3>
+                          {hasResults ? (
+                            <span class="badge badge--gold">{t('tournament.resultsPublished', locale)}</span>
+                          ) : (
+                            <span class="badge badge--muted">{t('tournament.resultsPending', locale)}</span>
+                          )}
+                          {isRecent && <span class="badge badge--new">{t('archive.shelfNew', locale)}</span>}
+                        </div>
+
+                        <p class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-text-muted">
+                          <span>{formatDate(tournament.date, locale)}</span>
+                          {(tournament.location || tournament.city) && (
+                            <>
+                              <span aria-hidden="true" class="opacity-40">·</span>
+                              <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
+                            </>
+                          )}
+                          {players > 0 && (
+                            <>
+                              <span aria-hidden="true" class="opacity-40">·</span>
+                              <span>{players} {t('tournament.players', locale)}</span>
+                            </>
+                          )}
+                          {decklistCount > 0 && (
+                            <>
+                              <span aria-hidden="true" class="opacity-40">·</span>
+                              <span>{t('tournament.decklistsCount', locale).replace('%n%', String(decklistCount))}</span>
+                            </>
+                          )}
+                        </p>
+
+                        {winner && (
+                          <p class="text-sm text-text-secondary mt-2">
+                            <span class="text-magic-gold font-semibold">{t('tournament.winner', locale)}</span>
+                            {!isPlaceholder(winner.playerName) && <>{' · '}{winner.playerName}</>}
+                            {' — '}<span class="font-beleren" lang="en">{winner.commanderName.split(' // ')[0]}</span>
+                            {winner.score && <span class="text-text-muted font-mono text-xs ml-1.5">{winner.score}</span>}
+                          </p>
+                        )}
+                      </div>
+
+                      <svg class="w-5 h-5 flex-shrink-0 text-magic-gold group-hover:translate-x-1 transition-transform duration-300 mt-1"
+                           fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                      </svg>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <div class="text-center py-12">
+            <h3 class="text-xl font-heading font-bold text-magic-gradient mb-3">{t('tournament.noYet', locale)}</h3>
+            <p class="text-text-secondary">{t('tournament.resultsComing', locale)}</p>
+          </div>
+        )}
+
+        <p id="tournament-empty" class="hidden text-center py-10 text-text-secondary">
+          {t('tournament.noneForFilter', locale)}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const venue = document.getElementById('filter-venue') as HTMLSelectElement | null;
+    const list = document.getElementById('tournament-list');
+    const empty = document.getElementById('tournament-empty');
+
+    venue?.addEventListener('change', () => {
+      if (!list) return;
+      const wanted = venue.value;
+      let visible = 0;
+      for (const item of [...list.children] as HTMLElement[]) {
+        const match = !wanted || item.dataset.venue === wanted;
+        item.hidden = !match;
+        if (match) visible++;
+      }
+      empty?.classList.toggle('hidden', visible > 0);
+      window.pdcTrack?.('tournament_filter', { venue: wanted });
+    });
+  </script>
 </Base>

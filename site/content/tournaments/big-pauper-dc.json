@@ -1,0 +1,114 @@
+{
+    "title": "Big Pauper DC",
+    "date": "2026-06-07",
+    "location": "Toulon",
+    "city": "",
+    "playerCount": 13,
+    "actualPlayerCount": 13,
+    "signupUrl": "",
+    "details": "",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "",
+            "commanderName": "Crackling Drake",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 2,
+            "playerName": "",
+            "commanderName": "Crackling Drake",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 3,
+            "playerName": "",
+            "commanderName": "Crackling Drake",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 4,
+            "playerName": "Pierre-Louis",
+            "commanderName": "Mayhem Devil",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 5,
+            "playerName": "",
+            "commanderName": "Sedraxis Specter",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 6,
+            "playerName": "",
+            "commanderName": "Gut, True Soul Zealot // Far Traveler",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 7,
+            "playerName": "",
+            "commanderName": "Mica, Reader of Ruins",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 8,
+            "playerName": "",
+            "commanderName": "Soulherder",
+            "score": "",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Crackling Drake",
+            "count": 3
+        },
+        {
+            "name": "Mayhem Devil",
+            "count": 1
+        },
+        {
+            "name": "Sedraxis Specter",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Far Traveler",
+            "count": 1
+        },
+        {
+            "name": "Mica, Reader of Ruins",
+            "count": 1
+        },
+        {
+            "name": "Soulherder",
+            "count": 1
+        },
+        {
+            "name": "Huskburster Swarm",
+            "count": 1
+        },
+        {
+            "name": "Exdeath, Void Warlock",
+            "count": 1
+        },
+        {
+            "name": "Garland, Knight of Cornelia",
+            "count": 1
+        },
+        {
+            "name": "Junkyard Genius",
+            "count": 1
+        },
+        {
+            "name": "Phyrexian Censor",
+            "count": 1
+        }
+    ]
+}

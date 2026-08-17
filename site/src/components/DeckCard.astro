@@ -1,0 +1,142 @@
+---
+/**
+ * Decklist card for grids and shelves.
+ *
+ * The old index card showed commander art, colours and an archetype — which made
+ * four separate "Gut, True Soul Zealot" entries indistinguishable. It now carries
+ * the three facts that tell them apart: the finish, the tournament, and the date.
+ *
+ * `data-*` attributes feed the index page's client-side search/filter/sort, so the
+ * filtering logic reads what is rendered instead of a parallel copy of the data.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { formatColorSymbols } from '@/lib/mana';
+import { placeLabel, type EnrichedDecklist } from '@/lib/decklists';
+
+interface Props {
+  deck: EnrichedDecklist;
+  locale: Locale;
+  /** Where the click came from, for analytics. */
+  from?: string;
+  /** Horizontal row instead of a vertical card — used below `sm` and in shelves. */
+  compact?: boolean;
+}
+
+const { deck, locale, from = 'index', compact = false } = Astro.props;
+
+const href = route('decklists', locale, deck.slug);
+const dateLabel = deck.date
+  ? new Date(deck.date + 'T00:00:00').toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+  : null;
+
+const resultLabel = deck.result ? placeLabel(deck.result.place, locale) : null;
+
+// Sort keys, precomputed so the client script never parses dates or ordinals.
+const sortDate = deck.date ?? '';
+const sortPlace = deck.result ? String(deck.result.place).padStart(2, '0') : '99';
+const haystack = [deck.commander, deck.partner, deck.author, deck.archetype, deck.result?.title]
+  .filter(Boolean)
+  .join(' ')
+  .toLowerCase();
+---
+
+<article class="h-full"
+         data-deck
+         data-archetype={deck.archetype ?? ''}
+         data-color={deck.ciKey}
+         data-tournament={deck.result ? '1' : '0'}
+         data-search={haystack}
+         data-sort-date={sortDate}
+         data-sort-place={sortPlace}
+         data-sort-commander={deck.commander.toLowerCase()}>
+  <a href={href}
+     data-analytics="decklist_view"
+     data-analytics-slug={deck.slug}
+     data-analytics-commander={deck.commander}
+     data-analytics-from={from}
+     class:list={[
+       'deck-card group',
+       deck.isBanned && 'deck-card--banned',
+       compact && 'flex-row items-stretch',
+     ]}>
+
+    <div class:list={[
+      'relative overflow-hidden bg-bg-tertiary flex-shrink-0',
+      compact ? 'w-24 sm:w-32' : 'aspect-[4/3]',
+      deck.isBanned && 'grayscale',
+    ]}>
+      {deck.commanderImage ? (
+        <img src={deck.commanderImage}
+             alt=""
+             width={compact ? 128 : 626}
+             height={compact ? 128 : 470}
+             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+             loading="lazy" decoding="async" />
+      ) : (
+        <div class="w-full h-full flex items-center justify-center min-h-24">
+          <svg class="w-10 h-10 text-magic-gold/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+        </div>
+      )}
+
+      {deck.isBanned && (
+        <span class="absolute top-2 right-2 badge badge--danger uppercase tracking-wider text-xs shadow-lg">
+          {t('meta.banned', locale)}
+        </span>
+      )}
+
+      {!deck.isBanned && resultLabel && (
+        <span class="absolute top-2 left-2 badge badge--gold uppercase tracking-wider text-xs shadow-lg">
+          {resultLabel}
+        </span>
+      )}
+    </div>
+
+    <div class="p-3.5 flex-1 flex flex-col gap-2 min-w-0">
+      <div class="flex items-center justify-between gap-2">
+        <span class="flex items-center gap-1">
+          <span class="sr-only">{t('a11y.colors', locale)}</span>
+          <span set:html={formatColorSymbols(deck.colors)} />
+        </span>
+        {deck.archetype && <span class="badge badge--muted flex-shrink-0">{deck.archetype}</span>}
+      </div>
+
+      <h3 class:list={[
+        'font-beleren font-bold text-text-primary group-hover:text-brand-orange transition-colors leading-tight',
+        compact ? 'text-base line-clamp-2' : 'text-lg sm:text-xl line-clamp-2',
+        deck.isBanned && 'line-through decoration-red-500/70',
+      ]} lang="en">{deck.commander}</h3>
+
+      {deck.partner && (
+        <p class:list={[
+          'text-xs font-beleren text-magic-gold/80 truncate -mt-1',
+          deck.isBanned && 'line-through decoration-red-500/70',
+        ]} lang="en">+ {deck.partner}</p>
+      )}
+
+      <div class="mt-auto space-y-1 text-xs text-text-muted">
+        {deck.result && (
+          <p class="truncate text-text-secondary">
+            <span class="text-magic-gold font-semibold">{resultLabel}</span>
+            {' · '}{deck.result.title}
+          </p>
+        )}
+        <p class="flex items-center gap-1.5 flex-wrap">
+          {dateLabel && <span>{dateLabel}</span>}
+          {deck.author && (
+            <>
+              {dateLabel && <span aria-hidden="true">·</span>}
+              <span class="truncate">{deck.author}</span>
+            </>
+          )}
+        </p>
+      </div>
+    </div>
+  </a>
+</article>

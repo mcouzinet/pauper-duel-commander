@@ -1,5 +1,20 @@
 ---
-import { t, getAlternateLocalePath, type Locale } from '@/lib/i18n';
+/**
+ * Site header.
+ *
+ * The nav is ordered by intent rather than by folder: learn (rules, ban list),
+ * play (decklists, meta, tournaments), join (community), then the tool. "Accueil"
+ * is gone — the logo already goes home, and the row was crowded enough that
+ * Community had nowhere to sit.
+ *
+ * Two other things changed. The Discord link is now permanent: it used to exist
+ * only on the home page, so "where are the players?" had no answer from any
+ * other page. And the language switcher is a pair of real links instead of a
+ * `<select onchange>`, which no crawler follows and no keyboard user expects.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route, homeRoute, translatePath } from '@/lib/routes';
+import { DISCORD_URL } from '@/lib/site';
 
 interface Props {
   locale: Locale;
@@ -9,121 +24,159 @@ interface Props {
 const { locale, currentPath } = Astro.props;
 
 const navItems = [
-  { label: { fr: 'Accueil', en: 'Home' }, href: { fr: '/fr/', en: '/en/' } },
-  { key: 'nav.rules', href: { fr: '/fr/regles/', en: '/en/rules/' } },
-  { key: 'nav.banlist', href: { fr: '/fr/banlist/', en: '/en/banlist/' } },
-  { key: 'nav.validator', href: { fr: '/fr/validateur/', en: '/en/validator/' } },
-  { key: 'nav.tournaments', href: { fr: '/fr/tournois/', en: '/en/tournaments/' } },
-  { key: 'nav.meta', href: { fr: '/fr/meta/', en: '/en/meta/' } },
-  { key: 'nav.decklists', href: { fr: '/fr/decklist/', en: '/en/decklist/' } },
-];
+  { key: 'nav.rules', name: 'rules' },
+  { key: 'nav.banlist', name: 'banlist' },
+  { key: 'nav.decklists', name: 'decklists' },
+  { key: 'nav.meta', name: 'meta' },
+  { key: 'nav.tournaments', name: 'tournaments' },
+  { key: 'nav.community', name: 'community' },
+  { key: 'nav.validator', name: 'validator' },
+] as const;
 
-const homeHref = locale === 'fr' ? '/fr/' : '/en/';
+const items = navItems.map(item => {
+  const href = route(item.name, locale);
+  return { href, label: t(item.key, locale), isCurrent: currentPath.startsWith(href) };
+});
+
+const home = homeRoute(locale);
 const altLocale: Locale = locale === 'fr' ? 'en' : 'fr';
-const altPath = getAlternateLocalePath(currentPath, altLocale);
+const altPath = translatePath(currentPath, altLocale);
+
+// The 404 page is the only route not under /fr/ or /en/, so "stay in this
+// language" cannot mean "reload this path" — that path is what 404'd. Both
+// language links go home from there.
+const isLocalised = currentPath.startsWith('/fr/') || currentPath.startsWith('/en/');
+const samePath = isLocalised ? currentPath : home;
+const otherPath = isLocalised ? altPath : homeRoute(altLocale);
 ---
 
-<header class="glass-effect border-b border-card-border fixed top-0 left-0 right-0 z-50">
-  <nav class="container mx-auto px-4 md:px-6">
-    <div class="relative flex justify-between items-center py-3 md:py-8">
-      <div class="w-12 md:w-36">
-        <a href={homeHref} class="absolute top-0 left-0 block hover:scale-105 transition-transform duration-300">
-          <img src="/img/PauperDuelCommander.png"
-               alt="Pauper Duel Commander"
-               class="h-20 md:h-36 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
+<header class="fixed top-0 left-0 right-0 z-50 border-b border-brand-orange/20 bg-brand-black/95 backdrop-blur-md">
+  <nav class="container mx-auto px-4 md:px-6" aria-label={t('a11y.mainNav', locale)}>
+    <div class="flex items-center justify-between gap-4 h-[68px] md:h-[76px]">
+
+      <a href={home} class="flex items-center gap-2.5 shrink-0" aria-label="Pauper Duel Commander">
+        <img src="/img/logo.webp" alt="" width="48" height="47" aria-hidden="true"
+             class="h-11 w-auto md:h-12" fetchpriority="high" />
+        <span class="hidden lg:block font-heading font-bold uppercase leading-[0.95] text-sm tracking-wide text-text-primary">
+          Pauper Duel<br /><span class="text-brand-orange">Commander</span>
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <ul class="hidden md:flex items-center gap-4 lg:gap-5 min-w-0">
+        {items.map(item => (
+          <li>
+            <a href={item.href}
+               aria-current={item.isCurrent ? 'page' : undefined}
+               class:list={[
+                 'relative block font-heading font-bold uppercase text-sm lg:text-[0.95rem] tracking-wide transition-colors duration-200 py-1 group',
+                 item.isCurrent ? 'text-brand-orange' : 'text-text-secondary hover:text-brand-orange',
+               ]}>
+              {item.label}
+              <span class:list={[
+                'absolute -bottom-0.5 left-0 h-0.5 bg-brand-orange transition-all duration-200',
+                item.isCurrent ? 'w-full' : 'w-0 group-hover:w-full',
+              ]} />
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="hidden md:flex items-center gap-3 shrink-0">
+        <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer"
+           data-analytics="discord_click" data-analytics-placement="header"
+           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-[#5865F2] hover:bg-[#4752c4] text-white font-heading font-bold uppercase text-xs tracking-wider transition-colors"
+           aria-label={t('community.joinDiscord', locale)}>
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          <span class="hidden lg:inline">Discord</span>
         </a>
+
+        <!-- Real links: crawlable, and they carry hreflang for search engines. -->
+        <div class="flex items-center rounded-lg border border-brand-orange/30 overflow-hidden text-xs font-heading font-bold uppercase tracking-wider">
+          <a href={locale === 'fr' ? samePath : otherPath} hreflang="fr" lang="fr"
+             aria-current={locale === 'fr' ? 'true' : undefined}
+             data-analytics="lang_switch" data-analytics-to="fr"
+             class:list={['px-2.5 py-2 transition-colors', locale === 'fr' ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>FR</a>
+          <a href={locale === 'en' ? samePath : otherPath} hreflang="en" lang="en"
+             aria-current={locale === 'en' ? 'true' : undefined}
+             data-analytics="lang_switch" data-analytics-to="en"
+             class:list={['px-2.5 py-2 transition-colors', locale === 'en' ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>EN</a>
+        </div>
       </div>
 
-      <!-- Burger button - mobile only -->
-      <button id="mobile-menu-button" class="md:hidden flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Toggle menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path id="burger-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          <path id="burger-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <button id="mobile-menu-button" type="button"
+              class="md:hidden flex items-center justify-center w-11 h-11 -mr-2 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors"
+              aria-label={t('a11y.openMenu', locale)}
+              aria-expanded="false"
+              aria-controls="mobile-menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-
-      <!-- Desktop Menu -->
-      <div class="hidden md:flex items-center gap-8">
-        <ul class="flex items-center space-x-6">
-          {navItems.map((item) => {
-            const href = item.href[locale];
-            const isCurrent = href === '/' + locale + '/' ? currentPath === href : currentPath.startsWith(href);
-            const label = item.label ? item.label[locale] : t(item.key!, locale);
-            return (
-              <li>
-                <a href={href}
-                   class:list={[
-                     'relative font-heading font-bold uppercase text-md text-text-secondary hover:text-brand-orange transition-colors duration-300 group',
-                   ]}>
-                  {label}
-                  <span class:list={[
-                    'absolute -bottom-1 left-0 h-0.5 bg-brand-orange transition-all duration-300',
-                    isCurrent ? 'w-full' : 'w-0 group-hover:w-full',
-                  ]} />
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-
-        <!-- Language Switcher -->
-        <select
-          onchange="window.location.href=this.value"
-          class="px-3 py-2 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-xs tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50"
-        >
-          <option value={locale === 'fr' ? currentPath : altPath} selected={locale === 'fr'}>FR</option>
-          <option value={locale === 'en' ? currentPath : altPath} selected={locale === 'en'}>EN</option>
-        </select>
-      </div>
     </div>
   </nav>
 </header>
 
-<!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 md:hidden hidden" style="background-color: #0A0E13; z-index: 9999;">
-  <div class="container mx-auto px-4 pb-8 h-full flex flex-col">
-    <div class="relative flex justify-between items-center py-3 mb-12">
-      <div class="w-12">
-        <a href={homeHref} class="absolute top-0 left-0 block">
-          <img src="/img/PauperDuelCommander.png"
-               alt="Pauper Duel Commander"
-               class="h-20 drop-shadow-[0_0_12px_rgba(255,87,34,0.2)]" />
-        </a>
-      </div>
-      <button id="mobile-menu-close" class="flex items-center justify-center w-10 h-10 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors" aria-label="Close menu">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<!-- Mobile menu -->
+<div id="mobile-menu" class="fixed inset-0 md:hidden hidden bg-bg-primary" style="z-index: 9999;"
+     role="dialog" aria-modal="true" aria-label={t('a11y.mainNav', locale)}>
+  <div class="container mx-auto px-4 h-full flex flex-col overflow-y-auto">
+    <div class="flex items-center justify-between h-[68px] shrink-0">
+      <a href={home} class="flex items-center gap-2.5" aria-label="Pauper Duel Commander">
+        <img src="/img/logo.webp" alt="" width="44" height="43" aria-hidden="true" class="h-10 w-auto" />
+        <span class="font-heading font-bold uppercase leading-[0.95] text-sm text-text-primary">
+          Pauper Duel<br /><span class="text-brand-orange">Commander</span>
+        </span>
+      </a>
+      <button id="mobile-menu-close" type="button"
+              class="flex items-center justify-center w-11 h-11 -mr-2 text-brand-orange hover:bg-brand-orange/10 rounded-lg transition-colors"
+              aria-label={t('a11y.closeMenu', locale)}>
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
-    <ul class="flex flex-col space-y-6 mb-12">
-      {navItems.map((item) => {
-        const href = item.href[locale];
-        const isCurrent = href === '/' + locale + '/' ? currentPath === href : currentPath.startsWith(href);
-        const label = item.label ? item.label[locale] : t(item.key!, locale);
-        return (
-          <li>
-            <a href={href}
-               class="block font-heading font-bold uppercase text-2xl text-text-secondary hover:text-brand-orange transition-colors duration-300">
-              {label}
-            </a>
-          </li>
-        );
-      })}
+    <a href={DISCORD_URL} target="_blank" rel="noopener noreferrer"
+       data-analytics="discord_click" data-analytics-placement="mobile_menu"
+       class="flex items-center justify-center gap-3 mt-4 mb-8 px-5 py-3.5 rounded-lg bg-[#5865F2] text-white font-heading font-bold uppercase tracking-wider">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+      </svg>
+      {t('community.joinDiscord', locale)}
+    </a>
+
+    <ul class="flex flex-col gap-1">
+      {items.map(item => (
+        <li>
+          <a href={item.href}
+             aria-current={item.isCurrent ? 'page' : undefined}
+             class:list={[
+               'block py-3 font-heading font-bold uppercase text-2xl transition-colors border-l-2 pl-4',
+               item.isCurrent
+                 ? 'text-brand-orange border-brand-orange'
+                 : 'text-text-secondary border-transparent hover:text-brand-orange',
+             ]}>
+            {item.label}
+          </a>
+        </li>
+      ))}
     </ul>
 
-    <div class="mt-auto pt-8 border-t border-brand-orange/20">
-      <p class="text-xs uppercase text-text-muted mb-4 font-heading font-bold tracking-wider">
+    <div class="mt-auto py-8 border-t border-brand-orange/20 mt-8">
+      <p class="text-xs uppercase text-text-muted mb-3 font-heading font-bold tracking-wider">
         {t('header.language', locale)}
       </p>
-      <select
-        onchange="window.location.href=this.value"
-        class="w-full px-4 py-3 border border-brand-orange/30 hover:border-brand-orange transition-all duration-300 bg-brand-orange/5 hover:bg-brand-orange/10 rounded-lg font-heading font-bold uppercase text-brand-orange text-sm tracking-wider cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-orange/50"
-      >
-        <option value={locale === 'fr' ? currentPath : altPath} selected={locale === 'fr'}>Français</option>
-        <option value={locale === 'en' ? currentPath : altPath} selected={locale === 'en'}>English</option>
-      </select>
+      <div class="flex gap-2">
+        <a href={locale === 'fr' ? samePath : otherPath} hreflang="fr" lang="fr"
+           aria-current={locale === 'fr' ? 'true' : undefined}
+           class:list={['flex-1 text-center px-4 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', locale === 'fr' ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>Français</a>
+        <a href={locale === 'en' ? samePath : otherPath} hreflang="en" lang="en"
+           aria-current={locale === 'en' ? 'true' : undefined}
+           class:list={['flex-1 text-center px-4 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', locale === 'en' ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>English</a>
+      </div>
     </div>
   </div>
 </div>

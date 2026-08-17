@@ -118,6 +118,10 @@ function loadGA4() {
   script.onload = () => {
     (window as any).dataLayer = (window as any).dataLayer || [];
     function gtag(...args: any[]) { (window as any).dataLayer.push(args); }
+    // Published on window so scripts/analytics.ts can send journey events. Kept
+    // here rather than there so consent stays the single gate: no gtag on the
+    // window means track() is a no-op.
+    (window as any).gtag = gtag;
     gtag('js', new Date());
     gtag('config', 'G-4J2Y2V33VE');
   };

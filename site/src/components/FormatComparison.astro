@@ -1,0 +1,83 @@
+---
+/**
+ * Pauper / Duel Commander / Pauper Duel Commander, side by side.
+ *
+ * The audit's finding was that the two easiest audiences to convert — players who
+ * already play Pauper, and players who already play Duel Commander — had nothing
+ * on the site telling them what changes. This is that table.
+ *
+ * Every PDC cell traces to a numbered rule in `rulesDoc`; the other two columns
+ * come from the official Pauper rules and duelcommander.org. The `compact` form
+ * (home page) shows the five rows that carry the difference; the full form (rules
+ * page) shows all eight.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+
+interface Props {
+  locale: Locale;
+  compact?: boolean;
+  as?: 'h2' | 'h3';
+}
+
+const { locale, compact = false, as = 'h2' } = Astro.props;
+const Heading = as;
+
+/** Row keys in display order; `key` maps to compare.row<Key>{,Pauper,Dc,Pdc}. */
+const ALL_ROWS = ['Players', 'Deck', 'Copies', 'Commander', 'Rarity', 'Life', 'CmdDamage', 'Banlist'] as const;
+const COMPACT_ROWS = ['Deck', 'Copies', 'Commander', 'Rarity', 'Banlist'] as const;
+
+const rows = (compact ? COMPACT_ROWS : ALL_ROWS).map(key => ({
+  label: t(`compare.row${key}`, locale),
+  pauper: t(`compare.row${key}Pauper`, locale),
+  dc: t(`compare.row${key}Dc`, locale),
+  pdc: t(`compare.row${key}Pdc`, locale),
+}));
+---
+
+<div>
+  <div class="mb-6">
+    <Heading class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
+      {t('compare.title', locale)}
+    </Heading>
+    <p class="text-text-secondary">{t('compare.subtitle', locale)}</p>
+  </div>
+
+  <div class="panel scroll-x">
+    <table class="compare-table">
+      <caption class="sr-only">{t('compare.title', locale)}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{t('compare.criterion', locale)}</th>
+          <th scope="col">{t('compare.pauper', locale)}</th>
+          <th scope="col">{t('compare.duelCommander', locale)}</th>
+          <th scope="col" class="is-pdc">PDC</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(row => (
+          <tr>
+            <th scope="row">{row.label}</th>
+            <td>{row.pauper}</td>
+            <td>{row.dc}</td>
+            <td class="is-pdc">{row.pdc}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-3 text-xs text-text-muted leading-relaxed">{t('compare.sources', locale)}</p>
+
+  {compact && (
+    <p class="mt-4">
+      <a href={`${route('rules', locale)}#comparison`}
+         class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+        {t('compare.cta', locale)}
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </p>
+  )}
+</div>
