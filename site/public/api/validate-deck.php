@@ -9,6 +9,7 @@
  *   commander  (required)  Commander card name
  *   partner    (optional)  Partner card name
  *   decklist   (required)  MTGO-format decklist text
+ *   locale     (optional)  "fr" (default) or "en" — language of the messages
  *
  * Response (JSON):
  *   {
@@ -103,6 +104,11 @@ if (stripos($content_type, 'application/json') !== false) {
 $commander_name = isset($body['commander']) ? trim($body['commander']) : '';
 $partner_name   = isset($body['partner'])   ? trim($body['partner'])   : '';
 $decklist_text  = isset($body['decklist'])  ? $body['decklist']        : '';
+
+// Response language. Allow-listed rather than passed through: it selects a key in
+// a fixed catalogue, and an unknown value must not blank out every message.
+$locale = isset($body['locale']) && $body['locale'] === 'en' ? 'en' : 'fr';
+DeckValidator::$locale = $locale;
 
 // Basic input sanitization (strip tags, limit length)
 $commander_name = strip_tags($commander_name);

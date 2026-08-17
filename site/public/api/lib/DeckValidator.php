@@ -45,6 +45,110 @@ class DeckValidator {
      */
     public static $banlist_path = null;
 
+
+    /**
+     * Response language. Set by the endpoint from the request; French by default
+     * so every existing caller keeps the behaviour it had.
+     *
+     * The site is bilingual but this endpoint only ever answered in French, so an
+     * English-speaking player got English rule labels wrapped around French
+     * sentences.
+     *
+     * @var string
+     */
+    public static $locale = 'fr';
+
+    /**
+     * User-facing messages, keyed by id then locale.
+     *
+     * `%s` placeholders are filled positionally by msg(). French strings stay
+     * unaccented, matching the rest of the API.
+     */
+    const MESSAGES = array(
+        'unknown_type' => array('fr' => 'inconnu', 'en' => 'unknown'),
+        'unknown_rarity' => array('fr' => 'inconnue', 'en' => 'unknown'),
+        'colorless' => array('fr' => 'Incolore', 'en' => 'Colorless'),
+        'commander_required' => array(
+            'fr' => 'Le nom du general est obligatoire.',
+            'en' => 'The commander name is required.',
+        ),
+        'format_invalid' => array(
+            'fr' => 'La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".',
+            'en' => 'The decklist is empty or malformed. Use the MTGO format: "1 Card name".',
+        ),
+        'commander_not_found' => array(
+            'fr' => 'Le general "%s" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
+            'en' => 'Commander "%s" was not found on Scryfall. Check the spelling (English name).',
+        ),
+        'partner_not_found' => array(
+            'fr' => 'Le partenaire "%s" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
+            'en' => 'Partner "%s" was not found on Scryfall. Check the spelling (English name).',
+        ),
+        'commander_type' => array(
+            'fr' => 'Le general "%s" doit etre une creature, un vehicule, un vaisseau spatial ou un background (type actuel : %s).',
+            'en' => 'Commander "%s" must be a creature, vehicle, spacecraft or background (current type: %s).',
+        ),
+        'commander_rarity' => array(
+            'fr' => 'Le general "%s" doit avoir ete imprime au moins une fois en rarete Uncommon (rarete actuelle : %s).',
+            'en' => 'Commander "%s" must have been printed at uncommon at least once (current rarity: %s).',
+        ),
+        'deck_size' => array(
+            'fr' => 'Le deck contient %s carte(s). Un deck PDC doit contenir %s.',
+            'en' => 'The deck holds %s card(s). A PDC deck must hold %s.',
+        ),
+        'deck_size_expected_solo' => array(
+            'fr' => '99 cartes (avec 1 general)',
+            'en' => '99 cards (plus 1 commander)',
+        ),
+        'deck_size_expected_partner' => array(
+            'fr' => '98 cartes (avec 2 generaux partenaires)',
+            'en' => '98 cards (plus 2 partner commanders)',
+        ),
+        'not_found' => array(
+            'fr' => 'Les cartes suivantes sont introuvables sur Scryfall. Verifiez l\'orthographe (noms en anglais) :',
+            'en' => 'The following cards were not found on Scryfall. Check the spelling (English names):',
+        ),
+        'duplicates' => array(
+            'fr' => 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorises en plusieurs copies) :',
+            'en' => 'The following cards appear more than once (only basic lands may be duplicated):',
+        ),
+        'rarity' => array(
+            'fr' => 'Les cartes suivantes n\'ont jamais ete imprimees en rarete Commune (non legales en Pauper) :',
+            'en' => 'The following cards have never been printed at common rarity (not Pauper-legal):',
+        ),
+        'color_identity' => array(
+            'fr' => 'Les cartes suivantes sont hors de l\'identite de couleur du general %s :',
+            'en' => 'The following cards fall outside the commander\'s color identity %s:',
+        ),
+        'ban_list' => array(
+            'fr' => 'Les cartes suivantes sont bannies dans le format PDC :',
+            'en' => 'The following cards are banned in the PDC format:',
+        ),
+    );
+
+    /**
+     * Resolve a catalogue message in the current locale.
+     *
+     * Extra arguments fill the `%s` placeholders in order. An unknown id returns
+     * the id itself, which is visible in testing but never silently blank.
+     *
+     * @param string $id
+     * @return string
+     */
+    public static function msg($id) {
+        if (!isset(self::MESSAGES[$id])) {
+            return $id;
+        }
+        $entry = self::MESSAGES[$id];
+        $text  = isset($entry[self::$locale]) ? $entry[self::$locale] : $entry['fr'];
+
+        $args = array_slice(func_get_args(), 1);
+        foreach ($args as $value) {
+            $text = preg_replace('/%s/', str_replace('$', '\\$', (string) $value), $text, 1);
+        }
+        return $text;
+    }
+
     /**
      * Main validation entry point.
      *
@@ -69,7 +173,7 @@ class DeckValidator {
         if (empty($commander_name)) {
             $errors[] = array(
                 'rule'    => 'commander',
-                'message' => 'Le nom du general est obligatoire.',
+                'message' => self::msg('commander_required'),
                 'cards'   => array(),
             );
             return self::build_result(false, $errors, $warnings, null);
@@ -81,7 +185,7 @@ class DeckValidator {
         if (empty($parsed_cards)) {
             $errors[] = array(
                 'rule'    => 'format',
-                'message' => 'La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".',
+                'message' => self::msg('format_invalid'),
                 'cards'   => array(),
             );
             return self::build_result(false, $errors, $warnings, null);
@@ -92,7 +196,7 @@ class DeckValidator {
         if (!$commander_data) {
             $errors[] = array(
                 'rule'    => 'commander',
-                'message' => 'Le general "' . $commander_name . '" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
+                'message' => self::msg('commander_not_found', $commander_name),
                 'cards'   => array($commander_name),
             );
         }
@@ -104,7 +208,7 @@ class DeckValidator {
             if (!$partner_data) {
                 $errors[] = array(
                     'rule'    => 'commander',
-                    'message' => 'Le partenaire "' . $partner_name . '" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
+                    'message' => self::msg('partner_not_found', $partner_name),
                     'cards'   => array($partner_name),
                 );
             }
@@ -237,10 +341,10 @@ class DeckValidator {
         }
 
         if (!$eligible) {
-            $type_label = $type_line ? $type_line : 'inconnu';
+            $type_label = $type_line ? $type_line : self::msg('unknown_type');
             $errors[] = array(
                 'rule'    => 'commander_type',
-                'message' => 'Le general "' . $card_name . '" doit etre une creature, un vehicule, un vaisseau spatial ou un background (type actuel : ' . $type_label . ').',
+                'message' => self::msg('commander_type', $card_name, $type_label),
                 'cards'   => array($card_name),
             );
         }
@@ -258,10 +362,10 @@ class DeckValidator {
 
         if (!in_array('uncommon', $rarities, true)) {
             $rarity = isset($card_data->rarity) ? $card_data->rarity : null;
-            $rarity_label = $rarity ? ucfirst($rarity) : 'inconnue';
+            $rarity_label = $rarity ? ucfirst($rarity) : self::msg('unknown_rarity');
             $errors[] = array(
                 'rule'    => 'commander_rarity',
-                'message' => 'Le general "' . $card_name . '" doit avoir ete imprime au moins une fois en rarete Uncommon (rarete actuelle : ' . $rarity_label . ').',
+                'message' => self::msg('commander_rarity', $card_name, $rarity_label),
                 'cards'   => array($card_name),
             );
         }
@@ -277,12 +381,10 @@ class DeckValidator {
         }
 
         if ($total !== $expected_size) {
-            $label = $has_partner
-                ? '98 cartes (avec 2 generaux partenaires)'
-                : '99 cartes (avec 1 general)';
+            $label = self::msg($has_partner ? 'deck_size_expected_partner' : 'deck_size_expected_solo');
             $errors[] = array(
                 'rule'    => 'deck_size',
-                'message' => 'Le deck contient ' . $total . ' carte(s). Un deck PDC doit contenir ' . $label . '.',
+                'message' => self::msg('deck_size', $total, $label),
                 'cards'   => array(),
             );
         }
@@ -309,7 +411,7 @@ class DeckValidator {
         if (!empty($not_found)) {
             $errors[] = array(
                 'rule'    => 'not_found',
-                'message' => 'Les cartes suivantes sont introuvables sur Scryfall. Verifiez l\'orthographe (noms en anglais) :',
+                'message' => self::msg('not_found'),
                 'cards'   => $not_found,
             );
         }
@@ -328,7 +430,7 @@ class DeckValidator {
         if (!empty($duplicates)) {
             $errors[] = array(
                 'rule'    => 'duplicates',
-                'message' => 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorises en plusieurs copies) :',
+                'message' => self::msg('duplicates'),
                 'cards'   => $duplicates,
             );
         }
@@ -355,7 +457,7 @@ class DeckValidator {
         if (!empty($invalid)) {
             $errors[] = array(
                 'rule'    => 'rarity',
-                'message' => 'Les cartes suivantes n\'ont jamais ete imprimees en rarete Commune (non legales en Pauper) :',
+                'message' => self::msg('rarity'),
                 'cards'   => $invalid,
             );
         }
@@ -382,7 +484,7 @@ class DeckValidator {
             }
         }
         if (!empty($violations)) {
-            $identity_label = empty($allowed_colors) ? 'Incolore' : implode('', $allowed_colors);
+            $identity_label = empty($allowed_colors) ? self::msg('colorless') : implode('', $allowed_colors);
             if (!empty($partner_name)) {
                 $label = '"' . $commander_name . '" + "' . $partner_name . '" (' . $identity_label . ')';
             } else {
@@ -390,7 +492,7 @@ class DeckValidator {
             }
             $errors[] = array(
                 'rule'    => 'color_identity',
-                'message' => 'Les cartes suivantes sont hors de l\'identite de couleur du general ' . $label . ' :',
+                'message' => self::msg('color_identity', $label),
                 'cards'   => array_values(array_unique($violations)),
             );
         }
@@ -424,7 +526,7 @@ class DeckValidator {
         if (!empty($found)) {
             $errors[] = array(
                 'rule'    => 'ban_list',
-                'message' => 'Les cartes suivantes sont bannies dans le format PDC :',
+                'message' => self::msg('ban_list'),
                 'cards'   => $found,
             );
         }

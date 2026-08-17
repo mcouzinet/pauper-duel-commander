@@ -12,6 +12,12 @@ on:
     branches: [main]
     paths:
       - 'site/**'
+  # Weekly rebuild. The whole site is generated at build time, including
+  # "upcoming vs past" and the ban list freshness date, so an un-rebuilt site
+  # keeps showing a finished tournament as upcoming until someone pushes.
+  # Monday 05:00 UTC, before anyone looks.
+  schedule:
+    - cron: '0 5 * * 1'
 
 # Ne jamais interrompre un envoi FTP en cours (éviterait un déploiement partiel).
 concurrency:

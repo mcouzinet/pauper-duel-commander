@@ -1,6 +1,10 @@
 ---
 import Base from '@/layouts/Base.astro';
+import RulesSummary from '@/components/RulesSummary.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { getBanlist } from '@/lib/banlist';
 import fr from '@/i18n/fr.json';
 import en from '@/i18n/en.json';
 import type { Locale } from '@/lib/i18n';
@@ -9,25 +13,42 @@ interface Props {
   locale: Locale;
 }
 
-
 const { locale } = Astro.props;
----
-<Base title={t('validator.title', locale)}>
 
-  <!-- Hero -->
-  <section class="py-16 bg-gradient-to-b from-bg-primary to-bg-secondary relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-bg-primary via-bg-secondary to-bg-primary"></div>
-    <div class="absolute inset-0 opacity-10">
-      <img src="/img/cards-background.png" alt="" aria-hidden="true" class="w-full h-full object-cover" />
+const bannedCount = getBanlist().cards.length;
+
+const description = locale === 'fr'
+  ? 'Vérifiez la légalité de votre deck Pauper Duel Commander : 100 cartes, général peu commun, communes, identité de couleur, singleton et ban list.'
+  : 'Check your Pauper Duel Commander deck for legality: 100 cards, uncommon commander, commons, color identity, singleton and ban list.';
+---
+<Base title={t('validator.title', locale)} description={description} bareTitle={false}>
+
+  <section class="page-head">
+    <div class="page-head__bg"></div>
+    <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
+      <img src="/img/cards-background.webp" alt="" aria-hidden="true"
+           width="1024" height="356" class="w-full h-full object-cover" />
     </div>
-    <div class="container mx-auto px-4 sm:px-6 relative z-10">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-magic-gradient mb-6">
+
+    <div class="container mx-auto px-4 md:px-6 relative z-10">
+      <div class="max-w-4xl">
+        <Breadcrumb locale={locale} items={[{ label: t('validator.title', locale) }]} />
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-magic-gradient mt-3 mb-3">
           {t('validator.title', locale)}
         </h1>
-        <p class="text-base sm:text-xl text-text-secondary max-w-2xl mx-auto leading-relaxed">
+        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mb-5">
           {t('validator.subtitle1', locale)} <strong class="text-text-primary">{t('validator.pdc', locale)}</strong>. {t('validator.subtitle2', locale)}
         </p>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <a href={route('rules', locale)} class="stat-pill no-underline hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
+            {t('nav.rules', locale)}
+          </a>
+          <a href={route('banlist', locale)} class="stat-pill no-underline hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
+            {t('nav.banlist', locale)} · <strong>{bannedCount}</strong>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -97,93 +118,11 @@ const { locale } = Astro.props;
     </div>
   </section>
 
-  <!-- Rules section -->
-  <section class="py-16 bg-bg-secondary/50 border-t border-magic-gold/10">
-    <div class="container mx-auto px-4 sm:px-6">
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-3xl font-heading font-bold text-magic-gradient mb-8 text-center">
-          {t('validator.rulesTitle', locale)}
-        </h2>
-        <div class="grid md:grid-cols-2 gap-4">
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.rule100', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.rule100Desc', locale)}</p>
-              </div>
-            </div>
-          </div>
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.ruleUncommon', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.ruleUncommonDesc', locale)}</p>
-              </div>
-            </div>
-          </div>
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16"/><path d="M2 12h20"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.ruleCommon', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.ruleCommonDesc', locale)}</p>
-              </div>
-            </div>
-          </div>
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="M12 2a7 7 0 0 1 0 14"/><path d="M12 22a7 7 0 0 1 0-14"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.ruleColor', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.ruleColorDesc', locale)}</p>
-              </div>
-            </div>
-          </div>
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.ruleSingleton', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.ruleSingletonDesc', locale)}</p>
-              </div>
-            </div>
-          </div>
-          <div class="magic-card p-6">
-            <div class="flex items-start gap-4">
-              <span class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-lg bg-brand-orange/10 border border-brand-orange/20">
-                <svg class="w-5 h-5 text-brand-orange" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-                </svg>
-              </span>
-              <div>
-                <h3 class="font-heading font-bold text-text-primary mb-1">{t('validator.ruleBan', locale)}</h3>
-                <p class="text-xs text-text-secondary leading-relaxed">{t('validator.ruleBanDesc', locale)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!-- Rules: the same six cards the rules page and the home page show -->
+  <section class="py-12 border-t border-card-border/25 bg-bg-secondary/40">
+    <div class="container mx-auto px-4 md:px-6">
+      <div class="max-w-4xl">
+        <RulesSummary locale={locale} />
       </div>
     </div>
   </section>
@@ -205,6 +144,32 @@ const { locale } = Astro.props;
     partnerCheckbox?.addEventListener('change', () => {
       partnerField?.classList.toggle('hidden', !partnerCheckbox.checked);
     });
+
+    // Prefill from a decklist page's "check this deck" button. A 99-card list is
+    // handed over through sessionStorage rather than a query string, and consumed
+    // once so a later reload starts from a blank form.
+    try {
+      const raw = sessionStorage.getItem('pdc:prefill');
+      if (raw) {
+        sessionStorage.removeItem('pdc:prefill');
+        const prefill = JSON.parse(raw);
+        const commanderInput = document.getElementById('commander-name') as HTMLInputElement | null;
+        const partnerInput = document.getElementById('partner-name') as HTMLInputElement | null;
+        const decklistInput = document.getElementById('decklist-input') as HTMLTextAreaElement | null;
+
+        if (commanderInput && prefill.commander) commanderInput.value = prefill.commander;
+        if (decklistInput && prefill.decklist) {
+          decklistInput.value = String(prefill.decklist).replace(/\r\n/g, '\n').trim();
+        }
+        if (prefill.partner && partnerCheckbox && partnerInput) {
+          partnerCheckbox.checked = true;
+          partnerField?.classList.remove('hidden');
+          partnerInput.value = prefill.partner;
+        }
+      }
+    } catch {
+      // Storage unavailable or malformed payload: leave the form empty.
+    }
 
     function escHtml(s: string): string {
       return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -235,11 +200,22 @@ const { locale } = Astro.props;
 
       setLoading(true);
       try {
-        const body = new URLSearchParams({ commander, partner: partner ?? '', decklist });
+        const body = new URLSearchParams({
+          commander,
+          partner: partner ?? '',
+          decklist,
+          // The endpoint answers in French unless told otherwise; the EN page used
+          // to render English rule labels around French sentences.
+          locale: document.documentElement.lang === 'en' ? 'en' : 'fr',
+        });
         const res = await fetch('/api/validate-deck.php', { method: 'POST', body });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (!data.success) { renderError(data.data?.message ?? i18n.errorUnexpected); return; }
+        window.pdcTrack?.('validator_submit', {
+          is_valid: Boolean(data.data?.is_valid),
+          error_count: data.data?.errors?.length ?? 0,
+        });
         renderResults(data.data);
       } catch (err: any) {
         renderError(i18n.errorServer ?? 'Server error');

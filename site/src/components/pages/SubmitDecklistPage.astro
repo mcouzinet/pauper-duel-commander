@@ -178,7 +178,12 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
       showLegality(esc(i18n.checking), true);
       try {
-        const body = new URLSearchParams({ commander: f.commander, partner: f.partner, decklist: f.decklist });
+        const body = new URLSearchParams({
+          commander: f.commander,
+          partner: f.partner,
+          decklist: f.decklist,
+          locale: document.documentElement.lang === 'en' ? 'en' : 'fr',
+        });
         const res = await fetch('/api/validate-deck.php', { method: 'POST', body });
         const data = await res.json();
         if (!res.ok || !data.success) { showLegality(esc(i18n.errServer), false); return; }

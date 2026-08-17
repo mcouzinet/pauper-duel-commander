@@ -35,6 +35,7 @@ class DeckValidatorTest extends TestCase
     protected function tearDown(): void
     {
         DeckValidator::$banlist_path = null;
+        DeckValidator::$locale = 'fr';
     }
 
     /**
@@ -303,5 +304,61 @@ class DeckValidatorTest extends TestCase
         $this->expectExceptionMessage('Ban list not found');
 
         DeckValidator::validate(self::COMMANDER, '', $this->deck(['Plains' => 98, 'Goliath Paladin' => 1]));
+    }
+
+    // ---- Message locale ---------------------------------------------------
+
+    /**
+     * The endpoint answers in French by default, so nothing that already calls it
+     * changes behaviour.
+     */
+    public function test_messages_default_to_french(): void
+    {
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertFalse($result['is_valid']);
+        $this->assertSame('Le nom du general est obligatoire.', $result['errors'][0]['message']);
+    }
+
+    /**
+     * With locale=en the same rule reports in English. The EN page used to render
+     * English rule labels wrapped around French sentences.
+     */
+    public function test_messages_can_be_english(): void
+    {
+        DeckValidator::$locale = 'en';
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertFalse($result['is_valid']);
+        $this->assertSame('The commander name is required.', $result['errors'][0]['message']);
+    }
+
+    /** Placeholders are filled in whichever language is selected. */
+    public function test_english_messages_interpolate_values(): void
+    {
+        DeckValidator::$locale = 'en';
+        $result = DeckValidator::validate(self::COMMANDER, '', '1 Plains');
+
+        $sizeError = null;
+        foreach ($result['errors'] as $error) {
+            if ($error['rule'] === 'deck_size') {
+                $sizeError = $error;
+            }
+        }
+
+        $this->assertNotNull($sizeError, 'expected a deck_size error for a one-card deck');
+        $this->assertSame(
+            'The deck holds 1 card(s). A PDC deck must hold 99 cards (plus 1 commander).',
+            $sizeError['message']
+        );
+    }
+
+    /** An unknown locale falls back to French rather than blanking the message. */
+    public function test_unknown_locale_falls_back_to_french(): void
+    {
+        DeckValidator::$locale = 'de';
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertSame('Le nom du general est obligatoire.', $result['errors'][0]['message']);
     }
 }
