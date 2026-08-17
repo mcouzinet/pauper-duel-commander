@@ -48,7 +48,13 @@
     "validate": "Valider ce deck",
     "cardCount": "cartes",
     "commanderLabel": "Général",
-    "partnerLabel": "Partenaire"
+    "partnerLabel": "Partenaire",
+    "bannedCards": "Cette liste contient %n% cartes désormais bannies",
+    "bannedCardsHelp": "Elle était légale le jour où elle a été jouée. Le format a changé depuis : telle quelle, elle ne passe plus le validateur.",
+    "bannedCardTitle": "Bannie en Pauper Duel Commander",
+    "bannedCardsShort": "cartes bannies",
+    "bannedCardsOne": "Cette liste contient une carte désormais bannie",
+    "bannedCardsShortOne": "carte bannie"
   },
   "validator": {
     "title": "Validateur de Deck",

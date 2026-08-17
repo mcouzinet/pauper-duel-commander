@@ -14,6 +14,8 @@ export interface EnrichedCard extends ParsedCard {
   colors: string[];
   imageUrl: string | null;
   imageUrlSmall: string | null;
+  /** On the ban list today, whatever it was on the day the list was played. */
+  isBanned: boolean;
 }
 
 export interface DeckStats {
@@ -44,4 +46,6 @@ export interface DeckData {
     typeLine: string | null;
   } | null;
   stats: DeckStats;
+  /** Cards in the 99 that have since been banned, in list order. */
+  bannedCards: EnrichedCard[];
 }

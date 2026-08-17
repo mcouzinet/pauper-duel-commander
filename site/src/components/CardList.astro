@@ -33,6 +33,7 @@ const groups = Object.entries(cardsByType).map(([type, cards]) => ({
   anchor: `type-${type.toLowerCase()}`,
   label: t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale),
   total: cards.reduce((sum, card) => sum + card.quantity, 0),
+  bannedCount: cards.filter(card => card.isBanned).length,
   cards,
 }));
 ---
@@ -42,19 +43,39 @@ const groups = Object.entries(cardsByType).map(([type, cards]) => ({
     <section id={group.anchor}>
       <h2 class="text-xl sm:text-2xl font-heading font-bold text-magic-gradient uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/15">
         {group.label} <span class="text-text-muted tabular-nums">({group.total})</span>
+        {group.bannedCount > 0 && (
+          <span class="badge badge--danger ml-2 align-middle normal-case tracking-normal">
+            {group.bannedCount} {group.bannedCount === 1
+              ? t('decklist.bannedCardsShortOne', locale)
+              : t('decklist.bannedCardsShort', locale)}
+          </span>
+        )}
       </h2>
 
       <ul class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-0.5">
         {group.cards.map(card => (
-          <li class="card-hover-trigger group flex items-center gap-2 py-1.5 px-1.5 -mx-1.5 rounded hover:bg-brand-orange/8 transition-colors cursor-pointer min-w-0"
+          <li class:list={[
+                'card-hover-trigger group flex items-center gap-2 py-1.5 px-1.5 -mx-1.5 rounded transition-colors cursor-pointer min-w-0',
+                card.isBanned ? 'bg-red-500/8 hover:bg-red-500/15' : 'hover:bg-brand-orange/8',
+              ]}
               data-card-name={card.name}
               data-card-image={card.imageUrl ?? ''}>
             <span class="text-sm font-mono text-text-muted w-4 text-right flex-shrink-0 tabular-nums">
               {card.quantity}
             </span>
-            <span class="text-sm sm:text-base text-text-primary group-hover:text-brand-orange transition-colors truncate flex-1 font-beleren" lang="en">
+            <span class:list={[
+              'text-sm sm:text-base truncate flex-1 font-beleren transition-colors',
+              card.isBanned
+                ? 'text-red-300 line-through decoration-red-500/70'
+                : 'text-text-primary group-hover:text-brand-orange',
+            ]} lang="en">
               {card.name}
             </span>
+            {card.isBanned && (
+              <span class="badge badge--danger flex-shrink-0 uppercase tracking-wider" title={t('decklist.bannedCardTitle', locale)}>
+                {t('meta.banned', locale)}
+              </span>
+            )}
             {card.manaCost && (
               <span class="flex-shrink-0" set:html={formatManaCost(card.manaCost)} />
             )}

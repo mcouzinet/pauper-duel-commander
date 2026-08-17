@@ -48,7 +48,13 @@
     "validate": "Check this deck",
     "cardCount": "cards",
     "commanderLabel": "Commander",
-    "partnerLabel": "Partner"
+    "partnerLabel": "Partner",
+    "bannedCards": "This list holds %n% cards that have since been banned",
+    "bannedCardsHelp": "It was legal on the day it was played. The format has changed since: as it stands, it no longer passes the validator.",
+    "bannedCardTitle": "Banned in Pauper Duel Commander",
+    "bannedCardsShort": "banned cards",
+    "bannedCardsOne": "This list holds a card that has since been banned",
+    "bannedCardsShortOne": "banned card"
   },
   "validator": {
     "title": "Deck Validator",

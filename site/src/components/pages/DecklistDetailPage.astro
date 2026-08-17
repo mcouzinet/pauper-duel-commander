@@ -76,6 +76,14 @@ const resultText = result
   ? `${placeLabel(result.place, locale)} · ${result.title}`
   : null;
 
+const bannedCount = deck.bannedCards.length;
+const bannedHeadline = bannedCount === 1
+  ? t('decklist.bannedCardsOne', locale)
+  : t('decklist.bannedCards', locale).replace('%n%', String(bannedCount));
+const bannedChip = bannedCount === 1
+  ? t('decklist.bannedCardsShortOne', locale)
+  : `${bannedCount} ${t('decklist.bannedCardsShort', locale)}`;
+
 const description = [
   data.commander + (data.partner ? ` // ${data.partner}` : ''),
   data.archetype,
@@ -141,6 +149,11 @@ const schemas: Record<string, unknown>[] = [
               {enriched?.tags.includes('debutant') && (
                 <span class="badge badge--new">{t('archive.shelfBeginner', locale)}</span>
               )}
+              {deck.bannedCards.length > 0 && (
+                <a href="#cartes-bannies" class="badge badge--danger no-underline hover:border-red-400/60 transition-colors">
+                  {bannedChip}
+                </a>
+              )}
             </div>
 
             <h1 class:list={[
@@ -157,6 +170,31 @@ const schemas: Record<string, unknown>[] = [
                   <p class="text-sm text-red-200 font-semibold mb-0.5">{t('decklist.bannedCommander', locale)}</p>
                   <p class="text-sm text-red-200/80 leading-relaxed">
                     {t('decklist.bannedDesc', locale)}
+                    {' '}
+                    <a href={route('banlist', locale)} class="underline hover:no-underline">{t('nav.banlist', locale)}</a>
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {deck.bannedCards.length > 0 && !isBanned && (
+              <div class="mb-4 px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-3">
+                <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <div class="min-w-0">
+                  <p class="text-sm text-red-200 font-semibold mb-1">
+                    {bannedHeadline}
+                  </p>
+                  <p class="flex flex-wrap gap-1.5 mb-2">
+                    {deck.bannedCards.map(card => (
+                      <span class="inline-flex items-center text-sm font-beleren text-red-200 bg-red-500/15 rounded px-2 py-0.5" lang="en">
+                        {card.name}
+                      </span>
+                    ))}
+                  </p>
+                  <p class="text-sm text-red-200/80 leading-relaxed">
+                    {t('decklist.bannedCardsHelp', locale)}
                     {' '}
                     <a href={route('banlist', locale)} class="underline hover:no-underline">{t('nav.banlist', locale)}</a>
                   </p>
@@ -261,7 +299,7 @@ const schemas: Record<string, unknown>[] = [
       </div>
     </nav>
 
-    <section class="py-8 md:py-10">
+    <section id="cartes-bannies" class="py-8 md:py-10">
       <div class="container mx-auto px-4 md:px-6">
         <CardList cardsByType={deck.cardsByType} locale={locale} />
       </div>
