@@ -1,0 +1,128 @@
+name: CI
+
+# Vérifie une pull request AVANT qu'elle puisse être mergée. Jusqu'ici rien ne
+# tournait sur une PR : la seule vérification était l'étape "API tests" de
+# deploy.yml, qui s'exécute APRÈS le merge — donc au moment du déploiement. Une
+# PR cassée n'était visible qu'en faisant échouer une mise en ligne.
+#
+# Ce workflow ne déploie rien. Il construit le site et lance les tests de l'API,
+# exactement comme deploy.yml, et c'est tout.
+#
+# Pour qu'il bloque réellement le merge, l'ajouter aux "required status checks"
+# du ruleset : Settings → Rules → Rulesets → Protect main → Require status
+# checks to pass → ajouter "build & test".
+
+on:
+  pull_request:
+    branches: [main]
+  # Aussi sur push de branche, pour un retour avant même d'ouvrir la PR.
+  push:
+    branches-ignore: [main]
+
+# Une PR qui reçoit trois pushes d'affilée n'a besoin que du dernier.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: build & test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      # Le build interroge Scryfall pour chaque carte référencée (~900). Sans ce
+      # cache, chaque PR refait toutes ces requêtes.
+      - uses: actions/cache@v6
+        with:
+          path: site/.cache/scryfall
+          key: scryfall-${{ hashFiles('site/content/**/*.json') }}
+          restore-keys: scryfall-
+
+      - name: Install & build
+        working-directory: site
+        env:
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
+          PUBLIC_SUBMISSIONS_ENABLED: ${{ vars.PUBLIC_SUBMISSIONS_ENABLED }}
+        # Même contournement que deploy.yml pour le bug npm des dépendances
+        # optionnelles (@rolldown) déjà rencontré sur ce dépôt.
+        run: |
+          npm ci || { rm -rf node_modules package-lock.json && npm install; }
+          npm run build
+
+      # astro check ne bloque pas : le dépôt a des erreurs de typage
+      # préexistantes. Le rapport reste visible dans le log.
+      - name: Type check (informatif)
+        working-directory: site
+        continue-on-error: true
+        run: npx astro check
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      # Le cache Composer évite de retélécharger PHPUnit à chaque run. Un
+      # déploiement a déjà échoué sur un HTTP 429 de codeload.github.com pendant
+      # `composer install` ; sans cache, chaque run rejoue ce tirage au sort.
+      - name: Cache Composer
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/composer
+          key: composer-${{ hashFiles('site/composer.lock', 'site/composer.json') }}
+          restore-keys: composer-
+
+      - name: API tests
+        working-directory: site
+        run: |
+          # `--prefer-dist` tape les archives Packagist plutôt que codeload, et
+          # la boucle absorbe un 429 isolé au lieu de faire échouer la PR.
+          for attempt in 1 2 3; do
+            composer install --no-interaction --prefer-dist --no-progress && break
+            echo "composer install a échoué (tentative $attempt) — nouvelle tentative dans 20 s"
+            sleep 20
+          done
+          vendor/bin/phpunit
+
+      # Les liens internes ne peuvent pas casser sans que quelqu'un le voie : les
+      # quinze liens "Deck" des top 8 ont pointé dans le vide pendant des mois.
+      - name: Liens internes
+        working-directory: site/dist
+        run: |
+          node -e '
+            const fs = require("fs"), path = require("path");
+            const pages = [];
+            (function walk(dir) {
+              for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+                const p = path.join(dir, entry.name);
+                entry.isDirectory() ? walk(p) : entry.name.endsWith(".html") && pages.push(p);
+              }
+            })(".");
+
+            const exists = href => href.endsWith("/")
+              ? fs.existsSync(path.join(".", href, "index.html"))
+              : fs.existsSync(path.join(".", href));
+
+            const broken = [];
+            for (const page of pages) {
+              const html = fs.readFileSync(page, "utf-8");
+              for (const [, href] of html.matchAll(/href="(\/[^"#?]*)(?:[#?][^"]*)?"/g)) {
+                if (!exists(href)) broken.push(`${href}  <-  ${page}`);
+              }
+            }
+
+            console.log(`${pages.length} pages vérifiées`);
+            if (broken.length) {
+              console.error(`\n${broken.length} lien(s) interne(s) cassé(s) :`);
+              for (const line of broken) console.error("  " + line);
+              process.exit(1);
+            }
+            console.log("aucun lien interne cassé");
+          '
