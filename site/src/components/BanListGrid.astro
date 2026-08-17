@@ -50,7 +50,10 @@ const scryfallUrl = (name: string) =>
       <a href={scryfallUrl(card.name)} target="_blank" rel="noopener noreferrer"
          class="group block no-underline"
          aria-label={`${card.name} — ${t('banlist.viewOnScryfall', locale)}`}>
-        <span class="relative block overflow-hidden rounded-lg bg-bg-tertiary aspect-[488/680]">
+        <span class:list={[
+          "relative block overflow-hidden rounded-lg bg-bg-tertiary aspect-[488/680]",
+          card.isNew && "ring-2 ring-green-400/70 ring-offset-2 ring-offset-bg-primary",
+        ]}>
           {card.imageUrl ? (
             <img src={card.imageUrl} alt=""
                  width="488" height="680"
@@ -65,16 +68,15 @@ const scryfallUrl = (name: string) =>
             </span>
           )}
 
-          {card.isNew && (
-            <span class="absolute top-1.5 left-1.5 badge badge--new uppercase tracking-wider text-xs shadow-lg">
-              {t('banlist.isNew', locale)}
-            </span>
-          )}
         </span>
 
         <span class="block mt-1.5 font-beleren text-xs sm:text-sm text-text-secondary group-hover:text-brand-orange transition-colors leading-tight" lang="en">
           {card.name}
         </span>
+
+        {card.isNew && (
+          <span class="badge--new-solid mt-1">{t('banlist.isNew', locale)}</span>
+        )}
       </a>
     </li>
   ))}

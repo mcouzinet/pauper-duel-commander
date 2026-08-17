@@ -32,7 +32,7 @@ import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getMeta } from '@/lib/meta';
 import { getShelves } from '@/lib/decklists';
-import { getBanlistDate, formatBanlistDate, getBanlist } from '@/lib/banlist';
+import { getBanlistDate, formatBanlistDate, summariseLastAnnouncement } from '@/lib/banlist';
 import { getUpcomingTournaments, getPastTournaments, formatDate } from '@/lib/tournaments';
 import { colorIdentityLabel } from '@/lib/colors';
 
@@ -42,14 +42,13 @@ interface Props {
 
 const { locale } = Astro.props;
 
-const [meta, banlistDate, upcoming, past] = await Promise.all([
+const [meta, banlistDate, lastAnnouncement, upcoming, past] = await Promise.all([
   getMeta(),
   getBanlistDate(),
+  summariseLastAnnouncement(locale),
   getUpcomingTournaments(),
   getPastTournaments(),
 ]);
-
-const banlist = getBanlist();
 
 // Shelves: two of them (winners, offbeat) are enough for a home page; the index
 // page carries the full set.
@@ -138,8 +137,10 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
         <a href={route('banlist', locale)} class="quick-tile"
            data-analytics="quick_access_click" data-analytics-tile="banlist">
           <span class="quick-tile__label">{t('quick.banlist', locale)}</span>
-          <span class="quick-tile__value">{banlist.cards.length} {t('banlist.cardCount', locale)}</span>
-          <span class="quick-tile__hint">{t('quick.banlistHint', locale)} : {formatBanlistDate(banlistDate, locale)}</span>
+          <span class="quick-tile__value">{formatBanlistDate(banlistDate, locale)}</span>
+          <span class="quick-tile__hint truncate">
+            {lastAnnouncement?.summary ?? t('quick.banlistHint', locale)}
+          </span>
         </a>
 
         {nextEvent ? (
@@ -242,15 +243,6 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
         </dl>
 
         <RulesSummary locale={locale} as="h3" compact={true} />
-        <p class="mt-5">
-          <a href={route('rules', locale)}
-             class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
-            {t('rulesSummary.fullRuleset', locale)}
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </a>
-        </p>
       </div>
     </div>
   </section>

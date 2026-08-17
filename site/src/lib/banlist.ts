@@ -119,3 +119,43 @@ export function formatBanlistDate(iso: string, locale: Locale): string {
     year: 'numeric',
   });
 }
+
+/**
+ * One-line summary of the latest announcement, for the home page tile.
+ *
+ * Returns null when there is nothing to say (no history, or the initial list —
+ * "20 cards banned" is not news). Names a single card outright; counts beyond
+ * that, because three card names do not fit on a tile.
+ */
+export async function summariseLastAnnouncement(
+  locale: Locale,
+): Promise<{ date: string; summary: string } | null> {
+  const last = await getLastAnnouncement();
+  if (!last || last.kind === 'initial' || last.changes.length === 0) return null;
+
+  const banned = last.changes.filter(c => c.type === 'banned');
+  const unbanned = last.changes.filter(c => c.type === 'unbanned');
+  const restricted = last.changes.filter(c => c.type === 'restricted');
+
+  const parts: string[] = [];
+  const describe = (
+    cards: BanlistChange[],
+    one: (card: string) => string,
+    many: (n: number) => string,
+  ) => {
+    if (cards.length === 0) return;
+    parts.push(cards.length === 1 ? one(cards[0].card) : many(cards.length));
+  };
+
+  if (locale === 'fr') {
+    describe(banned, card => `${card} bannie`, n => `${n} cartes bannies`);
+    describe(unbanned, card => `${card} légalisée`, n => `${n} légalisées`);
+    describe(restricted, card => `${card} restreinte`, n => `${n} restreintes`);
+  } else {
+    describe(banned, card => `${card} banned`, n => `${n} cards banned`);
+    describe(unbanned, card => `${card} unbanned`, n => `${n} unbanned`);
+    describe(restricted, card => `${card} restricted`, n => `${n} restricted`);
+  }
+
+  return { date: last.date, summary: parts.join(' · ') };
+}

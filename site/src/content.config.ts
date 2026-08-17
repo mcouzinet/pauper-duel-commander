@@ -8,7 +8,8 @@ const tournaments = defineCollection({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     location: z.string(),
     city: z.string(),
-    playerCount: z.number().min(2),
+    // 0 = capacity not announced yet; every display guards on `> 0`.
+    playerCount: z.number().min(0).default(0),
     actualPlayerCount: z.number().nullable().optional(),
     signupUrl: z.string().optional(),
     details: z.string().optional(),

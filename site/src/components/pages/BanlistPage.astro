@@ -149,24 +149,6 @@ const description = locale === 'fr'
     </section>
   )}
 
-  <!-- Search: names are text in the DOM, so this is a filter, not a query -->
-  <section class="border-b border-card-border/25 bg-bg-secondary/30 sticky top-[68px] md:top-[76px] z-30 backdrop-blur-sm">
-    <div class="container mx-auto px-4 md:px-6 py-3">
-      <div class="max-w-4xl flex items-center gap-3">
-        <label for="banlist-search" class="sr-only">{t('banlist.searchLabel', locale)}</label>
-        <div class="relative flex-1 max-w-md">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input id="banlist-search" type="search" autocomplete="off"
-                 placeholder={t('banlist.searchPlaceholder', locale)}
-                 class="w-full pl-9 pr-3 py-2 bg-bg-primary border border-white/10 rounded-lg text-text-primary placeholder-text-muted focus:border-brand-orange/60 focus:outline-none transition-colors text-sm" />
-        </div>
-        <p id="banlist-count" class="text-sm text-text-muted tabular-nums" aria-live="polite"></p>
-      </div>
-    </div>
-  </section>
-
   <section id="banned-commander" class="py-10 md:py-12">
     <div class="container mx-auto px-4 md:px-6">
       <div class="mb-6 max-w-3xl">
@@ -186,10 +168,6 @@ const description = locale === 'fr'
       <BanListGrid cards={banlist.bannedInDeck} locale={locale} recentlyChanged={recentlyChanged} />
     </div>
   </section>
-
-  <p id="banlist-empty" class="hidden container mx-auto px-4 md:px-6 py-10 text-center text-text-secondary">
-    {t('banlist.searchNoResult', locale)}
-  </p>
 
   {history.length > 0 && (
     <section id="history" class="py-12 md:py-16 border-t border-card-border/20 bg-bg-secondary/40">
@@ -256,51 +234,6 @@ const description = locale === 'fr'
   )}
 
   <script>
-    // Card names are rendered as text, so searching them is a DOM filter. Section
-    // headings hide when the section empties, and the whole thing degrades to a
-    // fully visible list without JS.
-    const input = document.getElementById('banlist-search') as HTMLInputElement | null;
-    const count = document.getElementById('banlist-count');
-    const empty = document.getElementById('banlist-empty');
-    const sections = ['banned-commander', 'banned-deck']
-      .map(id => document.getElementById(id))
-      .filter((el): el is HTMLElement => el !== null);
-
-    const items = sections.flatMap(section =>
-      [...section.querySelectorAll<HTMLElement>('[data-card-name]')],
-    );
-    const total = items.length;
-
-    let debounce: number | undefined;
-
-    function apply() {
-      const query = (input?.value ?? '').trim().toLowerCase();
-      let visible = 0;
-
-      for (const item of items) {
-        const match = !query || (item.dataset.cardName ?? '').includes(query);
-        item.hidden = !match;
-        if (match) visible++;
-      }
-
-      for (const section of sections) {
-        const anyVisible = [...section.querySelectorAll<HTMLElement>('[data-card-name]')]
-          .some(item => !item.hidden);
-        section.hidden = !anyVisible;
-      }
-
-      if (empty) empty.classList.toggle('hidden', visible > 0);
-      if (count) count.textContent = query ? `${visible}/${total}` : '';
-
-      if (query) {
-        window.clearTimeout(debounce);
-        debounce = window.setTimeout(() => {
-          window.pdcTrack?.('banlist_search', { query_length: query.length, results: visible });
-        }, 800);
-      }
-    }
-
-    input?.addEventListener('input', apply);
     window.pdcTrack?.('banlist_view', {});
   </script>
 </Base>
