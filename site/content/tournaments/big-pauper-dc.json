@@ -46,7 +46,7 @@
         {
             "place": 6,
             "playerName": "",
-            "commanderName": "Gut, True Soul Zealot",
+            "commanderName": "Gut, True Soul Zealot // Far Traveler",
             "score": "",
             "decklistSlug": null
         },
@@ -66,16 +66,49 @@
         }
     ],
     "metaList": [
-        { "name": "Crackling Drake", "count": 3 },
-        { "name": "Mayhem Devil", "count": 1 },
-        { "name": "Sedraxis Specter", "count": 1 },
-        { "name": "Gut, True Soul Zealot", "count": 1 },
-        { "name": "Mica, Reader of Ruins", "count": 1 },
-        { "name": "Soulherder", "count": 1 },
-        { "name": "Huskburster Swarm", "count": 1 },
-        { "name": "Exdeath, Void Warlock", "count": 1 },
-        { "name": "Garland, Knight of Cornelia", "count": 1 },
-        { "name": "Junkyard Genius", "count": 1 },
-        { "name": "Phyrexian Censor", "count": 1 }
+        {
+            "name": "Crackling Drake",
+            "count": 3
+        },
+        {
+            "name": "Mayhem Devil",
+            "count": 1
+        },
+        {
+            "name": "Sedraxis Specter",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Far Traveler",
+            "count": 1
+        },
+        {
+            "name": "Mica, Reader of Ruins",
+            "count": 1
+        },
+        {
+            "name": "Soulherder",
+            "count": 1
+        },
+        {
+            "name": "Huskburster Swarm",
+            "count": 1
+        },
+        {
+            "name": "Exdeath, Void Warlock",
+            "count": 1
+        },
+        {
+            "name": "Garland, Knight of Cornelia",
+            "count": 1
+        },
+        {
+            "name": "Junkyard Genius",
+            "count": 1
+        },
+        {
+            "name": "Phyrexian Censor",
+            "count": 1
+        }
     ]
 }
