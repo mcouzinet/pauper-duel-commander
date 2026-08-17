@@ -67,7 +67,7 @@ const restData = rest.map(entry => ({
                   {winnerParts.length > 1 && (
                     <p class={`text-xs text-yellow-200/70 font-beleren truncate leading-tight ${winner.isBanned ? 'line-through decoration-red-500/70' : ''}`}>+ {winnerParts[1]}</p>
                   )}
-                  <p class="text-xs text-yellow-200/80 truncate">{winner.playerName}</p>
+                  {winner.playerName && <p class="text-xs text-yellow-200/80 truncate">{winner.playerName}</p>}
                 </div>
                 {winner.score && <span class="text-xs font-mono text-yellow-400 flex-shrink-0">{winner.score}</span>}
                 <span class="flex-shrink-0 px-2.5 py-1 bg-yellow-500/15 border border-yellow-500/30 rounded text-xs font-bold text-yellow-400 uppercase tracking-wide">{t('tournament.deck', locale)}</span>
@@ -93,7 +93,7 @@ const restData = rest.map(entry => ({
                 {winnerParts.length > 1 && (
                   <p class={`text-xs text-yellow-200/70 font-beleren truncate leading-tight ${winner.isBanned ? 'line-through decoration-red-500/70' : ''}`}>+ {winnerParts[1]}</p>
                 )}
-                <p class="text-xs text-yellow-200/80 truncate">{winner.playerName}</p>
+                {winner.playerName && <p class="text-xs text-yellow-200/80 truncate">{winner.playerName}</p>}
               </div>
               {winner.score && <span class="text-xs font-mono text-yellow-400 flex-shrink-0">{winner.score}</span>}
             </div>
@@ -125,7 +125,7 @@ const restData = rest.map(entry => ({
                 {entry.parts.length > 1 && (
                   <p class={`text-xs text-text-muted font-beleren truncate leading-tight ${entry.isBanned ? 'line-through decoration-red-500/70' : ''}`}>+ {entry.parts[1]}</p>
                 )}
-                <p class="text-xs text-text-muted truncate leading-tight">{entry.playerName}</p>
+                {entry.playerName && <p class="text-xs text-text-muted truncate leading-tight">{entry.playerName}</p>}
               </div>
               {entry.score && <span class="text-xs font-mono text-text-muted flex-shrink-0">{entry.score}</span>}
               <span class="flex-shrink-0 px-2 py-0.5 bg-brand-orange/10 border border-brand-orange/20 rounded text-xs font-semibold text-brand-orange">{t('tournament.deck', locale)}</span>
@@ -151,7 +151,7 @@ const restData = rest.map(entry => ({
                 {entry.parts.length > 1 && (
                   <p class={`text-xs text-text-muted font-beleren truncate leading-tight ${entry.isBanned ? 'line-through decoration-red-500/70' : ''}`}>+ {entry.parts[1]}</p>
                 )}
-                <p class="text-xs text-text-muted truncate leading-tight">{entry.playerName}</p>
+                {entry.playerName && <p class="text-xs text-text-muted truncate leading-tight">{entry.playerName}</p>}
               </div>
               {entry.score && <span class="text-xs font-mono text-text-muted flex-shrink-0">{entry.score}</span>}
               <span class="flex-shrink-0 text-xs text-text-muted/40">&mdash;</span>
