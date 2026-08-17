@@ -37,4 +37,7 @@
   (repo, contents+PR write) et une site Turnstile ; poser les secrets HORS www/ ;
   activer `push:[main]` + protection de branche `main`. Le PR live ne peut être
   prouvé qu'une fois ces secrets posés (Claude ne manipule pas les secrets).
+- ⚠ Le SFTP ne pousse pas les dotfiles : `site/public/api/.htaccess` (qui
+  autorise submit-decklist.php) doit être uploadé À LA MAIN vers www/api/.htaccess
+  une fois, sinon l'endpoint reste en 403. Cf. docs/external/README.md.
 

@@ -47,6 +47,15 @@ différent ? Définir la variable d'env `PDC_SECRETS_FILE` vers son chemin absol
 > Le déploiement SFTP n'écrase **que** le contenu de `www/` (et saute les
 > dotfiles), donc ce fichier reste intact d'un déploiement à l'autre.
 
+### 3 bis. Autoriser l'endpoint dans `api/.htaccess` (une fois)
+
+Le SFTP **ne déploie pas les dotfiles**, donc le `www/api/.htaccess` du serveur
+est resté celui qui n'autorise que `validate-deck.php` — les nouveaux endpoints
+de soumission y sont bloqués (403). **Une fois**, uploader par SFTP le fichier
+`site/public/api/.htaccess` du dépôt vers `www/api/.htaccess` (il autorise
+`validate-deck.php`, `submit-decklist.php`, `submit-tournament.php`). À refaire
+uniquement si on ajoute un endpoint.
+
 ## 4. Variables de build (publiques) sur GitHub
 
 GitHub → Settings → Secrets and variables → **Actions** → onglet **Variables** :

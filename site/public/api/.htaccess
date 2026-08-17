@@ -1,25 +1,28 @@
-# Only the endpoint is reachable. Everything else under api/ — the PHP classes,
-# the Scryfall cache, the ban list, the rate-limit state — is internal.
+# Only the public endpoints are reachable. Everything else under api/ — the PHP
+# classes, the Scryfall cache, the ban list, the rate-limit state — is internal.
 #
 # Defence in depth: each class also refuses to run when requested directly, but
 # that guard only helps while PHP is executing the file. If the PHP handler were
 # ever misconfigured for this directory the sources would be served as plain
 # text, and these rules are what stop that.
 #
+# NOTE: the SFTP deploy skips dotfiles, so changes here do NOT auto-deploy —
+# upload this file manually to www/api/.htaccess once after adding an endpoint.
+#
 # Apache only. On nginx, use the equivalent in the server block:
 #
 #   location ^~ /api/ { return 404; }
-#   location = /api/validate-deck.php {
+#   location ~ ^/api/(validate-deck|submit-decklist|submit-tournament)\.php$ {
 #       include fastcgi_params;
 #       fastcgi_pass unix:/run/php/php8.2-fpm.sock;
 #       fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 #   }
 
-<FilesMatch "^validate-deck\.php$">
+<FilesMatch "^(validate-deck|submit-decklist|submit-tournament)\.php$">
     Require all granted
 </FilesMatch>
 
-<FilesMatch "^(?!validate-deck\.php$).*$">
+<FilesMatch "^(?!(validate-deck|submit-decklist|submit-tournament)\.php$).*$">
     Require all denied
 </FilesMatch>
 
