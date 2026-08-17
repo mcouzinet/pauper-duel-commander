@@ -11,7 +11,7 @@ import Base from '@/layouts/Base.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
-import { getUpcomingTournaments, getPastTournaments, formatDate } from '@/lib/tournaments';
+import { getUpcomingTournaments, getPastTournaments, formatDate, isPlaceholder } from '@/lib/tournaments';
 import { getMeta } from '@/lib/meta';
 
 interface Props {
@@ -188,7 +188,7 @@ const description = locale === 'fr'
           <ul class="space-y-2.5" id="tournament-list">
             {past.map(tournament => {
               const players = tournament.actualPlayerCount || tournament.playerCount;
-              const winner = tournament.top8.find(entry => entry.place === 1);
+              const winner = tournament.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName));
               const hasResults = tournament.top8.length > 0;
               const decklistCount = tournament.top8.filter(entry => entry.decklistSlug).length;
               const isRecent = meta.recentSlugs.includes(tournament.slug);
@@ -237,7 +237,7 @@ const description = locale === 'fr'
                         {winner && (
                           <p class="text-sm text-text-secondary mt-2">
                             <span class="text-magic-gold font-semibold">{t('tournament.winner', locale)}</span>
-                            {winner.playerName && <>{' · '}{winner.playerName}</>}
+                            {!isPlaceholder(winner.playerName) && <>{' · '}{winner.playerName}</>}
                             {' — '}<span class="font-beleren" lang="en">{winner.commanderName.split(' // ')[0]}</span>
                             {winner.score && <span class="text-text-muted font-mono text-xs ml-1.5">{winner.score}</span>}
                           </p>

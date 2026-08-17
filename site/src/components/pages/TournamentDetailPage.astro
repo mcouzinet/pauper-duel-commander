@@ -18,7 +18,7 @@ import ColorPieChart from '@/components/ColorPieChart.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route, homeRoute } from '@/lib/routes';
-import { formatDate, sortColorCounts } from '@/lib/tournaments';
+import { formatDate, sortColorCounts, isPlaceholder } from '@/lib/tournaments';
 import { getCardsByNames, getCardImage } from '@/lib/scryfall';
 import { bannedNameSet, splitNames } from '@/lib/banlist';
 import { SITE_ORIGIN } from '@/lib/site';
@@ -42,7 +42,7 @@ const playerCount = data.actualPlayerCount || data.playerCount;
 const names = [
   ...data.top8.map(entry => entry.commanderName),
   ...data.metaList.map(entry => entry.name),
-].filter(Boolean);
+].filter(name => !isPlaceholder(name));
 const cards = names.length > 0
   ? await getCardsByNames([...new Set(names.flatMap(splitNames))])
   : new Map<string, ScryfallCard | null>();
@@ -67,11 +67,14 @@ const isBanned = (name: string) => splitNames(name).some(part => banned.has(part
 
 const top8 = data.top8
   .map(finish => {
-    const card = resolveCard(finish.commanderName);
+    const unknown = isPlaceholder(finish.commanderName);
+    const card = unknown ? null : resolveCard(finish.commanderName);
     return {
       place: finish.place,
-      playerName: finish.playerName,
-      commanderName: finish.commanderName,
+      // Placeholders never reach the UI as a name.
+      playerName: isPlaceholder(finish.playerName) ? '' : finish.playerName,
+      commanderName: unknown ? t('tournament.unknownCommander', locale) : finish.commanderName,
+      isUnknown: unknown,
       score: finish.score,
       commanderImage: getCardImage(card, 'art_crop'),
       cardImage: getCardImage(card, 'normal'),
@@ -89,8 +92,9 @@ const colorCounts: Record<string, number> = {};
 const colorIdentityCounts: Record<string, number> = {};
 
 const metaCommanders = data.metaList.map(entry => {
-  const card = resolveCard(entry.name);
-  const colors = commanderColors(entry.name);
+  const unknown = isPlaceholder(entry.name);
+  const card = unknown ? null : resolveCard(entry.name);
+  const colors = unknown ? [] : commanderColors(entry.name);
 
   if (colors.length > 0) {
     for (const color of colors) colorCounts[color] = (colorCounts[color] ?? 0) + entry.count;
@@ -102,13 +106,13 @@ const metaCommanders = data.metaList.map(entry => {
   colorIdentityCounts[key] = (colorIdentityCounts[key] ?? 0) + entry.count;
 
   return {
-    name: entry.name,
+    name: unknown ? t('tournament.unknownCommander', locale) : entry.name,
     count: entry.count,
     percentage: totalParticipants > 0 ? Math.round((entry.count / totalParticipants) * 100) : 0,
     image: getCardImage(card, 'art_crop'),
     cardImage: getCardImage(card, 'normal'),
     colors,
-    isBanned: isBanned(entry.name),
+    isBanned: unknown ? false : isBanned(entry.name),
   };
 });
 
@@ -117,10 +121,10 @@ const winner = top8.find(finish => finish.place === 1) ?? null;
 const heroImage = winner?.commanderImage ?? null;
 const decklistCount = top8.filter(finish => finish.decklistUrl).length;
 
-const description = winner
+const description = winner && !winner.isUnknown
   ? (locale === 'fr'
-      ? `${data.title} — ${dateFormatted}, ${data.city}. Vainqueur : ${winner.playerName} avec ${winner.commanderName}. Top ${top8.length}, méta et decklists.`
-      : `${data.title} — ${dateFormatted}, ${data.city}. Winner: ${winner.playerName} with ${winner.commanderName}. Top ${top8.length}, metagame and decklists.`)
+      ? `${data.title} — ${dateFormatted}, ${data.city}. Vainqueur : ${winner.playerName || winner.commanderName}. Top ${top8.length}, méta et decklists.`
+      : `${data.title} — ${dateFormatted}, ${data.city}. Winner: ${winner.playerName || winner.commanderName}. Top ${top8.length}, metagame and decklists.`)
   : `${data.title} — ${dateFormatted}${data.city ? `, ${data.city}` : ''}`;
 
 const schemas: Record<string, unknown>[] = [

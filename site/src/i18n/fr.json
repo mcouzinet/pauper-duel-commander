@@ -203,7 +203,9 @@
     "noneForFilter": "Aucun tournoi pour ce lieu.",
     "countAll": "%n% tournois",
     "backToList": "Tous les tournois",
-    "decklistsCount": "%n% decklists publiées"
+    "decklistsCount": "%n% decklists publiées",
+    "unknownCommander": "Général non renseigné",
+    "unattributed": "%n% place(s) sans général renseigné"
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",

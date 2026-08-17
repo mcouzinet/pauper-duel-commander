@@ -17,6 +17,7 @@
 import { getCollection } from 'astro:content';
 import { getCardsByNames, getCardImage } from './scryfall';
 import { bannedNameSet, splitNames } from './banlist';
+import { isPlaceholder } from './tournaments';
 import type { ScryfallCard } from '../types/scryfall';
 
 /** How many of the newest tournaments count as "recent" for the trend. */
@@ -44,7 +45,10 @@ export interface Aggregate {
   colorCounts: Record<string, number>;
   ciCounts: Record<string, number>;
   tournamentCount: number;
+  /** Every entry, including the ones whose commander was never recorded. */
   total: number;
+  /** Entries counted in `total` but attributed to no commander. */
+  unattributed: number;
 }
 
 export interface MetaData {
@@ -89,12 +93,18 @@ async function build(): Promise<MetaData> {
   const recentCounts = new Map<string, number>();
   const baselineCounts = new Map<string, number>();
   let globalTotal = 0;
+  let globalUnattributed = 0;
   let recentTotal = 0;
   let baselineTotal = 0;
 
   for (const tournament of withMeta) {
     const isRecent = recent.has(tournament.slug);
     for (const entry of tournament.metaList) {
+      if (isPlaceholder(entry.name)) {
+        globalTotal += entry.count;
+        globalUnattributed += entry.count;
+        continue;
+      }
       const key = entry.name.toLowerCase();
       const bucket = globalCounts.get(key) ?? { name: entry.name, count: 0 };
       bucket.count += entry.count;
@@ -113,6 +123,7 @@ async function build(): Promise<MetaData> {
 
   const top4Counts = new Map<string, { name: string; count: number }>();
   let top4Total = 0;
+  let top4Unattributed = 0;
   let top4TournamentCount = 0;
 
   for (const tournament of past) {
@@ -120,6 +131,11 @@ async function build(): Promise<MetaData> {
     if (finishes.length === 0) continue;
     top4TournamentCount++;
     for (const finish of finishes) {
+      if (isPlaceholder(finish.commanderName)) {
+        top4Total += 1;
+        top4Unattributed += 1;
+        continue;
+      }
       const key = finish.commanderName.toLowerCase();
       const bucket = top4Counts.get(key) ?? { name: finish.commanderName, count: 0 };
       bucket.count += 1;
@@ -143,8 +159,8 @@ async function build(): Promise<MetaData> {
     return delta === 0 ? 0 : delta;
   };
 
-  const global = aggregate([...globalCounts.entries()], globalTotal, withMeta.length, cards, banned, trendFor);
-  const top4 = aggregate([...top4Counts.entries()], top4Total, top4TournamentCount, cards, banned, () => null);
+  const global = aggregate([...globalCounts.entries()], globalTotal, globalUnattributed, withMeta.length, cards, banned, trendFor);
+  const top4 = aggregate([...top4Counts.entries()], top4Total, top4Unattributed, top4TournamentCount, cards, banned, () => null);
 
   const dates = withMeta.map(t => t.date).sort();
 
@@ -164,6 +180,7 @@ async function build(): Promise<MetaData> {
 function aggregate(
   counts: [string, { name: string; count: number }][],
   total: number,
+  unattributed: number,
   tournamentCount: number,
   cards: Map<string, ScryfallCard | null>,
   banned: Set<string>,
@@ -204,5 +221,5 @@ function aggregate(
     } satisfies CommanderStat;
   });
 
-  return { commanders, colorCounts, ciCounts, tournamentCount, total };
+  return { commanders, colorCounts, ciCounts, tournamentCount, total, unattributed };
 }

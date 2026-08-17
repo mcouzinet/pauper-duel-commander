@@ -203,7 +203,9 @@
     "noneForFilter": "No tournament for this venue.",
     "countAll": "%n% tournaments",
     "backToList": "All tournaments",
-    "decklistsCount": "%n% decklists published"
+    "decklistsCount": "%n% decklists published",
+    "unknownCommander": "Commander not recorded",
+    "unattributed": "%n% place(s) with no commander recorded"
   },
   "archive": {
     "decklistTitle": "Some Decklists",

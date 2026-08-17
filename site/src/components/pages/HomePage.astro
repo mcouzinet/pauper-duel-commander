@@ -33,7 +33,7 @@ import { route } from '@/lib/routes';
 import { getMeta } from '@/lib/meta';
 import { getShelves } from '@/lib/decklists';
 import { getBanlistDate, formatBanlistDate, summariseLastAnnouncement } from '@/lib/banlist';
-import { getUpcomingTournaments, getPastTournaments, formatDate } from '@/lib/tournaments';
+import { getUpcomingTournaments, getPastTournaments, formatDate, isPlaceholder } from '@/lib/tournaments';
 import { colorIdentityLabel } from '@/lib/colors';
 
 interface Props {
@@ -68,7 +68,7 @@ const featuredDecks = [
 const nextEvent = upcoming[0] ?? null;
 const recentResults = past.filter(tournament => tournament.top8.length > 0).slice(0, 3);
 const latest = recentResults[0] ?? null;
-const latestWinner = latest?.top8.find(entry => entry.place === 1) ?? null;
+const latestWinner = latest?.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName)) ?? null;
 
 const topCommanders = meta.global.commanders.slice(0, 5);
 const topIdentities = Object.entries(meta.global.ciCounts)
@@ -166,7 +166,7 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
             <span class="quick-tile__value truncate">{latest.title}</span>
             <span class="quick-tile__hint truncate">
               {latestWinner
-                ? [latestWinner.playerName, latestWinner.commanderName.split(' // ')[0]].filter(Boolean).join(' · ')
+                ? [latestWinner.playerName, latestWinner.commanderName.split(' // ')[0]].filter(n => !isPlaceholder(n)).join(' · ')
                 : t('quick.lastResultHint', locale)}
             </span>
           </a>
@@ -370,7 +370,7 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
 
           <ul class="space-y-2.5">
             {recentResults.map(tournament => {
-              const winner = tournament.top8.find(entry => entry.place === 1);
+              const winner = tournament.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName));
               return (
                 <li>
                   <a href={route('tournaments', locale, tournament.slug)}
@@ -387,7 +387,7 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
                     {winner && (
                       <p class="text-sm text-text-secondary mt-2">
                         <span class="text-magic-gold font-semibold">{t('tournament.winner', locale)}</span>
-                        {winner.playerName && <>{' · '}{winner.playerName}</>}
+                        {!isPlaceholder(winner.playerName) && <>{' · '}{winner.playerName}</>}
                         {' — '}<span class="font-beleren" lang="en">{winner.commanderName.split(' // ')[0]}</span>
                       </p>
                     )}

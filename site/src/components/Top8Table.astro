@@ -10,6 +10,8 @@ interface Top8Entry {
   cardImage: string | null;
   decklistUrl: string | null;
   isBanned: boolean;
+  /** The result was published without naming the commander. */
+  isUnknown?: boolean;
 }
 
 interface Props {
@@ -30,7 +32,7 @@ function splitCmd(name: string): string[] {
 const winnerParts = winner ? splitCmd(winner.commanderName) : [];
 const restData = rest.map(entry => ({
   ...entry,
-  parts: splitCmd(entry.commanderName),
+  parts: entry.isUnknown ? [entry.commanderName] : splitCmd(entry.commanderName),
   placeClass: entry.place <= 3 ? `tournament-place--${entry.place}` : '',
 }));
 ---

@@ -99,3 +99,19 @@ export function sortColorCounts(counts: Record<string, number>): [string, number
     return (WUBRG_ORDER[a] ?? 99) - (WUBRG_ORDER[b] ?? 99);
   });
 }
+
+/**
+ * Is this field a placeholder rather than a value?
+ *
+ * The WordPress migration recorded unknown players and commanders as "???", and
+ * the site treated that as a name: it looked it up on Scryfall, whose fuzzy
+ * fallback matched `_____` (an Unhinged card), so an unrecorded commander was
+ * illustrated with a silver-bordered joke card and counted as a real deck in the
+ * metagame.
+ *
+ * Anything with no letter or digit in it is a placeholder, which covers "???",
+ * "?", "-", "--" and the empty string without a list to maintain.
+ */
+export function isPlaceholder(value: string | null | undefined): boolean {
+  return !value || !/[\p{L}\p{N}]/u.test(value);
+}
