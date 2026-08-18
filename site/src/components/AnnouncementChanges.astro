@@ -1,0 +1,84 @@
+---
+/**
+ * The cards one ban announcement moved, grouped by change type.
+ *
+ * Rendered twice on the ban list — for the latest announcement and for every
+ * entry in the history — so it lives here instead of being copied a third time.
+ *
+ * Card names are preview triggers (`.card-hover-trigger`, see
+ * `scripts/card-preview.ts`): an announcement names cards without showing them,
+ * and "Underdark Explorer" means nothing to a player who has never seen it.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { getCardByName, getCardImage } from '@/lib/scryfall';
+
+interface Change {
+  card: string;
+  type: string;
+  experimental?: boolean;
+}
+
+interface Props {
+  changes: Change[];
+  locale: Locale;
+}
+
+const { changes, locale } = Astro.props;
+
+const CHANGE_ORDER = ['banned', 'unbanned', 'restricted'] as const;
+const CHANGE_STYLE: Record<string, string> = {
+  banned: 'text-red-300 border-red-500/30 bg-red-500/10',
+  unbanned: 'text-green-300 border-green-500/30 bg-green-500/10',
+  restricted: 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10',
+};
+const CHANGE_LABEL: Record<string, string> = {
+  banned: t('banlist.changeBanned', locale),
+  unbanned: t('banlist.changeUnbanned', locale),
+  restricted: t('banlist.changeRestricted', locale),
+};
+
+// Art for the preview. A card whose image fails to resolve keeps its name and
+// simply gets no trigger, rather than dropping out of the announcement.
+const images = new Map(
+  await Promise.all(
+    [...new Set(changes.map(change => change.card))].map(async name => {
+      const card = await getCardByName(name);
+      return [name, card ? getCardImage(card, 'normal') : null] as const;
+    }),
+  ),
+);
+
+const groups = CHANGE_ORDER
+  .map(type => ({ type, cards: changes.filter(change => change.type === type) }))
+  .filter(group => group.cards.length > 0);
+---
+
+<div class="space-y-3">
+  {groups.map(group => (
+    <div class="flex flex-col sm:flex-row sm:items-start gap-x-3 gap-y-2">
+      <span class={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-heading font-bold uppercase tracking-wider ${CHANGE_STYLE[group.type]}`}>
+        {CHANGE_LABEL[group.type]}
+      </span>
+
+      <div class="flex flex-wrap gap-1.5">
+        {group.cards.map(card => (
+          <span
+            class:list={[
+              'inline-flex items-center gap-1.5 text-sm text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1',
+              images.get(card.card) && 'card-hover-trigger cursor-help hover:text-brand-orange transition-colors',
+            ]}
+            data-card-name={card.card}
+            data-card-image={images.get(card.card) ?? undefined}
+          >
+            {/* `lang` on the name only: the qualifier beside it is UI text. */}
+            <span class="font-beleren" lang="en">{card.card}</span>
+
+            {card.experimental && (
+              <span class="badge badge--warn">{t('banlist.experimental', locale)}</span>
+            )}
+          </span>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>

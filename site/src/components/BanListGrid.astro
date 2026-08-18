@@ -44,7 +44,7 @@ const scryfallUrl = (name: string) =>
   `https://scryfall.com/search?q=${encodeURIComponent(`!"${name}"`)}`;
 ---
 
-<ul class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4" data-banlist-grid>
+<ul class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4" data-banlist-grid>
   {enriched.map(card => (
     <li data-card-name={card.name.toLowerCase()} class="min-w-0">
       <a href={scryfallUrl(card.name)} target="_blank" rel="noopener noreferrer"
