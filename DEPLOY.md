@@ -134,8 +134,8 @@ cd site && npm ci && npm run build
   préexistante » connue, celle d'`astro.config.ts`, a été neutralisée par 812c0d7
   (cast `tailwindcss() as any`, le commentaire sur place explique le pourquoi).
   `deploy.yml` ne lance pas `check` : c'est l'étape « Type check » de `ci.yml` qui
-  le fait, et elle échoue désormais sur une erreur de typage. **Elle n'empêche pas
-  encore le merge** : le ruleset « Protect main » n'exige aucun status check
-  (vérifié le 18 août 2026, il ne porte que `pull_request`, `non_fast_forward` et
-  `deletion`). Pour qu'elle bloque vraiment, ajouter « build & test » aux required
-  status checks — Settings → Rules → Rulesets → Protect main.
+  le fait, et **une erreur de typage bloque le merge** — le job « build & test »
+  est dans les required status checks du ruleset « Protect main » (depuis le
+  18 août 2026), lequel n'a aucun bypass, admin compris. « Require branches to be
+  up to date » est volontairement décochée : elle imposerait un rebase dès qu'une
+  autre PR passe devant.
