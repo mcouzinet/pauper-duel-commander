@@ -438,8 +438,11 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
   <!-- 9. Decks to try -------------------------------------------------------->
   {featuredDecks.length > 0 && (
     <section class="py-14 md:py-16">
+      {/* Full container width, like the decklists index: capped at max-w-6xl the
+          cards came out 179px against the index's 192, and "Horrid Shadowspinner"
+          no longer fit its line. Same width, same grid, same card. */}
       <div class="container mx-auto px-4 md:px-6">
-        <div class="max-w-6xl mx-auto">
+        <div>
           <div class="flex flex-wrap items-end justify-between gap-3 mb-2">
             <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient">
               {t('home.decklistsTitle', locale)}
@@ -450,8 +453,18 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
           </div>
           <p class="text-text-secondary mb-6">{t('home.decklistsSubtitle', locale)}</p>
 
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredDecks.map(deck => <DeckCard deck={deck} locale={locale} from="home" />)}
+          {/* Same grid and same breakpoints as the decklists index, so a deck is
+              the same size wherever it appears. Two card sizes across the site
+              read as a mistake — the index moved to six per row in #11 and this
+              section kept three, i.e. cards twice as wide. Below sm each deck is
+              a compact row here too. */}
+          <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {featuredDecks.map(deck => (
+              <div class="min-w-0">
+                <div class="sm:hidden"><DeckCard deck={deck} locale={locale} from="home" compact={true} /></div>
+                <div class="hidden sm:block h-full"><DeckCard deck={deck} locale={locale} from="home" /></div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
