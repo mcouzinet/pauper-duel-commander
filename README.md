@@ -1,142 +1,71 @@
-# PDC — Pauper Duel Commander
+# Pauper Duel Commander
 
-Site du format Magic: The Gathering **Pauper Duel Commander** : règles, ban list,
-tournois, decklists et validateur de deck.
+Le site du format **Pauper Duel Commander** : du Commander en 1 contre 1, joué
+avec des cartes communes.
 
-## Stack
+**→ [pauperduelcommander.fr](https://pauperduelcommander.fr)**
 
-Site **statique** (Astro) + une **API PHP** réduite au strict minimum.
+On y trouve les règles du format, la ban list et l'historique de ses annonces,
+les tournois et leurs résultats, une collection de decklists, la méta des
+généraux joués, et un validateur qui dit si un deck est légal. Le tout en
+français, anglais et italien.
+
+## Contribuer sans écrire une ligne de code
+
+Deux formulaires alimentent le site directement — pas besoin de compte GitHub ni
+de savoir s'en servir :
 
 | | |
 |---|---|
-| **Génération** | Astro 5 (`output: 'static'`, aucun adaptateur) |
-| **CSS** | Tailwind CSS 4 via `@tailwindcss/vite` (config CSS-first dans `src/styles/globals.css`) |
-| **JS** | TypeScript vanilla, aucun framework UI |
-| **Contenu** | Fichiers JSON (`site/content/`) via les content collections Astro |
-| **Runtime** | PHP 8 — uniquement `/api/validate-deck.php` |
-| **Données cartes** | API Scryfall, appelée au *build* et mise en cache 30 jours |
-| **i18n** | FR / EN, maison (`src/i18n/*.json`) |
+| **Partager une decklist** | [Soumettre une decklist](https://pauperduelcommander.fr/fr/soumettre-decklist/) — le formulaire vérifie que le deck est légal avant l'envoi |
+| **Publier un tournoi** | [Soumettre un tournoi](https://pauperduelcommander.fr/fr/soumettre-tournoi/) — réservé aux organisateurs, avec un code d'accès à demander à l'équipe |
 
-Tout le site est pré-rendu. **Le validateur de deck est la seule chose qui
-s'exécute à l'exécution** : le serveur n'a besoin que de PHP, pas de Node.
+Chaque envoi est relu avant d'apparaître en ligne. Une erreur repérée, une idée à
+proposer ? Ça se passe sur [le Discord](https://discord.gg/4MR2sSWdms).
 
-Hébergé sur **OVH mutualisé** (Apache + PHP 8), déployé automatiquement par
-**GitHub Actions en SFTP** — voir [`DEPLOY.md`](DEPLOY.md).
+## Pour les développeurs
 
-> Le site tournait auparavant sous WordPress (Bedrock + Timber + ACF Pro).
-> Cette stack a été supprimée ; l'historique git en garde la trace.
+Un site **statique** généré par Astro, plus une petite **API PHP** pour le peu qui
+doit tourner en direct : le validateur de deck et les deux formulaires. Le contenu
+vit dans des fichiers JSON versionnés, pas dans une base de données — ce qui veut
+dire qu'une modification de contenu est une pull request, et qu'un merge suffit à
+la publier.
 
-## Structure
-
-```
-.github/workflows/deploy.yml  # CI/CD : build + tests + envoi SFTP vers OVH
-site/
-├── astro.config.ts           # static, site, sitemap, Tailwind
-├── content/                  # Source de vérité du contenu
-│   ├── banlist.json
-│   ├── banlist-history/*.json  # historique des annonces (collection)
-│   ├── decklists/*.json
-│   └── tournaments/*.json
-├── public/
-│   ├── .htaccess             # Redirections 301 des anciennes URLs WordPress
-│   ├── robots.txt, favicon.ico
-│   ├── api/                  # API PHP (déployée telle quelle)
-│   │   ├── validate-deck.php # Seul point d'entrée public
-│   │   ├── .htaccess         # N'autorise que validate-deck.php
-│   │   ├── lib/              # Classes internes (accès refusé)
-│   │   ├── data/             # banlist.json généré au build
-│   │   └── cache/            # Cache Scryfall + état du rate limit
-│   └── img/, fonts/
-├── src/
-│   ├── content.config.ts     # Schémas zod des collections
-│   ├── pages/{fr,en}/        # Routes minces (slugs localisés) -> composants partagés
-│   ├── pages/404.astro
-│   ├── components/pages/     # Une page = un composant partagé, prop `locale`
-│   ├── components/, layouts/
-│   ├── lib/                  # Scryfall, parser, rendu, i18n, routes
-│   ├── i18n/{fr,en}.json
-│   ├── scripts/              # JS client
-│   └── styles/
-├── scripts/
-│   ├── copy-banlist.mjs        # content/banlist.json -> public/api/data/
-│   └── warm-scryfall-cache.mjs # pré-remplit le cache Scryfall avant le build
-└── tests/                    # PHPUnit (API)
-```
-
-## Développement
+Il faut **Node 24** et **PHP 8.2** — les versions utilisées par la CI.
 
 ```bash
-cd site && npm install
-```
-
-```bash
+cd site
+npm install
 npm run dev
 ```
 
 | Commande | Rôle |
 |---|---|
-| `npm run dev` | Serveur de dev (copie la ban list + réchauffe le cache Scryfall au préalable) |
-| `npm run build` | Build production dans `site/dist/` |
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build de production dans `site/dist/` |
 | `npm run preview` | Prévisualise le build |
-| `npm run check` | Vérification Astro + TypeScript |
+| `npm run check` | Vérification des types (`astro check`) |
+| `npm run lint` | Idem, plus `tsc --noEmit` |
 | `npm test` | Tests PHPUnit de l'API |
 
-`npm run dev` sert le site mais **pas** le PHP. Pour tester le validateur en
-local, lancer PHP à côté depuis `site/public/` :
+`npm run dev` ne sert pas le PHP. Pour essayer le validateur en local, lancer PHP
+à côté, depuis `site/public/` :
 
 ```bash
 php -S 127.0.0.1:8000
 ```
 
-## Tests
+## Où lire la suite
 
-```bash
-npm test
-```
+Ce fichier est la porte d'entrée ; le détail vit ailleurs pour n'être écrit qu'une
+fois.
 
-Les tests couvrent le validateur, le chargement de la ban list, le parser de
-decklist et le rate limiter. Ils sont **hermétiques** : `ScryfallService` lit à
-travers un cache fichier pré-rempli avec de vraies réponses Scryfall
-(`tests/fixtures/scryfall/`), donc aucun test ne sort sur le réseau.
+| Fichier | Contenu |
+|---|---|
+| [`CLAUDE.md`](CLAUDE.md) | L'architecture en détail : structure du projet, conventions de code, et les invariants à ne pas casser |
+| [`DEPLOY.md`](DEPLOY.md) | Déploiement, rollback, vérifications après mise en ligne |
+| [`docs/external/README.md`](docs/external/README.md) | Ce qu'il faut poser hors du dépôt pour activer les formulaires : secrets, captcha, jeton GitHub |
 
-## Contenu
+## Licence
 
-`site/content/` est la source de vérité, éditée à la main.
-
-- `banlist.json` — `cards` est l'union des cartes bannies, utilisée par le
-  validateur. Copiée vers `public/api/data/` au build : c'est le seul chemin qui
-  résout à l'identique dans le dépôt, dans `dist/` et en production.
-- `tournaments/*.json` — top 8, meta, participants (schéma dans `src/content.config.ts`)
-- `decklists/*.json` — decklist au format MTGO dans un champ texte
-- `banlist-history/*.json` — un fichier par annonce officielle, affiché en
-  historique sur la page ban list (changements + raisons, bilingue)
-
-Les données Scryfall (images, coûts de mana, types) sont récupérées au build et
-mises en cache 30 jours dans `site/.cache/scryfall/`.
-
-## Déploiement
-
-Automatique via **GitHub Actions** (build → tests PHPUnit → envoi SFTP vers OVH
-`www/`). Déclenchement manuel :
-
-```bash
-gh workflow run deploy.yml
-```
-
-Détails, secrets, rollback et smoke tests : [`DEPLOY.md`](DEPLOY.md).
-
-Le build produit `site/dist/`, qui contient déjà `api/`. Seul `validate-deck.php`
-est joignable : `lib/`, `cache/` et `data/` sont internes (bloqués par
-`public/api/.htaccess`). `cache/` doit être inscriptible par PHP.
-
-## Validateur de deck
-
-`POST /api/validate-deck.php` — `commander`, `partner` (optionnel), `decklist`.
-
-Les 9 règles vérifiées sont documentées en tête de
-`public/api/lib/DeckValidator.php`. Si la ban list ne peut pas être chargée,
-l'API renvoie **503** plutôt que de valider un deck qu'elle n'a pas
-complètement vérifié.
-
-Garde-fous : 20 requêtes/minute/IP (429), 120 cartes distinctes maximum (422),
-50 Ko de corps maximum (413).
+Voir [`LICENSE.md`](LICENSE.md).
