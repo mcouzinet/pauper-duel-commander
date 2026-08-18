@@ -57,11 +57,13 @@ jobs:
           npm ci || { rm -rf node_modules package-lock.json && npm install; }
           npm run build
 
-      # astro check ne bloque pas : le dépôt a des erreurs de typage
-      # préexistantes. Le rapport reste visible dans le log.
-      - name: Type check (informatif)
+      # Le dépôt est à 0 erreur de typage : une erreur qui apparaît est une
+      # régression, et doit faire échouer le job. (Les hints d'`astro check` ne
+      # le font pas échouer — seules les erreurs comptent.) Tant que
+      # "build & test" n'est pas dans les required status checks du ruleset,
+      # l'échec est rouge sur la PR sans en empêcher le merge — cf. l'entête.
+      - name: Type check
         working-directory: site
-        continue-on-error: true
         run: npx astro check
 
       - uses: shivammathur/setup-php@v2

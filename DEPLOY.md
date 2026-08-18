@@ -128,7 +128,14 @@ cd site && npm ci && npm run build
   ligne et `delete_remote_files` est à `false`, donc ils restent en place. **Mais
   si un `.htaccess` est modifié**, il faut le pousser une fois à la main (ou
   adapter le workflow). Idem pour tout futur fichier commençant par un point.
-- `npm run check` remonte **une erreur de type préexistante** dans
-  `astro.config.ts` (incompatibilité de types entre le plugin Vite de Tailwind et
-  celui d'Astro). Elle **n'empêche pas le build** et n'est pas gênante ; le
-  workflow ne lance donc pas `check`.
+- **Le typage est vérifié sur PR, pas au déploiement.** `npm run check` est propre
+  — **0 erreur, 0 avertissement, 8 hints** (mesuré sur `main` le 18 août 2026 ;
+  `npm run lint`, qui y ajoute `tsc --noEmit`, l'est aussi). La dernière « erreur
+  préexistante » connue, celle d'`astro.config.ts`, a été neutralisée par 812c0d7
+  (cast `tailwindcss() as any`, le commentaire sur place explique le pourquoi).
+  `deploy.yml` ne lance pas `check` : c'est l'étape « Type check » de `ci.yml` qui
+  le fait, et elle échoue désormais sur une erreur de typage. **Elle n'empêche pas
+  encore le merge** : le ruleset « Protect main » n'exige aucun status check
+  (vérifié le 18 août 2026, il ne porte que `pull_request`, `non_fast_forward` et
+  `deletion`). Pour qu'elle bloque vraiment, ajouter « build & test » aux required
+  status checks — Settings → Rules → Rulesets → Protect main.
