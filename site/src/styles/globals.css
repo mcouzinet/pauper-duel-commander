@@ -235,6 +235,19 @@
     @apply bg-brand-orange/20 border-brand-orange-light shadow-card-hover;
   }
 
+  /* Un bouton hors d'atteinte le montre : il perd son halo, qui signale
+     precisement qu'une action est disponible. */
+  .btn-primary:disabled,
+  .btn-secondary:disabled {
+    @apply opacity-50 cursor-not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-primary:disabled:hover,
+  .btn-secondary:disabled:hover {
+    box-shadow: none;
+  }
+
   /* Text Gradient Effects */
   .text-magic-gradient {
     background: linear-gradient(135deg, #FF7043 0%, #FF5722 45%, #E64A19 100%);

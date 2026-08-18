@@ -115,8 +115,15 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
 
           <div class="flex flex-wrap gap-4 items-center">
             <button type="button" id="sd-check" class="btn-secondary">{t('submit.checkBtn', locale)}</button>
-            <button type="submit" id="sd-submit" class="btn-primary">{t('submit.submitBtn', locale)}</button>
+            {/* Desactive tant que la legalite n'a pas ete verifiee sur CE deck.
+                Le serveur refuse deja un deck illegal ; ceci evite au visiteur
+                d'aller au bout d'un envoi qui sera rejete. */}
+            <button type="submit" id="sd-submit" class="btn-primary" disabled aria-describedby="sd-submit-hint">
+              {t('submit.submitBtn', locale)}
+            </button>
           </div>
+
+          <p id="sd-submit-hint" class="text-xs text-text-muted">{t('submit.mustCheck', locale)}</p>
 
           <p class="text-xs text-text-muted">{t('submit.moderationNote', locale)}</p>
         </form>
@@ -174,8 +181,45 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       legality.innerHTML = html;
     }
 
+    const submitBtn = $<HTMLButtonElement>('sd-submit');
+    const submitHint = $('sd-submit-hint');
+
+    /**
+     * Submission is gated on a successful check of THIS deck.
+     *
+     * The signature covers only what decides legality: author and archetype can
+     * change freely without voiding the check, while editing the commander,
+     * partner or list does void it — otherwise someone could validate one deck
+     * and send another. The server rejects an illegal deck anyway (422); this
+     * spares the visitor a submission that was never going to land.
+     */
+    const legalitySignature = () => {
+      const f = fields();
+      return [f.commander, f.partner, f.decklist].join('\u0000');
+    };
+    let validatedSignature: string | null = null;
+
+    function refreshSubmitState() {
+      const ready = validatedSignature !== null && validatedSignature === legalitySignature();
+      submitBtn.disabled = !ready;
+      submitHint.hidden = ready;
+    }
+
+    for (const id of ['sd-commander', 'sd-partner', 'sd-decklist']) {
+      $(id).addEventListener('input', () => {
+        if (validatedSignature !== null && validatedSignature !== legalitySignature()) {
+          validatedSignature = null;
+          showLegality(esc(i18n.deckChanged), false);
+        }
+        refreshSubmitState();
+      });
+    }
+    refreshSubmitState();
+
     // Live legality check (reuses the validator endpoint).
     $('sd-check').addEventListener('click', async () => {
+      validatedSignature = null;
+      refreshSubmitState();
       const f = fields();
       if (!f.commander) { showLegality(esc(i18n.needCommander), false); return; }
       if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
@@ -195,7 +239,12 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
     });
 
     function renderLegality(result: any) {
-      if (result.is_valid) { showLegality('<span class="text-green-400 font-semibold">' + esc(i18n.legalOk) + '</span>', true); return; }
+      if (result.is_valid) {
+        validatedSignature = legalitySignature();
+        refreshSubmitState();
+        showLegality('<span class="text-green-400 font-semibold">' + esc(i18n.legalOk) + '</span>', true);
+        return;
+      }
       let html = '<p class="text-red-400 font-semibold mb-2">' + esc(i18n.legalKo) + '</p>';
       for (const e of (result.errors || [])) {
         html += '<div class="mb-2"><span class="text-red-400 font-semibold">' + esc(RULE[e.rule] || e.rule) + '</span>';
@@ -211,6 +260,8 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       const f = fields();
       if (!f.commander) { showLegality(esc(i18n.needCommander), false); return; }
       if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
+      // Enter inside a field submits without going through the button.
+      if (validatedSignature !== legalitySignature()) { refreshSubmitState(); return; }
       if (!$<HTMLInputElement>('sd-consent').checked) { showLegality(esc(i18n.needConsent), false); return; }
       const token = form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value || '';
       if (!token) { showLegality(esc(i18n.needCaptcha), false); return; }

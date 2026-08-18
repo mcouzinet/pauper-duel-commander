@@ -543,6 +543,7 @@
     "consent": "Je confirme avoir le droit de partager cette decklist.",
     "checkBtn": "Vérifier la légalité",
     "submitBtn": "Soumettre",
+    "mustCheck": "Vérifiez la légalité de votre deck pour activer l'envoi.",
     "moderationNote": "Après envoi, votre soumission part en relecture. Une fois validée, elle apparaît automatiquement sur le site.",
     "cta": "Soumettre une decklist",
     "js": {
@@ -564,7 +565,8 @@
       "successStep1": "L'équipe reçoit votre soumission et la relit.",
       "successStep2": "Une fois validée, elle est publiée automatiquement sur le site.",
       "successStep3": "Rien n'apparaît en ligne sans cette validation.",
-      "backHome": "Retour à l'accueil"
+      "backHome": "Retour à l'accueil",
+      "deckChanged": "Deck modifié : relancez la vérification avant d'envoyer."
     },
     "archetypes": {
       "Aggro": "Aggro",
