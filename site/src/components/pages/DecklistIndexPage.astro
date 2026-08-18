@@ -46,17 +46,13 @@ const shelves = await getShelves({
   limit: 6,
 });
 
-const fromTournaments = decklists.filter(deck => deck.result).length;
-
 /** archive.shelfMoment, archive.shelfMomentHint… from the shelf key. */
 const shelfKey = (key: string) => `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
 const title = locale === 'fr'
   ? 'Decklists Pauper Duel Commander'
   : 'Pauper Duel Commander decklists';
-const description = t('archive.subtitle', locale)
-  .replace('%total%', String(decklists.length))
-  .replace('%fromTournaments%', String(fromTournaments));
+const description = t('archive.subtitle', locale);
 ---
 <Base title={title} description={description} bareTitle={false}>
 
@@ -196,11 +192,8 @@ const description = t('archive.subtitle', locale)
 
         <p id="decklist-count"
            class="text-sm text-text-muted tabular-nums ml-auto"
-           data-all={t('archive.countAll', locale).replace('%n%', String(decklists.length))}
            data-filtered={t('archive.countFiltered', locale)}
-           aria-live="polite">
-          {t('archive.countAll', locale).replace('%n%', String(decklists.length))}
-        </p>
+           aria-live="polite"></p>
 
         <button id="filter-reset" type="button" class="hidden text-sm text-brand-orange hover:text-magic-gold transition-colors">
           {t('archive.filterReset', locale)}
@@ -263,9 +256,7 @@ const description = t('archive.subtitle', locale)
     if (grid) {
       const gridEl = grid;
       const wrappers = [...gridEl.children] as HTMLElement[];
-      const total = wrappers.length;
-      const labelAll = count?.dataset.all ?? '';
-      const labelFiltered = count?.dataset.filtered ?? '%n% / %total%';
+      const labelFiltered = count?.dataset.filtered ?? '%n%';
 
       const dataOf = (wrapper: HTMLElement) =>
         wrapper.querySelector<HTMLElement>('[data-deck]')?.dataset ?? {};
@@ -310,9 +301,9 @@ const description = t('archive.subtitle', locale)
         reset?.classList.toggle('hidden', !isFiltered);
         empty?.classList.toggle('hidden', visible > 0);
         if (count) {
-          count.textContent = isFiltered
-            ? labelFiltered.replace('%n%', String(visible)).replace('%total%', String(total))
-            : labelAll;
+          // Only ever the number of matches — the size of the collection is not
+          // something this page advertises.
+          count.textContent = isFiltered ? labelFiltered.replace('%n%', String(visible)) : '';
         }
 
         if (query) {
