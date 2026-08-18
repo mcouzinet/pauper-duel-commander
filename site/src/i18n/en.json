@@ -543,6 +543,7 @@
     "consent": "I confirm I have the right to share this decklist.",
     "checkBtn": "Check legality",
     "submitBtn": "Submit",
+    "mustCheck": "Check your deck's legality to enable submission.",
     "moderationNote": "After sending, your submission goes to review. Once approved, it appears automatically on the site.",
     "cta": "Submit a decklist",
     "js": {
@@ -564,7 +565,8 @@
       "successStep1": "The team receives your submission and reviews it.",
       "successStep2": "Once approved, it is published automatically on the site.",
       "successStep3": "Nothing goes live without that review.",
-      "backHome": "Back to home"
+      "backHome": "Back to home",
+      "deckChanged": "Deck changed: run the check again before submitting."
     },
     "archetypes": {
       "Aggro": "Aggro",

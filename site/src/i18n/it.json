@@ -543,6 +543,7 @@
     "consent": "Confermo di avere il diritto di condividere questa decklist.",
     "checkBtn": "Verifica la legalità",
     "submitBtn": "Invia",
+    "mustCheck": "Verifica la legalità del mazzo per abilitare l'invio.",
     "moderationNote": "Dopo l'invio, la tua proposta passa in revisione. Una volta approvata, compare automaticamente sul sito.",
     "cta": "Invia una decklist",
     "js": {
@@ -564,7 +565,8 @@
       "successStep1": "Il team riceve la tua proposta e la esamina.",
       "successStep2": "Una volta approvata, viene pubblicata automaticamente sul sito.",
       "successStep3": "Nulla viene pubblicato senza questa revisione.",
-      "backHome": "Torna alla home"
+      "backHome": "Torna alla home",
+      "deckChanged": "Mazzo modificato: esegui di nuovo la verifica prima di inviare."
     },
     "archetypes": {
       "Aggro": "Aggro",
