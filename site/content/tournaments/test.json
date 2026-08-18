@@ -1,0 +1,23 @@
+{
+    "title": "test",
+    "date": "2026-07-15",
+    "location": "Artefact",
+    "city": "Bdx",
+    "playerCount": 0,
+    "actualPlayerCount": 12,
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "jean",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        }
+    ]
+}
