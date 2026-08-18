@@ -98,7 +98,7 @@ const schemas: Record<string, unknown>[] = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: locale === 'fr' ? 'Accueil' : 'Home', item: SITE_ORIGIN + homeRoute(locale) },
+      { '@type': 'ListItem', position: 1, name: t('common.home', locale), item: SITE_ORIGIN + homeRoute(locale) },
       { '@type': 'ListItem', position: 2, name: t('archive.title', locale), item: SITE_ORIGIN + route('decklists', locale) },
       { '@type': 'ListItem', position: 3, name: data.title },
     ],

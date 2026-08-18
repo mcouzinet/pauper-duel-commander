@@ -1,0 +1,756 @@
+{
+  "site": {
+    "name": "Pauper Duel Commander",
+    "description": "Il Commander competitivo in 1 contro 1, giocato con le comuni. 100 carte, un comandante non comune, 20 punti vita: regole, ban list, decklist, meta e tornei del formato Pauper Duel Commander."
+  },
+  "nav": {
+    "rules": "Regole",
+    "banlist": "Ban list",
+    "tournaments": "Tornei",
+    "decklists": "Decklist",
+    "validator": "Validatore",
+    "meta": "Meta",
+    "community": "Comunità"
+  },
+  "footer": {
+    "tagline": "Un formato Commander accessibile e competitivo",
+    "rights": "Tutti i diritti riservati.",
+    "legal": "Wizards of the Coast, Magic: The Gathering e i rispettivi loghi sono marchi registrati di Wizards of the Coast LLC.",
+    "colFormat": "Il formato",
+    "colPlay": "Giocare",
+    "colCommunity": "Comunità",
+    "privacy": "Privacy",
+    "cadence": "Il comitato pubblica un annuncio sul formato ogni due mesi, il primo lunedì dei mesi pari."
+  },
+  "header": {
+    "language": "Lingua"
+  },
+  "decklist": {
+    "by": "di",
+    "on": "il",
+    "manaCurve": "Curva di mana",
+    "export": "Esporta la decklist",
+    "title": "Decklist",
+    "bannedCommander": "Comandante bandito",
+    "bannedDesc": "Questo comandante è attualmente bandito nel PDC. Questa decklist non è più legale nel formato.",
+    "manaColors": "Colori di mana",
+    "cardTypes": "Tipi di carta",
+    "exportCopied": "Copiato!",
+    "author": "Autore",
+    "result": "Piazzamento",
+    "atTournament": "a",
+    "viewTournament": "Vedi il torneo",
+    "siblings": "Altri mazzi con questo comandante",
+    "contents": "Indice",
+    "copy": "Copia la lista",
+    "download": "Scarica (.txt)",
+    "openMoxfield": "Apri in Moxfield",
+    "validate": "Verifica questo mazzo",
+    "cardCount": "carte",
+    "commanderLabel": "Comandante",
+    "partnerLabel": "Partner",
+    "bannedCards": "Questa lista contiene %n% carte che nel frattempo sono state bandite",
+    "bannedCardsHelp": "Era legale il giorno in cui è stata giocata. Il formato è cambiato da allora: allo stato attuale non supera più il validatore.",
+    "bannedCardTitle": "Bandita nel Pauper Duel Commander",
+    "bannedCardsShort": "carte bandite",
+    "bannedCardsOne": "Questa lista contiene una carta che nel frattempo è stata bandita",
+    "bannedCardsShortOne": "carta bandita"
+  },
+  "validator": {
+    "title": "Validatore di mazzi",
+    "subtitle1": "Verifica se il tuo mazzo rispetta le regole del formato",
+    "pdc": "Pauper Duel Commander",
+    "subtitle2": "Inserisci il tuo comandante e la tua decklist in formato MTGO per un'analisi completa.",
+    "commander": "Comandante",
+    "commanderPlaceholder": "Es.: Isamaru, Hound of Konda",
+    "commanderHelp": "Nome inglese esatto, come appare su Scryfall.",
+    "partnerToggle": "Mazzo con partner (Partner / Background)",
+    "partner": "Partner",
+    "partnerPlaceholder": "Es.: Keleth, Sunmane Familiar",
+    "partnerHelp": "Nome inglese esatto. Il mazzo deve contenere 98 carte invece di 99.",
+    "decklistFormat": "Formato MTGO: una carta per riga, preceduta dalla quantità. Es.:",
+    "decklistHelp": "Non includere il comandante nella decklist: va indicato separatamente qui sopra.",
+    "submit": "Valida il mazzo",
+    "rulesTitle": "Regole del formato PDC",
+    "rule100": "100 carte",
+    "rule100Desc": "99 carte + 1 comandante (oppure 98 + 2 con partner).",
+    "ruleUncommon": "Comandante non comune",
+    "ruleUncommonDesc": "Il comandante deve essere stato stampato almeno una volta in rarità non comune. Veicoli e Astronavi valgono alle stesse condizioni.",
+    "ruleCommon": "Carte comuni",
+    "ruleCommonDesc": "Le 99 carte del mazzo devono essere state stampate almeno una volta in rarità comune (legalità Pauper).",
+    "ruleColor": "Identità di colore",
+    "ruleColorDesc": "Tutte le carte devono rientrare nell'identità di colore del comandante.",
+    "ruleSingleton": "Nessun doppione",
+    "ruleSingletonDesc": "Massimo 1 copia per carta, tranne le terre base.",
+    "ruleBan": "Ban list",
+    "ruleBanDesc": "Le carte presenti nella ban list PDC non sono ammesse.",
+    "seoDescription": "Verifica la legalità del tuo mazzo Pauper Duel Commander: 100 carte, comandante non comune, comuni, identità di colore, singleton e ban list."
+  },
+  "js": {
+    "ruleFormat": "Formato non valido",
+    "ruleCommander": "Comandante non trovato",
+    "ruleCommanderType": "Tipo del comandante",
+    "ruleCommanderRarity": "Rarità del comandante",
+    "ruleDeckSize": "Numero di carte",
+    "ruleNotFound": "Carte non trovate",
+    "ruleDuplicates": "Doppioni",
+    "ruleRarity": "Rarità delle carte",
+    "ruleColorIdentity": "Identità di colore",
+    "ruleBanList": "Carte bandite",
+    "errorNoCommander": "Inserisci il nome del comandante.",
+    "errorNoDecklist": "Inserisci la tua decklist.",
+    "errorNetwork": "Errore di rete: %s",
+    "errorUnexpected": "Si è verificato un errore imprevisto. Riprova.",
+    "errorServer": "Impossibile contattare il server. Controlla la connessione e riprova.",
+    "btnLoading": "Validazione in corso…",
+    "btnDefault": "Valida il mazzo",
+    "resultValid": "Mazzo valido!",
+    "resultInvalid": "Mazzo non valido",
+    "resultValidMsg": "Il tuo mazzo rispetta tutte le regole del formato PDC.",
+    "resultInvalidMsg": "%count% problema/i rilevato/i. Vedi i dettagli qui sotto.",
+    "statsTotal": "carte totali",
+    "statsUnique": "carte diverse"
+  },
+  "meta": {
+    "title": "Meta PDC",
+    "subtitle": "Analisi del meta del Pauper Duel Commander: comandanti più giocati, distribuzione dei colori e tendenze per torneo.",
+    "global": "Meta globale",
+    "statsOn": "Statistiche aggregate su",
+    "tournaments": "tornei",
+    "playerEntries": "iscrizioni",
+    "mostPlayed": "Comandanti più giocati",
+    "banned": "Bandito",
+    "ciTitle": "Meta per identità di colore",
+    "colorDist": "Distribuzione dei colori",
+    "top4": "Meta dei top 4",
+    "top4Desc": "Comandanti arrivati in top 4 su",
+    "top4Spots": "posti in top 4",
+    "top4Commanders": "Comandanti in top 4",
+    "top4Ci": "Identità di colore in top 4",
+    "top4Colors": "Colori in top 4",
+    "noData": "Nessun dato sul meta disponibile",
+    "noDataDesc": "Le statistiche del meta saranno disponibili dopo i primi tornei.",
+    "seoTitle": "Meta Pauper Duel Commander: i comandanti più giocati",
+    "seoDescription": "I comandanti più giocati nel Pauper Duel Commander, misurati su %tournaments% tornei e %entries% iscrizioni. Identità di colore, distribuzione e top 4."
+  },
+  "ci": {
+    "W": "Mono Bianco",
+    "U": "Mono Blu",
+    "B": "Mono Nero",
+    "R": "Mono Rosso",
+    "G": "Mono Verde",
+    "C": "Incolore",
+    "BU": "Dimir",
+    "BR": "Rakdos",
+    "BG": "Golgari",
+    "BW": "Orzhov",
+    "GR": "Gruul",
+    "GU": "Simic",
+    "GW": "Selesnya",
+    "RU": "Izzet",
+    "RW": "Boros",
+    "UW": "Azorius",
+    "BGR": "Jund",
+    "BGU": "Sultai",
+    "BGW": "Abzan",
+    "BRU": "Grixis",
+    "BRW": "Mardu",
+    "BUW": "Esper",
+    "GRU": "Temur",
+    "GRW": "Naya",
+    "GUW": "Bant",
+    "RUW": "Jeskai",
+    "BGRU": "Senza Bianco",
+    "BGRW": "Senza Blu",
+    "BGUW": "Senza Rosso",
+    "BRUW": "Senza Verde",
+    "GRUW": "Senza Nero",
+    "BGRUW": "5 Colori"
+  },
+  "color": {
+    "W": "Bianco",
+    "U": "Blu",
+    "B": "Nero",
+    "R": "Rosso",
+    "G": "Verde",
+    "C": "Incolore",
+    "Multi": "Multicolore"
+  },
+  "tournament": {
+    "title": "Tornei PDC",
+    "desc": "Iscriviti ai prossimi tornei e consulta risultati, top 8 e meta degli eventi passati.",
+    "upcoming": "Prossimi tornei",
+    "players": "giocatori",
+    "signUp": "Iscriviti",
+    "moreDetails": "Maggiori dettagli",
+    "results": "Risultati dei tornei",
+    "noYet": "Ancora nessun torneo",
+    "resultsComing": "I risultati dei prossimi tornei saranno pubblicati qui.",
+    "noResults": "Al momento non è disponibile alcun risultato di torneo.",
+    "label": "Tornei",
+    "registration": "Iscrizione",
+    "deck": "Mazzo",
+    "resultsUnavailable": "Risultati non disponibili.",
+    "metaLabel": "Meta",
+    "commandersPlayed": "Comandanti giocati",
+    "colorIdentities": "Identità di colore",
+    "metaUnavailable": "Dati sul meta non disponibili.",
+    "spots": "posti",
+    "upcomingNone": "Nessun torneo ancora annunciato",
+    "upcomingNoneText": "Le prossime date vengono annunciate su Discord. Organizzi un torneo PDC? Faccelo sapere.",
+    "resultsPublished": "Risultati",
+    "resultsPending": "Risultati in attesa",
+    "winner": "Vincitore",
+    "filterCity": "Sede",
+    "allCities": "Tutte le sedi",
+    "noneForFilter": "Nessun torneo per questa sede.",
+    "countAll": "%n% tornei",
+    "backToList": "Tutti i tornei",
+    "decklistsCount": "%n% decklist pubblicate",
+    "unknownCommander": "Comandante non registrato",
+    "unattributed": "%n% piazzamento/i senza comandante registrato",
+    "seoTitle": "Tornei Pauper Duel Commander",
+    "seoDescription": "%total% tornei Pauper Duel Commander registrati, di cui %withResults% con risultati e meta. Top 8, decklist e statistiche per evento.",
+    "seoDetail": "%title% — %date%, %city%. Vincitore: %winner%. Top %top%, meta e decklist."
+  },
+  "archive": {
+    "decklistTitle": "Alcune decklist",
+    "decklistDesc": "La nostra raccolta di decklist è in costruzione. Qui trovi le nostre prime selezioni per il Pauper Duel Commander: lasciati ispirare, prova il formato o affina la tua strategia.",
+    "filterArchetype": "Archetipo",
+    "archetypeLabel": "Archetipo",
+    "colorLabel": "Identità di colore",
+    "allArchetypes": "Tutti gli archetipi",
+    "allColors": "Tutti i colori",
+    "filterReset": "Azzera i filtri",
+    "paginationPrevious": "Precedente",
+    "paginationNext": "Successiva",
+    "noDecklistFound": "Nessuna decklist trovata",
+    "noDecklistHint": "Prova a modificare i filtri per vedere altri risultati.",
+    "viewAll": "Vedi tutte le decklist",
+    "viewAllDecklists": "Vedi tutte le decklist",
+    "title": "Decklist",
+    "subtitle": "%total% decklist, di cui %fromTournaments% da un top 8.",
+    "searchLabel": "Comandante",
+    "searchPlaceholder": "es. Balmor, Gut, Crackling Drake…",
+    "sortLabel": "Ordina",
+    "sortRecent": "Più recenti",
+    "sortResult": "Miglior piazzamento",
+    "sortCommander": "Comandante (A-Z)",
+    "onlyTournaments": "Solo da tornei",
+    "countAll": "%n% decklist",
+    "countFiltered": "%n% su %total%",
+    "allDecklists": "Tutte le decklist",
+    "shelfMoment": "Mazzi del momento",
+    "shelfMomentHint": "I top 8 degli ultimi tornei.",
+    "shelfPerforming": "Migliori piazzamenti",
+    "shelfPerformingHint": "Vincitori e finalisti.",
+    "shelfNew": "Nuovi mazzi",
+    "shelfNewHint": "Le liste aggiunte più di recente.",
+    "shelfOriginal": "Mazzi originali",
+    "shelfOriginalHint": "Comandanti visti una volta sola nei tornei.",
+    "shelfBeginner": "Buoni primi mazzi",
+    "shelfBeginnerHint": "Semplici da pilotare, facili da assemblare.",
+    "seoTitle": "Decklist Pauper Duel Commander"
+  },
+  "common": {
+    "creatures": "Creature",
+    "instants": "Istantanei",
+    "sorceries": "Stregonerie",
+    "artifacts": "Artefatti",
+    "enchantments": "Incantesimi",
+    "lands": "Terre",
+    "planeswalkers": "Planeswalker",
+    "other": "Altro",
+    "viewAll": "Vedi tutto",
+    "seeMore": "Vedi altro",
+    "search": "Cerca",
+    "sortBy": "Ordina per",
+    "filters": "Filtri",
+    "results": "risultati",
+    "result": "risultato",
+    "updated": "Aggiornato",
+    "by": "di",
+    "on": "il",
+    "close": "Chiudi",
+    "none": "Nessuno",
+    "home": "Home",
+    "venues": "sedi",
+    "announcementsPublished": "annunci pubblicati"
+  },
+  "banlist": {
+    "titleTop": "Carte bandite",
+    "titleBottom": "Lista",
+    "intro": "Bandire alcune carte serve a preservare l'equilibrio e l'integrità del formato. Quando una carta genera un vantaggio eccessivo, riduce l'interazione o limita la varietà strategica, può compromettere la qualità delle partite. I ban aiutano a mantenere un ambiente sano e competitivo, fedele allo spirito del formato.",
+    "asCommander": "Bandite come comandante",
+    "inDeck": "Bandite nel mazzo",
+    "asCommanderDesc": "Le carte seguenti sono bandite come comandante nel Pauper Duel Commander, perché il loro accesso permanente dalla zona di comando crea un vantaggio eccessivo e danneggia l'equilibrio e la varietà del formato.",
+    "inDeckDesc": "Le carte seguenti sono bandite nel mazzo nel Pauper Duel Commander, perché il loro impatto è ritenuto troppo potente o troppo limitante per il formato, a scapito dell'equilibrio, dell'interazione e della varietà strategica.",
+    "historyTitle": "Cronologia delle modifiche",
+    "historyCadence": "Il comitato pubblica un annuncio sul formato ogni due mesi, il primo lunedì dei mesi pari.",
+    "kindInitial": "Ban list iniziale",
+    "kindUpdate": "Aggiornamento",
+    "by": "di",
+    "changeBanned": "Bandita",
+    "changeUnbanned": "Resa legale",
+    "changeRestricted": "Limitata",
+    "experimental": "sperimentale",
+    "experimentalNote": "Modifica a titolo sperimentale.",
+    "details": "Dettagli",
+    "lastUpdate": "Aggiornata il",
+    "cardCount": "carte bandite",
+    "searchLabel": "Cerca una carta",
+    "searchPlaceholder": "Nome della carta…",
+    "searchNoResult": "Nessuna carta corrisponde.",
+    "searchCleared": "Azzera",
+    "isNew": "Nuovo",
+    "latestAnnouncement": "Ultimo annuncio",
+    "seeHistory": "Vedi la cronologia",
+    "seeRules": "Regole 2.7 e 2.8",
+    "checkDeck": "Verifica un mazzo",
+    "imageMissing": "Illustrazione non disponibile",
+    "viewOnScryfall": "Vedi su Scryfall",
+    "seoTitle": "Ban list Pauper Duel Commander (aggiornata al %date%)",
+    "seoDescription": "Le %total% carte bandite nel Pauper Duel Commander: %commander% vietate come comandante, %deck% vietate nel mazzo. Ultimo annuncio del comitato il %date%."
+  },
+  "home": {
+    "rejoinsNous": "Unisciti a noi",
+    "rejoinsLaCommunaut": "Unisciti alla comunità",
+    "lePauperDuelCommander": "Il Pauper Duel Commander è un formato di Magic: The Gathering nato dalla comunità, a metà strada tra Duel Commander e Pauper.",
+    "spCifiquementConU": "Pensato appositamente per il gioco competitivo in 1v1, con una ban list aggiornata regolarmente.",
+    "quEstCeQue": "Che cos'è il Pauper Duel Commander?",
+    "lesBasesDuFormat": "Le basi del formato in pochi punti chiave.",
+    "2Joueurs": "2 giocatori",
+    "unDuelPurSans": "Un duello puro, senza politica né alleanze. Ogni decisione conta, ogni partita è uno scontro diretto.",
+    "100Cartes": "100 carte",
+    "votreDeckContientExactement": "Il tuo mazzo contiene esattamente 100 carte, comandante incluso. Ogni carta può comparire una sola volta, tranne le terre base.",
+    "unCommandantAuCoeur": "Un comandante al centro",
+    "votreCommandantDFinit": "Il tuo comandante definisce la tua strategia e la tua identità di colore. Deve essere stato stampato almeno una volta in rarità non comune. Scegli con cura.",
+    "communesUniquement": "Solo comuni",
+    "queDesCommunesDans": "Solo carte comuni nel mazzo. Solo il comandante può essere non comune.",
+    "rejoignezLAventure": "Unisciti all'avventura",
+    "queVousSoyezUn": "Che tu sia un veterano in cerca di una nuova sfida o un giocatore alle prime armi, la nostra comunità ti accoglie. Facciamo crescere insieme il Pauper Duel Commander!",
+    "rejoindreLeDiscord": "Entra su Discord",
+    "propos": "Chi siamo",
+    "lePauperDuelCommander2": "Il Pauper Duel Commander è una variante competitiva del Commander in 1v1, in cui sono ammesse solo carte comuni. Con 20 punti vita, una ban list dedicata e partite rapide, il formato premia strategia, equilibrio e padronanza.",
+    "20PointDeVie": "20 punti vita iniziali",
+    "commeLaPlupartDes": "Come nella maggior parte dei formati 1v1, i giocatori iniziano la partita con 20 punti vita.",
+    "pur1v1Format": "Formato puro 1v1",
+    "conUPourDes": "Pensato per duelli competitivi a due giocatori, con profondità strategica e senza dimensione politica.",
+    "100CartesUniques": "100 carte diverse",
+    "crEzDesDecks": "Costruisci mazzi unici con 1 comandante non comune e 99 comuni tutte diverse, per varietà e creatività garantite.",
+    "communautVNements": "Comunità ed eventi",
+    "uneCommunautGrandissanteDes": "Una comunità in crescita, eventi per tutti i livelli.",
+    "tournois": "Tornei",
+    "participezDesVNements": "Partecipa a eventi regolari e tornei locali.",
+    "communautActive": "Comunità attiva",
+    "rejoignezDesJoueursPassionn": "Unisciti a giocatori appassionati, condividi consigli e trova avversari.",
+    "discordRSeaux": "Discord e social",
+    "restezConnectSVia": "Resta in contatto tramite il nostro Discord e segui le novità del formato.",
+    "espritCompTitif": "Spirito competitivo",
+    "fairPlayCompTition": "Fair play, competizione sana e accessibilità: i valori del formato.",
+    "rejoignezLAventure2": "Unisciti all'avventura",
+    "queVousSoyezUn2": "Che tu sia un veterano in cerca di una nuova sfida o un giocatore alle prime armi, la nostra comunità ti accoglie. Facciamo crescere insieme il Pauper Duel Commander!",
+    "rejoindreLeDiscord2": "Entra su Discord",
+    "title": "Home",
+    "description": "Il Pauper Duel Commander è un formato di Magic: The Gathering nato dalla comunità e pensato per il gioco competitivo in 1v1.",
+    "viewBanlist": "Vedi la ban list",
+    "metaTitle": "Il meta in questo momento",
+    "metaSubtitle": "I comandanti più giocati nei tornei pubblicati qui.",
+    "metaCta": "Il meta completo",
+    "resultsTitle": "Risultati recenti",
+    "resultsCta": "Tutti i tornei",
+    "upcomingTitle": "Prossimi tornei",
+    "decklistsTitle": "Mazzi da provare",
+    "decklistsSubtitle": "Liste che hanno vinto e liste fuori dai sentieri battuti.",
+    "decklistsCta": "Tutte le decklist",
+    "communityTitle": "Trova giocatori",
+    "communitySubtitle": "Il formato vive sul suo Discord e nei negozi che lo ospitano.",
+    "communityCta": "La pagina della comunità",
+    "seoTitle": "Pauper Duel Commander — il Commander competitivo in 1v1 giocato con le comuni",
+    "openMetaHeading": "comandanti diversi",
+    "openMetaBody": "Su %entries% iscrizioni registrate, il comandante più giocato non supera %percentage%%."
+  },
+  "rules": {
+    "ctaBanlist": "Vedi la ban list",
+    "ctaValidator": "Valida un mazzo",
+    "toc": "Indice",
+    "faqTitle": "Casi particolari",
+    "faqSubtitle": "Le domande che ricorrono ai tornei.",
+    "faq": [
+      {
+        "q": "Posso giocare un partner o un Background?",
+        "a": "Sì. Un Background conta come comandante (regola 2.4) e le meccaniche partner funzionano normalmente. Il mazzo contiene allora 98 carte più i due comandanti, per un totale di 100. Attenzione: puoi lanciare dalla zona di comando uno solo dei tuoi comandanti per partita, il primo lanciato (regola 2.5)."
+      },
+      {
+        "q": "Una carta stampata in comune solo su Arena è legale?",
+        "a": "No. La rarità si legge sulle stampe cartacee o Magic Online legali (regola 1.4). Una rarità esclusiva di Arena non conta: non può rendere comune una carta, né non comune un comandante."
+      },
+      {
+        "q": "Il mio comandante deve essere leggendario?",
+        "a": "No, ed è proprio questo che caratterizza il formato. Qualsiasi Creatura, Veicolo, Astronave o Background stampato almeno una volta in non comune può essere il tuo comandante (regola 2.4)."
+      },
+      {
+        "q": "Una carta può essere sia comune sia non comune?",
+        "a": "Sì (regola 1.4.c). Una carta stampata in comune in un'espansione e in non comune in un'altra può quindi essere giocata nel mazzo ed essere anche un comandante legale."
+      },
+      {
+        "q": "Le carte non legali in Vintage sono giocabili?",
+        "a": "No: ogni carta non legale in Vintage è bandita (regola 2.8). Rientrano nel caso le carte delle Un-set e quelle riservate a formati specifici."
+      },
+      {
+        "q": "Come verifico che un mazzo sia legale?",
+        "a": "Il validatore del sito applica i nove controlli del formato — dimensione, singleton, rarità, identità di colore, ban list — a una decklist in formato MTGO."
+      },
+      {
+        "q": "Chi inizia, e pesca?",
+        "a": "Il giocatore che inizia salta la fase di acquisizione del suo primo turno (regola 3.3). Si usa il mulligan di Londra (regola 3.2)."
+      }
+    ],
+    "seoTitle": "Regole del Pauper Duel Commander"
+  },
+  "rulesDoc": {
+    "badge": "Regolamento ufficiale",
+    "title": "Regole del formato",
+    "subtitle": "Il regolamento del Pauper Duel Commander France: costruzione del mazzo, rarità e regole di gioco.",
+    "refIntro": "Riferimenti:",
+    "refComprehensive": "Regolamento Completo di Magic",
+    "refScryfall": "Scryfall",
+    "sections": [
+      {
+        "n": "1",
+        "title": "Generale",
+        "articles": [
+          {
+            "n": "1.1",
+            "text": "Pauper Duel Commander France (PDC Fr) è un formato Costruito di Magic: The Gathering per due giocatori (1vs1)."
+          },
+          {
+            "n": "1.2",
+            "text": "Le partite di Pauper Duel Commander France si giocano secondo il Regolamento Completo di Magic: The Gathering, salvo quanto modificato dalle presenti regole.",
+            "link": {
+              "href": "https://magic.wizards.com/en/rules",
+              "label": "Regolamento Completo"
+            }
+          },
+          {
+            "n": "1.3",
+            "text": "Salvo diversa indicazione, le partite seguono le regole del Commander definite nel Regolamento Completo di Magic: The Gathering."
+          },
+          {
+            "n": "1.4",
+            "text": "Ai fini delle presenti regole, le rarità delle carte sono definite come segue (puoi fare riferimento a Scryfall):",
+            "link": {
+              "href": "https://scryfall.com/",
+              "label": "Scryfall"
+            },
+            "sub": [
+              {
+                "n": "1.4.a",
+                "text": "Una carta comune è una carta stampata in rarità comune in una qualsiasi stampa cartacea o Magic Online legale."
+              },
+              {
+                "n": "1.4.b",
+                "text": "Una carta non comune è una carta stampata in rarità non comune in una qualsiasi stampa cartacea o Magic Online legale."
+              },
+              {
+                "n": "1.4.c",
+                "text": "Una carta può essere sia una carta comune sia una carta non comune."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "n": "2",
+        "title": "Costruzione del mazzo",
+        "articles": [
+          {
+            "n": "2.1",
+            "text": "Un mazzo è composto esattamente da 100 carte, compreso il suo o i suoi comandanti."
+          },
+          {
+            "n": "2.2",
+            "text": "Fatta eccezione per le terre base, un mazzo non può contenere più di una carta con lo stesso nome inglese."
+          },
+          {
+            "n": "2.3",
+            "text": "Tutte le carte di un mazzo devono avere un'identità di colore contenuta in quella del suo o dei suoi comandanti."
+          },
+          {
+            "n": "2.4",
+            "text": "Un comandante deve essere una Creatura, un Veicolo, un'Astronave o un Background non comune (ove applicabile)."
+          },
+          {
+            "n": "2.5",
+            "text": "I giocatori possono lanciare dalla zona di comando uno solo dei propri comandanti per partita (il primo lanciato)."
+          },
+          {
+            "n": "2.6",
+            "text": "Ogni carta del mazzo che non sia un comandante deve essere una carta comune."
+          },
+          {
+            "n": "2.7",
+            "text": "Le carte che compaiono nella lista delle carte bandite del Pauper Duel Commander France non sono legali."
+          },
+          {
+            "n": "2.8",
+            "text": "Tutte le carte non legali in Vintage sono bandite."
+          }
+        ]
+      },
+      {
+        "n": "3",
+        "title": "Regole di gioco",
+        "articles": [
+          {
+            "n": "3.1",
+            "text": "Ogni giocatore inizia la partita con 20 punti vita."
+          },
+          {
+            "n": "3.2",
+            "text": "Si usa il mulligan di Londra."
+          },
+          {
+            "n": "3.3",
+            "text": "Il giocatore che inizia salta la fase di acquisizione del suo primo turno."
+          },
+          {
+            "n": "3.4",
+            "text": "Il danno da comandante non viene utilizzato."
+          },
+          {
+            "n": "3.5",
+            "text": "Un comandante può essere lanciato dalla zona di comando. La tassa del comandante si applica come definito dalle regole del Commander."
+          }
+        ]
+      }
+    ]
+  },
+  "submit": {
+    "title": "Invia una decklist",
+    "subtitle": "Condividi una decklist Pauper Duel Commander. La legalità viene verificata prima dell'invio; il team la esamina prima della pubblicazione.",
+    "commander": "Comandante",
+    "commanderPlaceholder": "Es.: Mother of Runes",
+    "commanderHelp": "Nome inglese esatto (come su Scryfall).",
+    "partnerToggle": "Mazzo con partner / Background",
+    "partner": "Partner",
+    "partnerPlaceholder": "Es.: Inspiring Leader",
+    "decklist": "Decklist (formato MTGO)",
+    "decklistHelp": "Una carta per riga: «1 Nome della carta». Non includere il comandante nella lista.",
+    "author": "Autore",
+    "authorPlaceholder": "Il tuo nickname (facoltativo)",
+    "archetype": "Archetipo",
+    "archetypeNone": "—",
+    "consent": "Confermo di avere il diritto di condividere questa decklist.",
+    "checkBtn": "Verifica la legalità",
+    "submitBtn": "Invia",
+    "moderationNote": "Dopo l'invio, la tua proposta passa in revisione. Una volta approvata, compare automaticamente sul sito.",
+    "cta": "Invia una decklist",
+    "js": {
+      "checking": "Verifica in corso…",
+      "legalOk": "Mazzo legale ✓ — pronto per l'invio.",
+      "legalKo": "Mazzo non valido — correggi prima di inviare:",
+      "sending": "Invio in corso…",
+      "needCommander": "Inserisci il nome del comandante.",
+      "needDecklist": "Inserisci la tua decklist.",
+      "needConsent": "Conferma di poter condividere questo mazzo.",
+      "needCaptcha": "Completa il captcha anti-bot.",
+      "errCaptcha": "Captcha non valido o scaduto. Riprova.",
+      "errRate": "Troppi invii. Riprova più tardi.",
+      "errInvalid": "Il mazzo non è legale: correggilo e riprova.",
+      "errServer": "Impossibile raggiungere il server. Riprova.",
+      "errUnexpected": "Qualcosa è andato storto. Riprova.",
+      "successTitle": "Proposta ricevuta",
+      "successBody": "Grazie! La tua decklist è in attesa di revisione da parte del team.",
+      "successStep1": "Il team riceve la tua proposta e la esamina.",
+      "successStep2": "Una volta approvata, viene pubblicata automaticamente sul sito.",
+      "successStep3": "Nulla viene pubblicato senza questa revisione.",
+      "backHome": "Torna alla home"
+    },
+    "archetypes": {
+      "Aggro": "Aggro",
+      "Contrôle": "Controllo",
+      "Midrange": "Midrange",
+      "Tempo": "Tempo",
+      "Combo": "Combo"
+    },
+    "comingSoon": "Gli invii saranno disponibili a breve."
+  },
+  "a11y": {
+    "skipToContent": "Vai al contenuto",
+    "mainNav": "Navigazione principale",
+    "openMenu": "Apri il menu",
+    "closeMenu": "Chiudi il menu",
+    "breadcrumb": "Percorso di navigazione",
+    "colors": "Colori"
+  },
+  "value": {
+    "tagline": "Il Commander competitivo in 1 contro 1, giocato con le comuni.",
+    "pitch": "100 carte, un comandante non comune, 20 punti vita: la profondità del Commander, l'accessibilità del Pauper.",
+    "eyebrow": "Formato della comunità · Magic: The Gathering · 1 contro 1",
+    "why": "Perché giocare a PDC?",
+    "duelTitle": "Un vero duello",
+    "duelText": "1v1, 20 punti vita, niente politica e niente danno da comandante: ogni decisione conta.",
+    "accessTitle": "Accessibile",
+    "accessText": "99 comuni e un solo comandante non comune. Il bacino di carte del Pauper, senza le rarità che fanno salire i prezzi degli altri formati.",
+    "commandersTitle": "Migliaia di comandanti",
+    "commandersText": "Qualsiasi creatura non comune può essere il tuo comandante: non serve che sia leggendaria. È questa la vera differenza rispetto al Duel Commander.",
+    "singletonTitle": "Singleton, 100 carte",
+    "singletonText": "Una copia per carta. La costruzione del mazzo riporta in gioco comuni dimenticate da vent'anni.",
+    "livingTitle": "Un formato vivo",
+    "livingText": "Un comitato, una ban list con motivazioni pubbliche, un annuncio ogni due mesi e tornei in tutta la Francia."
+  },
+  "hero": {
+    "ctaPrimary": "Scopri il formato",
+    "ctaDecklists": "Vedi le decklist",
+    "ctaDiscord": "Entra nel Discord"
+  },
+  "quick": {
+    "banlist": "Ban list",
+    "banlistHint": "Ultimo annuncio",
+    "nextEvent": "Prossimo torneo",
+    "nextEventNone": "Nessuno annunciato",
+    "nextEventHint": "Proponi il tuo",
+    "lastResult": "Ultimo risultato",
+    "lastResultHint": "Vedi il top 8",
+    "meta": "Meta",
+    "metaHint": "iscrizioni",
+    "tournamentsShort": "tornei"
+  },
+  "onboarding": {
+    "title": "Sei nuovo?",
+    "subtitle": "Quattro passi da «che formato è?» alla tua prima partita.",
+    "step1": "Impara le regole",
+    "step1Text": "100 carte, un comandante non comune, 20 punti vita, solo comuni. Il riepilogo richiede trenta secondi.",
+    "step1Cta": "Le regole in 30 secondi",
+    "step2": "Scegli un comandante",
+    "step2Text": "Qualsiasi creatura non comune, un Veicolo, un'Astronave o un Background. Guarda cosa gioca la gente.",
+    "step2Cta": "Comandanti più giocati",
+    "step3": "Costruisci il tuo mazzo",
+    "step3Text": "Parti da una lista che ha già dato prova di sé, poi verifica la legalità della tua.",
+    "step3Cta": "Sfoglia le decklist",
+    "step4": "Trova giocatori",
+    "step4Text": "Il Discord per gli avversari e le domande, i tornei per giocare di persona.",
+    "step4Cta": "Unisciti alla comunità"
+  },
+  "basics": {
+    "title": "Il formato in quattro numeri",
+    "players": "2 giocatori",
+    "playersText": "Un duello, senza alleanze.",
+    "cards": "100 carte",
+    "cardsText": "Comandante incluso, una copia ciascuna.",
+    "commander": "1 comandante",
+    "commanderText": "Non comune, non necessariamente leggendario.",
+    "life": "20 punti vita",
+    "lifeText": "Partite rapide e decisive."
+  },
+  "compare": {
+    "title": "Arrivi dal Pauper o dal Duel Commander?",
+    "subtitle": "Cosa cambia, riga per riga.",
+    "criterion": "Criterio",
+    "pauper": "Pauper",
+    "duelCommander": "Duel Commander",
+    "pdc": "Pauper Duel Commander",
+    "rowPlayers": "Giocatori",
+    "rowPlayersPauper": "1v1",
+    "rowPlayersDc": "1v1",
+    "rowPlayersPdc": "1v1",
+    "rowDeck": "Mazzo",
+    "rowDeckPauper": "60 carte minimo + sideboard da 15",
+    "rowDeckDc": "Esattamente 100 carte, comandante incluso",
+    "rowDeckPdc": "Esattamente 100 carte, comandante/i inclusi",
+    "rowCopies": "Copie",
+    "rowCopiesPauper": "Fino a 4 per carta",
+    "rowCopiesDc": "Singleton (terre base escluse)",
+    "rowCopiesPdc": "Singleton (terre base escluse)",
+    "rowCommander": "Comandante",
+    "rowCommanderPauper": "Nessuno",
+    "rowCommanderDc": "Creatura leggendaria, planeswalker con «può essere il tuo comandante», Veicolo o Astronave leggendari, Background — qualsiasi rarità",
+    "rowCommanderPdc": "Creatura, Veicolo, Astronave o Background stampato in non comune — non serve che sia leggendario",
+    "rowRarity": "Rarità",
+    "rowRarityPauper": "Solo comuni",
+    "rowRarityDc": "Nessuna restrizione",
+    "rowRarityPdc": "99 comuni + un comandante non comune",
+    "rowLife": "Punti vita",
+    "rowLifePauper": "20",
+    "rowLifeDc": "20",
+    "rowLifePdc": "20",
+    "rowCmdDamage": "Danno da comandante",
+    "rowCmdDamagePauper": "—",
+    "rowCmdDamageDc": "No",
+    "rowCmdDamagePdc": "No (regola 3.4)",
+    "rowBanlist": "Ban list",
+    "rowBanlistPauper": "Pauper Format Panel",
+    "rowBanlistDc": "Comitato Duel Commander",
+    "rowBanlistPdc": "Comitato PDC France — bandite come comandante / nel mazzo, annuncio ogni due mesi",
+    "sources": "Fonti: il regolamento PDC qui sopra, duelcommander.org per il Duel Commander, le regole ufficiali del Pauper.",
+    "cta": "Vedi il confronto completo"
+  },
+  "rulesSummary": {
+    "title": "Le regole in 30 secondi",
+    "subtitle": "Quanto basta per giocare la prima partita. Il regolamento completo segue.",
+    "fullRuleset": "Leggi il regolamento completo"
+  },
+  "metaPage": {
+    "sample": "%tournaments% tornei · %entries% iscrizioni · dal %from% al %to%",
+    "freshness": "Aggiornato ogni volta che viene pubblicato un torneo.",
+    "sampleWarning": "Questi numeri descrivono i tornei pubblicati su questo sito, non il formato nel suo complesso.",
+    "showAll": "Mostra gli altri %n% comandanti",
+    "hideAll": "Comprimi la lista",
+    "trendUp": "in crescita",
+    "trendDown": "in calo",
+    "trendHint": "Variazione in punti percentuali rispetto ai tornei precedenti.",
+    "seeDecklists": "Le sue decklist",
+    "playedOnce": "giocato una volta"
+  },
+  "community": {
+    "title": "Comunità",
+    "subtitle": "Il Pauper Duel Commander si gioca online e nei negozi. Ecco dove trovare avversari.",
+    "discordTitle": "Discord",
+    "discordText": "Il cuore del formato: discussioni, decklist, domande sulle regole, ricerca di avversari e annunci del comitato.",
+    "joinDiscord": "Entra nel Discord",
+    "eventsTitle": "Eventi",
+    "eventsText": "Prossimi tornei e risultati passati.",
+    "venuesTitle": "Dove giocare",
+    "venuesText": "Sedi che hanno già ospitato un torneo di Pauper Duel Commander.",
+    "venueTournaments": "torneo",
+    "venueTournamentsPlural": "tornei",
+    "venueLastEvent": "ultimo",
+    "organiseTitle": "Organizza un torneo",
+    "organiseText": "Negozio, club o giocatore: il formato si presta ai tornei di piccole dimensioni. Scrivici su Discord: diamo una mano con formato, regole e pubblicazione dei risultati.",
+    "committeeTitle": "Il comitato",
+    "committeeText": "Un gruppo di giocatori mantiene la ban list e il regolamento. Ogni modifica viene annunciata con motivazioni pubbliche, ogni due mesi, il primo lunedì dei mesi pari.",
+    "committeeCta": "Leggi gli annunci",
+    "seoTitle": "Comunità Pauper Duel Commander"
+  },
+  "banlistSummary": {
+    "banned": "%s bandita",
+    "bannedMany": "%s carte bandite",
+    "unbanned": "%s riammessa",
+    "unbannedMany": "%s riammesse",
+    "restricted": "%s limitata",
+    "restrictedMany": "%s limitate"
+  },
+  "privacy": {
+    "title": "Informativa sulla privacy",
+    "intro": "Il sito Pauper Duel Commander rispetta la tua privacy. Questa pagina descrive i dati che raccogliamo e come vengono utilizzati.",
+    "sections": [
+      {
+        "heading": "Dati raccolti",
+        "body": "Questo è un sito statico. Non raccogliamo direttamente alcun dato personale. Non è richiesto alcun account utente per navigare sul sito."
+      },
+      {
+        "heading": "Google Analytics",
+        "body": "Utilizziamo Google Analytics (GA4) per analizzare il traffico del sito. Google Analytics usa cookie per raccogliere informazioni anonime su come i visitatori utilizzano il sito. Queste informazioni servono a migliorare i contenuti e l'esperienza utente."
+      },
+      {
+        "heading": "API Scryfall",
+        "body": "Le immagini e i dati delle carte Magic: The Gathering provengono dall'API di Scryfall. L'uso del validatore di mazzi invia i nomi delle carte all'API di Scryfall per la verifica. Nessun dato personale viene trasmesso a Scryfall."
+      },
+      {
+        "heading": "Contatti",
+        "body": "Per qualsiasi domanda relativa alla privacy, contattaci tramite il server Discord della comunità PDC."
+      }
+    ]
+  }
+}

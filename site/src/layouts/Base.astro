@@ -3,9 +3,9 @@
  * The only layout.
  *
  * Beyond the shell, this owns everything a page needs to be found and shared.
- * None of it existed before: no canonical, no hreflang (so FR and EN competed
- * with each other), and no Open Graph — every link posted to the Discord where
- * this format actually lives rendered as a bare URL.
+ * None of it existed before: no canonical, no hreflang (so the localised copies
+ * competed with each other), and no Open Graph — every link posted to the
+ * Discord where this format actually lives rendered as a bare URL.
  *
  * `image` accepts a site-relative or absolute URL and is resolved against
  * `Astro.site`; pages that have a commander pass its art, everything else falls
@@ -14,7 +14,7 @@
 import '@/styles/globals.css';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import { getLocaleFromPath, t } from '@/lib/i18n';
+import { getLocaleFromPath, localeTag, ogLocale, locales, t } from '@/lib/i18n';
 import { translatePath } from '@/lib/routes';
 
 export interface Props {
@@ -44,9 +44,15 @@ const path = Astro.url.pathname;
 
 const site = Astro.site ?? new URL('https://pauperduelcommander.fr');
 const canonical = new URL(path, site).href;
-const altPath = translatePath(path, locale === 'fr' ? 'en' : 'fr');
-const frHref = new URL(locale === 'fr' ? path : altPath, site).href;
-const enHref = new URL(locale === 'en' ? path : altPath, site).href;
+
+// One alternate per language, including this one — Google expects a page to be
+// listed among its own alternates. French is x-default: it is the locale the
+// content is authored in and the only one guaranteed complete.
+const alternates = locales.map(target => ({
+  locale: target,
+  href: new URL(target === locale ? path : translatePath(path, target), site).href,
+}));
+const defaultHref = alternates.find(a => a.locale === 'fr')!.href;
 
 const fullTitle = bareTitle ? title : `${title} — Pauper Duel Commander`;
 const ogImage = new URL(image ?? '/img/logo.png', site).href;
@@ -60,7 +66,7 @@ const websiteSchema = {
   name: 'Pauper Duel Commander',
   alternateName: 'PDC',
   url: site.href,
-  inLanguage: locale === 'fr' ? 'fr-FR' : 'en-GB',
+  inLanguage: localeTag(locale),
   description: metaDescription,
 };
 ---
@@ -73,13 +79,14 @@ const websiteSchema = {
   <meta name="description" content={metaDescription} />
 
   <link rel="canonical" href={canonical} />
-  <link rel="alternate" hreflang="fr" href={frHref} />
-  <link rel="alternate" hreflang="en" href={enHref} />
-  <link rel="alternate" hreflang="x-default" href={frHref} />
+  {alternates.map(alt => (
+    <link rel="alternate" hreflang={alt.locale} href={alt.href} />
+  ))}
+  <link rel="alternate" hreflang="x-default" href={defaultHref} />
 
   <meta property="og:type" content={ogType} />
   <meta property="og:site_name" content="Pauper Duel Commander" />
-  <meta property="og:locale" content={locale === 'fr' ? 'fr_FR' : 'en_GB'} />
+  <meta property="og:locale" content={ogLocale(locale)} />
   <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={metaDescription} />
   <meta property="og:url" content={canonical} />

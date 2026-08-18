@@ -9,7 +9,7 @@
  * `data-*` attributes feed the index page's client-side search/filter/sort, so the
  * filtering logic reads what is rendered instead of a parallel copy of the data.
  */
-import { t, type Locale } from '@/lib/i18n';
+import { t, localeTag, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { formatColorSymbols } from '@/lib/mana';
 import { placeLabel, type EnrichedDecklist } from '@/lib/decklists';
@@ -27,7 +27,7 @@ const { deck, locale, from = 'index', compact = false } = Astro.props;
 
 const href = route('decklists', locale, deck.slug);
 const dateLabel = deck.date
-  ? new Date(deck.date + 'T00:00:00').toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', {
+  ? new Date(deck.date + 'T00:00:00').toLocaleDateString(localeTag(locale), {
       day: 'numeric',
       month: 'short',
       year: 'numeric',

@@ -354,6 +354,56 @@ class DeckValidatorTest extends TestCase
         );
     }
 
+    /** Italian is a full third catalogue, not a French page with translated labels. */
+    public function test_messages_can_be_italian(): void
+    {
+        DeckValidator::$locale = 'it';
+        $result = DeckValidator::validate('', '', '1 Plains');
+
+        $this->assertFalse($result['is_valid']);
+        $this->assertSame('Il nome del comandante è obbligatorio.', $result['errors'][0]['message']);
+    }
+
+    /** Placeholders survive the Italian catalogue too. */
+    public function test_italian_messages_interpolate_values(): void
+    {
+        DeckValidator::$locale = 'it';
+        $result = DeckValidator::validate(self::COMMANDER, '', '1 Plains');
+
+        $sizeError = null;
+        foreach ($result['errors'] as $error) {
+            if ($error['rule'] === 'deck_size') {
+                $sizeError = $error;
+            }
+        }
+
+        $this->assertNotNull($sizeError, 'expected a deck_size error for a one-card deck');
+        $this->assertSame(
+            'Il mazzo contiene 1 carta/e. Un mazzo PDC deve contenerne 99 carte (più 1 comandante).',
+            $sizeError['message']
+        );
+    }
+
+    /**
+     * Every id carries every locale.
+     *
+     * The catalogue is edited by hand, so a message added in French only would
+     * silently answer an Italian caller in French. The fallback chain exists for
+     * runtime safety, not as licence to leave holes.
+     */
+    public function test_every_message_exists_in_every_locale(): void
+    {
+        foreach (DeckValidator::MESSAGES as $id => $entry) {
+            foreach (array('fr', 'en', 'it') as $locale) {
+                $this->assertArrayHasKey(
+                    $locale,
+                    $entry,
+                    sprintf('message "%s" has no %s translation', $id, $locale)
+                );
+            }
+        }
+    }
+
     /** An unknown locale falls back to French rather than blanking the message. */
     public function test_unknown_locale_falls_back_to_french(): void
     {

@@ -51,9 +51,7 @@ const fromTournaments = decklists.filter(deck => deck.result).length;
 /** archive.shelfMoment, archive.shelfMomentHint… from the shelf key. */
 const shelfKey = (key: string) => `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
-const title = locale === 'fr'
-  ? 'Decklists Pauper Duel Commander'
-  : 'Pauper Duel Commander decklists';
+const title = t('archive.seoTitle', locale);
 const description = t('archive.subtitle', locale)
   .replace('%total%', String(decklists.length))
   .replace('%fromTournaments%', String(fromTournaments));

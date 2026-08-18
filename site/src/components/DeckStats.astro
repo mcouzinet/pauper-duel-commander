@@ -47,27 +47,7 @@ const COLOR_HEX: Record<string, string> = {
   Multi: '#F4D03F',
 };
 
-const COLOR_NAMES_FR: Record<string, string> = {
-  W: 'Blanc',
-  U: 'Bleu',
-  B: 'Noir',
-  R: 'Rouge',
-  G: 'Vert',
-  C: 'Incolore',
-  Multi: 'Multicolore',
-};
 
-const COLOR_NAMES_EN: Record<string, string> = {
-  W: 'White',
-  U: 'Blue',
-  B: 'Black',
-  R: 'Red',
-  G: 'Green',
-  C: 'Colorless',
-  Multi: 'Multicolor',
-};
-
-const colorNames = locale === 'en' ? COLOR_NAMES_EN : COLOR_NAMES_FR;
 
 const totalColored = Object.values(stats.colorCounts).reduce((s, c) => s + c, 0);
 const CIRCUMFERENCE = 2 * Math.PI * 35;
@@ -82,7 +62,7 @@ for (const [color, count] of Object.entries(stats.colorCounts)) {
   colorSegments.push({
     color,
     hex: COLOR_HEX[color] ?? '#BEB9B2',
-    label: colorNames[color] ?? color,
+    label: t(`color.${color}`, locale),
     count,
     segmentLength,
     offset: colorOffset,

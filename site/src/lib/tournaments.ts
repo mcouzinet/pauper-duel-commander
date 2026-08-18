@@ -1,5 +1,5 @@
 import { getCollection } from 'astro:content';
-import type { Locale } from './i18n';
+import { localeTag, type Locale } from './i18n';
 
 export interface TournamentEntry {
   slug: string;
@@ -59,7 +59,7 @@ export async function getPastTournaments(): Promise<TournamentEntry[]> {
  */
 export function formatDate(dateStr: string, locale: Locale): string {
   const date = new Date(dateStr + 'T00:00:00');
-  return new Intl.DateTimeFormat(locale === 'fr' ? 'fr-FR' : 'en-GB', {
+  return new Intl.DateTimeFormat(localeTag(locale), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

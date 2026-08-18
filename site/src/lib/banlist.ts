@@ -11,7 +11,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { getCollection } from 'astro:content';
-import type { Locale } from './i18n';
+import { t, localeTag, type Locale } from './i18n';
 
 export interface Banlist {
   /** ISO date of the last official announcement. */
@@ -33,7 +33,7 @@ export interface Announcement {
   source: string;
   kind: 'initial' | 'update';
   changes: BanlistChange[];
-  notes: { fr: string; en: string }[];
+  notes: { fr: string; en: string; it?: string }[];
 }
 
 let cached: Banlist | null = null;
@@ -110,10 +110,21 @@ export async function getBanlistDate(): Promise<string> {
   return last?.date ?? getBanlist().lastUpdated;
 }
 
+/**
+ * An announcement note in the requested language.
+ *
+ * Notes are authored per announcement rather than in the message catalogue, so a
+ * locale added after the fact has no string for older entries. English is the
+ * backup, matching `t()`.
+ */
+export function noteText(note: Announcement['notes'][number], locale: Locale): string {
+  return note[locale] ?? note.en;
+}
+
 /** Format an ISO date for display in the given locale. */
 export function formatBanlistDate(iso: string, locale: Locale): string {
   if (!iso) return '';
-  return new Date(iso + 'T00:00:00').toLocaleDateString(locale === 'fr' ? 'fr-FR' : 'en-GB', {
+  return new Date(iso + 'T00:00:00').toLocaleDateString(localeTag(locale), {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
@@ -147,15 +158,12 @@ export async function summariseLastAnnouncement(
     parts.push(cards.length === 1 ? one(cards[0].card) : many(cards.length));
   };
 
-  if (locale === 'fr') {
-    describe(banned, card => `${card} bannie`, n => `${n} cartes bannies`);
-    describe(unbanned, card => `${card} légalisée`, n => `${n} légalisées`);
-    describe(restricted, card => `${card} restreinte`, n => `${n} restreintes`);
-  } else {
-    describe(banned, card => `${card} banned`, n => `${n} cards banned`);
-    describe(unbanned, card => `${card} unbanned`, n => `${n} unbanned`);
-    describe(restricted, card => `${card} restricted`, n => `${n} restricted`);
-  }
+  const phrase = (id: string, value: string | number) =>
+    t(`banlistSummary.${id}`, locale).replace('%s', String(value));
+
+  describe(banned, card => phrase('banned', card), n => phrase('bannedMany', n));
+  describe(unbanned, card => phrase('unbanned', card), n => phrase('unbannedMany', n));
+  describe(restricted, card => phrase('restricted', card), n => phrase('restrictedMany', n));
 
   return { date: last.date, summary: parts.join(' · ') };
 }

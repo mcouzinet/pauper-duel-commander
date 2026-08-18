@@ -9,24 +9,24 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     sitemap({
-      // Emit hreflang alternates so search engines pair the FR and EN routes.
-      // The locale key must match the first path segment (/fr/…, /en/…).
+      // Emit hreflang alternates so search engines pair the localised routes.
+      // The locale key must match the first path segment (/fr/…, /en/…, /it/…).
       i18n: {
         defaultLocale: 'fr',
-        locales: { fr: 'fr-FR', en: 'en-GB' },
+        locales: { fr: 'fr-FR', en: 'en-GB', it: 'it-IT' },
       },
       // Everything is generated in one pass, so the build time is the honest
       // last-modified date for every page.
       lastmod: new Date(),
       serialize(item) {
         // The home page and the ban list change most often; detail pages least.
-        if (/\/(fr|en)\/$/.test(item.url)) {
+        if (/\/(fr|en|it)\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.WEEKLY;
           item.priority = 1.0;
         } else if (/\/banlist\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.MONTHLY;
           item.priority = 0.9;
-        } else if (/\/(decklist|tournois|tournaments)\/[^/]+\/$/.test(item.url)) {
+        } else if (/\/(decklist|tournois|tournaments|tornei)\/[^/]+\/$/.test(item.url)) {
           item.changefreq = ChangeFreqEnum.YEARLY;
           item.priority = 0.6;
         } else {

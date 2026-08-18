@@ -9,18 +9,16 @@
  * always-passing test key so the form works before the real key is configured.
  */
 import Base from '@/layouts/Base.astro';
-import { t, type Locale } from '@/lib/i18n';
+import { t, messagesFor, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { submissionsEnabled } from '@/lib/features';
-import fr from '@/i18n/fr.json';
-import en from '@/i18n/en.json';
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const msgs = locale === 'en' ? en : fr;
+const msgs = messagesFor(locale);
 
 // Client-side strings + the validator's rule labels (for the legality display).
 const jsBlob = { ...msgs.submit.js, rules: msgs.js };
@@ -187,7 +185,7 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
           commander: f.commander,
           partner: f.partner,
           decklist: f.decklist,
-          locale: document.documentElement.lang === 'en' ? 'en' : 'fr',
+          locale: document.documentElement.lang || 'fr',
         });
         const res = await fetch('/api/validate-deck.php', { method: 'POST', body });
         const data = await res.json();
