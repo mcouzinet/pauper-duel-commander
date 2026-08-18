@@ -21,3 +21,8 @@ node_modules
 
 # Submission secrets (never committed; placed on the server outside www/)
 pdc-secrets.php
+
+# Skills Impeccable : outillage tiers, 3,4 Mo, réinstallable par
+# `npx impeccable install`. Les fichiers de contexte qu'il produit
+# (PRODUCT.md, DESIGN.md) sont du contenu projet et restent versionnés.
+.claude/skills/
