@@ -144,29 +144,34 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
 
   <script>
     const i18n = JSON.parse(document.getElementById('submit-i18n')?.textContent ?? '{}');
-    const RULE = {
+    const RULE: Record<string, string> = {
       format: i18n.rules.ruleFormat, commander: i18n.rules.ruleCommander,
       commander_type: i18n.rules.ruleCommanderType, commander_rarity: i18n.rules.ruleCommanderRarity,
       deck_size: i18n.rules.ruleDeckSize, not_found: i18n.rules.ruleNotFound,
       duplicates: i18n.rules.ruleDuplicates, rarity: i18n.rules.ruleRarity,
       color_identity: i18n.rules.ruleColorIdentity, ban_list: i18n.rules.ruleBanList,
     };
-    const $ = (id) => document.getElementById(id);
-    const form = $('submit-decklist-form');
+    // Every id below is rendered by this component, and the whole block only
+    // ships when submissions are enabled — so the lookup is asserted non-null
+    // rather than guarded at each of its twelve call sites.
+    function $<T extends HTMLElement = HTMLElement>(id: string): T {
+      return document.getElementById(id) as T;
+    }
+    const form = $<HTMLFormElement>('submit-decklist-form');
     const legality = $('sd-legality');
-    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const esc = (s: unknown) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
 
     function fields() {
       return {
-        commander: $('sd-commander').value.trim(),
-        partner: $('sd-partner').value.trim(),
-        decklist: $('sd-decklist').value.trim(),
-        author: $('sd-author').value.trim(),
-        archetype: $('sd-archetype').value,
+        commander: $<HTMLInputElement>('sd-commander').value.trim(),
+        partner: $<HTMLInputElement>('sd-partner').value.trim(),
+        decklist: $<HTMLTextAreaElement>('sd-decklist').value.trim(),
+        author: $<HTMLInputElement>('sd-author').value.trim(),
+        archetype: $<HTMLSelectElement>('sd-archetype').value,
       };
     }
 
-    function showLegality(html, ok) {
+    function showLegality(html: string, ok: boolean) {
       legality.className = 'magic-card p-4 text-sm ' + (ok ? 'border-green-500/30' : 'border-red-500/30');
       legality.innerHTML = html;
     }
@@ -191,7 +196,7 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       } catch { showLegality(esc(i18n.errServer), false); }
     });
 
-    function renderLegality(result) {
+    function renderLegality(result: any) {
       if (result.is_valid) { showLegality('<span class="text-green-400 font-semibold">' + esc(i18n.legalOk) + '</span>', true); return; }
       let html = '<p class="text-red-400 font-semibold mb-2">' + esc(i18n.legalKo) + '</p>';
       for (const e of (result.errors || [])) {
@@ -208,11 +213,11 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
       const f = fields();
       if (!f.commander) { showLegality(esc(i18n.needCommander), false); return; }
       if (!f.decklist) { showLegality(esc(i18n.needDecklist), false); return; }
-      if (!$('sd-consent').checked) { showLegality(esc(i18n.needConsent), false); return; }
-      const token = (form.querySelector('[name="cf-turnstile-response"]') || {}).value || '';
+      if (!$<HTMLInputElement>('sd-consent').checked) { showLegality(esc(i18n.needConsent), false); return; }
+      const token = form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]')?.value || '';
       if (!token) { showLegality(esc(i18n.needCaptcha), false); return; }
 
-      const btn = $('sd-submit');
+      const btn = $<HTMLButtonElement>('sd-submit');
       btn.disabled = true;
       const label = btn.textContent; btn.textContent = i18n.sending;
       try {
@@ -224,9 +229,11 @@ const archetypes = msgs.submit.archetypes as Record<string, string>;
           $('sd-success').classList.remove('hidden');
           return;
         }
-        const map = { 403: i18n.errCaptcha, 429: i18n.errRate, 422: i18n.errInvalid };
+        const map: Record<number, string> = { 403: i18n.errCaptcha, 429: i18n.errRate, 422: i18n.errInvalid };
         showLegality(esc(map[res.status] || i18n.errUnexpected), false);
-        if (window.turnstile) window.turnstile.reset();
+        // Injected by Cloudflare's widget script, so it has no ambient type here.
+        const turnstile = (window as any).turnstile;
+        if (turnstile) turnstile.reset();
       } catch {
         showLegality(esc(i18n.errServer), false);
       } finally {
