@@ -43,18 +43,15 @@ const [decklists, archetypes, colorIdentities, meta] = await Promise.all([
 const shelves = await getShelves({
   recentTournamentSlugs: meta.recentSlugs,
   originalCommanders: meta.originalCommanders,
-  limit: 4,
+  limit: 6,
 });
-
-const fromTournaments = decklists.filter(deck => deck.result).length;
 
 /** archive.shelfMoment, archive.shelfMomentHint… from the shelf key. */
 const shelfKey = (key: string) => `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
+// Titre via la clé SEO (pas de littéral par langue), sous-titre sans compteur.
 const title = t('archive.seoTitle', locale);
-const description = t('archive.subtitle', locale)
-  .replace('%total%', String(decklists.length))
-  .replace('%fromTournaments%', String(fromTournaments));
+const description = t('archive.subtitle', locale);
 ---
 <Base title={title} description={description} bareTitle={false}>
 
@@ -85,34 +82,47 @@ const description = t('archive.subtitle', locale)
     </div>
   </section>
 
-  <!-- Shelves: discovery before enumeration ---------------------------------->
+  <!-- Shelves: one picker, not five stacked sections ------------------------->
+  {/*
+    These were five full sections in a row, so the complete collection — the
+    reason most people open this page — started some 3,000px down. They are one
+    section now, with a picker: same content, one shelf deep.
+  */}
   {shelves.length > 0 && (
-    <div class="container mx-auto px-4 md:px-6 py-10 md:py-12 space-y-10">
-      {shelves.map(shelf => (
-        <section>
-          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-4">
-            <h2 class="text-xl sm:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide flex items-center gap-2">
-              <span aria-hidden="true">{shelf.emoji}</span>
-              {t(`archive.shelf${shelfKey(shelf.key)}`, locale)}
-            </h2>
-            <p class="text-sm text-text-muted">
-              {t(`archive.shelf${shelfKey(shelf.key)}Hint`, locale)}
-            </p>
-          </div>
+    <section class="container mx-auto px-4 md:px-6 py-8 md:py-10">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4">
+        <label for="shelf-select" class="text-xl sm:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide">
+          {t('archive.shelfSelectLabel', locale)}
+        </label>
+        <select id="shelf-select"
+                class="px-3 py-2 bg-bg-secondary border border-card-border/40 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+          {shelves.map(shelf => (
+            <option value={shelf.key}>{t(`archive.shelf${shelfKey(shelf.key)}`, locale)}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Every shelf ships in the DOM; the picker swaps which one shows. With no
+          JS the first stays visible, which is the old default view. */}
+      {shelves.map((shelf, i) => (
+        <div data-shelf-panel={shelf.key} hidden={i > 0}>
+          <p class="text-sm text-text-muted mb-4">
+            {t(`archive.shelf${shelfKey(shelf.key)}Hint`, locale)}
+          </p>
 
           {/* Horizontal scroller below sm, grid above. Stacked full-height cards
               would have added ~6,000px of shelf to a phone page — the opposite of
               what the shelves are for. */}
-          <ul class="flex sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0">
+          <ul class="flex sm:grid gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0">
             {shelf.decklists.map(deck => (
               <li class="w-[76%] shrink-0 snap-start sm:w-auto sm:shrink">
                 <DeckCard deck={deck} locale={locale} from={`shelf_${shelf.key}`} />
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       ))}
-    </div>
+    </section>
   )}
 
   <!-- Full collection, searchable ------------------------------------------->
@@ -181,11 +191,8 @@ const description = t('archive.subtitle', locale)
 
         <p id="decklist-count"
            class="text-sm text-text-muted tabular-nums ml-auto"
-           data-all={t('archive.countAll', locale).replace('%n%', String(decklists.length))}
            data-filtered={t('archive.countFiltered', locale)}
-           aria-live="polite">
-          {t('archive.countAll', locale).replace('%n%', String(decklists.length))}
-        </p>
+           aria-live="polite"></p>
 
         <button id="filter-reset" type="button" class="hidden text-sm text-brand-orange hover:text-magic-gold transition-colors">
           {t('archive.filterReset', locale)}
@@ -199,7 +206,7 @@ const description = t('archive.subtitle', locale)
       {/* Below sm each deck renders as a compact row instead of a full-height
           tile: the old layout spent ~800px per deck, so 25 decks made an
           11,000px page on a phone. */}
-      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="decklist-grid">
+      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" id="decklist-grid">
         {decklists.map(deck => (
           <div class="min-w-0">
             <div class="sm:hidden"><DeckCard deck={deck} locale={locale} compact={true} /></div>
@@ -218,6 +225,20 @@ const description = t('archive.subtitle', locale)
   </section>
 
   <script>
+    // Shelf picker: show the chosen panel, hide the rest. All of them are in the
+    // DOM already, so this never fetches and works with the page as rendered.
+    const shelfSelect = document.getElementById('shelf-select') as HTMLSelectElement | null;
+    if (shelfSelect) {
+      const panels = [...document.querySelectorAll<HTMLElement>('[data-shelf-panel]')];
+      shelfSelect.addEventListener('change', () => {
+        for (const panel of panels) {
+          panel.hidden = panel.dataset.shelfPanel !== shelfSelect.value;
+        }
+      });
+    }
+  </script>
+
+  <script>
     // Filter/sort/search over what is already in the DOM. Each deck renders twice
     // inside one wrapper (compact under sm, card above), so the wrapper is what
     // gets hidden and reordered.
@@ -234,9 +255,7 @@ const description = t('archive.subtitle', locale)
     if (grid) {
       const gridEl = grid;
       const wrappers = [...gridEl.children] as HTMLElement[];
-      const total = wrappers.length;
-      const labelAll = count?.dataset.all ?? '';
-      const labelFiltered = count?.dataset.filtered ?? '%n% / %total%';
+      const labelFiltered = count?.dataset.filtered ?? '%n%';
 
       const dataOf = (wrapper: HTMLElement) =>
         wrapper.querySelector<HTMLElement>('[data-deck]')?.dataset ?? {};
@@ -281,9 +300,9 @@ const description = t('archive.subtitle', locale)
         reset?.classList.toggle('hidden', !isFiltered);
         empty?.classList.toggle('hidden', visible > 0);
         if (count) {
-          count.textContent = isFiltered
-            ? labelFiltered.replace('%n%', String(visible)).replace('%total%', String(total))
-            : labelAll;
+          // Only ever the number of matches — the size of the collection is not
+          // something this page advertises.
+          count.textContent = isFiltered ? labelFiltered.replace('%n%', String(visible)) : '';
         }
 
         if (query) {

@@ -47,7 +47,12 @@ const columns = [
 ];
 ---
 
-<footer class="relative border-t border-card-border/40 bg-bg-secondary mt-16">
+<!--
+  No top margin: it exposed a 64px strip of the (darker) body background between
+  the last section and the footer, reading as a black band. The border, the
+  background change and the footer's own py-12 separate it well enough.
+-->
+<footer class="relative border-t border-card-border/40 bg-bg-secondary">
   <div class="container mx-auto px-4 md:px-6 py-12">
     <div class="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_repeat(3,minmax(0,1fr))]">
 

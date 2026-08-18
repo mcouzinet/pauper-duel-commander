@@ -156,9 +156,19 @@ export async function getSiblingDecklists(slug: string, limit = 4): Promise<Enri
 
 export interface Shelf {
   /** Stable key, used for the i18n label and the anchor. */
-  key: 'moment' | 'performing' | 'new' | 'original' | 'beginner';
-  emoji: string;
+  key: 'moment' | 'performing' | 'new' | 'original';
   decklists: EnrichedDecklist[];
+}
+
+/**
+ * A decklist's identity in meta terms.
+ *
+ * Meta lists name a pair as one string — "Commander // Partner" — so a decklist,
+ * which keeps the two in separate fields, has to be joined the same way before
+ * it can be looked up against them.
+ */
+function metaKey(commander: string, partner?: string): string {
+  return (partner ? `${commander} // ${partner}` : commander).toLowerCase();
 }
 
 /**
@@ -177,36 +187,34 @@ export async function getShelves(options: {
   const legal = all.filter(d => !d.isBanned);
   const recent = new Set(recentTournamentSlugs);
 
+  // Order matters twice over: the index page opens on the first shelf, and it is
+  // the picker's first option. Newest first, so the page leads with what changed.
   const shelves: Shelf[] = [
     {
+      key: 'new',
+      // getDecklists() sorts newest first, so this is already the recent end.
+      decklists: legal.slice(0, limit),
+    },
+    {
       key: 'moment',
-      emoji: '🔥',
       decklists: legal.filter(d => d.result && recent.has(d.result.slug)).slice(0, limit),
     },
     {
       key: 'performing',
-      emoji: '🏆',
       decklists: legal
         .filter(d => d.result && d.result.place <= 2)
         .sort((a, b) => (b.result!.date).localeCompare(a.result!.date))
         .slice(0, limit),
     },
     {
-      key: 'beginner',
-      emoji: '👶',
-      decklists: legal.filter(d => d.tags.includes('debutant')).slice(0, limit),
-    },
-    {
       key: 'original',
-      emoji: '🧪',
       decklists: legal
-        .filter(d => originalCommanders.has(d.commander.toLowerCase()))
+        // A tournament meta list keys a pair as one string, "Commander // Partner",
+        // while a decklist keeps the two apart. Comparing the bare commander to
+        // those keys never matched a partnered deck, so every one of them was
+        // silently absent from this shelf.
+        .filter(d => originalCommanders.has(metaKey(d.commander, d.partner)))
         .slice(0, limit),
-    },
-    {
-      key: 'new',
-      emoji: '🆕',
-      decklists: legal.slice(0, limit),
     },
   ];
 

@@ -229,7 +229,7 @@
     "viewAll": "Vedi tutte le decklist",
     "viewAllDecklists": "Vedi tutte le decklist",
     "title": "Decklist",
-    "subtitle": "%total% decklist, di cui %fromTournaments% da un top 8.",
+    "subtitle": "Le liste giocate in torneo e i mazzi condivisi dalla community, con il loro risultato, la data e il pilota.",
     "searchLabel": "Comandante",
     "searchPlaceholder": "es. Balmor, Gut, Crackling Drake…",
     "sortLabel": "Ordina",
@@ -237,9 +237,9 @@
     "sortResult": "Miglior piazzamento",
     "sortCommander": "Comandante (A-Z)",
     "onlyTournaments": "Solo da tornei",
-    "countAll": "%n% decklist",
-    "countFiltered": "%n% su %total%",
+    "countFiltered": "%n% risultati",
     "allDecklists": "Tutte le decklist",
+    "shelfSelectLabel": "Selezione",
     "shelfMoment": "Mazzi del momento",
     "shelfMomentHint": "I top 8 degli ultimi tornei.",
     "shelfPerforming": "Migliori piazzamenti",
@@ -248,9 +248,8 @@
     "shelfNewHint": "Le liste aggiunte più di recente.",
     "shelfOriginal": "Mazzi originali",
     "shelfOriginalHint": "Comandanti visti una volta sola nei tornei.",
-    "shelfBeginner": "Buoni primi mazzi",
-    "shelfBeginnerHint": "Semplici da pilotare, facili da assemblare.",
-    "seoTitle": "Decklist Pauper Duel Commander"
+    "seoTitle": "Decklist Pauper Duel Commander",
+    "beginnerBadge": "Buoni primi mazzi"
   },
   "common": {
     "creatures": "Creature",
