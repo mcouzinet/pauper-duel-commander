@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-18T12:52:23Z",
+  "title": "Design System: Pauper Duel Commander",
+  "extensions": {
+    "colorMeta": {
+      "orange-brasier": {
+        "role": "primary",
+        "displayName": "Orange Brasier",
+        "canonical": "oklch(65% 0.21 35)",
+        "tonalRamp": [
+          "oklch(15% 0.21 35)",
+          "oklch(26% 0.21 35)",
+          "oklch(37% 0.21 35)",
+          "oklch(48% 0.21 35)",
+          "oklch(59% 0.21 35)",
+          "oklch(70% 0.21 35)",
+          "oklch(81% 0.21 35)",
+          "oklch(93% 0.21 35)"
+        ]
+      },
+      "or-peu-commune": {
+        "role": "secondary",
+        "displayName": "Or Peu Commune",
+        "canonical": "oklch(78% 0.17 68)",
+        "tonalRamp": [
+          "oklch(15% 0.17 68)",
+          "oklch(26% 0.17 68)",
+          "oklch(37% 0.17 68)",
+          "oklch(48% 0.17 68)",
+          "oklch(59% 0.17 68)",
+          "oklch(70% 0.17 68)",
+          "oklch(81% 0.17 68)",
+          "oklch(93% 0.17 68)"
+        ]
+      },
+      "fond-salle": {
+        "role": "neutral",
+        "displayName": "Fond Salle",
+        "canonical": "oklch(15% 0.012 250)",
+        "tonalRamp": [
+          "oklch(15% 0.012 250)",
+          "oklch(26% 0.012 250)",
+          "oklch(37% 0.012 250)",
+          "oklch(48% 0.012 250)",
+          "oklch(59% 0.012 250)",
+          "oklch(70% 0.012 250)",
+          "oklch(81% 0.012 250)",
+          "oklch(93% 0.012 250)"
+        ]
+      },
+      "fond-table": {
+        "role": "neutral",
+        "displayName": "Fond Table",
+        "canonical": "oklch(21% 0.015 255)",
+        "tonalRamp": [
+          "oklch(15% 0.015 255)",
+          "oklch(26% 0.015 255)",
+          "oklch(37% 0.015 255)",
+          "oklch(48% 0.015 255)",
+          "oklch(59% 0.015 255)",
+          "oklch(70% 0.015 255)",
+          "oklch(81% 0.015 255)",
+          "oklch(93% 0.015 255)"
+        ]
+      },
+      "fond-table-haute": {
+        "role": "neutral",
+        "displayName": "Fond Table Haute",
+        "canonical": "oklch(26% 0.015 255)",
+        "tonalRamp": [
+          "oklch(15% 0.015 255)",
+          "oklch(26% 0.015 255)",
+          "oklch(37% 0.015 255)",
+          "oklch(48% 0.015 255)",
+          "oklch(59% 0.015 255)",
+          "oklch(70% 0.015 255)",
+          "oklch(81% 0.015 255)",
+          "oklch(93% 0.015 255)"
+        ]
+      },
+      "texte-secondaire": {
+        "role": "neutral",
+        "displayName": "Texte Secondaire",
+        "canonical": "oklch(80% 0.015 250)",
+        "tonalRamp": [
+          "oklch(15% 0.015 250)",
+          "oklch(26% 0.015 250)",
+          "oklch(37% 0.015 250)",
+          "oklch(48% 0.015 250)",
+          "oklch(59% 0.015 250)",
+          "oklch(70% 0.015 250)",
+          "oklch(81% 0.015 250)",
+          "oklch(93% 0.015 250)"
+        ]
+      },
+      "texte-attenue": {
+        "role": "neutral",
+        "displayName": "Texte Attenue",
+        "canonical": "oklch(64% 0.020 250)",
+        "tonalRamp": [
+          "oklch(15% 0.02 250)",
+          "oklch(26% 0.02 250)",
+          "oklch(37% 0.02 250)",
+          "oklch(48% 0.02 250)",
+          "oklch(59% 0.02 250)",
+          "oklch(70% 0.02 250)",
+          "oklch(81% 0.02 250)",
+          "oklch(93% 0.02 250)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Titre de la page d'accueil uniquement. Interlignage sous 1 pour compacter deux lignes capitales."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Le h1 de chaque page interieure."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Titres de section, precedes d'une barre orange de 4px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texte courant, borne a ~75 caracteres par ligne."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Badges, surtitres, en-tetes de tableau. Capitales interlettrees."
+      },
+      "cardName": {
+        "displayName": "Card Name",
+        "purpose": "Noms de cartes Magic, en Beleren, toujours marques lang=en."
+      }
+    },
+    "shadows": [
+      {
+        "name": "repos",
+        "value": "0 4px 24px -2px rgba(255,87,34,0.08), 0 8px 16px -4px rgba(0,0,0,0.3)",
+        "purpose": "Ombre permanente de tout objet eleve au repos (carte, deck, tuile cliquable)."
+      },
+      {
+        "name": "survol",
+        "value": "0 12px 40px -4px rgba(255,87,34,0.15), 0 16px 24px -8px rgba(0,0,0,0.4)",
+        "purpose": "Le meme objet survole : l'orange double, l'ombre portee s'allonge."
+      },
+      {
+        "name": "halo",
+        "value": "0 0 20px rgba(255,87,34,0.15), 0 0 40px rgba(255,87,34,0.08)",
+        "purpose": "Rayonnement du bouton primaire, qui n'a pas d'ombre portee."
+      },
+      {
+        "name": "halo-intense",
+        "value": "0 0 30px rgba(255,87,34,0.25), 0 0 60px rgba(255,110,64,0.12)",
+        "purpose": "Le bouton primaire survole."
+      },
+      {
+        "name": "inset-sombre",
+        "value": "inset 0 2px 8px rgba(0,0,0,0.3)",
+        "purpose": "Creux interieur, pour les zones en retrait."
+      }
+    ],
+    "motion": [
+      {
+        "name": "transition-etat",
+        "value": "300ms",
+        "purpose": "Duree par defaut d'un changement d'etat (survol de carte, de bouton)."
+      },
+      {
+        "name": "transition-rapide",
+        "value": "200ms",
+        "purpose": "Changements de couleur seuls (lignes de tableau, tuiles)."
+      },
+      {
+        "name": "float",
+        "value": "float 6s ease-in-out infinite",
+        "purpose": "Derive lente des halos d'ambiance en fond de hero."
+      },
+      {
+        "name": "fade-in",
+        "value": "fadeIn 0.6s ease-out",
+        "purpose": "Apparition d'un bloc a l'entree."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Bouton primaire",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "L'action principale d'une page. Halo orange au lieu d'une ombre portee.",
+      "html": "<button class=\"ds-btn-primary\">Valider le deck</button>",
+      "css": ".ds-btn-primary { display:inline-flex; align-items:center; justify-content:center; padding:1rem 2rem; font-family:'Barlow Condensed',Impact,sans-serif; font-weight:700; font-size:1rem; text-transform:uppercase; letter-spacing:0.05em; color:#fff; text-shadow:0 2px 4px rgba(0,0,0,.5); background:linear-gradient(135deg,#FF7043 0%,#FF5722 50%,#E64A19 100%); border:none; border-radius:.5rem; box-shadow:0 0 20px rgba(255,87,34,.15),0 0 40px rgba(255,87,34,.08); cursor:pointer; transition:box-shadow .3s,transform .3s } .ds-btn-primary:hover { box-shadow:0 0 30px rgba(255,87,34,.25),0 0 60px rgba(255,110,64,.12) } .ds-btn-primary:focus-visible { outline:2px solid var(--color-brand-orange,#FF5722); outline-offset:2px }"
+    },
+    {
+      "name": "Bouton secondaire",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Action alternative. Bordure epaisse : l'epaisseur signale l'interactivite.",
+      "html": "<button class=\"ds-btn-secondary\">Voir les decklists</button>",
+      "css": ".ds-btn-secondary { display:inline-flex; align-items:center; justify-content:center; padding:1rem 2rem; font-family:'Barlow Condensed',Impact,sans-serif; font-weight:700; font-size:1rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--color-brand-orange,#FF5722); background:rgba(255,87,34,.1); border:2px solid var(--color-brand-orange,#FF5722); border-radius:.5rem; cursor:pointer; transition:background .3s,border-color .3s } .ds-btn-secondary:hover { background:rgba(255,87,34,.2); border-color:#FF7043 } .ds-btn-secondary:focus-visible { outline:2px solid var(--color-brand-orange,#FF5722); outline-offset:2px }"
+    },
+    {
+      "name": "Carte cliquable",
+      "kind": "card",
+      "refersTo": "card-clickable",
+      "description": "Objet eleve et actionnable. Bordure orange + ombre permanente, les deux amplifiees au survol.",
+      "html": "<a class=\"ds-magic-card\" href=\"#\"><span class=\"ds-magic-card__title\">Anim'Magic #3</span><span class=\"ds-magic-card__meta\">19 juillet 2026 - Wattrelos</span></a>",
+      "css": ".ds-magic-card { display:block; padding:1.25rem; text-decoration:none; background-color:#141821; background-image:linear-gradient(145deg,rgba(255,87,34,.06) 0%,rgba(255,87,34,.02) 100%); border:2px solid rgba(255,87,34,.2); border-radius:.75rem; box-shadow:0 4px 24px -2px rgba(255,87,34,.08),0 8px 16px -4px rgba(0,0,0,.3); transition:border-color .3s,box-shadow .3s } .ds-magic-card:hover { border-color:rgba(255,87,34,.5); box-shadow:0 12px 40px -4px rgba(255,87,34,.15),0 16px 24px -8px rgba(0,0,0,.4) } .ds-magic-card__title { display:block; font-family:'Barlow Condensed',Impact,sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:.025em; font-size:1.25rem; color:#fff } .ds-magic-card__meta { display:block; margin-top:.25rem; font-family:Inter,system-ui,sans-serif; font-size:.75rem; color:#8B93A1 }"
+    },
+    {
+      "name": "Panneau",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Conteneur non cliquable. Aucune ombre, aucun orange : c'est ce qui le distingue d'une carte.",
+      "html": "<div class=\"ds-panel\">Le comite publie une annonce tous les deux mois.</div>",
+      "css": ".ds-panel { padding:1.25rem; background:#141821; border:1px solid rgba(255,255,255,.08); border-radius:.75rem; font-family:Inter,system-ui,sans-serif; font-size:.875rem; line-height:1.625; color:#B8BEC8 }"
+    },
+    {
+      "name": "Badge or plein",
+      "kind": "chip",
+      "refersTo": "badge-gold-solid",
+      "description": "Se pose sur une illustration de carte : fond plein obligatoire, 9.8:1 de contraste.",
+      "html": "<span class=\"ds-badge-gold-solid\">1er</span>",
+      "css": ".ds-badge-gold-solid { display:inline-flex; align-items:center; gap:.25rem; padding:.125rem .5rem; font-family:'Barlow Condensed',Impact,sans-serif; font-weight:700; font-size:.75rem; line-height:1.25; text-transform:uppercase; letter-spacing:.05em; color:#0A0E13; background:var(--color-magic-gold,#FFA500); border-radius:.25rem }"
+    },
+    {
+      "name": "Badge neutre",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Qualificatif pose sur un fond d'interface : version translucide, teintee a 15%.",
+      "html": "<span class=\"ds-badge\">Aggro</span>",
+      "css": ".ds-badge { display:inline-flex; align-items:center; gap:.25rem; padding:.125rem .5rem; font-family:Inter,system-ui,sans-serif; font-weight:600; font-size:.75rem; line-height:1.25; color:#B8BEC8; background:#1C212B; border:1px solid rgba(255,255,255,.1); border-radius:.25rem }"
+    },
+    {
+      "name": "Pastille statistique",
+      "kind": "chip",
+      "refersTo": "stat-pill",
+      "description": "Fait chiffre en en-tete de page. Cercle complet, la donnee en blanc.",
+      "html": "<span class=\"ds-stat-pill\">Mise a jour le <strong>3 aout 2026</strong></span>",
+      "css": ".ds-stat-pill { display:inline-flex; align-items:center; gap:.375rem; padding:.375rem .75rem; font-family:Inter,system-ui,sans-serif; font-size:.875rem; color:#B8BEC8; background:#1C212B; border:1px solid rgba(255,255,255,.1); border-radius:9999px } .ds-stat-pill strong { color:#fff; font-weight:600 }"
+    },
+    {
+      "name": "Champ de saisie",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Focus par anneau orange, sans deplacement du champ.",
+      "html": "<input class=\"ds-input\" type=\"search\" placeholder=\"Rechercher un general\" />",
+      "css": ".ds-input { width:100%; padding:.75rem 1rem; font-family:Inter,system-ui,sans-serif; font-size:.875rem; color:#fff; background:#141821; border:1px solid rgba(255,255,255,.1); border-radius:.5rem; transition:border-color .2s } .ds-input::placeholder { color:#8B93A1 } .ds-input:focus { outline:none; border-color:rgba(255,87,34,.6); box-shadow:0 0 0 2px rgba(255,87,34,.5) }"
+    },
+    {
+      "name": "Surtitre",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "L'or en capitales tres interlettrees : annonce une section sans lui voler la vedette.",
+      "html": "<p class=\"ds-eyebrow\">Format communautaire</p>",
+      "css": ".ds-eyebrow { display:inline-flex; align-items:center; gap:.5rem; margin:0; font-family:'Barlow Condensed',Impact,sans-serif; font-weight:600; font-size:.75rem; text-transform:uppercase; letter-spacing:.14em; color:var(--color-magic-gold,#FFA500) }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La salle de tournoi",
+    "overview": "Une salle sombre, des tables eclairees, et l'orange comme lumiere de signalisation. Le fond n'est pas noir mais presque (#0A0E13), texture d'un grain imperceptible : c'est la piece, pas l'interface. Ce qui brille, ce sont les illustrations de cartes et les quelques marqueurs orange qui disent ou aller. L'interface elle-meme se tait.\n\nLa tension a tenir est celle du format lui-meme : le Pauper Duel Commander est competitif et bon marche. Un site qui ne serait que salle de tournoi deviendrait intimidant ; un site qui ne serait qu'accueillant perdrait le serieux qu'attend un joueur qui prepare un top 8. La resolution passe par la hierarchie, pas par le ton : la densite et la precision servent le joueur experimente, tandis que les points d'entree restent larges et explicites pour celui qui decouvre.\n\nDeux derives sont explicitement rejetees : le site gamer criard, pente naturelle d'un fond noir et d'un orange vif, et le tableur administratif, pente inverse d'un site de regles et de resultats.",
+    "keyCharacteristics": [
+      "Fond quasi-noir texture, surfaces empilees en trois niveaux tonaux",
+      "Un seul accent chaud rationne, double d'un or reserve au merite et a la rarete",
+      "Titres en capitales condensees, corps de texte neutre et lisible",
+      "Les noms de cartes portent la police officielle de Magic (Beleren)",
+      "Ombres permanentes et structurelles sur les objets eleves, absentes des simples conteneurs",
+      "Rien n'est charge depuis un CDN tiers : polices et illustrations sont maitrisees"
+    ],
+    "rules": [
+      {
+        "name": "La Regle du Signal",
+        "body": "L'orange marque ce sur quoi on peut agir. Un bloc decoratif, un encadre informatif ou un conteneur non cliquable n'y ont pas droit - c'est le role de panel. La bordure orange de magic-card est reservee aux objets cliquables. Principe fort, applique par defaut ; un ecart doit etre un choix conscient, pas un oubli.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regle du Plancher de Contraste",
+        "body": "#8B93A1 est le gris le plus clair autorise pour du texte : il mesure 4,9:1 sur #141821. Il ne se dilue jamais avec une opacite. Le gris precedent (#6B7280) tombait a 3,67:1 et echouait a WCAG AA.",
+        "section": "colors"
+      },
+      {
+        "name": "La Regle des Capitales Condensees",
+        "body": "Les titres sont en capitales, condenses, interlettrage serre (-0.025em) et ombre portee 0 2px 8px rgba(0,0,0,0.5). Cette ombre est omise sur le texte en degrade : le texte y est transparent, l'ombre ne rendrait rien tout en coutant un repaint.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regle de la Langue des Cartes",
+        "body": "Un nom de carte s'ecrit toujours dans son orthographe canonique Scryfall, en Beleren, marque lang=en. Le texte d'interface qui l'accompagne se traduit. Les deux ne se melangent jamais dans le meme element.",
+        "section": "typography"
+      },
+      {
+        "name": "La Regle du Halo Rationne",
+        "body": "Le rayonnement orange appartient au bouton primaire et a lui seul. Etendu aux cartes, aux panneaux ou aux sections, il produit exactement le site gamer que ce systeme refuse.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do reserver l'Orange Brasier a ce qui est actionnable, et utiliser panel pour un conteneur qui ne l'est pas.",
+      "Do poser une ombre permanente sur un objet eleve, et aucune sur un simple conteneur.",
+      "Do reduire une carte en ajoutant des colonnes, jamais en recadrant son illustration.",
+      "Do ecrire les noms de cartes en Beleren, orthographe Scryfall, avec lang=en.",
+      "Do utiliser un badge plein (--solid) des qu'il se pose sur une illustration.",
+      "Do prevoir un repli textuel lisible quand une illustration Scryfall manque : une carte sans image doit rester presente et nommee.",
+      "Do demarrer chaque grille a une colonne et l'elargir par paliers."
+    ],
+    "donts": [
+      "Don't diluer #8B93A1 avec une opacite : c'est le plancher de contraste, pas une base a eclaircir.",
+      "Don't etendre le halo orange au-dela du bouton primaire.",
+      "Don't empiler plusieurs sections decoratives avant le contenu que la page promet.",
+      "Don't repeter un meme qualificatif sur chaque element d'une liste - un marqueur discret et une legende unique valent mieux qu'un mot repris cinq fois.",
+      "Don't charger une police ou une feuille de style depuis un CDN tiers.",
+      "Don't ecrire une couleur en dur dans un composant : tout passe par les tokens @theme de globals.css.",
+      "Don't produire un tableau gris sans illustration ni hierarchie - ni, a l'inverse, un empilement de neons et de degrades."
+    ]
+  }
+}
