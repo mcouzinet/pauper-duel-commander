@@ -12,6 +12,10 @@ GitHub → Settings → Developer settings → **Fine-grained tokens** → Gener
 - **Permissions** → Repository :
   - **Contents** : Read and write
   - **Pull requests** : Read and write
+  - **Issues** : Read and write — sert uniquement à poser le label `Decklist` ou
+    `Tournament` sur la PR (GitHub passe par l'API *issues* pour labelliser une
+    PR). Sans cette permission la soumission fonctionne quand même : la PR
+    s'ouvre, elle arrive simplement sans label.
   - (rien d'autre — pas de workflow, pas d'administration)
 - Expiration : au choix (prévoir le renouvellement).
 

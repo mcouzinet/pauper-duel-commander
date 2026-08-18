@@ -101,14 +101,44 @@ class GitHubClient {
      *
      * @return array{number:int, html_url:string}
      */
-    public function open_pull_request($head, $base, $title, $body) {
+    public function open_pull_request($head, $base, $title, $body, array $labels = array()) {
         $pr = $this->request('POST', "/repos/{$this->repo}/pulls", array(
             'title' => $title,
             'head'  => $head,
             'base'  => $base,
             'body'  => $body,
         ));
+
+        if ($labels) {
+            $this->label($pr['number'], $labels);
+        }
+
         return array('number' => $pr['number'], 'html_url' => $pr['html_url']);
+    }
+
+    /**
+     * Label a pull request. Best effort, and deliberately so.
+     *
+     * Labels cannot be set when creating the PR — GitHub only takes them on the
+     * issues endpoint — so this is a second call, made once the submission has
+     * already succeeded. Letting it throw would report a failure for a PR that
+     * exists, and the submitter would send the whole thing again. A missing
+     * label is a cosmetic loss; a duplicate submission is not.
+     *
+     * @param int      $number Pull request number
+     * @param string[] $labels Label names, which must already exist in the repo
+     */
+    public function label($number, array $labels) {
+        try {
+            $this->request(
+                'POST',
+                "/repos/{$this->repo}/issues/{$number}/labels",
+                array('labels' => array_values($labels))
+            );
+            return true;
+        } catch (RuntimeException $e) {
+            return false;
+        }
     }
 
     // -------------------------------------------------------------------------
