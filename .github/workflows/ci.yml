@@ -8,9 +8,9 @@ name: CI
 # Ce workflow ne déploie rien. Il construit le site et lance les tests de l'API,
 # exactement comme deploy.yml, et c'est tout.
 #
-# Pour qu'il bloque réellement le merge, l'ajouter aux "required status checks"
-# du ruleset : Settings → Rules → Rulesets → Protect main → Require status
-# checks to pass → ajouter "build & test".
+# Ce job EST requis pour merger : "build & test" figure dans les required status
+# checks du ruleset "Protect main", qui n'a aucun bypass — personne n'y échappe,
+# admin compris. Un job rouge bloque donc la PR.
 
 on:
   pull_request:
@@ -57,11 +57,12 @@ jobs:
           npm ci || { rm -rf node_modules package-lock.json && npm install; }
           npm run build
 
-      # astro check ne bloque pas : le dépôt a des erreurs de typage
-      # préexistantes. Le rapport reste visible dans le log.
-      - name: Type check (informatif)
+      # Le dépôt est à 0 erreur de typage : une erreur qui apparaît est une
+      # régression, et doit faire échouer le job. (Les hints d'`astro check` ne
+      # le font pas échouer — seules les erreurs comptent.) Le job étant requis
+      # pour merger, un typage cassé bloque la PR — cf. l'entête.
+      - name: Type check
         working-directory: site
-        continue-on-error: true
         run: npx astro check
 
       - uses: shivammathur/setup-php@v2

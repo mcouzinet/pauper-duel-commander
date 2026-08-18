@@ -71,7 +71,7 @@ site/
 cd site
 npm run dev       # Dev (copie la ban list + réchauffe le cache Scryfall au préalable)
 npm run build     # Build -> site/dist/  (même prélude que dev)
-npm run check     # astro check + tsc (voir Points d'Attention : 1 erreur préexistante)
+npm run check     # astro check — propre (0 erreur, 0 avertissement, 8 hints)
 npm test          # PHPUnit (API)
 ```
 
@@ -218,11 +218,15 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` remonte 42 erreurs préexistantes** : 5 dans `astro.config.ts`
-  (types du plugin Vite Tailwind, littéraux `changefreq` vs `EnumChangefreq`) et
-  37 dans le script client de `SubmitDecklistPage.astro` (DOM non typé). Sans
-  effet sur le build ; ne pas les traiter comme une régression — mesurer l'écart
-  avant/après plutôt que le total.
+- **`npm run check` est propre** : 0 erreur, 0 avertissement, 8 hints (variables
+  inutilisées, scripts traités comme `is:inline`). `npm run lint` y ajoute
+  `tsc --noEmit`, tout aussi propre (mesuré sur `main` le 18 août 2026). C'est la
+  référence : une erreur qui apparaît est une régression du changement en cours,
+  pas un héritage. La dernière « erreur préexistante » connue, celle
+  d'`astro.config.ts` (conflit de types entre deux majeures de Vite), a été
+  neutralisée par 812c0d7 via le cast `tailwindcss() as any` ; son commentaire sur
+  place dit pourquoi. Chiffre à remesurer avant de le citer : l'ancienne note
+  « 42 erreurs » n'a jamais correspondu à l'état du dépôt.
 - **Redirections** : `public/.htaccess` (racine) redirige en 301 les anciennes
   URLs WordPress non préfixées vers les routes `/fr/…`. Apache uniquement
   (OVH mutualisé) ; équivalent nginx en commentaire.
