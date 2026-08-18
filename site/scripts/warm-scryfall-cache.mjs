@@ -53,6 +53,18 @@ function collectNames() {
       if (match) add(match[1]);
     }
   }
+
+  // The ban list renders a scan per card, and each announcement previews the
+  // cards it moved. Both were fetched cold at build time, which is exactly the
+  // parallel burst Scryfall rate-limits — silently, leaving cards art-less.
+  JSON.parse(readFileSync(join(ROOT, 'content', 'banlist.json'), 'utf-8')).cards.forEach(add);
+
+  const history = join(ROOT, 'content', 'banlist-history');
+  for (const file of readdirSync(history)) {
+    const data = JSON.parse(readFileSync(join(history, file), 'utf-8'));
+    for (const change of data.changes ?? []) add(change.card);
+  }
+
   return [...names];
 }
 

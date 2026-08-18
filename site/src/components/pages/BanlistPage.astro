@@ -12,6 +12,7 @@
  */
 import Base from '@/layouts/Base.astro';
 import BanListGrid from '@/components/BanListGrid.astro';
+import AnnouncementChanges from '@/components/AnnouncementChanges.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
@@ -37,24 +38,6 @@ const [history, updatedAt, recentlyChanged] = await Promise.all([
 ]);
 
 const latest = history[0] ?? null;
-
-const CHANGE_ORDER = ['banned', 'unbanned', 'restricted'] as const;
-const CHANGE_STYLE: Record<string, string> = {
-  banned: 'text-red-300 border-red-500/30 bg-red-500/10',
-  unbanned: 'text-green-300 border-green-500/30 bg-green-500/10',
-  restricted: 'text-yellow-300 border-yellow-500/30 bg-yellow-500/10',
-};
-const CHANGE_LABEL: Record<string, string> = {
-  banned: t('banlist.changeBanned', locale),
-  unbanned: t('banlist.changeUnbanned', locale),
-  restricted: t('banlist.changeRestricted', locale),
-};
-
-function groupChanges(changes: { card: string; type: string; experimental?: boolean }[]) {
-  return CHANGE_ORDER
-    .map(type => ({ type, cards: changes.filter(c => c.type === type) }))
-    .filter(group => group.cards.length > 0);
-}
 
 const updatedLabel = formatBanlistDate(updatedAt, locale);
 const title = locale === 'fr'
@@ -116,27 +99,7 @@ const description = locale === 'fr'
               <span class="text-sm text-text-muted">{t('banlist.by', locale)} {latest.source}</span>
             </div>
 
-            <div class="space-y-3">
-              {groupChanges(latest.changes).map(group => (
-                <div class="flex flex-col sm:flex-row sm:items-start gap-x-3 gap-y-2">
-                  <span class={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-heading font-bold uppercase tracking-wider ${CHANGE_STYLE[group.type]}`}>
-                    {CHANGE_LABEL[group.type]}
-                  </span>
-                  <div class="flex flex-wrap gap-1.5">
-                    {group.cards.map(card => (
-                      <span class="inline-flex items-center gap-1.5 text-sm font-beleren text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1" lang="en">
-                        {card.card}
-                        {card.experimental && (
-                          <span class="text-xs font-heading font-semibold uppercase tracking-wider text-yellow-400">
-                            {t('banlist.experimental', locale)}
-                          </span>
-                        )}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <AnnouncementChanges changes={latest.changes} locale={locale} />
 
             <p class="mt-4">
               <a href="#history" class="text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors">
@@ -190,27 +153,7 @@ const description = locale === 'fr'
                     <span class="text-sm text-text-muted">{t('banlist.by', locale)} {entry.source}</span>
                   </div>
 
-                  <div class="space-y-3">
-                    {groupChanges(entry.changes).map(group => (
-                      <div class="flex flex-col sm:flex-row sm:items-start gap-x-3 gap-y-2">
-                        <span class={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-heading font-bold uppercase tracking-wider ${CHANGE_STYLE[group.type]}`}>
-                          {CHANGE_LABEL[group.type]}
-                        </span>
-                        <div class="flex flex-wrap gap-1.5">
-                          {group.cards.map(card => (
-                            <span class="inline-flex items-center gap-1.5 text-sm font-beleren text-text-primary bg-bg-tertiary rounded-md px-2.5 py-1" lang="en">
-                              {card.card}
-                              {card.experimental && (
-                                <span class="text-xs font-heading font-semibold uppercase tracking-wider text-yellow-400">
-                                  {t('banlist.experimental', locale)}
-                                </span>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <AnnouncementChanges changes={entry.changes} locale={locale} />
 
                   {entry.notes.length > 0 && (
                     <details class="mt-4" data-analytics="banlist_history_open">

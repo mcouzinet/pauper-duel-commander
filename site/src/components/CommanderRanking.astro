@@ -127,7 +127,7 @@ function decklistHref(name: string): string {
           ]} lang="en">+ {commander.partnerName}</span>
         )}
 
-        <span class="flex items-center gap-1 mt-0.5">
+        <span class="flex items-center gap-1 mt-0.5 text-xs sm:text-sm">
           <span class="sr-only">{t('a11y.colors', locale)}</span>
           <span set:html={formatColorSymbols(commander.colors)} />
         </span>

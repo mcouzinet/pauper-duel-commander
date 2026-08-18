@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
+import sitemap, { ChangeFreqEnum } from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -21,16 +21,16 @@ export default defineConfig({
       serialize(item) {
         // The home page and the ban list change most often; detail pages least.
         if (/\/(fr|en)\/$/.test(item.url)) {
-          item.changefreq = 'weekly';
+          item.changefreq = ChangeFreqEnum.WEEKLY;
           item.priority = 1.0;
         } else if (/\/banlist\/$/.test(item.url)) {
-          item.changefreq = 'monthly';
+          item.changefreq = ChangeFreqEnum.MONTHLY;
           item.priority = 0.9;
         } else if (/\/(decklist|tournois|tournaments)\/[^/]+\/$/.test(item.url)) {
-          item.changefreq = 'yearly';
+          item.changefreq = ChangeFreqEnum.YEARLY;
           item.priority = 0.6;
         } else {
-          item.changefreq = 'monthly';
+          item.changefreq = ChangeFreqEnum.MONTHLY;
           item.priority = 0.8;
         }
         return item;
@@ -38,6 +38,11 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    // Two majors of Vite are installed: Astro resolves its own pinned 6.x, while
+    // @tailwindcss/vite pulls 8.x, whose Plugin type differs in an internal
+    // `hotUpdate` signature. The plugin is fine at runtime — only the nominal
+    // types clash. This was the long-standing "1 pre-existing error"; deduping
+    // Vite would mean overriding a build dependency to silence a type.
+    plugins: [tailwindcss() as any],
   },
 });
