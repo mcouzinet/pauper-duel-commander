@@ -20,9 +20,9 @@ Le site est entièrement pré-rendu. Le validateur de deck est **la seule chose
 qui s'exécute à l'exécution** : la prod n'a besoin que de PHP, pas de Node.
 
 > Historique : le site tournait sous WordPress (Bedrock + Timber + ACF Pro +
-> Polylang). Cette stack a été supprimée. `SPEC-MIGRATION.md` documente la
-> migration ; certaines de ses sections décrivent une cible qui a divergé de ce
-> qui a été réellement implémenté — le code fait foi.
+> Polylang). Cette stack a été supprimée ; l'historique git en garde la trace.
+> La spec de migration a été retirée : elle décrivait une cible qui avait
+> divergé de ce qui a été implémenté. Le code fait foi.
 
 ## Structure du Projet
 ```
