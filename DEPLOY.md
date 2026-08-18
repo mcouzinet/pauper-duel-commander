@@ -8,7 +8,7 @@ est faite).
 ## Vue d'ensemble
 
 ```
-push / déclenchement manuel
+merge sur main / cron hebdo / déclenchement manuel
         │
         ▼
 GitHub Actions (.github/workflows/deploy.yml)
@@ -20,14 +20,32 @@ GitHub Actions (.github/workflows/deploy.yml)
    https://pauperduelcommander.fr
 ```
 
-- **Runtime prod** : PHP 8 uniquement (`/api/validate-deck.php`). Pas de Node en prod.
+- **Runtime prod** : PHP 8 uniquement (`/api/validate-deck.php`,
+  `/api/submit-decklist.php`, `/api/submit-tournament.php`). Pas de Node en prod.
 - **Écriture disque** : `api/cache/` doit rester inscriptible (cache Scryfall +
   état du rate limit). Sur OVH mutualisé, PHP tourne sous le compte FTP, donc les
   fichiers déposés sont inscriptibles par défaut.
 
 ## Déclencher un déploiement
 
-Le déclenchement est **manuel** — rien ne part tout seul.
+Trois déclencheurs, dont **deux automatiques** :
+
+| Déclencheur | Quand |
+|---|---|
+| `push` sur `main` touchant `site/**` | **à chaque merge de PR** qui change le site |
+| `schedule` | tous les lundis 05:00 UTC (rebuild hebdomadaire) |
+| `workflow_dispatch` | à la demande |
+
+Autrement dit, **merger une PR qui touche le site suffit à déployer** — c'est ce
+qui met en ligne une soumission acceptée, sans geste manuel. Une PR qui ne touche
+que la documentation ne déclenche rien.
+
+L'environnement `production` du workflow n'a aujourd'hui **aucune règle
+d'approbation** : le déploiement part sans validation humaine supplémentaire (voir
+le garde-fou optionnel plus bas pour en ajouter une).
+
+Pour un déploiement à la demande — republier sans nouveau commit, par exemple
+après avoir posé un secret sur le serveur :
 
 ```bash
 gh workflow run deploy.yml     # depuis un terminal (ou lancé par Claude)
@@ -35,9 +53,6 @@ gh run watch                   # suivre le run en cours
 ```
 
 ou depuis GitHub : onglet **Actions → Deploy to OVH → Run workflow**.
-
-Pour déployer automatiquement à chaque push sur `main`, décommenter le bloc
-`push:` en tête du workflow.
 
 ## Configuration (déjà en place)
 

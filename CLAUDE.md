@@ -38,14 +38,22 @@ site/
 │   ├── .htaccess                # Redirections 301 des anciennes URLs WordPress
 │   ├── robots.txt, favicon.ico
 │   ├── api/                     # API PHP, déployée telle quelle
-│   │   ├── validate-deck.php    # SEUL point d'entrée public
-│   │   ├── .htaccess            # N'autorise que validate-deck.php
+│   │   ├── validate-deck.php    # Validation d'un deck (public)
+│   │   ├── submit-decklist.php  # Soumission decklist -> PR (public modéré)
+│   │   ├── submit-tournament.php # Soumission tournoi -> PR (organisateurs)
+│   │   ├── .htaccess            # N'autorise que ces trois points d'entrée
 │   │   ├── lib/
-│   │   │   ├── config.php       # Constantes, CORS, helpers, autoload
+│   │   │   ├── config.php       # Constantes, CORS, secrets, autoload
 │   │   │   ├── DeckValidator.php    # Les 9 règles PDC
 │   │   │   ├── DecklistParser.php   # Texte MTGO -> tableau
 │   │   │   ├── ScryfallService.php  # Client Scryfall + cache fichier
-│   │   │   └── RateLimiter.php      # Fenêtre fixe, état fichier
+│   │   │   ├── RateLimiter.php      # Fenêtre fixe, état fichier
+│   │   │   ├── GitHubClient.php     # Branche + commit multi-fichiers + PR
+│   │   │   ├── TurnstileVerifier.php    # Captcha, fail-closed
+│   │   │   ├── DecklistSubmission.php   # Input -> JSON collection decklists
+│   │   │   ├── DecklistSubmissionController.php
+│   │   │   ├── TournamentSubmission.php # Input -> JSON tournoi + decklists top 8
+│   │   │   └── TournamentSubmissionController.php
 │   │   ├── data/                # banlist.json généré au build (gitignored)
 │   │   └── cache/               # Cache Scryfall + rate limit (gitignored)
 │   └── img/ fonts/
@@ -71,7 +79,7 @@ site/
 cd site
 npm run dev       # Dev (copie la ban list + réchauffe le cache Scryfall au préalable)
 npm run build     # Build -> site/dist/  (même prélude que dev)
-npm run check     # astro check — propre (0 erreur, 0 avertissement, 8 hints)
+npm run check     # astro check — propre (0 erreur, 0 avertissement, 9 hints)
 npm test          # PHPUnit (API)
 ```
 
@@ -127,6 +135,25 @@ Réponse : `{success, data: {is_valid, errors[], warnings[], stats{}}}`.
 
 Les 9 règles sont documentées en tête de `DeckValidator.php`.
 
+### Soumissions (formulaire -> PR GitHub)
+
+Deux endpoints ouvrent une PR que quelqu'un relit avant merge ; le merge déclenche
+le déploiement. Ils partagent Turnstile (fail-closed), un honeypot, le quota
+5/h/IP et `GitHubClient` (commit multi-fichiers via l'API Git Trees).
+
+`POST /api/submit-decklist.php` — form-encodé. Un deck illégal est refusé (422),
+sans PR.
+
+`POST /api/submit-tournament.php` — **JSON** (`top8` est imbriqué) : `accessCode`,
+`title`, `date`, `location?`, `city?`, `participants?`, `top8[]`, `meta?`,
+`locale?`. Une seule PR contient le tournoi **et** les decklists légales du top 8,
+`decklistSlug` câblé entre les deux.
+Réponse : `{success, pr_url, included[], rejected[]}`.
+
+Les secrets (`GITHUB_TOKEN`, `TURNSTILE_SECRET`, `ORGANIZER_CODE`) vivent hors
+`www/` et sont lus par `pdc_secret()` ; absents, l'endpoint répond **503**. Mise
+en place : `docs/external/README.md`.
+
 ### Invariants à ne pas casser
 
 - **La ban list n'est jamais optionnelle.** Si elle ne peut pas être chargée,
@@ -148,8 +175,29 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
   requête Scryfall isolée avec 100 ms d'attente.
 - **`X-Forwarded-For` est ignoré volontairement** dans `RateLimiter::client_id()`
   (falsifiable). Le lire nécessiterait une allow-list de proxys de confiance.
-- **Seul `validate-deck.php` est joignable.** `lib/`, `cache/` et `data/` sont
+- **Seuls les trois points d'entrée sont joignables** (`validate-deck`,
+  `submit-decklist`, `submit-tournament`). `lib/`, `cache/` et `data/` sont
   refusés par `.htaccess` (Apache) — équivalent nginx en commentaire dedans.
+- **Le formulaire tournoi publie des résultats, pas des annonces.** Une date
+  future est refusée (422 `date_future`) : `TournamentDetailPage` masque tout le
+  bloc résultats tant que la date n'est pas passée, donc une telle soumission
+  publierait une page vide de ce que l'organisateur a saisi.
+- **Une decklist illégale n'annule pas le tournoi.** Elle est écartée de la PR et
+  sa place garde `decklistSlug: null` (l'état normal de la collection) ; le motif
+  part dans la réponse et dans le corps de la PR. Ce qui reste invariant : une
+  liste illégale ne devient jamais du contenu publié. Ne pas basculer vers « tout
+  rejeter » — un tournoi est un fait, il ne doit pas dépendre d'une faute de
+  frappe sur l'une des huit listes.
+- **Le code organisateur est vérifié APRÈS Turnstile.** L'ordre inverse serait
+  moins cher mais laisserait un bot force-brute le code sans résoudre de captcha.
+- **Budget de validation** (`PDC_SUBMIT_VALIDATION_BUDGET`, 20 s) : valider huit
+  decks peut dépasser le `max_execution_time` d'un mutualisé. Au-delà du budget
+  les listes restantes sont marquées « non vérifiées » et écartées — jamais
+  publiées sans contrôle.
+- **Les erreurs de forme sont des codes, pas de la prose** (`title_required`,
+  `date_future`…). Le message traverse le réseau et est traduit côté navigateur
+  (`submitTournament.js.formErrors`) : y écrire une phrase française la ferait
+  lire à toutes les langues.
 
 ## Conventions de Code
 
@@ -218,7 +266,7 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` est propre** : 0 erreur, 0 avertissement, 8 hints (variables
+- **`npm run check` est propre** : 0 erreur, 0 avertissement, 9 hints (variables
   inutilisées, scripts traités comme `is:inline`). `npm run lint` y ajoute
   `tsc --noEmit`, tout aussi propre (mesuré sur `main` le 18 août 2026). C'est la
   référence : une erreur qui apparaît est une régression du changement en cours,

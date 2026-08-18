@@ -28,15 +28,24 @@ final class DecklistSubmission {
     private $archetype; // string|null
     private $date;      // YYYY-MM-DD
     private $slug;
+    private $title;     // string|null — override, else built from commander/partner
 
     private function __construct() {}
 
     /**
-     * @param array $in keys: commander, partner?, decklist, author?, archetype?
+     * @param array       $in        keys: commander, partner?, decklist, author?, archetype?
+     * @param string|null $date      YYYY-MM-DD; defaults to today. A tournament
+     *                               decklist carries the tournament's date, not
+     *                               the day it was typed in.
+     * @param string|null $slug_base Sanitized in place of the commander name when
+     *                               the caller has a more specific slug (a
+     *                               tournament ties commander + tournament + place,
+     *                               which is unique without a random suffix).
+     * @param string|null $title     Display title; defaults to "Commander // Partner".
      * @return self
      * @throws InvalidArgumentException on a missing/empty required field
      */
-    public static function from_input(array $in) {
+    public static function from_input(array $in, $date = null, $slug_base = null, $title = null) {
         $clean = function ($v, $max) {
             $v = is_string($v) ? trim(strip_tags($v)) : '';
             return $v === '' ? null : mb_substr($v, 0, $max);
@@ -62,10 +71,16 @@ final class DecklistSubmission {
         $s->author    = $clean(isset($in['author']) ? $in['author'] : '', self::MAX_FIELD);
         $s->archetype = $clean(isset($in['archetype']) ? $in['archetype'] : '', self::MAX_FIELD);
         $s->cards     = $cards;
-        $s->date      = date('Y-m-d');
-        // Safe slug: sanitized commander + date + short random anti-collision suffix.
-        $suffix   = substr(bin2hex(random_bytes(3)), 0, 4);
-        $s->slug  = pdc_sanitize_key($commander) . '-' . $s->date . '-' . $suffix;
+        $s->date      = ($date !== null && preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) ? $date : date('Y-m-d');
+        $s->title     = $clean($title === null ? '' : $title, self::MAX_FIELD);
+        if ($slug_base !== null && pdc_sanitize_key($slug_base) !== '') {
+            $s->slug = pdc_sanitize_key($slug_base);
+        } else {
+            // Safe slug: sanitized commander + date + short random anti-collision
+            // suffix. Two players can submit the same commander the same day.
+            $suffix  = substr(bin2hex(random_bytes(3)), 0, 4);
+            $s->slug = pdc_sanitize_key($commander) . '-' . $s->date . '-' . $suffix;
+        }
         return $s;
     }
 
@@ -76,6 +91,9 @@ final class DecklistSubmission {
 
     /** Display title, e.g. "Gut, True Soul Zealot // Inspiring Leader". */
     public function title() {
+        if ($this->title !== null) {
+            return $this->title;
+        }
         return $this->partner ? $this->commander . ' // ' . $this->partner : $this->commander;
     }
 

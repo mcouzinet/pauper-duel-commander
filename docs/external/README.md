@@ -94,4 +94,15 @@ En pratique, la vérification se fait via le formulaire lui-même sur
 `/fr/soumettre-decklist/` (le widget Turnstile y fournit le token). Une soumission
 valide doit ouvrir une PR dans le dépôt.
 
+Pour le formulaire **tournoi** (`/fr/soumettre-tournoi/`), il faut en plus que
+`ORGANIZER_CODE` soit posé dans `pdc-secrets.php` : sans lui l'endpoint répond
+**503**, et avec un mauvais code **403**. Une soumission valide ouvre **une seule**
+PR contenant le tournoi *et* les decklists légales du top 8.
+
 > Sans token/secret, l'endpoint répond **503** (inerte, sûr) — c'est voulu.
+
+> Le formulaire tournoi publie des **résultats** : une date dans le futur est
+> refusée (422 `date_future`). La page tournoi masque tout le bloc résultats tant
+> que la date n'est pas passée, donc une telle soumission publierait une page
+> vide de ce que l'organisateur a saisi. Les annonces de tournois à venir restent
+> éditées à la main.
