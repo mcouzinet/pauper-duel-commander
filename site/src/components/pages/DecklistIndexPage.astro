@@ -87,20 +87,33 @@ const description = t('archive.subtitle', locale)
     </div>
   </section>
 
-  <!-- Shelves: discovery before enumeration ---------------------------------->
+  <!-- Shelves: one picker, not five stacked sections ------------------------->
+  {/*
+    These were five full sections in a row, so the complete collection — the
+    reason most people open this page — started some 3,000px down. They are one
+    section now, with a picker: same content, one shelf deep.
+  */}
   {shelves.length > 0 && (
-    <div class="container mx-auto px-4 md:px-6 py-10 md:py-12 space-y-10">
-      {shelves.map(shelf => (
-        <section>
-          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-4">
-            <h2 class="text-xl sm:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide flex items-center gap-2">
-              <span aria-hidden="true">{shelf.emoji}</span>
-              {t(`archive.shelf${shelfKey(shelf.key)}`, locale)}
-            </h2>
-            <p class="text-sm text-text-muted">
-              {t(`archive.shelf${shelfKey(shelf.key)}Hint`, locale)}
-            </p>
-          </div>
+    <section class="container mx-auto px-4 md:px-6 py-8 md:py-10">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mb-4">
+        <label for="shelf-select" class="text-xl sm:text-2xl font-heading font-bold text-text-primary uppercase tracking-wide">
+          {t('archive.shelfSelectLabel', locale)}
+        </label>
+        <select id="shelf-select"
+                class="px-3 py-2 bg-bg-secondary border border-card-border/40 rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-brand-orange/50">
+          {shelves.map(shelf => (
+            <option value={shelf.key}>{t(`archive.shelf${shelfKey(shelf.key)}`, locale)}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Every shelf ships in the DOM; the picker swaps which one shows. With no
+          JS the first stays visible, which is the old default view. */}
+      {shelves.map((shelf, i) => (
+        <div data-shelf-panel={shelf.key} hidden={i > 0}>
+          <p class="text-sm text-text-muted mb-4">
+            {t(`archive.shelf${shelfKey(shelf.key)}Hint`, locale)}
+          </p>
 
           {/* Horizontal scroller below sm, grid above. Stacked full-height cards
               would have added ~6,000px of shelf to a phone page — the opposite of
@@ -112,9 +125,9 @@ const description = t('archive.subtitle', locale)
               </li>
             ))}
           </ul>
-        </section>
+        </div>
       ))}
-    </div>
+    </section>
   )}
 
   <!-- Full collection, searchable ------------------------------------------->
@@ -218,6 +231,20 @@ const description = t('archive.subtitle', locale)
       </div>
     </div>
   </section>
+
+  <script>
+    // Shelf picker: show the chosen panel, hide the rest. All of them are in the
+    // DOM already, so this never fetches and works with the page as rendered.
+    const shelfSelect = document.getElementById('shelf-select') as HTMLSelectElement | null;
+    if (shelfSelect) {
+      const panels = [...document.querySelectorAll<HTMLElement>('[data-shelf-panel]')];
+      shelfSelect.addEventListener('change', () => {
+        for (const panel of panels) {
+          panel.hidden = panel.dataset.shelfPanel !== shelfSelect.value;
+        }
+      });
+    }
+  </script>
 
   <script>
     // Filter/sort/search over what is already in the DOM. Each deck renders twice

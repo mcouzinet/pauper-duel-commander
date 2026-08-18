@@ -234,6 +234,7 @@
     "countAll": "%n% decklists",
     "countFiltered": "%n% of %total%",
     "allDecklists": "All decklists",
+    "shelfSelectLabel": "Selection",
     "shelfMoment": "Decks of the moment",
     "shelfMomentHint": "The top 8 of the latest tournaments.",
     "shelfPerforming": "Top finishers",

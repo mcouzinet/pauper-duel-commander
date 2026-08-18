@@ -157,7 +157,6 @@ export async function getSiblingDecklists(slug: string, limit = 4): Promise<Enri
 export interface Shelf {
   /** Stable key, used for the i18n label and the anchor. */
   key: 'moment' | 'performing' | 'new' | 'original' | 'beginner';
-  emoji: string;
   decklists: EnrichedDecklist[];
 }
 
@@ -180,12 +179,10 @@ export async function getShelves(options: {
   const shelves: Shelf[] = [
     {
       key: 'moment',
-      emoji: '🔥',
       decklists: legal.filter(d => d.result && recent.has(d.result.slug)).slice(0, limit),
     },
     {
       key: 'performing',
-      emoji: '🏆',
       decklists: legal
         .filter(d => d.result && d.result.place <= 2)
         .sort((a, b) => (b.result!.date).localeCompare(a.result!.date))
@@ -193,19 +190,16 @@ export async function getShelves(options: {
     },
     {
       key: 'beginner',
-      emoji: '👶',
       decklists: legal.filter(d => d.tags.includes('debutant')).slice(0, limit),
     },
     {
       key: 'original',
-      emoji: '🧪',
       decklists: legal
         .filter(d => originalCommanders.has(d.commander.toLowerCase()))
         .slice(0, limit),
     },
     {
       key: 'new',
-      emoji: '🆕',
       decklists: legal.slice(0, limit),
     },
   ];
