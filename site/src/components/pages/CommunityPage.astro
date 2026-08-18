@@ -73,9 +73,7 @@ const past = all
   .sort((a, b) => b.date.localeCompare(a.date))
   .slice(0, 3);
 
-const title = locale === 'fr'
-  ? 'Communauté Pauper Duel Commander'
-  : 'Pauper Duel Commander community';
+const title = t('community.seoTitle', locale);
 ---
 <Base title={title} description={t('community.subtitle', locale)} bareTitle={false}>
 
@@ -99,7 +97,7 @@ const title = locale === 'fr'
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="stat-pill"><strong>{all.length}</strong> {t('quick.tournamentsShort', locale)}</span>
-          <span class="stat-pill"><strong>{venues.length}</strong> {locale === 'fr' ? 'lieux' : 'venues'}</span>
+          <span class="stat-pill"><strong>{venues.length}</strong> {t('common.venues', locale)}</span>
         </div>
       </div>
     </div>
@@ -252,7 +250,7 @@ const title = locale === 'fr'
             </p>
             <p class="text-xs text-text-muted mb-4">
               {t('banlist.lastUpdate', locale)} {formatBanlistDate(banlistDate, locale)}
-              {announcements.length > 0 && ` — ${announcements.length} ${locale === 'fr' ? 'annonces publiées' : 'announcements published'}`}
+              {announcements.length > 0 && ` — ${announcements.length} ${t('common.announcementsPublished', locale)}`}
             </p>
             <a href={`${route('banlist', locale)}#history`} class="btn-secondary !px-4 !py-2.5 !text-sm">
               {t('community.committeeCta', locale)}

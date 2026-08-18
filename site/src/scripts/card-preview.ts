@@ -19,6 +19,18 @@ const WIDTH = 244; // Scryfall "normal" is 488px wide; half of it stays crisp.
 let root: HTMLDivElement | null = null;
 let pinnedTo: HTMLElement | null = null;
 
+/**
+ * Accessible name for the preview popover.
+ *
+ * The element is built by script, so it cannot take the label from a `t()` call
+ * at build time; the page's `<html lang>` is what identifies the locale here.
+ */
+const PREVIEW_LABEL: Record<string, string> = {
+  fr: 'Aperçu de la carte',
+  en: 'Card preview',
+  it: 'Anteprima della carta',
+};
+
 const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 function build(): HTMLDivElement {
@@ -28,7 +40,7 @@ function build(): HTMLDivElement {
   root.id = 'card-preview';
   root.hidden = true;
   root.setAttribute('role', 'dialog');
-  root.setAttribute('aria-label', document.documentElement.lang === 'en' ? 'Card preview' : 'Aperçu de la carte');
+  root.setAttribute('aria-label', PREVIEW_LABEL[document.documentElement.lang] ?? PREVIEW_LABEL.fr);
   root.style.cssText = [
     'position:fixed',
     'z-index:10000',

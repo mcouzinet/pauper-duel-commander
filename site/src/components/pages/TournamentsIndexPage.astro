@@ -38,10 +38,10 @@ const venueOptions = [...venues.entries()].sort((a, b) => b[1] - a[1] || a[0].lo
 
 const withResults = past.filter(tournament => tournament.top8.length > 0).length;
 
-const title = locale === 'fr' ? 'Tournois Pauper Duel Commander' : 'Pauper Duel Commander tournaments';
-const description = locale === 'fr'
-  ? `${past.length} tournois Pauper Duel Commander référencés, dont ${withResults} avec résultats et méta. Top 8, decklists et statistiques par événement.`
-  : `${past.length} Pauper Duel Commander tournaments on record, ${withResults} of them with results and metagame. Top 8, decklists and statistics per event.`;
+const title = t('tournament.seoTitle', locale);
+const description = t('tournament.seoDescription', locale)
+  .replace('%total%', String(past.length))
+  .replace('%withResults%', String(withResults));
 ---
 <Base title={title} description={description} bareTitle={false}>
 
@@ -65,7 +65,7 @@ const description = locale === 'fr'
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="stat-pill"><strong>{past.length}</strong> {t('quick.tournamentsShort', locale)}</span>
-          <span class="stat-pill"><strong>{venueOptions.length}</strong> {locale === 'fr' ? 'lieux' : 'venues'}</span>
+          <span class="stat-pill"><strong>{venueOptions.length}</strong> {t('common.venues', locale)}</span>
           <a href={route('meta', locale)} class="stat-pill no-underline hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
             {t('meta.title', locale)}
           </a>

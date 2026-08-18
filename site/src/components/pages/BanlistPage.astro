@@ -22,6 +22,7 @@ import {
   getBanlistDate,
   formatBanlistDate,
   recentlyChangedNames,
+  noteText,
 } from '@/lib/banlist';
 
 interface Props {
@@ -40,12 +41,12 @@ const [history, updatedAt, recentlyChanged] = await Promise.all([
 const latest = history[0] ?? null;
 
 const updatedLabel = formatBanlistDate(updatedAt, locale);
-const title = locale === 'fr'
-  ? `Banlist Pauper Duel Commander (à jour au ${updatedLabel})`
-  : `Pauper Duel Commander ban list (updated ${updatedLabel})`;
-const description = locale === 'fr'
-  ? `Les ${banlist.cards.length} cartes bannies en Pauper Duel Commander : ${banlist.bannedAsCommander.length} interdites comme général, ${banlist.bannedInDeck.length} interdites dans le deck. Dernière annonce du comité le ${updatedLabel}.`
-  : `The ${banlist.cards.length} cards banned in Pauper Duel Commander: ${banlist.bannedAsCommander.length} banned as commander, ${banlist.bannedInDeck.length} banned in the deck. Latest committee announcement on ${updatedLabel}.`;
+const title = t('banlist.seoTitle', locale).replace('%date%', updatedLabel);
+const description = t('banlist.seoDescription', locale)
+  .replace('%total%', String(banlist.cards.length))
+  .replace('%commander%', String(banlist.bannedAsCommander.length))
+  .replace('%deck%', String(banlist.bannedInDeck.length))
+  .replace('%date%', updatedLabel);
 ---
 <Base title={title} description={description} bareTitle={true}>
 
@@ -162,7 +163,7 @@ const description = locale === 'fr'
                       </summary>
                       <div class="mt-3 space-y-3 border-l-2 border-card-border/40 pl-4">
                         {entry.notes.map(note => (
-                          <p class="text-sm text-text-secondary leading-relaxed">{note[locale]}</p>
+                          <p class="text-sm text-text-secondary leading-relaxed">{noteText(note, locale)}</p>
                         ))}
                       </div>
                     </details>

@@ -49,9 +49,8 @@ const shelves = await getShelves({
 /** archive.shelfMoment, archive.shelfMomentHint… from the shelf key. */
 const shelfKey = (key: string) => `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
 
-const title = locale === 'fr'
-  ? 'Decklists Pauper Duel Commander'
-  : 'Pauper Duel Commander decklists';
+// Titre via la clé SEO (pas de littéral par langue), sous-titre sans compteur.
+const title = t('archive.seoTitle', locale);
 const description = t('archive.subtitle', locale);
 ---
 <Base title={title} description={description} bareTitle={false}>

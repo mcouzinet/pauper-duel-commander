@@ -1,0 +1,46 @@
+---
+/**
+ * Privacy policy.
+ *
+ * The copy used to live twice, written straight into /fr/confidentialite.astro
+ * and /en/privacy.astro. Adding a third language would have meant a third copy
+ * to keep in sync, so the sections now come from the message catalogue like
+ * every other page.
+ */
+import Base from '@/layouts/Base.astro';
+import { t, messagesFor, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const sections = (messagesFor(locale).privacy?.sections ?? []) as {
+  heading: string;
+  body: string;
+}[];
+---
+<Base title={t('privacy.title', locale)}>
+  <section class="py-16">
+    <div class="container mx-auto px-6">
+      <div class="max-w-3xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-heading font-bold text-magic-gradient mb-8">
+          {t('privacy.title', locale)}
+        </h1>
+        <div class="rich-text text-text-secondary space-y-6">
+          <p>{t('privacy.intro', locale)}</p>
+
+          {sections.map(section => (
+            <>
+              <h2 class="text-xl font-heading font-bold text-text-primary mt-8">
+                {section.heading}
+              </h2>
+              <p>{section.body}</p>
+            </>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

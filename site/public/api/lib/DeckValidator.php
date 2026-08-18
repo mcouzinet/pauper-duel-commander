@@ -54,79 +54,106 @@ class DeckValidator {
      * Response language. Set by the endpoint from the request; French by default
      * so every existing caller keeps the behaviour it had.
      *
-     * The site is bilingual but this endpoint only ever answered in French, so an
-     * English-speaking player got English rule labels wrapped around French
-     * sentences.
+     * The site is multilingual but this endpoint only ever answered in French, so
+     * a player browsing in another language got translated rule labels wrapped
+     * around French sentences.
      *
      * @var string
      */
     public static $locale = 'fr';
 
     /**
+     * Lookup order per locale, mirroring lib/i18n.ts on the site side.
+     *
+     * English is the backup everywhere: a message missing from a locale reads
+     * better in English than in French for anyone who did not pick French.
+     */
+    const LOCALE_FALLBACKS = array(
+        'fr' => array('fr', 'en'),
+        'en' => array('en', 'fr'),
+        'it' => array('it', 'en', 'fr'),
+    );
+
+    /**
      * User-facing messages, keyed by id then locale.
      *
      * `%s` placeholders are filled positionally by msg(). French strings stay
-     * unaccented, matching the rest of the API.
+     * unaccented, matching the rest of the API; Italian keeps its accents, where
+     * dropping them would misspell the word rather than merely strip a diacritic.
      */
     const MESSAGES = array(
-        'unknown_type' => array('fr' => 'inconnu', 'en' => 'unknown'),
-        'unknown_rarity' => array('fr' => 'inconnue', 'en' => 'unknown'),
-        'colorless' => array('fr' => 'Incolore', 'en' => 'Colorless'),
+        'unknown_type' => array('fr' => 'inconnu', 'en' => 'unknown', 'it' => 'sconosciuto'),
+        'unknown_rarity' => array('fr' => 'inconnue', 'en' => 'unknown', 'it' => 'sconosciuta'),
+        'colorless' => array('fr' => 'Incolore', 'en' => 'Colorless', 'it' => 'Incolore'),
         'commander_required' => array(
             'fr' => 'Le nom du general est obligatoire.',
             'en' => 'The commander name is required.',
+            'it' => 'Il nome del comandante è obbligatorio.',
         ),
         'format_invalid' => array(
             'fr' => 'La decklist est vide ou dans un format invalide. Utilisez le format MTGO : "1 Nom de la carte".',
             'en' => 'The decklist is empty or malformed. Use the MTGO format: "1 Card name".',
+            'it' => 'La decklist è vuota o in un formato non valido. Usa il formato MTGO: "1 Nome della carta".',
         ),
         'commander_not_found' => array(
             'fr' => 'Le general "%s" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
             'en' => 'Commander "%s" was not found on Scryfall. Check the spelling (English name).',
+            'it' => 'Il comandante "%s" non è stato trovato su Scryfall. Controlla l\'ortografia (nome inglese).',
         ),
         'partner_not_found' => array(
             'fr' => 'Le partenaire "%s" est introuvable sur Scryfall. Verifiez l\'orthographe (en anglais).',
             'en' => 'Partner "%s" was not found on Scryfall. Check the spelling (English name).',
+            'it' => 'Il partner "%s" non è stato trovato su Scryfall. Controlla l\'ortografia (nome inglese).',
         ),
         'commander_type' => array(
             'fr' => 'Le general "%s" doit etre une creature, un vehicule, un vaisseau spatial ou un background (type actuel : %s).',
             'en' => 'Commander "%s" must be a creature, vehicle, spacecraft or background (current type: %s).',
+            'it' => 'Il comandante "%s" deve essere una creatura, un veicolo, un\'astronave o un background (tipo attuale: %s).',
         ),
         'commander_rarity' => array(
             'fr' => 'Le general "%s" doit avoir ete imprime au moins une fois en rarete Uncommon (rarete actuelle : %s).',
             'en' => 'Commander "%s" must have been printed at uncommon at least once (current rarity: %s).',
+            'it' => 'Il comandante "%s" deve essere stato stampato almeno una volta in rarità Uncommon (rarità attuale: %s).',
         ),
         'deck_size' => array(
             'fr' => 'Le deck contient %s carte(s). Un deck PDC doit contenir %s.',
             'en' => 'The deck holds %s card(s). A PDC deck must hold %s.',
+            'it' => 'Il mazzo contiene %s carta/e. Un mazzo PDC deve contenerne %s.',
         ),
         'deck_size_expected_solo' => array(
             'fr' => '99 cartes (avec 1 general)',
             'en' => '99 cards (plus 1 commander)',
+            'it' => '99 carte (più 1 comandante)',
         ),
         'deck_size_expected_partner' => array(
             'fr' => '98 cartes (avec 2 generaux partenaires)',
             'en' => '98 cards (plus 2 partner commanders)',
+            'it' => '98 carte (più 2 comandanti partner)',
         ),
         'not_found' => array(
             'fr' => 'Les cartes suivantes sont introuvables sur Scryfall. Verifiez l\'orthographe (noms en anglais) :',
             'en' => 'The following cards were not found on Scryfall. Check the spelling (English names):',
+            'it' => 'Le carte seguenti non sono state trovate su Scryfall. Controlla l\'ortografia (nomi in inglese):',
         ),
         'duplicates' => array(
             'fr' => 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorises en plusieurs copies) :',
             'en' => 'The following cards appear more than once (only basic lands may be duplicated):',
+            'it' => 'Le carte seguenti compaiono in più copie (solo le terre base possono essere duplicate):',
         ),
         'rarity' => array(
             'fr' => 'Les cartes suivantes n\'ont jamais ete imprimees en rarete Commune (non legales en Pauper) :',
             'en' => 'The following cards have never been printed at common rarity (not Pauper-legal):',
+            'it' => 'Le carte seguenti non sono mai state stampate in rarità Comune (non legali in Pauper):',
         ),
         'color_identity' => array(
             'fr' => 'Les cartes suivantes sont hors de l\'identite de couleur du general %s :',
             'en' => 'The following cards fall outside the commander\'s color identity %s:',
+            'it' => 'Le carte seguenti sono fuori dall\'identità di colore del comandante %s:',
         ),
         'ban_list' => array(
             'fr' => 'Les cartes suivantes sont bannies dans le format PDC :',
             'en' => 'The following cards are banned in the PDC format:',
+            'it' => 'Le carte seguenti sono bandite nel formato PDC:',
         ),
     );
 
@@ -144,7 +171,17 @@ class DeckValidator {
             return $id;
         }
         $entry = self::MESSAGES[$id];
-        $text  = isset($entry[self::$locale]) ? $entry[self::$locale] : $entry['fr'];
+
+        $chain = isset(self::LOCALE_FALLBACKS[self::$locale])
+            ? self::LOCALE_FALLBACKS[self::$locale]
+            : self::LOCALE_FALLBACKS['fr'];
+        $text = $entry['fr'];
+        foreach ($chain as $candidate) {
+            if (isset($entry[$candidate])) {
+                $text = $entry[$candidate];
+                break;
+            }
+        }
 
         $args = array_slice(func_get_args(), 1);
         foreach ($args as $value) {

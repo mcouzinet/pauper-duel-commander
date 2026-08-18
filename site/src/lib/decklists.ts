@@ -233,9 +233,16 @@ export async function getColorIdentities(): Promise<string[]> {
   return [...new Set(all.map(d => d.ciKey))].sort();
 }
 
-/** Localised ordinal for a finishing place: 1 -> "1er" / "1st". */
+/**
+ * Localised ordinal for a finishing place: 1 -> "1er" / "1st" / "1º".
+ *
+ * Rule-based rather than a translated string: English needs the number to pick
+ * its suffix, so a flat catalogue entry could not express it.
+ */
 export function placeLabel(place: number, locale: Locale): string {
   if (locale === 'fr') return place === 1 ? '1er' : `${place}e`;
+  // Italian ordinals take the masculine indicator at every rank.
+  if (locale === 'it') return `${place}º`;
   const suffix = place === 1 ? 'st' : place === 2 ? 'nd' : place === 3 ? 'rd' : 'th';
   return `${place}${suffix}`;
 }

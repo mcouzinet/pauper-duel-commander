@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import TournamentDetailPage from '@/components/pages/TournamentDetailPage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('tournaments');
+  return entries.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<TournamentDetailPage locale="it" entry={entry} />

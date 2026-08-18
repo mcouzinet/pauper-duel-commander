@@ -18,11 +18,9 @@ import Base from '@/layouts/Base.astro';
 import RulesSummary from '@/components/RulesSummary.astro';
 import FormatComparison from '@/components/FormatComparison.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t, type Locale } from '@/lib/i18n';
+import { t, messagesFor, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getBanlistDate, formatBanlistDate, getBanlist } from '@/lib/banlist';
-import fr from '@/i18n/fr.json';
-import en from '@/i18n/en.json';
 
 interface Props {
   locale: Locale;
@@ -47,7 +45,7 @@ interface RulesDoc {
 }
 
 const { locale } = Astro.props;
-const messages = locale === 'en' ? en : fr;
+const messages = messagesFor(locale);
 const doc = messages.rulesDoc as unknown as RulesDoc;
 const faq = messages.rules.faq as unknown as { q: string; a: string }[];
 
@@ -64,9 +62,7 @@ const toc = [
   { id: 'faq', label: t('rules.faqTitle', locale) },
 ];
 
-const title = locale === 'fr'
-  ? 'Règles du Pauper Duel Commander'
-  : 'Pauper Duel Commander rules';
+const title = t('rules.seoTitle', locale);
 
 const faqSchema = {
   '@context': 'https://schema.org',

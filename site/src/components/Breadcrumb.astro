@@ -20,7 +20,7 @@ interface Props {
 }
 
 const { locale, items } = Astro.props;
-const crumbs: Crumb[] = [{ label: locale === 'fr' ? 'Accueil' : 'Home', href: homeRoute(locale) }, ...items];
+const crumbs: Crumb[] = [{ label: t('common.home', locale), href: homeRoute(locale) }, ...items];
 ---
 
 <nav aria-label={t('a11y.breadcrumb', locale)}>

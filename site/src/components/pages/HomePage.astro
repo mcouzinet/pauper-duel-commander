@@ -78,9 +78,7 @@ const topIdentities = Object.entries(meta.global.ciCounts)
 const heroImage = topCommanders.find(c => c.image)?.image ?? null;
 ---
 <Base
-  title={locale === 'fr'
-    ? 'Pauper Duel Commander — le Commander compétitif en 1v1 avec des communes'
-    : 'Pauper Duel Commander — competitive 1v1 Commander played with commons'}
+  title={t('home.seoTitle', locale)}
   description={t('site.description', locale)}
   bareTitle={true}
 >
@@ -273,12 +271,12 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
           {meta.global.commanders.length > 0 && (
             <a href={route('meta', locale)} class="panel p-5 block no-underline hover:border-brand-orange/50 transition-colors">
               <h3 class="font-heading font-bold uppercase tracking-wide text-brand-orange mb-2">
-                {meta.global.commanders.length} {locale === 'fr' ? 'généraux différents' : 'different commanders'}
+                {meta.global.commanders.length} {t('home.openMetaHeading', locale)}
               </h3>
               <p class="text-sm text-text-secondary leading-relaxed">
-                {locale === 'fr'
-                  ? `Sur ${meta.global.total} entrées joueurs relevées, le général le plus joué ne pèse que ${meta.global.commanders[0].percentage} %.`
-                  : `Across ${meta.global.total} recorded player entries, the most played commander accounts for just ${meta.global.commanders[0].percentage}%.`}
+                {t('home.openMetaBody', locale)
+                  .replace('%entries%', String(meta.global.total))
+                  .replace('%percentage%', String(meta.global.commanders[0].percentage))}
               </p>
             </a>
           )}
