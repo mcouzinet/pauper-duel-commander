@@ -187,7 +187,14 @@ export async function getShelves(options: {
   const legal = all.filter(d => !d.isBanned);
   const recent = new Set(recentTournamentSlugs);
 
+  // Order matters twice over: the index page opens on the first shelf, and it is
+  // the picker's first option. Newest first, so the page leads with what changed.
   const shelves: Shelf[] = [
+    {
+      key: 'new',
+      // getDecklists() sorts newest first, so this is already the recent end.
+      decklists: legal.slice(0, limit),
+    },
     {
       key: 'moment',
       decklists: legal.filter(d => d.result && recent.has(d.result.slug)).slice(0, limit),
@@ -208,10 +215,6 @@ export async function getShelves(options: {
         // silently absent from this shelf.
         .filter(d => originalCommanders.has(metaKey(d.commander, d.partner)))
         .slice(0, limit),
-    },
-    {
-      key: 'new',
-      decklists: legal.slice(0, limit),
     },
   ];
 
