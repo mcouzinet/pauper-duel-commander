@@ -358,6 +358,41 @@
     background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg-primary) 100%);
   }
 
+  /* Photo de fond du hero. A 7% elle etait invisible ; a 31% elle se voit, et
+     c'est le scrim directionnel ci-dessous - et non une opacite basse - qui
+     garde la colonne de texte lisible. */
+  .page-head__photo {
+    @apply absolute inset-0 w-full h-full object-cover pointer-events-none;
+    opacity: 0.31;
+  }
+
+  .page-head__scrim {
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(
+      100deg,
+      var(--color-bg-primary) 0%,
+      var(--color-bg-primary) 34%,
+      color-mix(in srgb, var(--color-bg-primary) 38%, transparent) 76%,
+      color-mix(in srgb, var(--color-bg-primary) 10%, transparent) 100%
+    );
+  }
+
+  /* Sous md la colonne de texte occupe toute la largeur : un degrade horizontal
+     laisserait la fin des lignes sur la photo nue. Le voile bascule a la
+     verticale et garde un plancher, donc la photo reste perceptible en bas
+     sans que le texte quitte jamais un fond sur. */
+  @media (max-width: 767px) {
+    .page-head__scrim {
+      background: linear-gradient(
+        168deg,
+        var(--color-bg-primary) 0%,
+        var(--color-bg-primary) 30%,
+        color-mix(in srgb, var(--color-bg-primary) 82%, transparent) 62%,
+        color-mix(in srgb, var(--color-bg-primary) 64%, transparent) 100%
+      );
+    }
+  }
+
   .eyebrow {
     @apply inline-flex items-center gap-2 font-heading font-semibold uppercase tracking-[0.14em] text-xs;
     @apply text-magic-gold;
