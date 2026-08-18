@@ -243,8 +243,7 @@
     "shelfNewHint": "The most recently added lists.",
     "shelfOriginal": "Offbeat decks",
     "shelfOriginalHint": "Commanders seen only once in tournaments.",
-    "shelfBeginner": "Good first decks",
-    "shelfBeginnerHint": "Simple to pilot, easy to assemble."
+    "beginnerBadge": "Good first deck"
   },
   "common": {
     "creatures": "Creatures",

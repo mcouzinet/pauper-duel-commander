@@ -67,16 +67,16 @@ const haystack = [deck.commander, deck.partner, deck.author, deck.archetype, dec
 
     <div class:list={[
       'relative overflow-hidden bg-bg-tertiary flex-shrink-0',
-      // 16/9 rather than 4/3: the commander art is a banner on this card, not
-      // the subject, and at 4/3 it pushed the deck's own text below the fold.
-      compact ? 'w-24 sm:w-32' : 'aspect-[16/9]',
+      // Back to 4/3: 16/9 cropped the commander art too hard. The card is kept
+      // small by the column count instead — see the grid on the index page.
+      compact ? 'w-24 sm:w-32' : 'aspect-[4/3]',
       deck.isBanned && 'grayscale',
     ]}>
       {deck.commanderImage ? (
         <img src={deck.commanderImage}
              alt=""
              width={compact ? 128 : 626}
-             height={compact ? 128 : 352}
+             height={compact ? 128 : 470}
              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
              loading="lazy" decoding="async" />
       ) : (
@@ -94,7 +94,7 @@ const haystack = [deck.commander, deck.partner, deck.author, deck.archetype, dec
       )}
 
       {!deck.isBanned && resultLabel && (
-        <span class="absolute top-2 left-2 badge badge--gold uppercase tracking-wider text-xs shadow-lg">
+        <span class="absolute top-2 left-2 badge--gold-solid shadow-lg">
           {resultLabel}
         </span>
       )}

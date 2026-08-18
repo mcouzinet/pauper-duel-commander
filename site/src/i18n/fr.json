@@ -243,8 +243,7 @@
     "shelfNewHint": "Les dernières listes ajoutées.",
     "shelfOriginal": "Decks originaux",
     "shelfOriginalHint": "Des généraux vus une seule fois en tournoi.",
-    "shelfBeginner": "Pour commencer",
-    "shelfBeginnerHint": "Simples à piloter, faciles à réunir."
+    "beginnerBadge": "Pour commencer"
   },
   "common": {
     "creatures": "Créatures",

@@ -43,7 +43,7 @@ const [decklists, archetypes, colorIdentities, meta] = await Promise.all([
 const shelves = await getShelves({
   recentTournamentSlugs: meta.recentSlugs,
   originalCommanders: meta.originalCommanders,
-  limit: 4,
+  limit: 6,
 });
 
 const fromTournaments = decklists.filter(deck => deck.result).length;
@@ -118,7 +118,7 @@ const description = t('archive.subtitle', locale)
           {/* Horizontal scroller below sm, grid above. Stacked full-height cards
               would have added ~6,000px of shelf to a phone page — the opposite of
               what the shelves are for. */}
-          <ul class="flex sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0">
+          <ul class="flex sm:grid gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0">
             {shelf.decklists.map(deck => (
               <li class="w-[76%] shrink-0 snap-start sm:w-auto sm:shrink">
                 <DeckCard deck={deck} locale={locale} from={`shelf_${shelf.key}`} />
@@ -214,7 +214,7 @@ const description = t('archive.subtitle', locale)
       {/* Below sm each deck renders as a compact row instead of a full-height
           tile: the old layout spent ~800px per deck, so 25 decks made an
           11,000px page on a phone. */}
-      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" id="decklist-grid">
+      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" id="decklist-grid">
         {decklists.map(deck => (
           <div class="min-w-0">
             <div class="sm:hidden"><DeckCard deck={deck} locale={locale} compact={true} /></div>

@@ -147,7 +147,7 @@ const schemas: Record<string, unknown>[] = [
                 </a>
               )}
               {enriched?.tags.includes('debutant') && (
-                <span class="badge badge--new">{t('archive.shelfBeginner', locale)}</span>
+                <span class="badge badge--new">{t('archive.beginnerBadge', locale)}</span>
               )}
               {deck.bannedCards.length > 0 && (
                 <a href="#cartes-bannies" class="badge badge--danger no-underline hover:border-red-400/60 transition-colors">

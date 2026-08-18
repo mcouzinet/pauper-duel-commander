@@ -156,7 +156,7 @@ export async function getSiblingDecklists(slug: string, limit = 4): Promise<Enri
 
 export interface Shelf {
   /** Stable key, used for the i18n label and the anchor. */
-  key: 'moment' | 'performing' | 'new' | 'original' | 'beginner';
+  key: 'moment' | 'performing' | 'new' | 'original';
   decklists: EnrichedDecklist[];
 }
 
@@ -187,10 +187,6 @@ export async function getShelves(options: {
         .filter(d => d.result && d.result.place <= 2)
         .sort((a, b) => (b.result!.date).localeCompare(a.result!.date))
         .slice(0, limit),
-    },
-    {
-      key: 'beginner',
-      decklists: legal.filter(d => d.tags.includes('debutant')).slice(0, limit),
     },
     {
       key: 'original',
