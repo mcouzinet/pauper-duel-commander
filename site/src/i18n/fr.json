@@ -285,6 +285,7 @@
     "changeUnbanned": "Légalisée",
     "changeRestricted": "Restreinte",
     "experimental": "expérimental",
+    "experimentalNote": "Changement à titre expérimental.",
     "details": "Détails",
     "lastUpdate": "Mise à jour le",
     "cardCount": "cartes bannies",

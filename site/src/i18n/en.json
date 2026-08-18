@@ -285,6 +285,7 @@
     "changeUnbanned": "Made legal",
     "changeRestricted": "Restricted",
     "experimental": "experimental",
+    "experimentalNote": "Experimental change.",
     "details": "Details",
     "lastUpdate": "Updated on",
     "cardCount": "banned cards",

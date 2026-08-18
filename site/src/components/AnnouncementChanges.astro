@@ -51,6 +51,8 @@ const images = new Map(
 const groups = CHANGE_ORDER
   .map(type => ({ type, cards: changes.filter(change => change.type === type) }))
   .filter(group => group.cards.length > 0);
+
+const hasExperimental = changes.some(change => change.experimental);
 ---
 
 <div class="space-y-3">
@@ -70,15 +72,29 @@ const groups = CHANGE_ORDER
             data-card-name={card.card}
             data-card-image={images.get(card.card) ?? undefined}
           >
-            {/* `lang` on the name only: the qualifier beside it is UI text. */}
+            {/* `lang` on the name only: the marker beside it is UI text. */}
             <span class="font-beleren" lang="en">{card.card}</span>
 
+            {/*
+              A marker, not a word. Spelling "experimental" out on each card
+              repeated one idea four times and drowned the names it qualified;
+              the legend below carries the meaning, once.
+            */}
             {card.experimental && (
-              <span class="badge badge--warn">{t('banlist.experimental', locale)}</span>
+              <Fragment>
+                <span class="text-text-muted" aria-hidden="true">*</span>
+                <span class="sr-only">({t('banlist.experimental', locale)})</span>
+              </Fragment>
             )}
           </span>
         ))}
       </div>
     </div>
   ))}
+
+  {hasExperimental && (
+    <p class="text-xs text-text-muted pt-1">
+      * {t('banlist.experimentalNote', locale)}
+    </p>
+  )}
 </div>

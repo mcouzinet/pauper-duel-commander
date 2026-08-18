@@ -505,7 +505,6 @@
   .badge--orange { @apply bg-brand-orange/12 border-brand-orange/30 text-brand-orange; }
   .badge--danger { @apply bg-red-500/15 border-red-500/30 text-red-300; }
   .badge--new { @apply bg-green-500/15 border-green-500/35 text-green-300; }
-  .badge--warn { @apply bg-yellow-500/15 border-yellow-500/35 text-yellow-200; }
 
   /* Solid, not translucent: this one sits under a card scan and has to win. */
   .badge--new-solid {
