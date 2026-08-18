@@ -10,7 +10,8 @@
  * Remplacez les valeurs ci-dessous par les vraies.
  */
 return array(
-    // Fine-grained PAT GitHub, limité à ce dépôt, droits Contents + Pull requests (write).
+    // Fine-grained PAT GitHub, limité à ce dépôt. Droits en écriture : Contents,
+    // Pull requests, et Issues (ce dernier sert à poser le label sur la PR).
     'GITHUB_TOKEN'    => 'github_pat_xxxxxxxxxxxxxxxxxxxx',
 
     // Clé SECRÈTE Cloudflare Turnstile (la clé de SITE, publique, va côté build).
