@@ -16,6 +16,8 @@ return array(
     // Clé SECRÈTE Cloudflare Turnstile (la clé de SITE, publique, va côté build).
     'TURNSTILE_SECRET' => '0x4xxxxxxxxxxxxxxxxxxxxxxxxxxx',
 
-    // Code d'accès du formulaire tournoi (tranche 6). Choisir une valeur robuste.
+    // Code d'accès du formulaire tournoi, partagé aux organisateurs. Choisir une
+    // valeur robuste : c'est la seule chose qui sépare le public des résultats.
+    // Absent, /api/submit-tournament.php répond 503 (inerte).
     'ORGANIZER_CODE'  => 'change-me',
 );

@@ -129,6 +129,19 @@ if (!defined('PDC_SUBMIT_RATE_WINDOW')) {
 }
 
 /**
+ * Wall-clock seconds a tournament submission may spend validating decklists.
+ *
+ * A tournament carries up to eight decks. Each validation is a Scryfall round
+ * trip plus up to PDC_MAX_FALLBACK_LOOKUPS individual lookups, every one gated by
+ * a 100 ms sleep — so the worst case comfortably outlives a shared host's
+ * max_execution_time. Past this budget the remaining decks are reported as
+ * unchecked instead of the whole request dying on a timeout.
+ */
+if (!defined('PDC_SUBMIT_VALIDATION_BUDGET')) {
+    define('PDC_SUBMIT_VALIDATION_BUDGET', 20);
+}
+
+/**
  * Read a secret by name.
  *
  * Secrets never live in the deployed tree. In production they sit in a PHP file
@@ -217,3 +230,5 @@ require_once __DIR__ . '/GitHubClient.php';
 require_once __DIR__ . '/TurnstileVerifier.php';
 require_once __DIR__ . '/DecklistSubmission.php';
 require_once __DIR__ . '/DecklistSubmissionController.php';
+require_once __DIR__ . '/TournamentSubmission.php';
+require_once __DIR__ . '/TournamentSubmissionController.php';

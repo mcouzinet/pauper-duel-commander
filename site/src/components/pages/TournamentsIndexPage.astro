@@ -13,6 +13,7 @@ import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getUpcomingTournaments, getPastTournaments, formatDate, isPlaceholder } from '@/lib/tournaments';
 import { getMeta } from '@/lib/meta';
+import { submissionsEnabled } from '@/lib/features';
 
 interface Props {
   locale: Locale;
@@ -70,6 +71,12 @@ const description = t('tournament.seoDescription', locale)
             {t('meta.title', locale)}
           </a>
         </div>
+
+        {submissionsEnabled && (
+          <a href={route('submitTournament', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm mt-5">
+            {t('submitTournament.cta', locale)}
+          </a>
+        )}
       </div>
     </div>
   </section>

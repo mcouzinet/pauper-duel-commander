@@ -26,6 +26,7 @@ const SEGMENTS = {
   // Single-segment slugs on purpose: two-level paths would break the language
   // switcher, which only translates the first segment after the locale.
   submitDecklist: { fr: 'soumettre-decklist', en: 'submit-decklist', it: 'invia-decklist' },
+  submitTournament: { fr: 'soumettre-tournoi', en: 'submit-tournament', it: 'invia-torneo' },
 } as const satisfies Record<string, Record<Locale, string>>;
 
 export type RouteName = keyof typeof SEGMENTS;
