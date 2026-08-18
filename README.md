@@ -24,7 +24,7 @@ Hébergé sur **OVH mutualisé** (Apache + PHP 8), déployé automatiquement par
 **GitHub Actions en SFTP** — voir [`DEPLOY.md`](DEPLOY.md).
 
 > Le site tournait auparavant sous WordPress (Bedrock + Timber + ACF Pro).
-> Cette stack a été supprimée ; voir `SPEC-MIGRATION.md` et l'historique git.
+> Cette stack a été supprimée ; l'historique git en garde la trace.
 
 ## Structure
 
