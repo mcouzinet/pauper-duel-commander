@@ -110,6 +110,45 @@ class GitHubClientTest extends TestCase
         $this->assertSame('Titre', $call['json']['title']);
     }
 
+    public function testOpenPullRequestLabelsThePr(): void
+    {
+        $this->queue(201, array('number' => 42, 'html_url' => 'https://github.com/owner/repo/pull/42'));
+        $this->queue(200, array());
+
+        $this->client()->open_pull_request('submission/x', 'main', 'Titre', 'Corps', array('Decklist'));
+
+        // Labels are not part of the create-PR payload; they need a second call.
+        $this->assertCount(2, $this->calls);
+        $label = $this->calls[1];
+        $this->assertSame('POST', $label['method']);
+        $this->assertStringEndsWith('/repos/owner/repo/issues/42/labels', $label['url']);
+        $this->assertSame(array('Decklist'), $label['json']['labels']);
+    }
+
+    public function testOpenPullRequestSkipsTheLabelCallWhenNoneAreAsked(): void
+    {
+        $this->queue(201, array('number' => 42, 'html_url' => 'https://github.com/owner/repo/pull/42'));
+
+        $this->client()->open_pull_request('submission/x', 'main', 'Titre', 'Corps');
+
+        $this->assertCount(1, $this->calls);
+    }
+
+    /**
+     * The PR already exists by then. Failing here would report an error for a
+     * submission that went through, and the submitter would send it again.
+     */
+    public function testFailingToLabelDoesNotFailTheSubmission(): void
+    {
+        $this->queue(201, array('number' => 42, 'html_url' => 'https://github.com/owner/repo/pull/42'));
+        $this->queue(422, array('message' => 'Label does not exist'));
+
+        $pr = $this->client()->open_pull_request('submission/x', 'main', 'Titre', 'Corps', array('Absent'));
+
+        $this->assertSame(42, $pr['number']);
+        $this->assertSame('https://github.com/owner/repo/pull/42', $pr['html_url']);
+    }
+
     public function testNonSuccessResponseThrows(): void
     {
         $this->queue(403, array('message' => 'Resource not accessible by personal access token'));

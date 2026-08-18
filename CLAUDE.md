@@ -141,6 +141,14 @@ Deux endpoints ouvrent une PR que quelqu'un relit avant merge ; le merge déclen
 le déploiement. Ils partagent Turnstile (fail-closed), un honeypot, le quota
 5/h/IP et `GitHubClient` (commit multi-fichiers via l'API Git Trees).
 
+Chaque PR est étiquetée (`PDC_LABEL_DECKLIST` / `PDC_LABEL_TOURNAMENT`), pour
+distinguer les deux sortes sans les ouvrir. La labellisation est un **second
+appel** (GitHub ne prend pas de label à la création d'une PR) et elle est
+**best-effort** : si elle échoue, `GitHubClient::label()` avale l'erreur et la
+soumission reste un succès. Échouer ici signalerait une erreur pour une PR qui
+existe, et le soumissionnaire renverrait tout — une PR sans label est un défaut
+cosmétique, un doublon non.
+
 `POST /api/submit-decklist.php` — form-encodé. Un deck illégal est refusé (422),
 sans PR.
 

@@ -62,6 +62,7 @@ class TournamentSubmissionControllerTest extends TestCase
             array('status' => 201, 'body' => array('sha' => 'nc')),
             array('status' => 201, 'body' => array('ref' => 'refs/heads/x')),
             array('status' => 201, 'body' => array('number' => 12, 'html_url' => 'https://github.com/owner/repo/pull/12')),
+            array('status' => 200, 'body' => array()),  // labelling
         );
     }
 
@@ -131,6 +132,22 @@ class TournamentSubmissionControllerTest extends TestCase
         // ...and the tournament points at the decklist committed alongside it.
         $tournament = json_decode($files['site/content/tournaments/artefact-7.json'], true);
         $this->assertSame('mother-of-runes-artefact-7-1er', $tournament['top8'][0]['decklistSlug']);
+    }
+
+    public function testPrIsLabelledTournament(): void
+    {
+        $this->queueFullPrFlow();
+
+        $this->controller()->handle(
+            $this->submission(array('top8' => array($this->legalRow(1)))),
+            $this->ip()
+        );
+
+        $labelCalls = array_values(array_filter($this->calls, function ($c) {
+            return strpos($c['url'], '/labels') !== false;
+        }));
+        $this->assertCount(1, $labelCalls);
+        $this->assertSame(array(PDC_LABEL_TOURNAMENT), $labelCalls[0]['json']['labels']);
     }
 
     public function testTournamentWithNoDecklistsStillOpensAPr(): void

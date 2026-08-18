@@ -157,7 +157,8 @@ final class TournamentSubmissionController {
             $branch,
             'main',
             'Soumission tournoi : ' . $submission->title(),
-            $this->pr_body($submission, $included, $rejected)
+            $this->pr_body($submission, $included, $rejected),
+            array(PDC_LABEL_TOURNAMENT)
         );
 
         return $this->reply(200, array(

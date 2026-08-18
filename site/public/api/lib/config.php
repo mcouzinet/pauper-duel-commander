@@ -120,6 +120,18 @@ if (!defined('PDC_GITHUB_REPO')) {
     define('PDC_GITHUB_REPO', 'mcouzinet/pauper-duel-commander');
 }
 
+/**
+ * Labels applied to submission pull requests, so the two kinds are tellable
+ * apart in the PR list without opening them. They must match labels that exist
+ * in the repository: GitHub rejects the whole call for an unknown name.
+ */
+if (!defined('PDC_LABEL_DECKLIST')) {
+    define('PDC_LABEL_DECKLIST', 'Decklist');
+}
+if (!defined('PDC_LABEL_TOURNAMENT')) {
+    define('PDC_LABEL_TOURNAMENT', 'Tournament');
+}
+
 /** Submissions are far more expensive than a validation (they open a PR): tighter cap. */
 if (!defined('PDC_SUBMIT_RATE_LIMIT')) {
     define('PDC_SUBMIT_RATE_LIMIT', 5);

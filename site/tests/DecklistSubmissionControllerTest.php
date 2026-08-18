@@ -63,6 +63,7 @@ class DecklistSubmissionControllerTest extends TestCase
             array('status' => 201, 'body' => array('sha' => 'nc')),
             array('status' => 201, 'body' => array('ref' => 'refs/heads/x')),
             array('status' => 201, 'body' => array('number' => 7, 'html_url' => 'https://github.com/owner/repo/pull/7')),
+            array('status' => 200, 'body' => array()),  // labelling
         );
     }
 
@@ -91,6 +92,22 @@ class DecklistSubmissionControllerTest extends TestCase
         $this->assertCount(1, $treeCalls);
         $this->assertStringStartsWith('site/content/decklists/', $treeCalls[0]['json']['tree'][0]['path']);
         $this->assertStringContainsString('"commander": "Mother of Runes"', $treeCalls[0]['json']['tree'][0]['content']);
+    }
+
+    public function testPrIsLabelledDecklist(): void
+    {
+        $this->queueFullPrFlow();
+
+        $this->controller()->handle(
+            $this->withTurnstile(array('commander' => 'Mother of Runes', 'decklist' => '99 Plains')),
+            $this->ip()
+        );
+
+        $labelCalls = array_values(array_filter($this->calls, function ($c) {
+            return strpos($c['url'], '/labels') !== false;
+        }));
+        $this->assertCount(1, $labelCalls);
+        $this->assertSame(array(PDC_LABEL_DECKLIST), $labelCalls[0]['json']['labels']);
     }
 
     // -- guards --------------------------------------------------------------

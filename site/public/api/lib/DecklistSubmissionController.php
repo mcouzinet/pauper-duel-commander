@@ -92,7 +92,8 @@ final class DecklistSubmissionController {
             $branch,
             'main',
             'Soumission decklist : ' . $submission->title(),
-            $this->pr_body($submission, $validation)
+            $this->pr_body($submission, $validation),
+            array(PDC_LABEL_DECKLIST)
         );
 
         return $this->reply(200, array('success' => true, 'pr_url' => $pr['html_url']));
