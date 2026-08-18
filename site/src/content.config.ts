@@ -55,10 +55,14 @@ const banlistHistory = defineCollection({
       type: z.enum(['banned', 'unbanned', 'restricted']),
       experimental: z.boolean().default(false),
     })).default([]),
-    // Reasoning paragraphs, bilingual so both /fr/ and /en/ render natively.
+    // Reasoning paragraphs, written per language so each locale renders natively.
+    // French and English are required — they are what the committee publishes.
+    // Later locales are optional and fall back to English (see `noteText`), so a
+    // fresh announcement can go live before it has been translated everywhere.
     notes: z.array(z.object({
       fr: z.string(),
       en: z.string(),
+      it: z.string().optional(),
     })).default([]),
   }),
 });

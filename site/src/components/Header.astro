@@ -9,10 +9,10 @@
  *
  * Two other things changed. The Discord link is now permanent: it used to exist
  * only on the home page, so "where are the players?" had no answer from any
- * other page. And the language switcher is a pair of real links instead of a
+ * other page. And the language switcher is a row of real links instead of a
  * `<select onchange>`, which no crawler follows and no keyboard user expects.
  */
-import { t, type Locale } from '@/lib/i18n';
+import { t, locales, LOCALE_LABELS, type Locale } from '@/lib/i18n';
 import { route, homeRoute, translatePath } from '@/lib/routes';
 import { DISCORD_URL } from '@/lib/site';
 
@@ -39,15 +39,22 @@ const items = navItems.map(item => {
 });
 
 const home = homeRoute(locale);
-const altLocale: Locale = locale === 'fr' ? 'en' : 'fr';
-const altPath = translatePath(currentPath, altLocale);
 
-// The 404 page is the only route not under /fr/ or /en/, so "stay in this
-// language" cannot mean "reload this path" — that path is what 404'd. Both
-// language links go home from there.
-const isLocalised = currentPath.startsWith('/fr/') || currentPath.startsWith('/en/');
-const samePath = isLocalised ? currentPath : home;
-const otherPath = isLocalised ? altPath : homeRoute(altLocale);
+// The 404 page is the only route not under a locale prefix, so "stay in this
+// language" cannot mean "reload this path" — that path is what 404'd. Every
+// language link goes home from there.
+const isLocalised = locales.some(l => currentPath.startsWith(`/${l}/`));
+
+// One entry per language, so adding a fourth is a row in the route table and
+// nothing here. Used by both the desktop and the mobile switcher.
+const languageLinks = locales.map(target => ({
+  locale: target,
+  label: LOCALE_LABELS[target],
+  isCurrent: target === locale,
+  href: target === locale
+    ? (isLocalised ? currentPath : home)
+    : (isLocalised ? translatePath(currentPath, target) : homeRoute(target)),
+}));
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 border-b border-brand-orange/20 bg-brand-black/95 backdrop-blur-md">
@@ -95,14 +102,13 @@ const otherPath = isLocalised ? altPath : homeRoute(altLocale);
 
         <!-- Real links: crawlable, and they carry hreflang for search engines. -->
         <div class="flex items-center rounded-lg border border-brand-orange/30 overflow-hidden text-xs font-heading font-bold uppercase tracking-wider">
-          <a href={locale === 'fr' ? samePath : otherPath} hreflang="fr" lang="fr"
-             aria-current={locale === 'fr' ? 'true' : undefined}
-             data-analytics="lang_switch" data-analytics-to="fr"
-             class:list={['px-2.5 py-2 transition-colors', locale === 'fr' ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>FR</a>
-          <a href={locale === 'en' ? samePath : otherPath} hreflang="en" lang="en"
-             aria-current={locale === 'en' ? 'true' : undefined}
-             data-analytics="lang_switch" data-analytics-to="en"
-             class:list={['px-2.5 py-2 transition-colors', locale === 'en' ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>EN</a>
+          {languageLinks.map(link => (
+            <a href={link.href} hreflang={link.locale} lang={link.locale}
+               aria-current={link.isCurrent ? 'true' : undefined}
+               aria-label={link.label.long}
+               data-analytics="lang_switch" data-analytics-to={link.locale}
+               class:list={['px-2.5 py-2 transition-colors', link.isCurrent ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>{link.label.short}</a>
+          ))}
         </div>
       </div>
 
@@ -170,12 +176,12 @@ const otherPath = isLocalised ? altPath : homeRoute(altLocale);
         {t('header.language', locale)}
       </p>
       <div class="flex gap-2">
-        <a href={locale === 'fr' ? samePath : otherPath} hreflang="fr" lang="fr"
-           aria-current={locale === 'fr' ? 'true' : undefined}
-           class:list={['flex-1 text-center px-4 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', locale === 'fr' ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>Français</a>
-        <a href={locale === 'en' ? samePath : otherPath} hreflang="en" lang="en"
-           aria-current={locale === 'en' ? 'true' : undefined}
-           class:list={['flex-1 text-center px-4 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', locale === 'en' ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>English</a>
+        {languageLinks.map(link => (
+          <a href={link.href} hreflang={link.locale} lang={link.locale}
+             aria-current={link.isCurrent ? 'true' : undefined}
+             data-analytics="lang_switch" data-analytics-to={link.locale}
+             class:list={['flex-1 text-center px-3 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', link.isCurrent ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>{link.label.long}</a>
+        ))}
       </div>
     </div>
   </div>

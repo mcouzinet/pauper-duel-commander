@@ -83,7 +83,8 @@
     "ruleSingleton": "Pas de doublon",
     "ruleSingletonDesc": "Maximum 1 exemplaire de chaque carte, sauf les terrains de base.",
     "ruleBan": "Ban List",
-    "ruleBanDesc": "Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées."
+    "ruleBanDesc": "Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées.",
+    "seoDescription": "Vérifiez la légalité de votre deck Pauper Duel Commander : 100 cartes, général peu commun, communes, identité de couleur, singleton et ban list."
   },
   "js": {
     "ruleFormat": "Format invalide",
@@ -128,7 +129,9 @@
     "top4Ci": "Identités de couleur en Top 4",
     "top4Colors": "Couleurs en Top 4",
     "noData": "Aucune donnée de méta disponible",
-    "noDataDesc": "Les statistiques du métagame seront disponibles après les premiers tournois."
+    "noDataDesc": "Les statistiques du métagame seront disponibles après les premiers tournois.",
+    "seoTitle": "Méta Pauper Duel Commander : généraux les plus joués",
+    "seoDescription": "Les généraux les plus joués en Pauper Duel Commander, mesurés sur %tournaments% tournois et %entries% entrées joueurs. Identités de couleur, répartition et top 4."
   },
   "ci": {
     "W": "Mono Blanc",
@@ -205,7 +208,10 @@
     "backToList": "Tous les tournois",
     "decklistsCount": "%n% decklists publiées",
     "unknownCommander": "Général non renseigné",
-    "unattributed": "%n% place(s) sans général renseigné"
+    "unattributed": "%n% place(s) sans général renseigné",
+    "seoTitle": "Tournois Pauper Duel Commander",
+    "seoDescription": "%total% tournois Pauper Duel Commander référencés, dont %withResults% avec résultats et méta. Top 8, decklists et statistiques par événement.",
+    "seoDetail": "%title% — %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists."
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
@@ -243,7 +249,8 @@
     "shelfOriginal": "Decks originaux",
     "shelfOriginalHint": "Des généraux vus une seule fois en tournoi.",
     "shelfBeginner": "Pour commencer",
-    "shelfBeginnerHint": "Simples à piloter, faciles à réunir."
+    "shelfBeginnerHint": "Simples à piloter, faciles à réunir.",
+    "seoTitle": "Decklists Pauper Duel Commander"
   },
   "common": {
     "creatures": "Créatures",
@@ -254,7 +261,6 @@
     "lands": "Terrains",
     "planeswalkers": "Planeswalkers",
     "other": "Autres",
-    "dateLocale": "fr-FR",
     "viewAll": "Tout voir",
     "seeMore": "Voir plus",
     "search": "Rechercher",
@@ -266,7 +272,10 @@
     "by": "par",
     "on": "le",
     "close": "Fermer",
-    "none": "Aucun"
+    "none": "Aucun",
+    "home": "Accueil",
+    "venues": "lieux",
+    "announcementsPublished": "annonces publiées"
   },
   "banlist": {
     "titleTop": "Liste des cartes",
@@ -299,7 +308,9 @@
     "seeRules": "Règles 2.7 et 2.8",
     "checkDeck": "Vérifier un deck",
     "imageMissing": "Illustration indisponible",
-    "viewOnScryfall": "Voir sur Scryfall"
+    "viewOnScryfall": "Voir sur Scryfall",
+    "seoTitle": "Banlist Pauper Duel Commander (à jour au %date%)",
+    "seoDescription": "Les %total% cartes bannies en Pauper Duel Commander : %commander% interdites comme général, %deck% interdites dans le deck. Dernière annonce du comité le %date%."
   },
   "home": {
     "rejoinsNous": "Rejoins-nous",
@@ -354,7 +365,10 @@
     "decklistsCta": "Toutes les decklists",
     "communityTitle": "Trouve des joueurs",
     "communitySubtitle": "Le format vit sur son Discord et dans les boutiques qui l’accueillent.",
-    "communityCta": "La page communauté"
+    "communityCta": "La page communauté",
+    "seoTitle": "Pauper Duel Commander — le Commander compétitif en 1v1 avec des communes",
+    "openMetaHeading": "généraux différents",
+    "openMetaBody": "Sur %entries% entrées joueurs relevées, le général le plus joué ne pèse que %percentage% %."
   },
   "rules": {
     "ctaBanlist": "Voir la ban list",
@@ -391,7 +405,8 @@
         "q": "Qui commence, et pioche-t-il ?",
         "a": "Le joueur qui commence saute l’étape de pioche de son premier tour (règle 3.3). Le mulligan de Londres est utilisé (règle 3.2)."
       }
-    ]
+    ],
+    "seoTitle": "Règles du Pauper Duel Commander"
   },
   "rulesDoc": {
     "badge": "Règlement officiel",
@@ -705,6 +720,37 @@
     "organiseText": "Boutique, association ou joueur : le format se prête aux petits tournois. Passez par le Discord, nous aidons pour le format, les règles et la publication des résultats.",
     "committeeTitle": "Le comité",
     "committeeText": "Une équipe de joueurs maintient la ban list et le règlement. Chaque changement est annoncé et argumenté publiquement, tous les deux mois, le premier lundi des mois pairs.",
-    "committeeCta": "Lire les annonces"
+    "committeeCta": "Lire les annonces",
+    "seoTitle": "Communauté Pauper Duel Commander"
+  },
+  "banlistSummary": {
+    "banned": "%s bannie",
+    "bannedMany": "%s cartes bannies",
+    "unbanned": "%s légalisée",
+    "unbannedMany": "%s légalisées",
+    "restricted": "%s restreinte",
+    "restrictedMany": "%s restreintes"
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "intro": "Le site Pauper Duel Commander respecte votre vie privée. Cette page décrit les données que nous collectons et comment elles sont utilisées.",
+    "sections": [
+      {
+        "heading": "Données collectées",
+        "body": "Ce site est un site statique. Nous ne collectons aucune donnée personnelle directement. Aucun compte utilisateur n'est requis pour naviguer sur le site."
+      },
+      {
+        "heading": "Google Analytics",
+        "body": "Nous utilisons Google Analytics (GA4) pour analyser le trafic du site. Google Analytics utilise des cookies pour collecter des informations anonymes sur la façon dont les visiteurs utilisent le site. Ces informations sont utilisées pour améliorer le contenu et l'expérience utilisateur."
+      },
+      {
+        "heading": "API Scryfall",
+        "body": "Les images et données de cartes Magic: The Gathering proviennent de l'API Scryfall. L'utilisation du validateur de deck envoie les noms de cartes à l'API Scryfall pour vérification. Aucune donnée personnelle n'est transmise à Scryfall."
+      },
+      {
+        "heading": "Contact",
+        "body": "Pour toute question relative à la confidentialité, contactez-nous via le serveur Discord de la communauté PDC."
+      }
+    ]
   }
 }

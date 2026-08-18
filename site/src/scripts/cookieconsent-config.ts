@@ -1,6 +1,9 @@
 import 'vanilla-cookieconsent/dist/cookieconsent.css';
 import { run, acceptedCategory } from 'vanilla-cookieconsent';
 
+/** Must match `locales` in lib/i18n.ts and the translation keys below. */
+const SUPPORTED = ['fr', 'en', 'it'];
+
 run({
   hideFromBots: false,
   guiOptions: {
@@ -22,7 +25,9 @@ run({
   },
 
   language: {
-    default: document.documentElement.lang === 'en' ? 'en' : 'fr',
+    // <html lang> is the locale the page was built for. Anything unexpected
+    // falls back to French, the locale the copy is authored in.
+    default: SUPPORTED.includes(document.documentElement.lang) ? document.documentElement.lang : 'fr',
     translations: {
       fr: {
         consentModal: {
@@ -77,6 +82,35 @@ run({
               title: 'Analytics cookies',
               description:
                 'These cookies allow us to measure site traffic via Google Analytics to improve the user experience.',
+              linkedCategory: 'analytics',
+            },
+          ],
+        },
+      },
+      it: {
+        consentModal: {
+          title: 'Gestione dei cookie',
+          description:
+            'Questo sito utilizza Google Analytics per analizzare il traffico. Nessun dato personale viene raccolto direttamente. Puoi accettare o rifiutare i cookie analitici.',
+          acceptAllBtn: 'Accetta tutto',
+          acceptNecessaryBtn: 'Rifiuta',
+          showPreferencesBtn: 'Gestisci le preferenze',
+        },
+        preferencesModal: {
+          title: 'Preferenze dei cookie',
+          acceptAllBtn: 'Accetta tutto',
+          acceptNecessaryBtn: 'Rifiuta tutto',
+          savePreferencesBtn: 'Salva',
+          sections: [
+            {
+              title: 'Cookie strettamente necessari',
+              description: 'Questi cookie sono essenziali per il funzionamento del sito.',
+              linkedCategory: 'necessary',
+            },
+            {
+              title: 'Cookie analitici',
+              description:
+                'Questi cookie ci permettono di misurare il traffico del sito tramite Google Analytics per migliorare l\'esperienza utente.',
               linkedCategory: 'analytics',
             },
           ],

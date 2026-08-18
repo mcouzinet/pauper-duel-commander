@@ -2,11 +2,9 @@
 import Base from '@/layouts/Base.astro';
 import RulesSummary from '@/components/RulesSummary.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t } from '@/lib/i18n';
+import { t, messagesFor } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getBanlist } from '@/lib/banlist';
-import fr from '@/i18n/fr.json';
-import en from '@/i18n/en.json';
 import type { Locale } from '@/lib/i18n';
 
 interface Props {
@@ -17,9 +15,7 @@ const { locale } = Astro.props;
 
 const bannedCount = getBanlist().cards.length;
 
-const description = locale === 'fr'
-  ? 'Vérifiez la légalité de votre deck Pauper Duel Commander : 100 cartes, général peu commun, communes, identité de couleur, singleton et ban list.'
-  : 'Check your Pauper Duel Commander deck for legality: 100 cards, uncommon commander, commons, color identity, singleton and ban list.';
+const description = t('validator.seoDescription', locale);
 ---
 <Base title={t('validator.title', locale)} description={description} bareTitle={false}>
 
@@ -128,7 +124,7 @@ const description = locale === 'fr'
   </section>
 
   <!-- Inject translations for JS -->
-  <script id="validator-i18n" type="application/json" set:html={JSON.stringify(locale === 'en' ? en.js : fr.js)} />
+  <script id="validator-i18n" type="application/json" set:html={JSON.stringify(messagesFor(locale).js)} />
 
   <script>
     const i18n = JSON.parse(document.getElementById('validator-i18n')?.textContent ?? '{}');
@@ -206,7 +202,7 @@ const description = locale === 'fr'
           decklist,
           // The endpoint answers in French unless told otherwise; the EN page used
           // to render English rule labels around French sentences.
-          locale: document.documentElement.lang === 'en' ? 'en' : 'fr',
+          locale: document.documentElement.lang || 'fr',
         });
         const res = await fetch('/api/validate-deck.php', { method: 'POST', body });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

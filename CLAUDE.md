@@ -51,13 +51,13 @@ site/
 │   └── img/ fonts/
 ├── src/
 │   ├── content.config.ts        # Schémas zod : tournaments, decklists, banlistHistory
-│   ├── pages/{fr,en}/           # Routes MINCES (slugs localisés) -> composant partagé
+│   ├── pages/{fr,en,it}/        # Routes MINCES (slugs localisés) -> composant partagé
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
 │   ├── components/              # BanListGrid, CardList, DeckStats, Top8Table...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
-│   ├── i18n/{fr,en}.json
+│   ├── i18n/{fr,en,it}.json
 │   ├── scripts/                 # JS client (mobile-menu, card-hover, deck-export)
 │   └── styles/globals.css       # @theme Tailwind 4 + classes composites
 ├── scripts/
@@ -102,16 +102,27 @@ Set.
 `banlist-history/` est une collection (un fichier par annonce) affichée en
 historique sur la page ban list. Modèle : `date`, `source`, `kind`
 (`initial`|`update`), `changes[]` (`card`, `type` = `banned`|`unbanned`|`restricted`,
-`experimental?`), `notes[]` (`{fr, en}`, facultatif). C'est de l'affichage : mettre
-à jour `banlist.json` reste nécessaire pour que le validateur en tienne compte.
+`experimental?`), `notes[]` (`{fr, en, it?}`, facultatif). C'est de l'affichage :
+mettre à jour `banlist.json` reste nécessaire pour que le validateur en tienne
+compte.
+
+Dans `notes[]`, `fr` et `en` sont obligatoires (ce que publie le comité) ; les
+langues ajoutées ensuite sont facultatives et replient sur l'anglais via
+`noteText()`, pour qu'une annonce puisse partir avant d'être traduite partout.
 
 Noms de cartes : toujours l'orthographe canonique Scryfall (union `cards`,
 `metaList`, historique) — le validateur compare des noms.
 
+Le champ `details` d'un tournoi est une chaîne **unique, non localisée**, et
+c'est **délibéré** : le texte de l'organisateur (horaires, PAF, lots) reste en
+français dans les trois langues. Ne pas le passer en `{fr, en, it}` — cela
+obligerait chaque organisateur à écrire trois versions de son annonce.
+
 ## API / Validateur
 
 `POST /api/validate-deck.php` — `commander`, `partner` (optionnel), `decklist`,
-`locale` (optionnel : `fr` par défaut, `en` accepté).
+`locale` (optionnel : `fr` par défaut, `en` et `it` acceptés ; toute autre valeur
+retombe sur `fr`).
 Réponse : `{success, data: {is_valid, errors[], warnings[], stats{}}}`.
 
 Les 9 règles sont documentées en tête de `DeckValidator.php`.
@@ -147,9 +158,11 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
 - Constantes définies avec un garde `if (!defined(...))` pour que les tests
   puissent les surcharger
 - Chaque classe refuse d'être appelée directement (garde `basename()`)
-- Messages d'erreur utilisateur dans `DeckValidator::MESSAGES` (fr + en), sans
-  accents côté français. Ne pas écrire de littéral dans un message : passer par
-  `self::msg('id', ...)`, sinon la version EN reparlera français.
+- Messages d'erreur utilisateur dans `DeckValidator::MESSAGES` (fr + en + it),
+  sans accents côté français — l'italien garde les siens, les retirer y ferait
+  des fautes (`rarità`, pas `rarita`). Ne pas écrire de littéral dans un message :
+  passer par `self::msg('id', ...)`, sinon les autres langues reparleront
+  français. Un test vérifie que chaque id porte bien les trois langues.
 
 ### Tests
 - **Hermétiques, jamais de réseau.** `ScryfallService` lit à travers un cache
@@ -163,15 +176,24 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
 
 ### Astro / TypeScript
 - **Une page = un composant partagé** dans `src/components/pages/`, avec une prop
-  `locale`. Les fichiers sous `src/pages/{fr,en}/` sont des **routes minces** qui
-  importent ce composant et fixent `locale` (les pages `[slug]` y gardent leur
+  `locale`. Les fichiers sous `src/pages/{fr,en,it}/` sont des **routes minces**
+  qui importent ce composant et fixent `locale` (les pages `[slug]` y gardent leur
   `getStaticPaths`). Ne pas dupliquer une page par langue.
 - Slugs localisés dans `src/lib/routes.ts` (table unique) : `route()` et
   `translatePath()`. Le sélecteur de langue s'en sert — ne pas faire de
   remplacement `/fr/` -> `/en/` à la main (ça 404 sur les segments traduits).
-- Traductions via `t(key, locale)` de `src/lib/i18n.ts`, fallback FR
-- Ajouter une clé dans `fr.json` **et** `en.json` (une clé manquante s'affiche
-  brute côté client)
+- Traductions via `t(key, locale)` de `src/lib/i18n.ts`. Repli **sur l'anglais**,
+  puis sur le français : `it → en → fr`, `en → fr`. Une clé absente partout
+  s'affiche brute (son nom), jamais vide.
+- Ajouter une clé dans `fr.json`, `en.json` **et** `it.json` — les trois
+  catalogues ont la même forme
+- Ne pas écrire de littéral dans un composant en testant la langue
+  (`locale === 'fr' ? … : …`) : c'est invisible pour toute langue ajoutée ensuite.
+  Les titres et descriptions SEO vivent en `<namespace>.seoTitle` /
+  `.seoDescription`. Les composants qui parcourent une branche entière du
+  catalogue passent par `messagesFor(locale)`, jamais par un import direct du JSON.
+- Un script client ne peut pas appeler `t()` : il lit `document.documentElement.lang`
+  et se sert d'une table locale (cf. `card-preview.ts`, `cookieconsent-config.ts`)
 - Construire les URL avec `route()` de `lib/routes.ts`, jamais par interpolation :
   c'est une URL en dur qui avait mis les 15 liens « Deck » des top 8 en 404
 - Une nouvelle page = un composant dans `components/pages/`, monté par deux
@@ -196,9 +218,11 @@ Les 9 règles sont documentées en tête de `DeckValidator.php`.
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` remonte 1 erreur préexistante** dans `astro.config.ts` (types
-  du plugin Vite Tailwind vs Astro). Sans effet sur le build ; ne pas la traiter
-  comme une régression.
+- **`npm run check` remonte 42 erreurs préexistantes** : 5 dans `astro.config.ts`
+  (types du plugin Vite Tailwind, littéraux `changefreq` vs `EnumChangefreq`) et
+  37 dans le script client de `SubmitDecklistPage.astro` (DOM non typé). Sans
+  effet sur le build ; ne pas les traiter comme une régression — mesurer l'écart
+  avant/après plutôt que le total.
 - **Redirections** : `public/.htaccess` (racine) redirige en 301 les anciennes
   URLs WordPress non préfixées vers les routes `/fr/…`. Apache uniquement
   (OVH mutualisé) ; équivalent nginx en commentaire.

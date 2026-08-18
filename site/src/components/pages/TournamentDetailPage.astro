@@ -122,9 +122,12 @@ const heroImage = winner?.commanderImage ?? null;
 const decklistCount = top8.filter(finish => finish.decklistUrl).length;
 
 const description = winner && !winner.isUnknown
-  ? (locale === 'fr'
-      ? `${data.title} — ${dateFormatted}, ${data.city}. Vainqueur : ${winner.playerName || winner.commanderName}. Top ${top8.length}, méta et decklists.`
-      : `${data.title} — ${dateFormatted}, ${data.city}. Winner: ${winner.playerName || winner.commanderName}. Top ${top8.length}, metagame and decklists.`)
+  ? t('tournament.seoDetail', locale)
+      .replace('%title%', data.title)
+      .replace('%date%', dateFormatted)
+      .replace('%city%', data.city)
+      .replace('%winner%', winner.playerName || winner.commanderName)
+      .replace('%top%', String(top8.length))
   : `${data.title} — ${dateFormatted}${data.city ? `, ${data.city}` : ''}`;
 
 const schemas: Record<string, unknown>[] = [
@@ -148,7 +151,7 @@ const schemas: Record<string, unknown>[] = [
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: locale === 'fr' ? 'Accueil' : 'Home', item: SITE_ORIGIN + homeRoute(locale) },
+      { '@type': 'ListItem', position: 1, name: t('common.home', locale), item: SITE_ORIGIN + homeRoute(locale) },
       { '@type': 'ListItem', position: 2, name: t('tournament.title', locale), item: SITE_ORIGIN + route('tournaments', locale) },
       { '@type': 'ListItem', position: 3, name: data.title },
     ],

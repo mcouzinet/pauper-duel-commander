@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import DecklistDetailPage from '@/components/pages/DecklistDetailPage.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('decklists');
+  return entries.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<DecklistDetailPage locale="it" entry={entry} />

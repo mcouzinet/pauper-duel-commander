@@ -70,13 +70,11 @@ const sampleLabel = t('metaPage.sample', locale)
   .replace('%from%', formatBanlistDate(meta.from, locale))
   .replace('%to%', formatBanlistDate(meta.to, locale));
 
-const title = locale === 'fr'
-  ? 'Méta Pauper Duel Commander : généraux les plus joués'
-  : 'Pauper Duel Commander metagame: most played commanders';
+const title = t('meta.seoTitle', locale);
 const description = hasData
-  ? (locale === 'fr'
-      ? `Les généraux les plus joués en Pauper Duel Commander, mesurés sur ${meta.global.tournamentCount} tournois et ${meta.global.total} entrées joueurs. Identités de couleur, répartition et top 4.`
-      : `The most played Pauper Duel Commander commanders, measured across ${meta.global.tournamentCount} tournaments and ${meta.global.total} player entries. Color identities, distribution and top 4.`)
+  ? t('meta.seoDescription', locale)
+      .replace('%tournaments%', String(meta.global.tournamentCount))
+      .replace('%entries%', String(meta.global.total))
   : t('meta.subtitle', locale);
 ---
 <Base title={title} description={description} bareTitle={false}>
