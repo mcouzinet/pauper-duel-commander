@@ -4,9 +4,19 @@
     "location": "Artefact",
     "city": "Bordeaux",
     "playerCount": 32,
-    "actualPlayerCount": null,
+    "actualPlayerCount": 4,
     "signupUrl": "",
     "details": "Tournoi sauvage en mode chill à 6€ avec des bons d'achats à gagner. Début 11h30.",
-    "top8": [],
-    "metaList": []
+    "top8": [
+        { "place": 1, "playerName": "Elie", "commanderName": "Crackling Drake", "score": "", "decklistSlug": null },
+        { "place": 2, "playerName": "Pierre", "commanderName": "Third Path Iconoclast", "score": "", "decklistSlug": null },
+        { "place": 3, "playerName": "Tristan", "commanderName": "Soulherder", "score": "", "decklistSlug": null },
+        { "place": 4, "playerName": "Diego", "commanderName": "Ravenous Squirrel", "score": "", "decklistSlug": null }
+    ],
+    "metaList": [
+        { "name": "Crackling Drake", "count": 1 },
+        { "name": "Third Path Iconoclast", "count": 1 },
+        { "name": "Soulherder", "count": 1 },
+        { "name": "Ravenous Squirrel", "count": 1 }
+    ]
 }
