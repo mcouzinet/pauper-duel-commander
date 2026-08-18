@@ -201,7 +201,7 @@ const description = t('archive.subtitle', locale)
       {/* Below sm each deck renders as a compact row instead of a full-height
           tile: the old layout spent ~800px per deck, so 25 decks made an
           11,000px page on a phone. */}
-      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="decklist-grid">
+      <div class="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" id="decklist-grid">
         {decklists.map(deck => (
           <div class="min-w-0">
             <div class="sm:hidden"><DeckCard deck={deck} locale={locale} compact={true} /></div>
