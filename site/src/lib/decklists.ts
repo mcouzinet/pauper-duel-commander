@@ -161,6 +161,17 @@ export interface Shelf {
 }
 
 /**
+ * A decklist's identity in meta terms.
+ *
+ * Meta lists name a pair as one string — "Commander // Partner" — so a decklist,
+ * which keeps the two in separate fields, has to be joined the same way before
+ * it can be looked up against them.
+ */
+function metaKey(commander: string, partner?: string): string {
+  return (partner ? `${commander} // ${partner}` : commander).toLowerCase();
+}
+
+/**
  * Build the shelves, in reading order, skipping any that would be empty.
  *
  * `originalCommanders` comes from the meta (commanders played exactly once), so
@@ -191,7 +202,11 @@ export async function getShelves(options: {
     {
       key: 'original',
       decklists: legal
-        .filter(d => originalCommanders.has(d.commander.toLowerCase()))
+        // A tournament meta list keys a pair as one string, "Commander // Partner",
+        // while a decklist keeps the two apart. Comparing the bare commander to
+        // those keys never matched a partnered deck, so every one of them was
+        // silently absent from this shelf.
+        .filter(d => originalCommanders.has(metaKey(d.commander, d.partner)))
         .slice(0, limit),
     },
     {
