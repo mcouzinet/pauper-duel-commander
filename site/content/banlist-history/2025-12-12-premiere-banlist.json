@@ -24,5 +24,41 @@
     { "card": "Passageway Seer", "type": "banned" },
     { "card": "Rilsa Rael, Kingpin", "type": "banned" }
   ],
-  "notes": []
+  "notes": [
+    {
+      "fr": "Cadrage du format. Après quelques temps de pleine ouverture dans ce « nouveau » format, nous revenons présenter les premières modifications, appuyées sur les deux premiers tournois, nos propres parties et les retours des joueurs réguliers.",
+      "en": "Framing the format. After running this “new” format wide open for a while, we're back with the first round of changes, drawn from the first two tournaments, our own games and feedback from regular players.",
+      "it": "Inquadramento del formato. Dopo qualche tempo di piena apertura in questo «nuovo» formato, torniamo a presentare le prime modifiche, basate sui primi due tornei, sulle nostre partite e sui riscontri dei giocatori abituali."
+    },
+    {
+      "fr": "Mécanique « Take The Initiative » : à l'instar du Monarque, l'Initiative est un statut qui passe de joueur en joueur. Elle sert de pay-off à de nombreux decks, facilite grandement la victoire quand le statut n'est pas échangé (or l'échange est difficile) et ne peut pas être gérée. Par conséquent, nous décidons de ne pas inclure cette mécanique dans le format.",
+      "en": "“Take The Initiative” mechanic: like the Monarch, the Initiative is a status that passes from player to player. It acts as a pay-off for many decks, makes winning far easier when the status isn't traded away (and trading it is hard), and cannot be interacted with. We have therefore decided not to include this mechanic in the format.",
+      "it": "Meccanica «Take The Initiative»: al pari del Monarca, l'Iniziativa è uno status che passa di giocatore in giocatore. Funge da pay-off per numerosi mazzi, rende molto più facile la vittoria quando lo status non viene scambiato (e lo scambio è difficile) e non è gestibile in alcun modo. Di conseguenza, decidiamo di non includere questa meccanica nel formato."
+    },
+    {
+      "fr": "Mécanique « Become the Monarch » : proche du Take The Initiative, elle nous paraît toutefois moins écrasante. L'avantage de cartes qu'elle procure est vite contrebalancé par le faible power level global du format. Nous la gardons à l'œil, car elle pourrait trop favoriser certaines couleurs.",
+      "en": "“Become the Monarch” mechanic: close to Take The Initiative, but it feels less oppressive. The card advantage it grants is quickly offset by the format's low overall power level. We're keeping an eye on it, as it could end up favoring some colors too much.",
+      "it": "Meccanica «Become the Monarch»: vicina al Take The Initiative, ci sembra però meno soverchiante. Il vantaggio di carte che offre viene rapidamente controbilanciato dal basso livello di potenza generale del formato. La teniamo d'occhio, perché potrebbe favorire troppo alcuni colori."
+    },
+    {
+      "fr": "Zone de Commandement : après discussion, nous avons choisi de ne pas la restreindre. Les créatures, légendaires ou non, ayant été imprimées au moins une fois en peu commune peuvent y prétendre — de même que les Véhicules et les Vaisseaux Spatiaux. Nous procédons néanmoins à des bans ciblés pour l'équilibrer au maximum.",
+      "en": "Command Zone: after discussion, we chose not to restrict it. Creatures — legendary or not — printed at least once at uncommon are eligible as commanders, and so are Vehicles and Spacecraft. We are nonetheless making targeted bans to keep it as balanced as possible.",
+      "it": "Zona di Comando: dopo alcune discussioni, abbiamo scelto di non restringerla. Le creature, leggendarie o meno, stampate almeno una volta come non comuni possono aspirarvi — così come i Veicoli e le Astronavi. Effettuiamo tuttavia dei ban mirati per bilanciarla al massimo."
+    },
+    {
+      "fr": "Détail des bans. Les cartes « Take The Initiative » sont bannies dans le deck comme en général. Côté Monarque, Fall from Favor est bannie : seul le bleu possède une carte de valeur de mana 3 pour prendre le monarque, ce qui neutralise trop vite une condition de reprise. Imprisoned in the Moon et Oubliette sont bannies car elles annihilent l'usage de la Zone de Commandement (jusqu'à empêcher certaines mécaniques de jeu) et restent quasi ingérables pour plusieurs colorités.",
+      "en": "Ban details. The “Take The Initiative” cards are banned both in the deck and as commanders. On the Monarch side, Fall from Favor is banned: only blue has a mana-value-3 card to seize the monarchy, which shuts down a way of taking it back far too quickly. Imprisoned in the Moon and Oubliette are banned because they wipe out the use of the Command Zone (even preventing some game mechanics outright) and stay nearly unmanageable for several colors.",
+      "it": "Dettaglio dei ban. Le carte «Take The Initiative» sono bandite sia nel mazzo sia come comandante. Sul fronte Monarca, Fall from Favor è bandita: solo il blu dispone di una carta di valore di mana 3 per ottenere il monarca, il che neutralizza troppo rapidamente una condizione per riprenderlo. Imprisoned in the Moon e Oubliette sono bandite perché annientano l'uso della Zona di Comando (fino a impedire alcune meccaniche di gioco) e restano quasi ingestibili per diversi colori."
+    },
+    {
+      "fr": "Zone de Commandement — bans ciblés. La mécanique Lieutenant et les commandants au fonctionnement autonome (Bastion Protector, Loyal Apprentice, Loyal Drake, Loyal Guardian, Loyal Subordinate, Loyal Unicorn) sont bannis, ainsi que les commandants « Take The Initiative » (Bloodboil Sorcerer, Feywild Caretaker, Passageway Seer, Rilsa Rael, Kingpin).",
+      "en": "Command Zone — targeted bans. The Lieutenant mechanic and self-sufficient commanders (Bastion Protector, Loyal Apprentice, Loyal Drake, Loyal Guardian, Loyal Subordinate, Loyal Unicorn) are banned, along with the “Take The Initiative” commanders (Bloodboil Sorcerer, Feywild Caretaker, Passageway Seer, Rilsa Rael, Kingpin).",
+      "it": "Zona di Comando — ban mirati. La meccanica Luogotenente e i comandanti dal funzionamento autonomo (Bastion Protector, Loyal Apprentice, Loyal Drake, Loyal Guardian, Loyal Subordinate, Loyal Unicorn) sono banditi, così come i comandanti «Take The Initiative» (Bloodboil Sorcerer, Feywild Caretaker, Passageway Seer, Rilsa Rael, Kingpin)."
+    },
+    {
+      "fr": "Cartes sous surveillance. En Zone de Commandement : Baleful Strix (son comportement une fois le TTI retiré), Wilson, Refined Grizzly et Esior, Wardwing Familiar (leur capacité à s'auto-protéger), ainsi que les commandants susceptibles d'abuser de la taxe. Dans le deck : Treasure Cruise, Campfire et Cranial Plating.",
+      "en": "Cards on our watch list. In the Command Zone: Baleful Strix (how it behaves once TTI is gone), Wilson, Refined Grizzly and Esior, Wardwing Familiar (their ability to protect themselves), plus commanders that could abuse the tax. In the deck: Treasure Cruise, Campfire and Cranial Plating.",
+      "it": "Carte sotto osservazione. In Zona di Comando: Baleful Strix (il suo comportamento una volta rimosso il TTI), Wilson, Refined Grizzly ed Esior, Wardwing Familiar (la loro capacità di auto-proteggersi), oltre ai comandanti che potrebbero abusare della tassa. Nel mazzo: Treasure Cruise, Campfire e Cranial Plating."
+    }
+  ]
 }
