@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-09",
+  "source": "Ivinos",
+  "kind": "update",
+  "changes": [
+    {
+      "card": "Price of Progress",
+      "type": "banned"
+    }
+  ],
+  "notes": [
+    {
+      "fr": "Set Zeta : la sortie de ce nouveau set change la rareté de certaines cartes. Le comité s'aligne naturellement sur la décision du pauper et prend donc en compte les nouvelles raretés.",
+      "en": "Zeta set: the release of this new set changes the rarity of some cards. The committee naturally aligns with the Pauper ruling and therefore takes the new rarities into account.",
+      "it": "Set Zeta: l'uscita di questo nuovo set cambia la rarità di alcune carte. Il comitato si allinea naturalmente alla decisione del Pauper e tiene quindi conto delle nuove rarità."
+    },
+    {
+      "fr": "Price of Progress est bannie d'office. Elle propose une quantité de dégâts trop élevée pour deux manas, et renforce le rouge déjà fort tout en pénalisant les builds 3 couleurs et plus, déjà lents. Notons que le Pauper Format Panel a pris la même décision : les formats sont différents, certes, mais la logique reste similaire.",
+      "en": "Price of Progress is banned outright. It deals far too much damage for two mana, and it reinforces an already strong red while penalising three-colour-and-up builds that are already slow. Note that the Pauper Format Panel made the same call: the formats differ, granted, but the logic remains similar.",
+      "it": "Price of Progress è bandita d'ufficio. Infligge una quantità di danni troppo elevata per due mana e rafforza il rosso già forte, penalizzando al contempo i mazzi a tre colori o più, già lenti. Notiamo che il Pauper Format Panel ha preso la stessa decisione: i formati sono diversi, certo, ma la logica resta simile."
+    },
+    {
+      "fr": "Aucune autre carte n'est bannie pour le moment, afin de laisser une grande liberté avec ces nouveaux joujous. Certaines restent bien évidemment sous surveillance, Raffine pour ne pas la citer, et le comité n'hésitera pas à en bannir d'autres si nécessaire.",
+      "en": "No other card is banned for now, so as to leave plenty of freedom with these new toys. Some are of course still being watched, Raffine to name but one, and the committee will not hesitate to ban others if needed.",
+      "it": "Nessun'altra carta è bandita per il momento, per lasciare ampia libertà con questi nuovi giocattoli. Alcune restano ovviamente sotto osservazione, Raffine per non citarla, e il comitato non esiterà a bandirne altre se necessario."
+    }
+  ]
+}
