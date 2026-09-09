@@ -1,5 +1,5 @@
 {
-    "lastUpdated": "2026-08-03",
+    "lastUpdated": "2026-09-09",
     "bannedAsCommander": [
         "Bastion Protector",
         "Loyal Apprentice",
@@ -19,7 +19,8 @@
         "Fall from Favor",
         "Imprisoned in the Moon",
         "Oubliette",
-        "Treasure Cruise"
+        "Treasure Cruise",
+        "Price of Progress"
     ],
     "cards": [
         "Aarakocra Sneak",
@@ -33,6 +34,7 @@
         "Loyal Apprentice",
         "Oubliette",
         "Passageway Seer",
+        "Price of Progress",
         "Rilsa Rael, Kingpin",
         "Stirring Bard",
         "Trailblazer's Torch",
