@@ -58,24 +58,22 @@ async function rateLimitedFetch(url: string, options?: RequestInit): Promise<Res
 // ---------------------------------------------------------------------------
 
 /**
+ * Whether a card can go in a deck at all. Planes, schemes, playtest and acorn
+ * cards are legal nowhere, not even in Vintage — and a name can belong to one of
+ * them AND to a real card: "No Way Out" is a Midnight Hunt common and a Duskmourn
+ * playtest Plane, and /cards/named and /cards/collection both answer with the
+ * Plane. Mirrors ScryfallService::is_deckable() in the API.
+ */
+function isDeckable(card: ScryfallCard): boolean {
+  return card.legalities?.vintage !== 'not_legal';
+}
+
+/**
  * Get card by exact English name.
  */
 export async function getCardByName(cardName: string): Promise<ScryfallCard | null> {
-  const key = cacheKey(cardName);
-  const cached = readCache(`name_${key}`);
-  if (cached) return cached;
-
-  const url = `${API_BASE}/cards/named?exact=${encodeURIComponent(cardName)}`;
-  try {
-    const res = await rateLimitedFetch(url);
-    if (!res.ok) return null;
-    const data = (await res.json()) as ScryfallCard;
-    if (data.object === 'error') return null;
-    writeCache(`name_${key}`, data);
-    return data;
-  } catch {
-    return null;
-  }
+  // Same resolver as deck cards: a commander can collide with a Plane too.
+  return searchCardByName(cardName);
 }
 
 /**
@@ -111,7 +109,7 @@ export async function getCardsByNames(names: string[]): Promise<Map<string, Scry
   for (const name of names) {
     const key = cacheKey(name);
     const cached = readCache(`name_${key}`);
-    if (cached) {
+    if (cached && isDeckable(cached)) {
       result.set(name.toLowerCase(), cached);
     } else {
       toFetch.push(name);
@@ -141,6 +139,8 @@ export async function getCardsByNames(names: string[]): Promise<Map<string, Scry
       const found = new Map<string, ScryfallCard>();
 
       for (const card of data.data ?? []) {
+        // Leave a Plane or a playtest card to the fallback, which finds the real one.
+        if (!isDeckable(card)) continue;
         const key = cacheKey(card.name);
         writeCache(`name_${key}`, card);
         found.set(card.name.toLowerCase(), card);
@@ -185,7 +185,7 @@ export async function getCardsByNames(names: string[]): Promise<Map<string, Scry
 export async function searchCardByName(name: string): Promise<ScryfallCard | null> {
   const key = cacheKey(name);
   const cached = readCache(`name_${key}`);
-  if (cached) return cached;
+  if (cached && isDeckable(cached)) return cached;
 
   // Try exact match first
   const exactUrl = `${API_BASE}/cards/named?exact=${encodeURIComponent(name)}`;
@@ -193,7 +193,7 @@ export async function searchCardByName(name: string): Promise<ScryfallCard | nul
     const res = await rateLimitedFetch(exactUrl);
     if (res.ok) {
       const data = (await res.json()) as ScryfallCard;
-      if (data.object === 'card') {
+      if (data.object === 'card' && isDeckable(data)) {
         writeCache(`name_${key}`, data);
         return data;
       }
@@ -206,7 +206,7 @@ export async function searchCardByName(name: string): Promise<ScryfallCard | nul
     const res = await rateLimitedFetch(searchUrl);
     if (!res.ok) return null;
     const data = (await res.json()) as { data: ScryfallCard[] };
-    const card = data.data?.[0] ?? null;
+    const card = data.data?.find(isDeckable) ?? data.data?.[0] ?? null;
     if (card) writeCache(`name_${key}`, card);
     return card;
   } catch {

@@ -290,6 +290,10 @@ class TournamentSubmissionControllerTest extends TestCase
         $this->assertSame('invalid', $res['body']['rejected'][0]['reason']);
         $this->assertNotEmpty($res['body']['rejected'][0]['errors']);
 
+        // The PR body says which card was refused, not just that one was.
+        $pr = array_values(array_filter($this->calls, function ($c) { return substr($c['url'], -6) === '/pulls'; }));
+        $this->assertStringContainsString('`Goliath Paladin`', $pr[0]['json']['body']);
+
         $files = $this->committedFiles();
         $this->assertCount(2, $files, 'the banned deck must not become a file');
         $this->assertArrayNotHasKey('site/content/decklists/mother-of-runes-artefact-7-2eme.json', $files);
