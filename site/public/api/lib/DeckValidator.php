@@ -136,9 +136,9 @@ class DeckValidator {
             'it' => 'Le carte seguenti non sono state trovate su Scryfall. Controlla l\'ortografia (nomi in inglese):',
         ),
         'duplicates' => array(
-            'fr' => 'Les cartes suivantes apparaissent en plusieurs exemplaires (seuls les terrains de base sont autorises en plusieurs copies) :',
-            'en' => 'The following cards appear more than once (only basic lands may be duplicated):',
-            'it' => 'Le carte seguenti compaiono in più copie (solo le terre base possono essere duplicate):',
+            'fr' => 'Les cartes suivantes depassent le nombre d\'exemplaires autorise (un seul, sauf terrains de base et cartes qui en autorisent davantage) :',
+            'en' => 'The following cards exceed the allowed number of copies (one, except basic lands and cards that allow more):',
+            'it' => 'Le carte seguenti superano il numero di copie consentito (una, tranne le terre base e le carte che ne consentono di più):',
         ),
         'rarity' => array(
             'fr' => 'Les cartes suivantes n\'ont jamais ete imprimees en rarete Commune (non legales en Pauper) :',
@@ -281,7 +281,7 @@ class DeckValidator {
         // --- Rule 5: All cards found on Scryfall ---
         self::check_unresolvable_cards($parsed_cards, $enriched_cards, $errors);
 
-        // --- Rule 6: No duplicates except basic lands ---
+        // --- Rule 6: No duplicates except basic lands and cards that allow them ---
         self::check_duplicates($enriched_cards, $errors);
 
         // --- Rule 7: Pauper legality for deck cards ---

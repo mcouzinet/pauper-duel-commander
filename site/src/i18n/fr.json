@@ -81,7 +81,7 @@
     "ruleColor": "Identité de couleur",
     "ruleColorDesc": "Toutes les cartes doivent respecter l'identité de couleur du général.",
     "ruleSingleton": "Pas de doublon",
-    "ruleSingletonDesc": "Maximum 1 exemplaire de chaque carte, sauf les terrains de base.",
+    "ruleSingletonDesc": "Maximum 1 exemplaire de chaque carte, sauf les terrains de base et les cartes qui en autorisent davantage.",
     "ruleBan": "Ban List",
     "ruleBanDesc": "Les cartes figurant sur la liste des interdictions PDC ne sont pas autorisées.",
     "seoDescription": "Vérifiez la légalité de votre deck Pauper Duel Commander : 100 cartes, général peu commun, communes, identité de couleur, singleton et ban list."
@@ -321,7 +321,7 @@
     "2Joueurs": "2 Joueurs",
     "unDuelPurSans": "Un duel pur sans politique ni alliances. Chaque décision compte, chaque partie est un affrontement direct.",
     "100Cartes": "100 Cartes",
-    "votreDeckContientExactement": "Votre deck contient exactement 100 cartes, commandant inclus. Chaque carte ne peut être présente qu'en un seul exemplaire — à l'exception des terrains de base.",
+    "votreDeckContientExactement": "Votre deck contient exactement 100 cartes, commandant inclus. Chaque carte ne peut être présente qu'en un seul exemplaire — à l'exception des terrains de base et des cartes qui en autorisent davantage.",
     "unCommandantAuCoeur": "Un commandant au coeur",
     "votreCommandantDFinit": "Votre commandant définit votre stratégie et votre identité de couleur. Il doit avoir été imprimé au moins une fois en peu commun. Choisissez-le avec soin.",
     "communesUniquement": "Communes uniquement",
@@ -469,7 +469,7 @@
           },
           {
             "n": "2.2",
-            "text": "À l'exception des terrains de base, un deck ne peut pas contenir plus d'une carte portant le même nom anglais."
+            "text": "À l'exception des terrains de base, un deck ne peut pas contenir plus d'une carte portant le même nom anglais. Une carte dont le texte autorise plusieurs exemplaires (comme Hare Apparent) fait exception, dans la limite qu'elle indique."
           },
           {
             "n": "2.3",

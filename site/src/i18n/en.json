@@ -81,7 +81,7 @@
     "ruleColor": "Color Identity",
     "ruleColorDesc": "All cards must match the commander's color identity.",
     "ruleSingleton": "No Duplicates",
-    "ruleSingletonDesc": "Maximum 1 copy of each card, except basic lands.",
+    "ruleSingletonDesc": "Maximum 1 copy of each card, except basic lands and cards that allow more.",
     "ruleBan": "Ban List",
     "ruleBanDesc": "Cards on the PDC ban list are not allowed.",
     "seoDescription": "Check your Pauper Duel Commander deck for legality: 100 cards, uncommon commander, commons, color identity, singleton and ban list."
@@ -321,7 +321,7 @@
     "2Joueurs": "2 Players",
     "unDuelPurSans": "A pure duel with no politics or alliances. Every decision matters, every game is a direct confrontation.",
     "100Cartes": "100 Cards",
-    "votreDeckContientExactement": "Your deck contains exactly 100 cards, commander included. Each card can only appear once — except for basic lands.",
+    "votreDeckContientExactement": "Your deck contains exactly 100 cards, commander included. Each card can only appear once — except for basic lands and cards that allow more.",
     "unCommandantAuCoeur": "A Commander at the Core",
     "votreCommandantDFinit": "Your commander defines your strategy and color identity. It must have been printed at uncommon rarity at least once. Choose wisely.",
     "communesUniquement": "Commons Only",
@@ -469,7 +469,7 @@
           },
           {
             "n": "2.2",
-            "text": "Except for basic lands, a deck may not contain more than one card with the same English name."
+            "text": "Except for basic lands, a deck may not contain more than one card with the same English name. A card whose text allows more copies (such as Hare Apparent) is an exception, up to any limit it states."
           },
           {
             "n": "2.3",
