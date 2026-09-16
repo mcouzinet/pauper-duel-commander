@@ -1,0 +1,108 @@
+{
+    "title": "CMC #1",
+    "date": "2026-09-12",
+    "location": "Association CMC",
+    "city": "Noyelles-sous-Lens",
+    "playerCount": 0,
+    "actualPlayerCount": 10,
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Mathieu",
+            "commanderName": "Palace Jailer",
+            "score": "",
+            "decklistSlug": "palace-jailer-cmc-1-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Sébastien C.",
+            "commanderName": "Elas il-Kor, Sadistic Pilgrim",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 3,
+            "playerName": "Sébastien D.",
+            "commanderName": "Baleful Strix",
+            "score": "",
+            "decklistSlug": "baleful-strix-cmc-1-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Nicolas",
+            "commanderName": "Juri, Master of the Revue",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 5,
+            "playerName": "James",
+            "commanderName": "Soulherder",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 6,
+            "playerName": "Thomas",
+            "commanderName": "Arabella, Abandoned Doll",
+            "score": "",
+            "decklistSlug": null
+        },
+        {
+            "place": 7,
+            "playerName": "Arthur",
+            "commanderName": "Monastery Swiftspear",
+            "score": "",
+            "decklistSlug": "monastery-swiftspear-cmc-1-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Nathan",
+            "commanderName": "Fynn, the Fangbearer",
+            "score": "",
+            "decklistSlug": "fynn-the-fangbearer-cmc-1-8eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Palace Jailer",
+            "count": 1
+        },
+        {
+            "name": "Elas il-Kor, Sadistic Pilgrim",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 1
+        },
+        {
+            "name": "Soulherder",
+            "count": 1
+        },
+        {
+            "name": "Arabella, Abandoned Doll",
+            "count": 1
+        },
+        {
+            "name": "Monastery Swiftspear",
+            "count": 1
+        },
+        {
+            "name": "Fynn, the Fangbearer",
+            "count": 1
+        },
+        {
+            "name": "Stormchaser Mage",
+            "count": 1
+        },
+        {
+            "name": "Enthusiastic Mechanaut",
+            "count": 1
+        }
+    ]
+}
