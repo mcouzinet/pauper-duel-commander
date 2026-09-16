@@ -81,7 +81,7 @@
     "ruleColor": "Identità di colore",
     "ruleColorDesc": "Tutte le carte devono rientrare nell'identità di colore del comandante.",
     "ruleSingleton": "Nessun doppione",
-    "ruleSingletonDesc": "Massimo 1 copia per carta, tranne le terre base.",
+    "ruleSingletonDesc": "Massimo 1 copia per carta, tranne le terre base e le carte che ne consentono di più.",
     "ruleBan": "Ban list",
     "ruleBanDesc": "Le carte presenti nella ban list PDC non sono ammesse.",
     "seoDescription": "Verifica la legalità del tuo mazzo Pauper Duel Commander: 100 carte, comandante non comune, comuni, identità di colore, singleton e ban list."
@@ -321,7 +321,7 @@
     "2Joueurs": "2 giocatori",
     "unDuelPurSans": "Un duello puro, senza politica né alleanze. Ogni decisione conta, ogni partita è uno scontro diretto.",
     "100Cartes": "100 carte",
-    "votreDeckContientExactement": "Il tuo mazzo contiene esattamente 100 carte, comandante incluso. Ogni carta può comparire una sola volta, tranne le terre base.",
+    "votreDeckContientExactement": "Il tuo mazzo contiene esattamente 100 carte, comandante incluso. Ogni carta può comparire una sola volta, tranne le terre base e le carte che ne consentono di più.",
     "unCommandantAuCoeur": "Un comandante al centro",
     "votreCommandantDFinit": "Il tuo comandante definisce la tua strategia e la tua identità di colore. Deve essere stato stampato almeno una volta in rarità non comune. Scegli con cura.",
     "communesUniquement": "Solo comuni",
@@ -469,7 +469,7 @@
           },
           {
             "n": "2.2",
-            "text": "Fatta eccezione per le terre base, un mazzo non può contenere più di una carta con lo stesso nome inglese."
+            "text": "Fatta eccezione per le terre base, un mazzo non può contenere più di una carta con lo stesso nome inglese. Fa eccezione una carta il cui testo consente più copie (come Hare Apparent), nel limite che indica."
           },
           {
             "n": "2.3",
