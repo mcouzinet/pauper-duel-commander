@@ -194,6 +194,14 @@ final class TournamentSubmissionController {
                 $lines[] = '- **Place ' . $r['place'] . '** (' . $r['playerName'] . ') — ' . $why;
                 foreach ($r['errors'] as $err) {
                     $msg = isset($err['message']) ? $err['message'] : (isset($err['rule']) ? $err['rule'] : '?');
+                    // Every message ends on "the following cards:" — without the
+                    // cards, nobody reviewing the PR can tell what was refused.
+                    // Backticks: the names are raw input, keep them out of Markdown.
+                    if (!empty($err['cards'])) {
+                        $msg .= ' ' . implode(', ', array_map(function ($c) {
+                            return '`' . str_replace('`', '', $c) . '`';
+                        }, $err['cards']));
+                    }
                     $lines[] = '  - ' . $msg;
                 }
             }

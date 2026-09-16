@@ -24,6 +24,15 @@ class ScryfallService {
      */
     private static $last_request_time = 0.0;
 
+    /**
+     * HTTP transport override: null means cURL. The test suite sets a callable
+     * `function ($method, $url, $body)` returning decoded JSON, so it can cover
+     * lookups that miss the fixture cache without reaching Scryfall.
+     *
+     * @var callable|null
+     */
+    public static $transport = null;
+
     // -------------------------------------------------------------------------
     // Public API
     // -------------------------------------------------------------------------
@@ -35,23 +44,8 @@ class ScryfallService {
      * @return object|null Card data object or null on failure
      */
     public static function get_card_by_name($card_name) {
-        $cache_key = 'name_' . pdc_sanitize_key($card_name);
-
-        $cached = self::cache_get($cache_key);
-        if ($cached !== null) {
-            return $cached;
-        }
-
-        $url  = SCRYFALL_API_BASE . '/cards/named?exact=' . urlencode($card_name);
-        $data = self::http_get($url);
-
-        if (!$data || (isset($data->object) && $data->object === 'error')) {
-            error_log('Scryfall: card not found "' . $card_name . '"');
-            return null;
-        }
-
-        self::cache_set($cache_key, $data);
-        return $data;
+        // Same resolver as deck cards: a commander can collide with a Plane too.
+        return self::search_card_by_name($card_name);
     }
 
     /**
@@ -100,7 +94,7 @@ class ScryfallService {
         foreach ($names as $name) {
             $cache_key = 'name_' . pdc_sanitize_key($name);
             $cached    = self::cache_get($cache_key);
-            if ($cached !== null) {
+            if ($cached !== null && self::is_deckable($cached)) {
                 $result[strtolower($name)] = $cached;
             } else {
                 $to_fetch[] = $name;
@@ -132,6 +126,11 @@ class ScryfallService {
             // Index returned cards by lowercase name and cache individually
             $found = array();
             foreach ($data->data as $card) {
+                // Leave a Plane or a playtest card to the fallback below, which
+                // looks for a real card of the same name (see is_deckable).
+                if (!self::is_deckable($card)) {
+                    continue;
+                }
                 $card_cache_key = 'name_' . pdc_sanitize_key($card->name);
                 self::cache_set($card_cache_key, $card);
                 $found[strtolower($card->name)] = $card;
@@ -178,13 +177,13 @@ class ScryfallService {
     public static function search_card_by_name($name) {
         $cache_key = 'name_' . pdc_sanitize_key($name);
         $cached    = self::cache_get($cache_key);
-        if ($cached !== null) {
+        if ($cached !== null && self::is_deckable($cached)) {
             return $cached;
         }
 
         // Try exact English name first
         $data = self::http_get(SCRYFALL_API_BASE . '/cards/named?exact=' . urlencode($name));
-        if ($data && isset($data->object) && $data->object === 'card') {
+        if ($data && isset($data->object) && $data->object === 'card' && self::is_deckable($data)) {
             self::cache_set($cache_key, $data);
             return $data;
         }
@@ -199,6 +198,12 @@ class ScryfallService {
         }
 
         $card = $data->data[0];
+        foreach ($data->data as $candidate) {
+            if (self::is_deckable($candidate)) {
+                $card = $candidate;
+                break;
+            }
+        }
         self::cache_set($cache_key, $card);
         return $card;
     }
@@ -206,6 +211,26 @@ class ScryfallService {
     // -------------------------------------------------------------------------
     // Card data extractors (pure, no API calls)
     // -------------------------------------------------------------------------
+
+    /**
+     * Whether a card can go in a deck at all.
+     *
+     * Planes, schemes, playtest and acorn cards are legal nowhere, not even in
+     * Vintage. A name can belong to one of those AND to a real card: "No Way Out"
+     * is a Midnight Hunt common and a Duskmourn playtest Plane, and both
+     * /cards/named and /cards/collection answer with the Plane, which the
+     * validator then rejected as "never printed at common".
+     *
+     * Missing legalities count as deckable: only a positive "not_legal" is
+     * grounds to look further.
+     *
+     * @param object $card_data Scryfall card data
+     * @return bool
+     */
+    public static function is_deckable($card_data) {
+        return !isset($card_data->legalities->vintage)
+            || $card_data->legalities->vintage !== 'not_legal';
+    }
 
     /**
      * Get card image URL (handles single-faced and double-faced cards).
@@ -435,6 +460,9 @@ class ScryfallService {
      * @return object|null Decoded JSON or null on failure
      */
     private static function http_get($url) {
+        if (self::$transport) {
+            return call_user_func(self::$transport, 'GET', $url, null);
+        }
         self::rate_limit();
 
         $ch = curl_init();
@@ -472,6 +500,9 @@ class ScryfallService {
      * @return object|null Decoded JSON or null on failure
      */
     private static function http_post($url, $json_body) {
+        if (self::$transport) {
+            return call_user_func(self::$transport, 'POST', $url, $json_body);
+        }
         self::rate_limit();
 
         $ch = curl_init();

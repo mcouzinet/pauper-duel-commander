@@ -8,7 +8,7 @@
  * 3. Commander must have been printed at uncommon at least once
  * 4. Deck size: 99 (solo) or 98 (with partner)
  * 5. All cards found on Scryfall
- * 6. No duplicates except basic lands
+ * 6. No duplicates except basic lands and cards that allow them (Hare Apparent)
  * 7. Pauper legality: legalities.pauper !== "not_legal"
  * 8. Color identity: each card's color_identity is a subset of commander's
  * 9. Ban list: no card in banlist.json
@@ -459,12 +459,12 @@ class DeckValidator {
     }
 
     /**
-     * Rule 6: No duplicates (except basic lands).
+     * Rule 6: No duplicates, except basic lands and cards that say otherwise.
      */
     private static function check_duplicates($enriched_cards, &$errors) {
         $duplicates = array();
         foreach ($enriched_cards as $card) {
-            if ($card['quantity'] > 1 && !self::is_basic_land($card)) {
+            if ($card['quantity'] > self::max_copies($card)) {
                 $duplicates[] = $card['name'] . ' (' . $card['quantity'] . ' copies)';
             }
         }
@@ -475,6 +475,32 @@ class DeckValidator {
                 'cards'   => $duplicates,
             );
         }
+    }
+
+    /**
+     * How many copies of a card a deck may hold.
+     *
+     * One, unless the card is a basic land or its own text lifts the limit:
+     * "A deck can have any number of cards named Hare Apparent", "up to seven
+     * cards named Seven Dwarves". Card text overrides the singleton rule (CR
+     * 101.1), as it does in Commander — these decks were rejected as duplicates.
+     *
+     * @param array $card Enriched card array
+     * @return int
+     */
+    private static function max_copies($card) {
+        if (self::is_basic_land($card)) {
+            return PHP_INT_MAX;
+        }
+        $text = isset($card['scryfall_data']->oracle_text) ? $card['scryfall_data']->oracle_text : '';
+        if (stripos($text, 'A deck can have any number of cards named') !== false) {
+            return PHP_INT_MAX;
+        }
+        // Scryfall spells the cap out; these are the only two ever printed.
+        if (preg_match('/A deck can have up to (seven|nine) cards named/i', $text, $m)) {
+            return strtolower($m[1]) === 'seven' ? 7 : 9;
+        }
+        return 1;
     }
 
     /**

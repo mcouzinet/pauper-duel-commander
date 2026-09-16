@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
  *
  * Rule 5 is not covered here: an unresolvable name is by definition absent from the
  * fixture cache, so asserting on it would make the suite hit the live Scryfall API.
- * Covering it needs an injectable HTTP transport in ScryfallService.
+ * Covering it means stubbing ScryfallService::$transport, as ScryfallServiceTest does.
  */
 class DeckValidatorTest extends TestCase
 {
@@ -446,6 +446,29 @@ class DeckValidatorTest extends TestCase
         $result = DeckValidator::validate(self::COMMANDER, '', $decklist);
 
         $this->assertContains('duplicates', self::rulesOf($result));
+    }
+
+    /**
+     * Hare Apparent reads "A deck can have any number of cards named Hare
+     * Apparent". Card text overrides the singleton rule, so this is not a
+     * duplicate — it used to be rejected as one.
+     */
+    public function test_a_card_allowing_any_number_of_copies_may_be_duplicated(): void
+    {
+        $result = DeckValidator::validate(self::COMMANDER, '', "8 Hare Apparent\n" . self::filler(91));
+
+        $this->assertSame([], self::rulesOf($result));
+    }
+
+    /** Seven Dwarves allows "up to seven": the eighth copy is a duplicate again. */
+    public function test_a_copy_cap_printed_on_the_card_is_enforced(): void
+    {
+        // Seven Dwarves is red: the Gorilla Shaman partner puts it in identity.
+        $seven = DeckValidator::validate(self::COMMANDER, self::PARTNER, "7 Seven Dwarves\n" . self::filler(91));
+        $eight = DeckValidator::validate(self::COMMANDER, self::PARTNER, "8 Seven Dwarves\n" . self::filler(90));
+
+        $this->assertSame([], self::rulesOf($seven));
+        $this->assertSame(['duplicates'], self::rulesOf($eight));
     }
 
     /** Rule codes raised by a validation, deduplicated. */
