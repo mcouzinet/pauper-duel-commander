@@ -403,6 +403,10 @@
       {
         "q": "Chi inizia, e pesca?",
         "a": "Il giocatore che inizia salta la fase di acquisizione del suo primo turno (regola 3.3). Si usa il mulligan di Londra (regola 3.2)."
+      },
+      {
+        "q": "Posso cambiare comandante tra una partita e l'altra di un incontro?",
+        "a": "No (regola 3.6). I comandanti valgono per tutto l'incontro. La regola 2.5 riguarda invece una singola partita: limita quanti comandanti puoi lanciare dalla zona di comando."
       }
     ],
     "seoTitle": "Regole del Pauper Duel Commander"
@@ -520,6 +524,10 @@
           {
             "n": "3.5",
             "text": "Un comandante può essere lanciato dalla zona di comando. La tassa del comandante si applica come definito dalle regole del Commander."
+          },
+          {
+            "n": "3.6",
+            "text": "I comandanti di un giocatore restano gli stessi per tutto l'incontro: non possono essere cambiati tra una partita e l'altra."
           }
         ]
       }

@@ -403,6 +403,10 @@
       {
         "q": "Who goes first, and do they draw?",
         "a": "The starting player skips the draw step of their first turn (rule 3.3). The London mulligan is used (rule 3.2)."
+      },
+      {
+        "q": "Can I change commanders between games of a match?",
+        "a": "No (rule 3.6). Your commanders stand for the whole match. Rule 2.5 is about a single game: it limits how many of your commanders you may cast from the command zone."
       }
     ],
     "seoTitle": "Pauper Duel Commander rules"
@@ -520,6 +524,10 @@
           {
             "n": "3.5",
             "text": "A commander may be cast from the command zone. Commander tax applies as defined by the Commander rules."
+          },
+          {
+            "n": "3.6",
+            "text": "A player's commanders stay the same for a whole match: they may not be changed between games."
           }
         ]
       }
