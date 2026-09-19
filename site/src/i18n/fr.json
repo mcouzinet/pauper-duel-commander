@@ -403,6 +403,10 @@
       {
         "q": "Qui commence, et pioche-t-il ?",
         "a": "Le joueur qui commence saute l’étape de pioche de son premier tour (règle 3.3). Le mulligan de Londres est utilisé (règle 3.2)."
+      },
+      {
+        "q": "Puis-je changer de général entre deux parties d'un match ?",
+        "a": "Non (règle 3.6). Le ou les généraux désignés valent pour tout le match. La règle 2.5, elle, ne concerne qu’une partie : elle limite le nombre de généraux que vous pouvez lancer depuis la zone de commandement."
       }
     ],
     "seoTitle": "Règles du Pauper Duel Commander"
@@ -520,6 +524,10 @@
           {
             "n": "3.5",
             "text": "Un général peut être lancé depuis la zone de commandement. La taxe de commandant s'applique telle que définie par les règles du Commander."
+          },
+          {
+            "n": "3.6",
+            "text": "Le ou les généraux d'un joueur restent les mêmes pendant tout un match : ils ne peuvent pas être changés entre deux parties."
           }
         ]
       }
