@@ -4,7 +4,7 @@
  * Two failure modes, both of which have already put wrong information on the
  * site:
  *
- *   - **the name resolves to the wrong card.** Artefact #1's winner was recorded
+ *   - **the name resolves to the wrong card.** Artefacts #1's winner was recorded
  *     as "Hobgoblin Bandit Lord" (a rare from Forgotten Realms) when the deck was
  *     "Hobgoblin, Mantled Marauder" — the same tournament's metaList had it
  *     right, so the two halves of one event disagreed. The site's Scryfall
