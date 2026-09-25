@@ -220,7 +220,7 @@ const schemas: Record<string, unknown>[] = [
               </span>
             )}
 
-            {data.signupUrl && (
+            {!isPast && data.signupUrl && (
               <a href={data.signupUrl} target="_blank" rel="noopener noreferrer"
                  data-analytics="tournament_signup_click" data-analytics-slug={entry.id}
                  class="tournament-badge hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
@@ -241,7 +241,7 @@ const schemas: Record<string, unknown>[] = [
       <div class="container mx-auto px-4 md:px-6">
         <div class="max-w-6xl">
           <div class="rich-text text-sm text-text-secondary" set:html={data.details} />
-          {data.signupUrl && (
+          {!isPast && data.signupUrl && (
             <div class="mt-5">
               <a href={data.signupUrl} target="_blank" rel="noopener noreferrer"
                  data-analytics="tournament_signup_click" data-analytics-slug={entry.id}
