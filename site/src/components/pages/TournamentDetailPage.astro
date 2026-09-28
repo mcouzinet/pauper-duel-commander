@@ -18,7 +18,7 @@ import ColorPieChart from '@/components/ColorPieChart.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route, homeRoute } from '@/lib/routes';
-import { formatDate, sortColorCounts, isPlaceholder } from '@/lib/tournaments';
+import { formatDate, sortColorCounts, isPlaceholder, hasHappened } from '@/lib/tournaments';
 import { getCardsByNames, getCardImage } from '@/lib/scryfall';
 import { bannedNameSet, splitNames } from '@/lib/banlist';
 import { SITE_ORIGIN } from '@/lib/site';
@@ -34,8 +34,7 @@ const data = entry.data;
 
 const banned = bannedNameSet();
 
-const today = new Date().toISOString().slice(0, 10);
-const isPast = data.date < today;
+const isPast = hasHappened(data);
 const dateFormatted = formatDate(data.date, locale);
 const playerCount = data.actualPlayerCount || data.playerCount;
 

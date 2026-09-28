@@ -290,7 +290,12 @@ en place : `docs/external/README.md`.
   modifié doit être poussé à la main une fois (cf. `DEPLOY.md`).
 - Le site est **entièrement généré au build**, « aujourd'hui » compris : un
   tournoi passé reste « à venir » jusqu'au prochain build. D'où le rebuild
-  hebdomadaire (cron dans `deploy.yml`) en plus du déploiement au push
+  hebdomadaire (cron dans `deploy.yml`) en plus du déploiement au push.
+  `hasHappened()` (`lib/tournaments.ts`) coupe le cas le plus visible : un top 8
+  rempli vaut « c'est joué », donc des résultats publiés le soir même sortent
+  tout de suite des « prochains tournois ». La date seule ne suffisait pas, elle
+  affichait Endstep #1 comme à venir avec son top 8 en main. Un tournoi passé
+  **sans** résultats dépend toujours du build.
 - Les images de cartes viennent de Scryfall : prévoir toujours un repli texte
   quand l'illustration manque (leçon de la ban list, où une carte sans image
   n'était pas rendue du tout)
