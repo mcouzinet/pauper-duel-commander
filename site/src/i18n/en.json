@@ -211,7 +211,7 @@
     "unattributed": "%n% place(s) with no commander recorded",
     "seoTitle": "Pauper Duel Commander tournaments",
     "seoDescription": "%total% Pauper Duel Commander tournaments on record, %withResults% of them with results and metagame. Top 8, decklists and statistics per event.",
-    "seoDetail": "%title% — %date%, %city%. Winner: %winner%. Top %top%, metagame and decklists."
+    "seoDetail": "%title% — %date%%city%. Winner: %winner%. Top %top%, metagame and decklists."
   },
   "archive": {
     "decklistTitle": "Some Decklists",

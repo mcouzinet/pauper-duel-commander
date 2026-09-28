@@ -125,7 +125,7 @@ const description = winner && !winner.isUnknown
   ? t('tournament.seoDetail', locale)
       .replace('%title%', data.title)
       .replace('%date%', dateFormatted)
-      .replace('%city%', data.city)
+      .replace('%city%', data.city ? `, ${data.city}` : '')
       .replace('%winner%', winner.playerName || winner.commanderName)
       .replace('%top%', String(top8.length))
   : `${data.title} — ${dateFormatted}${data.city ? `, ${data.city}` : ''}`;

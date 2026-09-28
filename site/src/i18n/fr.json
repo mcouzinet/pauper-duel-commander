@@ -211,7 +211,7 @@
     "unattributed": "%n% place(s) sans général renseigné",
     "seoTitle": "Tournois Pauper Duel Commander",
     "seoDescription": "%total% tournois Pauper Duel Commander référencés, dont %withResults% avec résultats et méta. Top 8, decklists et statistiques par événement.",
-    "seoDetail": "%title% — %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists."
+    "seoDetail": "%title% — %date%%city%. Vainqueur : %winner%. Top %top%, méta et decklists."
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
