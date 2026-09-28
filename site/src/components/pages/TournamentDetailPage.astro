@@ -120,14 +120,22 @@ const winner = top8.find(finish => finish.place === 1) ?? null;
 const heroImage = winner?.commanderImage ?? null;
 const decklistCount = top8.filter(finish => finish.decklistUrl).length;
 
+// `city` is empty for an online event, and all three `seoDetail` templates
+// write "%date%, %city%." — substituting nothing left "28 septembre 2026, .
+// Vainqueur". Consuming the separator along with the value drops it too. The
+// bare `%city%` replace below is the fallback for a locale written without the
+// comma.
+const cityPart = data.city ? `, ${data.city}` : '';
+
 const description = winner && !winner.isUnknown
   ? t('tournament.seoDetail', locale)
       .replace('%title%', data.title)
       .replace('%date%', dateFormatted)
+      .replace(', %city%', cityPart)
       .replace('%city%', data.city)
       .replace('%winner%', winner.playerName || winner.commanderName)
       .replace('%top%', String(top8.length))
-  : `${data.title} — ${dateFormatted}${data.city ? `, ${data.city}` : ''}`;
+  : `${data.title} — ${dateFormatted}${cityPart}`;
 
 const schemas: Record<string, unknown>[] = [
   {
