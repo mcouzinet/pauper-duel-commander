@@ -33,24 +33,41 @@ export async function getAllTournaments(): Promise<TournamentEntry[]> {
 }
 
 /**
- * Get upcoming tournaments (date >= today), sorted ASC (nearest first).
+ * Has this tournament happened yet?
+ *
+ * The date alone is not enough, because the site is built ahead of what it
+ * shows. An event that finished tonight still reads `date === today` until the
+ * next build, and a date-only test files it under "upcoming" — with its own
+ * results hidden, since the same test gates the results block. That is how
+ * Endstep #1 went online listed as a future event, top 8 in hand.
+ *
+ * A filled `top8` is the organiser saying it took place, so it settles the case
+ * the date cannot. Announcements have an empty `top8` and stay upcoming until
+ * their date passes; a past event whose results were never sent keeps falling
+ * through on the date, as before.
+ */
+export function hasHappened(t: { date: string; top8?: unknown[] }): boolean {
+  const today = new Date().toISOString().slice(0, 10);
+  return t.date < today || (t.top8?.length ?? 0) > 0;
+}
+
+/**
+ * Get upcoming tournaments, sorted ASC (nearest first).
  */
 export async function getUpcomingTournaments(): Promise<TournamentEntry[]> {
   const all = await getAllTournaments();
-  const today = new Date().toISOString().slice(0, 10);
   return all
-    .filter(t => t.date >= today)
+    .filter(t => !hasHappened(t))
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 /**
- * Get past tournaments (date < today), sorted DESC (most recent first).
+ * Get past tournaments, sorted DESC (most recent first).
  */
 export async function getPastTournaments(): Promise<TournamentEntry[]> {
   const all = await getAllTournaments();
-  const today = new Date().toISOString().slice(0, 10);
   return all
-    .filter(t => t.date < today)
+    .filter(t => hasHappened(t))
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
