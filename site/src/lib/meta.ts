@@ -17,7 +17,7 @@
 import { getCollection } from 'astro:content';
 import { getCardsByNames, getCardImage } from './scryfall';
 import { bannedNameSet, splitNames } from './banlist';
-import { isPlaceholder } from './tournaments';
+import { hasHappened, isPlaceholder } from './tournaments';
 import type { ScryfallCard } from '../types/scryfall';
 
 /** How many of the newest tournaments count as "recent" for the trend. */
@@ -77,11 +77,14 @@ export function getMeta(): Promise<MetaData> {
 
 async function build(): Promise<MetaData> {
   const entries = await getCollection('tournaments');
-  const today = new Date().toISOString().slice(0, 10);
 
+  // `hasHappened` and not `date < today`: the tournament pages moved off the
+  // date-only test for a reason, and the same one applied here kept an event
+  // finished the same evening out of the sample entirely — its commanders
+  // uncounted and the window closing on the tournament before it.
   const past = entries
     .map(e => ({ slug: e.id, ...e.data }))
-    .filter(t => t.date < today)
+    .filter(hasHappened)
     .sort((a, b) => b.date.localeCompare(a.date));
 
   const withMeta = past.filter(t => t.metaList.length > 0);
