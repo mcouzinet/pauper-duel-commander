@@ -1,0 +1,101 @@
+{
+    "title": "Endstep #1",
+    "date": "2026-09-28",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 8,
+    "details": "<p>Premier tournoi Pauper Duel Commander organisé sur Endstep.</p><p>3 rondes suisses · 8 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Scratchyx",
+            "commanderName": "Wilson, Refined Grizzly // Far Traveler",
+            "score": "3-0",
+            "decklistSlug": "wilson-refined-grizzly-endstep-1-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Tristan",
+            "commanderName": "Tomik, Izzet Sparkmage",
+            "score": "2-1",
+            "decklistSlug": "tomik-izzet-sparkmage-endstep-1-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Fidelle Cast",
+            "commanderName": "Siona, Captain of the Pyleas",
+            "score": "2-1",
+            "decklistSlug": "siona-captain-of-the-pyleas-endstep-1-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Evan",
+            "commanderName": "Palace Jailer",
+            "score": "2-1",
+            "decklistSlug": "palace-jailer-endstep-1-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Efeimh",
+            "commanderName": "Ghalta the Immovable",
+            "score": "1-2",
+            "decklistSlug": "ghalta-the-immovable-endstep-1-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "Mickael",
+            "commanderName": "Raffine, Scheming Seer",
+            "score": "1-2",
+            "decklistSlug": "raffine-scheming-seer-endstep-1-6eme"
+        },
+        {
+            "place": 7,
+            "playerName": "Titau",
+            "commanderName": "Queza, Augur of Agonies",
+            "score": "1-2",
+            "decklistSlug": "queza-augur-of-agonies-endstep-1-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Jitey",
+            "commanderName": "Gut, True Soul Zealot // Sword Coast Sailor",
+            "score": "0-3",
+            "decklistSlug": "gut-true-soul-zealot-endstep-1-8eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Wilson, Refined Grizzly // Far Traveler",
+            "count": 1
+        },
+        {
+            "name": "Tomik, Izzet Sparkmage",
+            "count": 1
+        },
+        {
+            "name": "Siona, Captain of the Pyleas",
+            "count": 1
+        },
+        {
+            "name": "Palace Jailer",
+            "count": 1
+        },
+        {
+            "name": "Ghalta the Immovable",
+            "count": 1
+        },
+        {
+            "name": "Raffine, Scheming Seer",
+            "count": 1
+        },
+        {
+            "name": "Queza, Augur of Agonies",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Sword Coast Sailor",
+            "count": 1
+        }
+    ]
+}
