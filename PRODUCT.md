@@ -57,12 +57,13 @@ Les données de cartes (noms, raretés, illustrations, légalité Pauper) provie
 
 ## Evidence on Hand
 
-Tout le contenu publié est réel et vérifiable :
+Tout le contenu publié est réel et vérifiable (chiffres au 29/09/2026) :
 
-- **18 tournois** (`site/content/tournaments/`), avec top 8, méta et nombre de participants quand ils sont connus.
-- **26 decklists** (`site/content/decklists/`), la plupart rattachées à un résultat de tournoi.
-- **2 annonces de ban list** (`site/content/banlist-history/`), sourcées nommément : LofiBlue (12/12/2025, liste initiale) et Na-O-H (03/08/2026).
-- **17 cartes bannies** (`site/content/banlist.json`), dont la ban list de référence du validateur.
+- **21 tournois** (`site/content/tournaments/`), dont un à venir, avec top 8, méta et nombre de participants quand ils sont connus.
+- **56 decklists** (`site/content/decklists/`), la plupart rattachées à un résultat de tournoi.
+- **3 annonces de ban list** (`site/content/banlist-history/`), sourcées nommément : LofiBlue (12/12/2025, liste initiale), Na-O-H (03/08/2026) et Ivinos (09/09/2026).
+- **18 cartes bannies** (`site/content/banlist.json`), dont la ban list de référence du validateur.
+- **Une vidéo de présentation** d'une minute, en français et en anglais, sur la page d'accueil et sur YouTube (sources : `site/promo/reel/`). Elle ne cite volontairement aucun de ces chiffres, pour ne pas vieillir.
 - Illustrations et données de cartes : Scryfall.
 
 **Absences à ne jamais combler par de l'invention.** Il n'y a aucun témoignage de joueur, aucun chiffre de fréquentation, aucun partenariat, aucun classement national, aucune donnée financière. Un nom de joueur, une place ou un nombre de participants qui n'est pas dans les fichiers de contenu n'existe pas : une donnée manquante reste vide plutôt que plausible.

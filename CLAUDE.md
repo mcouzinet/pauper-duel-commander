@@ -4,7 +4,8 @@
 Site web pour le format Magic: The Gathering "Pauper Duel Commander" (PDC).
 Gestion de règles, ban list, tournois, decklists, et validateur de deck.
 
-Tout vit dans `site/`. La racine ne contient que la documentation.
+Tout vit dans `site/`. La racine ne contient que la documentation, plus
+`deploy-staging.sh` (prévisualisation d'une branche sur Surge, cf. `DEPLOY.md`).
 
 ## Stack Technique
 - **Framework**: Astro 5, `output: 'static'` (aucun adaptateur, aucun SSR)
@@ -12,7 +13,7 @@ Tout vit dans `site/`. La racine ne contient que la documentation.
 - **Polices**: auto-hébergées (`site/public/fonts/`) — aucun CDN tiers
 - **JS**: TypeScript vanilla, aucun framework UI
 - **Contenu**: JSON dans `site/content/` (content collections Astro)
-- **API**: PHP 8 standalone, sans framework — un seul endpoint
+- **API**: PHP 8 standalone, sans framework : trois points d'entrée (validateur, deux formulaires)
 - **Tests**: PHPUnit 9 (API)
 - **API externe**: Scryfall (données cartes Magic)
 
@@ -56,6 +57,7 @@ site/
 │   │   │   └── TournamentSubmissionController.php
 │   │   ├── data/                # banlist.json généré au build (gitignored)
 │   │   └── cache/               # Cache Scryfall + rate limit (gitignored)
+│   ├── video/                   # Vidéo d'accueil fr/en, réencodée (scripts/encode-video.sh)
 │   └── img/ fonts/
 ├── src/
 │   ├── content.config.ts        # Schémas zod : tournaments, decklists, banlistHistory
@@ -68,9 +70,15 @@ site/
 │   ├── i18n/{fr,en,it}.json
 │   ├── scripts/                 # JS client (mobile-menu, card-hover, deck-export)
 │   └── styles/globals.css       # @theme Tailwind 4 + classes composites
+├── promo/reel/                  # Sources de la vidéo de présentation (cf. plus bas)
 ├── scripts/
 │   ├── copy-banlist.mjs         # content/banlist.json -> public/api/data/
-│   └── warm-scryfall-cache.mjs  # pré-remplit le cache Scryfall avant le build
+│   ├── warm-scryfall-cache.mjs  # pré-remplit le cache Scryfall avant le build
+│   ├── check-commander-names.mjs # audit des généraux des tournois (nom exact, peu commune)
+│   ├── subset-mana-font.mjs     # réduit la police mana aux glyphes utilisés (à la main)
+│   ├── deploy-sftp.sh (+ .test.sh) # envoi incrémental de dist/ vers OVH (CI)
+│   ├── smoke-check.sh           # vérifie la prod après déploiement (CI)
+│   └── encode-video.sh          # master vidéo -> public/video + poster
 └── tests/                       # PHPUnit + fixtures Scryfall
 ```
 
@@ -206,6 +214,37 @@ en place : `docs/external/README.md`.
   `date_future`…). Le message traverse le réseau et est traduit côté navigateur
   (`submitTournament.js.formErrors`) : y écrire une phrase française la ferait
   lire à toutes les langues.
+
+## Vidéo de présentation
+
+La page d'accueil lit `public/video/pauper-duel-commander-{fr,en}.mp4`
+(l'italien reprend l'anglaise), avec la miniature en poster. Ce sont des copies
+réencodées, pas des sources :
+
+1. `promo/reel/reel.html` est le montage : une fonction **pure** du temps, sans
+   animation CSS ni horloge. `sfx.js` synthétise effets et musique sur la même
+   ligne de temps. Depuis `promo/reel/`, `node render.cjs` capture l'image à
+   60 i/s avec Puppeteer et produit le master 1080p dans `out/` (gitignored, ~8 min).
+   `--en` pour la version anglaise, `stills 12.4 30` pour vérifier quelques
+   images, `thumbnail` pour la miniature YouTube 1280x720 (`thumbnail.html`).
+2. `scripts/encode-video.sh <master> <nom> [miniature]` en tire la version du
+   site (30 i/s, CRF 25, `+faststart`) et le poster.
+
+À tenir en modifiant le montage :
+- **Rien de daté.** Aucun nombre de tournois, de généraux ou de decklists,
+  aucune date d'annonce : la vidéo doit durer. Les seuls nombres sont ceux des règles.
+- **Aucun général à la mode en vedette** : un général qui domine peut être banni.
+  L'exemple est Garland, et les cartes montrées avec lui sortent de sa decklist
+  d'Artefacts #7.
+- Chaque scène commence sur un temps de la musique (120 BPM, `B(n)`) et ses
+  horaires internes sont relatifs à son début : allonger une scène, c'est déplacer
+  une borne de `R` ou `W`.
+- Le français est écrit dans le balisage ; l'anglais est la table `EN` (sélecteur
+  -> HTML), qui reprend les formulations de `src/i18n/en.json`.
+- Les images de cartes viennent de Scryfall (URL épinglées, impression dans la
+  rareté qui rend la carte légale là où elle est montrée) : le rendu a besoin du
+  réseau. Les chemins de Puppeteer et de Chrome for Testing dans `render.cjs`
+  sont ceux de la machine qui a produit la vidéo.
 
 ## Conventions de Code
 
