@@ -102,3 +102,14 @@ jobs:
           SFTP_PASSWORD: ${{ secrets.OVH_FTP_PASSWORD }}
           FORCE_FULL: ${{ inputs.force_full }}
         run: ./site/scripts/deploy-sftp.sh
+
+      # Le seul contrôle qui regarde le site. Le build et PHPUnit ne parlent
+      # jamais au serveur : ils étaient tous les deux au vert pendant que la
+      # production répondait 500 à toutes les URL, parce qu'un .htaccess portant
+      # un <LocationMatch> — interdit dans ce fichier — venait de partir. Le
+      # workflow affichait « success » au-dessus d'un site mort.
+      #
+      # Ne répare rien, fait échouer le job. Un run rouge se voit, pas une prod
+      # qu'on ne pense pas à ouvrir.
+      - name: Contrôle post-déploiement
+        run: ./site/scripts/smoke-check.sh
