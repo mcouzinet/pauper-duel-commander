@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pauper Duel Commander YouTube Thumbnail</title>
+<!--
+  Miniature YouTube de la vidéo, 1280x720, dans l'univers du reel : rendue en 2x par
+  `node render.cjs thumbnail` (ajouter --en pour l'anglaise), puis réduite en out/youtube-thumbnail-1280x720.jpg.
+  Lue en petit : YouTube la montre jusqu'à 168 px de large, donc l'accroche de la vidéo, trois cartes, le logo.
+  Laissés libres : le bord haut (la barre de titre de l'embed) et le coin bas droit (la durée).
+-->
+<style>
+@font-face{font-family:"Barlow Condensed";src:url("../../public/fonts/webfonts/barlow-condensed-600-latin.woff2") format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Barlow Condensed";src:url("../../public/fonts/webfonts/barlow-condensed-700-latin.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Inter";src:url("../../public/fonts/webfonts/inter-latin.woff2") format("woff2");font-weight:400 600;font-display:block}
+:root{--bg:#0A0E13;--ink:#fff;--ink-2:#B8BEC8;--or:#FF5722;--gold:#FFA500;--f-d:"Barlow Condensed",Impact,sans-serif;--f-b:"Inter",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;width:1280px;height:720px;overflow:hidden;background:var(--bg)}
+#t{position:relative;width:1280px;height:720px;overflow:hidden;color:var(--ink);font-family:var(--f-b);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(700px 560px at 75% 45%,rgba(255,87,34,.3),transparent 70%),radial-gradient(600px 500px at 12% 40%,rgba(255,165,0,.1),transparent 70%),var(--bg)}
+.layer{position:absolute;inset:0}
+#rays{position:absolute;left:955px;top:330px;width:1900px;height:1900px;margin:-950px 0 0 -950px;border-radius:50%;background:repeating-conic-gradient(from 4deg,rgba(255,87,34,.2) 0deg 5deg,transparent 5deg 15deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 55%)}
+#grain{opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#vig{background:radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(0,0,0,.55))}
+
+/* the hook of the video */
+#q{position:absolute;left:58px;top:100px;font:700 120px/.92 var(--f-d);text-transform:uppercase;letter-spacing:-.005em;text-shadow:0 6px 30px rgba(0,0,0,.6)}
+#q span{display:block}
+#q b{font-weight:700}
+#sub{position:absolute;left:62px;top:452px;font:600 33px/1.2 var(--f-b);color:var(--ink-2)}
+
+/* the general, uncommon, in front of two commons */
+.card{position:absolute;border-radius:4.8%/3.4%;overflow:hidden;background:#111}
+.card img{display:block;width:100%;height:100%}
+#c1{left:738px;top:170px;width:236px;height:329px;transform:rotate(-15deg);box-shadow:0 30px 60px -10px rgba(0,0,0,.85)}
+#c2{left:1004px;top:176px;width:236px;height:329px;transform:rotate(14deg);box-shadow:0 30px 60px -10px rgba(0,0,0,.85)}
+#c3{left:818px;top:88px;width:292px;height:407px;transform:rotate(-3deg);box-shadow:0 0 0 5px var(--gold),0 0 80px rgba(255,165,0,.55),0 34px 70px -10px rgba(0,0,0,.9)}
+#badge{position:absolute;left:1030px;top:70px;transform:rotate(8deg);font:700 34px/1 var(--f-d);letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:9px 20px 5px;border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.55),0 0 34px rgba(255,165,0,.5)}
+
+/* the signature, bottom left (bottom right is the duration's) */
+#mark{position:absolute;left:58px;top:548px;width:136px;height:134px}
+#mark img{display:block;width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,87,34,.35))}
+</style>
+</head>
+<body>
+<div id="t">
+  <div id="rays"></div>
+  <div class="card" id="c1"></div>
+  <div class="card" id="c2"></div>
+  <div class="card" id="c3"></div>
+  <div id="badge">Peu commune</div>
+  <div id="q"><span><b style="color:var(--gold)">1</b> général.</span><span><b style="color:var(--or)">99</b> communes.</span><span><b style="color:var(--or)">1</b> duel.</span></div>
+  <div id="sub">Le format expliqué en 1 minute</div>
+  <div id="mark"><img src="logo.png" alt=""></div>
+  <div class="layer" id="grain"></div>
+  <div class="layer" id="vig"></div>
+</div>
+<script>
+// the same printings as the video: two commons of Garland's list, and Garland at uncommon
+const SCRY = 'https://cards.scryfall.io/large/front/'
+const CARDS = { c1: 'e/7/e768c957-3a1f-42f5-853a-96942f645df5.jpg?1783941805', c2: 'a/3/a3b1fc65-3620-4052-a1f8-1779d95029c7.jpg?1783906269', c3: 'd/d/dd463dbe-5f2c-4d4f-86f8-ad8ff407af62.jpg?1783906577' }
+for (const [id, u] of Object.entries(CARDS)) document.getElementById(id).innerHTML = `<img src="${SCRY + u}" alt="">`
+if (new URLSearchParams(location.search).get('lang') === 'en') {
+  document.documentElement.lang = 'en'
+  document.getElementById('badge').textContent = 'Uncommon'
+  document.getElementById('q').innerHTML = '<span><b style="color:var(--gold)">1</b> commander.</span><span><b style="color:var(--or)">99</b> commons.</span><span><b style="color:var(--or)">1</b> duel.</span>'
+  document.getElementById('sub').textContent = 'The format explained in 1 minute'
+}
+window.__ready = Promise.all([
+  ...['700 100px "Barlow Condensed"', '600 30px Inter'].map((f) => document.fonts.load(f, 'ÉÈÀÇéèàç')),
+  ...[...document.images].map((i) => i.decode()),
+]).then(() => document.fonts.ready).then(() => true)
+</script>
+</body>
+</html>

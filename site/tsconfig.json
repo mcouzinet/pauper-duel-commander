@@ -6,5 +6,7 @@
       "@/*": ["src/*"],
       "@content/*": ["content/*"]
     }
-  }
+  },
+  // promo/ holds the presentation video's sources, not site code (cf. CLAUDE.md)
+  "exclude": ["dist", "promo"]
 }

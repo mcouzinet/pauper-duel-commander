@@ -1,0 +1,1268 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pauper Duel Commander Reel</title>
+<!--
+  Vidéo de présentation du Pauper Duel Commander, 16:9 (1920x1080), 65,5 s, rendue par render.cjs.
+  Même méthode que les reels Whozic, Endstep Tracker et Deck Compare : render(t) est une fonction PURE
+  du temps (aucune animation CSS, aucune horloge), render.js la capture image par image et sfx.js
+  synthétise effets et musique sur la même ligne de temps, à l'échantillon près.
+
+  Rien n'y est daté : aucun chiffre qui vieillit (tournois, généraux, decklists, cartes bannies), aucun
+  général à la mode mis en avant. Les seuls nombres sont ceux des règles. Le général d'exemple est Garland,
+  et les cartes qui l'accompagnent (éventail, validateur) sortent de sa decklist d'Artefacts #7 ; les villes
+  de la carte sont celles qui ont déjà accueilli un tournoi (site/content). Les images de cartes sont celles de Scryfall (URL épinglées, impressions choisies dans la bonne rareté : communes pour
+  le deck, peu communes pour les généraux), polices et logo ceux du site.
+-->
+<style>
+@font-face{font-family:"Barlow Condensed";src:url("../../public/fonts/webfonts/barlow-condensed-400-latin.woff2") format("woff2");font-weight:400;font-display:block}
+@font-face{font-family:"Barlow Condensed";src:url("../../public/fonts/webfonts/barlow-condensed-600-latin.woff2") format("woff2");font-weight:600;font-display:block}
+@font-face{font-family:"Barlow Condensed";src:url("../../public/fonts/webfonts/barlow-condensed-700-latin.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Inter";src:url("../../public/fonts/webfonts/inter-latin.woff2") format("woff2");font-weight:400 600;font-display:block}
+@font-face{font-family:"Beleren";src:url("../../public/fonts/beleren/Beleren2016-Bold.woff2") format("woff2");font-weight:700;font-display:block}
+@font-face{font-family:"Mana";src:url("../../public/fonts/mana/mana-1.18.0.woff2") format("woff2");font-display:block}
+/* the site's tokens (DESIGN.md): the room is near-black, orange is the signal, gold is for rarity and merit */
+:root{--bg:#0A0E13;--surface:#141821;--surface-2:#1C212B;--surface-3:#262C38;--line:#2A303C;--line-strong:#3B4351;--ink:#FFFFFF;--ink-2:#B8BEC8;--ink-3:#8B93A1;
+--or:#FF5722;--or-hi:#FF7043;--or-lo:#E64A19;--gold:#FFA500;--gold-hi:#FFB84D;--ok:#34D399;--no:#FF3B1F;
+--f-d:"Barlow Condensed",Impact,sans-serif;--f-b:"Inter",system-ui,sans-serif;--f-c:"Beleren",Georgia,serif}
+*{box-sizing:border-box}
+html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:var(--f-b);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+.layer,.scene{position:absolute;inset:0}
+.scene{display:none}
+.a{position:absolute;left:960px;top:540px;transform:translate(-50%,-50%);white-space:nowrap}
+svg{display:block;overflow:visible}
+.t{font-family:var(--f-d);font-weight:700;text-transform:uppercase;letter-spacing:-.005em;line-height:.9}
+.t span{display:inline-block}
+.or{color:var(--or)}
+.gold{color:var(--gold)}
+.lab{font-family:var(--f-d);font-weight:600;font-size:30px;letter-spacing:.26em;text-transform:uppercase;color:var(--or-hi)}
+.body{font-size:38px;color:var(--ink-2);line-height:1.3}
+.small{font-size:28px;color:var(--ink-3)}
+.wrap{white-space:normal;text-align:center}
+.bel{font-family:var(--f-c);font-weight:700}
+.mc{display:block;border-radius:4.8%/3.4%;box-shadow:0 40px 80px -30px #000,0 0 0 1px rgba(255,255,255,.06)}
+
+/* backgrounds */
+#floorWrap{overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 30%,#000 70%,transparent 100%)}
+#floor{position:absolute;left:-1100px;top:640px;width:4120px;height:1100px;transform-origin:50% 0;transform:perspective(700px) rotateX(72deg);background-size:140px 140px}
+#wall{position:absolute;left:-420px;top:-520px;width:2860px;display:flex;flex-wrap:wrap;gap:22px;transform:rotate(-8deg);filter:blur(5px)}
+#wall img{display:block;width:150px;height:209px;border-radius:8px}
+#veil{background:rgba(10,14,19,.86)}
+#photoL{overflow:hidden}
+#photo{position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover;filter:brightness(.34) saturate(.8) blur(2px)}
+#photoVeil{background:linear-gradient(90deg,rgba(10,14,19,.2),rgba(10,14,19,.75) 55%,rgba(10,14,19,.9))}
+#flash{background:radial-gradient(circle at 50% 50%,#fff 0,rgba(255,255,255,0) 60%);opacity:0}
+#grain{opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#vig{background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.6))}
+.rays{width:2600px;height:2600px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,87,34,.22) 0deg 5deg,transparent 5deg 15deg);-webkit-mask-image:radial-gradient(circle,#000 0,transparent 62%)}
+.ring{border-radius:50%;border:3px solid var(--or)}
+.ring.thin{border-width:2px;opacity:.45}
+.part{position:absolute;left:0;top:0;border-radius:4px}
+
+/* S1: three beats */
+.ico{width:220px;height:220px}
+.ico svg{width:220px;height:220px}
+.word{font-family:var(--f-d);font-weight:700;font-size:170px;text-transform:uppercase;letter-spacing:-.01em;line-height:1}
+
+/* S2: logo and promise */
+#s2logo img{display:block;width:402px;height:397px}
+.tag{font-size:124px}
+
+/* the rules' HUD: a 15 s countdown and the five steps */
+#timer{width:140px;height:140px}
+#timer svg{position:absolute;inset:0;width:140px;height:140px}
+#tnum{position:absolute;left:0;right:0;top:25px;text-align:center;font-family:var(--f-d);font-weight:700;font-size:72px;line-height:1}
+#tsec{position:absolute;left:0;right:0;top:95px;text-align:center;font-family:var(--f-d);font-weight:600;font-size:18px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-3)}
+#segs{display:flex;gap:14px}
+.seg{display:flex;align-items:center;gap:10px;height:54px;padding:0 22px;border-radius:30px;background:rgba(20,24,33,.88);border:2px solid var(--line);font-family:var(--f-d);font-weight:600;font-size:24px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.seg b{font-weight:700}
+.seg.on{border-color:var(--or);color:var(--ink);box-shadow:0 0 26px rgba(255,87,34,.35)}
+.seg.on b{color:var(--or)}
+.seg.done{color:var(--ink-2)}
+.seg.done b{color:var(--or-hi)}
+.pillO{display:flex;align-items:center;gap:16px;padding:14px 34px 12px 26px;border-radius:60px;background:var(--or);color:#fff;font-family:var(--f-d);font-weight:700;font-size:54px;text-transform:uppercase;letter-spacing:.04em;box-shadow:0 0 50px rgba(255,87,34,.45)}
+.pillO svg{width:50px;height:50px}
+
+/* rules */
+#grid{display:grid;grid-template-columns:repeat(10,44px);gap:8px}
+#grid i{display:block;width:44px;height:60px;border-radius:6px;border:2px solid rgba(255,255,255,.16);box-shadow:inset 0 0 0 3px rgba(0,0,0,.28)}
+#grid i.gen{border-color:var(--gold);box-shadow:0 0 26px rgba(255,165,0,.85),inset 0 0 0 3px rgba(0,0,0,.28)}
+.chip{display:flex;align-items:center;gap:18px;padding:14px 34px;border-radius:60px;background:var(--surface);border:2px solid var(--line-strong);font-size:34px;font-weight:600;color:var(--ink)}
+.chip b{font-family:var(--f-d);font-weight:700;font-size:56px;line-height:.8}
+.chip svg{width:40px;height:40px}
+.chip.goldC{background:#241a08;border-color:rgba(255,165,0,.6);color:var(--gold-hi);box-shadow:0 0 30px rgba(255,165,0,.2)}
+.dot{display:inline-block;width:18px;height:18px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px rgba(255,165,0,.9);margin-right:16px;vertical-align:middle}
+#r2card img{width:440px;height:613px}
+#r2glow{width:900px;height:900px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,165,0,.28),transparent)}
+.sticker{font-family:var(--f-d);font-weight:700;font-size:40px;letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:var(--bg);padding:10px 24px 6px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.5),0 0 40px rgba(255,165,0,.5)}
+.opt{width:860px;height:96px;border-radius:22px;background:var(--surface);border:2px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 20px 0 34px;font-size:32px;font-weight:500;color:var(--ink)}
+.opt.sel{border-color:rgba(255,87,34,.6);background:#1b1411;box-shadow:0 0 40px rgba(255,87,34,.16)}
+.ck{flex:none;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--or);color:#fff}
+.ck svg{width:32px;height:32px}
+.strk{position:relative;display:inline-block}
+.strk i{position:absolute;left:-8px;top:54%;height:5px;border-radius:3px;background:var(--or);width:0}
+.stamp{font-family:var(--f-d);font-weight:700;font-size:60px;text-transform:uppercase;letter-spacing:.04em;color:var(--or);border:6px solid var(--or);border-radius:14px;padding:6px 24px 0;background:rgba(10,14,19,.8);box-shadow:0 0 40px rgba(255,87,34,.35)}
+.fan{position:absolute;left:0;top:0;width:250px;height:348px}
+.mana{width:170px;height:170px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Mana";font-size:112px;line-height:1;color:#111;box-shadow:0 18px 40px -10px rgba(0,0,0,.6)}
+.mana span{display:block;transform:translateY(2px)}
+#lifeBox{width:440px;height:440px;border-radius:40px;background:linear-gradient(160deg,#1C212B,#12161d);border:3px solid var(--line-strong);position:relative;overflow:hidden;box-shadow:0 40px 90px -40px #000}
+#lifeBox .heart{position:absolute;left:190px;top:40px;width:60px;height:60px;color:var(--or)}
+#lifeN{position:absolute;left:0;right:0;top:118px;height:270px;overflow:hidden}
+#lifeN div{position:absolute;left:0;right:0;top:0;height:270px;text-align:center;font-family:var(--f-d);font-weight:700;font-size:280px;line-height:270px}
+
+/* why */
+#pips{display:flex;gap:22px}
+#pips i{display:flex;width:64px;height:64px;border-radius:50%;align-items:center;justify-content:center;font-family:"Mana";font-style:normal;font-size:42px;color:#111}
+.plate{width:460px;height:300px;border-radius:30px;background:linear-gradient(160deg,#1C212B,#12161d);border:3px solid var(--line-strong);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:0 40px 90px -40px #000}
+.plate .who{display:flex;align-items:center;gap:14px;font-family:var(--f-d);font-weight:600;font-size:30px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-2)}
+.plate .who svg{width:34px;height:34px}
+.plate .lf{display:flex;align-items:center;gap:16px;font-family:var(--f-d);font-weight:700;font-size:170px;line-height:.9}
+.plate .lf svg{width:56px;height:56px;color:var(--or)}
+#vs svg{width:210px;height:210px;color:var(--or);filter:drop-shadow(0 0 30px rgba(255,87,34,.7))}
+#rar{display:flex;gap:26px}
+.rc{position:relative;display:flex;align-items:center;gap:18px;height:112px;padding:0 30px 0 36px;border-radius:24px;background:var(--surface);border:3px solid var(--line);font-family:var(--f-d);font-weight:700;font-size:50px;text-transform:uppercase;letter-spacing:.02em}
+.rc.gold{border-color:rgba(255,165,0,.6);color:var(--gold-hi);background:#1f1709}
+.rc .mk{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.rc .mk svg{width:30px;height:30px}
+.rc .ok1{background:var(--or);color:#fff}
+.rc .no1{background:#2a1612;color:var(--no);border:2px solid rgba(255,59,31,.55)}
+.rc .bar{position:absolute;left:22px;right:22px;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:var(--no);transform-origin:left center}
+#strip{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+.sc{position:absolute;left:0;top:0;width:280px;height:390px}
+.qcard{border-radius:14px;background:linear-gradient(160deg,#1C212B,#0A0E13);border:4px solid var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--f-d);font-weight:700;font-size:260px;line-height:1;color:var(--or);box-shadow:0 0 40px rgba(255,87,34,.35)}
+.big{font-size:380px;color:var(--or);text-shadow:0 0 110px rgba(255,87,34,.55);letter-spacing:-.02em}
+#map svg{width:613px;height:600px}
+#map text{font-family:var(--f-d);font-weight:600;font-size:26px;letter-spacing:.06em;text-transform:uppercase;fill:#fff}
+.bc img{width:320px;height:446px}
+.bstamp{position:absolute;left:160px;top:210px;font-family:var(--f-d);font-weight:700;font-size:74px;letter-spacing:.06em;text-transform:uppercase;color:var(--no);border:7px solid var(--no);border-radius:16px;padding:8px 26px 0;background:rgba(10,14,19,.6);box-shadow:0 0 40px rgba(255,59,31,.45);white-space:nowrap}
+
+/* the validator */
+.panel{border-radius:26px;background:linear-gradient(170deg,#161b24,#10141b);border:2px solid var(--line-strong);box-shadow:0 50px 100px -40px #000}
+.pl{position:absolute;left:40px;font-family:var(--f-d);font-weight:600;font-size:22px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-3)}
+.inp{position:absolute;left:40px;right:40px;border-radius:14px;background:#0c1016;border:2px solid var(--line)}
+#vcmd{top:78px;height:74px;display:flex;align-items:center;padding:0 24px;font-family:var(--f-c);font-weight:700;font-size:36px}
+#vlist{top:212px;height:236px;overflow:hidden;font-size:26px;line-height:36px;color:var(--ink-2)}
+#vlines{position:absolute;left:24px;top:14px}
+#vbtn{position:absolute;left:40px;right:40px;top:468px;height:66px;border-radius:14px;background:var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--f-d);font-weight:700;font-size:32px;letter-spacing:.12em;text-transform:uppercase}
+.caret{display:inline-block;width:3px;height:40px;background:var(--or);margin-left:4px;vertical-align:middle}
+.vrow{position:absolute;left:40px;right:40px;height:60px;display:flex;align-items:center;justify-content:space-between;font-size:30px;border-bottom:1px solid var(--line)}
+.vrow .vk{width:44px;height:44px;border-radius:50%;background:var(--ok);color:#06140d;display:flex;align-items:center;justify-content:center}
+.vrow .vk svg{width:26px;height:26px}
+#vok{position:absolute;left:40px;right:40px;top:468px;height:66px;border-radius:14px;background:var(--ok);color:#06140d;display:flex;align-items:center;justify-content:center;gap:14px;font-family:var(--f-d);font-weight:700;font-size:42px;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 0 50px rgba(52,211,153,.45)}
+#vok svg{width:36px;height:36px}
+
+/* the cube */
+#wipe{inset:-60px;background:radial-gradient(1400px 1000px at 50% 55%,#ff8a5c 0,#e64a19 36%,#4a1a0b 72%,#0a0e13 100%)}
+#cubeWrap{width:440px;height:440px;perspective:1300px;z-index:3}
+#cube{position:relative;width:440px;height:440px;transform-style:preserve-3d}
+.face{position:absolute;inset:0;border-radius:18px;background:linear-gradient(160deg,#20252f,#0a0e13 62%);border:3px solid rgba(255,87,34,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;backface-visibility:hidden;color:#fff;text-align:center}
+.face .ft{font-family:var(--f-d);font-weight:700;font-size:72px;line-height:.92;text-transform:uppercase;text-shadow:0 0 40px rgba(255,87,34,.4)}
+.face .ft b{color:var(--or)}
+.face svg{width:120px;height:120px;color:var(--or);filter:drop-shadow(0 0 18px rgba(255,87,34,.55))}
+.face.logoF img{display:block;width:340px;height:336px}
+.face.cap{background:#2a2f38;border-color:rgba(255,87,34,.25)}
+#fbot{background:#070605}
+.shadow{width:480px;height:80px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.5),transparent)}
+
+/* the signature */
+#ologo img{display:block;width:304px;height:300px}
+.slogan{font-size:50px;color:var(--ink-2)}
+.slogan em{font-style:italic;font-weight:600;color:var(--ink)}
+.cta{font-family:var(--f-d);font-weight:700;font-size:64px;letter-spacing:.03em;text-transform:uppercase;padding:14px 54px 8px;border-radius:14px;background:var(--or);color:#fff}
+.osub{font-family:var(--f-d);font-weight:600;font-size:30px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-2)}
+#odisc{display:flex;align-items:center;gap:14px;font-size:32px;color:var(--ink-2)}
+#odisc svg{width:36px;height:36px;color:var(--or)}
+.legal{font-size:19px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="layer" id="glow"></div>
+  <div class="layer" id="wallL"><div id="wall"></div><div class="layer" id="veil"></div></div>
+  <div class="layer" id="photoL"><img id="photo" src="../../public/img/hero-background.webp" alt=""><div class="layer" id="photoVeil"></div></div>
+  <div class="layer" id="floorWrap"><div id="floor"></div></div>
+
+  <div class="layer" id="cam">
+    <!-- S1: three beats -->
+    <section class="scene" id="s1">
+      <div class="a ring thin" id="s1r2" style="top:420px;width:600px;height:600px"></div>
+      <div class="a ring" id="s1r1" style="top:420px;width:480px;height:480px"></div>
+      <div class="a ring" id="s1w" style="top:420px;width:480px;height:480px"></div>
+      <div class="a ico" id="s1i0" style="top:420px;color:var(--gold)" data-i="crown"></div>
+      <div class="a ico" id="s1i1" style="top:420px;color:#F3EEE3" data-i="cards"></div>
+      <div class="a ico" id="s1i2" style="top:420px;color:var(--or)" data-i="swords"></div>
+      <div class="a word" id="s1t0" style="top:830px"><span style="color:var(--gold)">1</span> général.</div>
+      <div class="a word" id="s1t1" style="top:830px"><span style="color:#F3EEE3">99</span> communes.</div>
+      <div class="a word" id="s1t2" style="top:830px"><span style="color:var(--or)">1</span> duel.</div>
+    </section>
+
+    <!-- S2: the logo, then the promise -->
+    <section class="scene" id="s2">
+      <div class="a rays" id="s2rays"></div>
+      <div class="a ring" id="s2ring" style="width:520px;height:520px"></div>
+      <div class="layer" id="s2parts"></div>
+      <div class="a" id="s2logo"><img src="logo.png" alt=""></div>
+      <div class="a t tag" id="s2l1" style="top:565px"><span id="tg0">Le Commander</span> <span id="tg1">compétitif</span></div>
+      <div class="a t tag" id="s2l2" style="top:690px"><span id="tg2">en <span class="or">1 contre 1</span>,</span></div>
+      <div class="a t tag" id="s2l3" style="top:815px"><span id="tg3">avec des</span> <span id="tg4" class="or">communes.</span></div>
+      <div class="a body" id="s2sub" style="top:935px">100 cartes · un général peu commun · 20 points de vie</div>
+    </section>
+
+    <!-- S3: the rules, against the clock -->
+    <section class="scene" id="s3">
+      <div class="a t" id="s3t" style="top:470px;font-size:240px">Les règles</div>
+      <div class="a pillO" id="s3p" style="top:670px"><span data-i="watch"></span>en 20 secondes</div>
+    </section>
+
+    <section class="scene" id="r1">
+      <div class="a" id="grid" style="left:600px;top:600px"></div>
+      <div class="a lab" id="r1lab" style="left:1330px;top:290px">Règle 01 · Le deck</div>
+      <div class="a t" id="r1n" style="left:1330px;top:470px;font-size:300px">100</div>
+      <div class="a t" id="r1w" style="left:1330px;top:655px;font-size:124px">cartes</div>
+      <div class="a body" id="r1gen" style="left:1330px;top:752px"><i class="dot"></i>général inclus</div>
+      <div class="a chip" id="r1x1" style="left:1330px;top:865px"><b class="or">×1</b>un exemplaire par carte</div>
+      <div class="a small" id="r1basic" style="left:1330px;top:948px">sauf les terrains de base</div>
+    </section>
+
+    <section class="scene" id="r2">
+      <div class="a" id="r2glow" style="left:590px;top:590px"></div>
+      <div class="a" id="r2card" style="left:590px;top:585px"></div>
+      <div class="a sticker" id="r2badge" style="left:770px;top:318px">Peu commune</div>
+      <div class="a chip goldC" id="r2name" style="left:590px;top:950px"><span data-i="crown"></span><span class="bel">Garland, Knight of Cornelia</span></div>
+      <div class="a lab" id="r2lab" style="left:1330px;top:240px">Règle 02 · Le général</div>
+      <div class="a t" id="r2t1" style="left:1330px;top:350px;font-size:132px">Un général</div>
+      <div class="a t gold" id="r2t2" style="left:1330px;top:470px;font-size:132px">peu commun</div>
+      <div class="a opt" id="r2a" style="left:1330px;top:625px"><span>Créature, Véhicule, Vaisseau ou Background</span><span class="ck" data-i="check"></span></div>
+      <div class="a opt" id="r2b" style="left:1330px;top:735px"><span>Imprimé au moins une fois en peu commune</span><span class="ck" data-i="check"></span></div>
+      <div class="a opt" id="r2c" style="left:1330px;top:845px"><span class="strk">Légendaire&#8239;?<i id="r2strike"></i></span></div>
+      <div class="a stamp" id="r2no" style="left:1590px;top:845px">Pas besoin</div>
+    </section>
+
+    <section class="scene" id="r3">
+      <div class="a lab" id="r3lab" style="top:200px">Règle 03 · Le reste du deck</div>
+      <div class="a t" id="r3t" style="top:310px;font-size:170px"><span class="or">99</span> communes</div>
+      <div class="a body" id="r3s" style="top:430px">Que des cartes imprimées en commune.</div>
+      <div class="layer" id="fan"></div>
+    </section>
+
+    <section class="scene" id="r4">
+      <div class="a lab" id="r4lab" style="top:220px">Règle 04 · Les couleurs</div>
+      <div class="a t" id="r4t1" style="top:335px;font-size:132px">Les couleurs du général</div>
+      <div class="a t or" id="r4t2" style="top:458px;font-size:132px">font la loi</div>
+      <div class="layer" id="mrow"></div>
+      <div class="a body" id="r4cap" style="top:810px">Avec <span class="bel" style="color:#fff">Garland</span> : noir et rouge, rien d’autre.</div>
+      <div class="a small" id="r4s" style="top:890px">Chaque carte du deck respecte l’identité de couleur du général.</div>
+    </section>
+
+    <section class="scene" id="r5">
+      <div class="a lab" id="r5lab" style="top:220px">Règle 05 · La partie</div>
+      <div class="a" id="life" style="left:600px;top:600px"><div id="lifeBox"><span class="heart" data-i="heart"></span><div id="lifeN"><div id="lifeA">40</div><div id="lifeB">39</div></div></div></div>
+      <div class="a t" id="r5t1" style="left:1330px;top:440px;font-size:150px"><span class="or">20</span> points</div>
+      <div class="a t" id="r5t2" style="left:1330px;top:575px;font-size:150px">de vie</div>
+      <div class="a body" id="r5s" style="left:1330px;top:690px">Des parties rapides et tranchées.</div>
+      <div class="a chip" id="r5c" style="left:1330px;top:820px"><span style="color:var(--no)" data-i="cross"></span>pas de blessures de général</div>
+    </section>
+
+    <section class="scene" id="end">
+      <div class="a t" id="endT" style="top:540px;font-size:230px">C’est tout.</div>
+    </section>
+
+    <!-- why play -->
+    <section class="scene" id="why">
+      <div class="layer" id="whyT">
+        <div class="a t" id="why1" style="top:455px;font-size:230px"><span id="wp">Pourquoi</span></div>
+        <div class="a t" id="why2" style="top:655px;font-size:230px"><span id="wy">y</span> <span id="wj" class="or">jouer</span><span id="wq">&#8239;?</span></div>
+      </div>
+      <div class="a" id="pips" style="top:860px"></div>
+    </section>
+
+    <section class="scene" id="w1">
+      <div class="a lab" id="w1lab" style="top:190px">Pourquoi · 01</div>
+      <div class="a t" id="w1t" style="top:295px;font-size:150px">Un vrai duel</div>
+      <div class="a plate" id="plA" style="left:560px;top:610px"><div class="who"><span data-i="user"></span>Joueur 1</div><div class="lf"><span data-i="heart"></span>20</div></div>
+      <div class="a plate" id="plB" style="left:1360px;top:610px"><div class="who"><span data-i="user"></span>Joueur 2</div><div class="lf"><span data-i="heart"></span>20</div></div>
+      <div class="a" id="vs" style="top:610px" data-i="swords"></div>
+      <div class="a body" id="w1s" style="top:880px">Pas d’alliances, pas de politique : chaque décision compte.</div>
+    </section>
+
+    <section class="scene" id="w2">
+      <div class="a lab" id="w2lab" style="top:190px">Pourquoi · 02</div>
+      <div class="a t" id="w2t" style="top:295px;font-size:150px">Accessible</div>
+      <div class="a" id="rar" style="top:560px">
+        <div class="rc" id="rc0">Commune<span class="mk ok1" data-i="check"></span></div>
+        <div class="rc gold" id="rc1">Peu commune<span class="mk ok1" data-i="check"></span></div>
+        <div class="rc" id="rc2">Rare<span class="mk no1" data-i="cross"></span><i class="bar"></i></div>
+        <div class="rc" id="rc3">Mythique<span class="mk no1" data-i="cross"></span><i class="bar"></i></div>
+      </div>
+      <div class="a small" id="rcap" style="top:660px">le général</div>
+      <div class="a body wrap" id="w2s" style="top:840px;width:1320px">Le pool du Pauper, sans les raretés qui font le prix des autres formats.</div>
+    </section>
+
+    <section class="scene" id="w3">
+      <div class="a t" id="w3t" style="top:205px;font-size:124px">Des milliers de généraux</div>
+      <div class="a body" id="w3s" style="top:305px">N’importe quelle créature peu commune peut être générale.</div>
+      <div class="layer" id="strip"></div>
+      <div class="a rays" id="w3rays" style="top:600px"></div>
+      <div class="layer" id="w3parts"></div>
+      <div class="a t big" id="w3n" style="top:600px;font-size:270px">Et le tien&#8239;?</div>
+      <div class="a body" id="w3c" style="top:815px">Des dizaines de généraux différents se croisent déjà en tournoi.</div>
+    </section>
+
+    <section class="scene" id="w4">
+      <div class="a" id="map" style="left:590px;top:585px"><svg viewBox="0 0 613 600"><path id="fr"/><path id="corse"/><g id="dots"></g></svg></div>
+      <div class="a lab" id="w4lab" style="left:1340px;top:240px">Pourquoi · 04</div>
+      <div class="a t" id="w4t" style="left:1340px;top:345px;font-size:124px">Un format vivant</div>
+      <div class="a t" id="w4w1" style="left:1340px;top:540px;font-size:104px">Des tournois</div>
+      <div class="a t or" id="w4w2" style="left:1340px;top:648px;font-size:104px">partout en France</div>
+      <div class="a body" id="w4s" style="left:1340px;top:770px">En boutique, en association, et même en ligne.</div>
+    </section>
+
+    <section class="scene" id="w5">
+      <div class="a bc" id="bc0" style="left:440px;top:560px"><div class="bstamp">Bannie</div></div>
+      <div class="a bc" id="bc1" style="left:800px;top:585px"><div class="bstamp">Bannie</div></div>
+      <div class="a lab" id="w5lab" style="left:1420px;top:250px">Pourquoi · 05</div>
+      <div class="a t" id="w5t1" style="left:1420px;top:360px;font-size:124px">Une ban list</div>
+      <div class="a t or" id="w5t2" style="left:1420px;top:478px;font-size:124px">suivie de près</div>
+      <div class="a body wrap" id="w5s" style="left:1420px;top:655px;width:780px">Un comité, des décisions argumentées, une annonce tous les deux mois.</div>
+      <div class="a small wrap" id="w5c" style="left:1420px;top:810px;width:640px">Deux listes : interdites comme général, interdites dans le deck.</div>
+    </section>
+
+    <!-- the site: the validator -->
+    <section class="scene" id="val">
+      <div class="a lab" id="vlab" style="top:150px">Sur le site</div>
+      <div class="a t" id="vt" style="top:250px;font-size:124px">Ton deck est légal&#8239;?</div>
+      <div class="a panel" id="vL" style="left:610px;top:665px;width:720px;height:570px">
+        <div class="pl" id="vlabG" style="top:40px">Général</div>
+        <div class="inp" id="vcmd"><span id="vcmdT"></span><i class="caret" id="vcaret"></i></div>
+        <div class="pl" id="vlabD" style="top:174px">Decklist · format MTGO</div>
+        <div class="inp" id="vlist"><div id="vlines"></div></div>
+        <div id="vbtn">Valider le deck</div>
+      </div>
+      <div class="a panel" id="vR" style="left:1340px;top:665px;width:640px;height:570px">
+        <div class="pl" id="vlabR" style="top:40px">Résultat</div>
+        <div id="vrows"></div>
+        <div id="vok"><span data-i="check"></span>Deck valide !</div>
+      </div>
+    </section>
+
+    <!-- the cube -->
+    <section class="scene" id="cub">
+      <div class="layer" id="wipe"></div>
+      <div class="a shadow" id="cshadow" style="top:840px"></div>
+      <div class="a" id="cubeWrap" style="top:520px">
+        <div id="cube">
+          <div class="face" id="f0"><span data-i="book"></span><div class="ft">Règles<br><b>&amp; ban list</b></div></div>
+          <div class="face" id="f1"><span data-i="cards"></span><div class="ft">Des decks<br><b>à essayer</b></div></div>
+          <div class="face logoF" id="f2"><img src="logo.png" alt=""></div>
+          <div class="face" id="f3"><span data-i="trophy"></span><div class="ft">Tournois<br><b>&amp; méta</b></div></div>
+          <div class="face cap" id="ftop"></div>
+          <div class="face cap" id="fbot"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- the signature -->
+    <section class="scene" id="out">
+      <div class="a" id="dwipe" style="top:540px;width:100px;height:100px;border-radius:50%;background:var(--bg)"></div>
+      <div class="a" id="ologo" style="top:300px"><img src="logo.png" alt=""></div>
+      <div class="a slogan" id="oslo" style="top:545px">La profondeur du Commander, <em>l’accessibilité du Pauper.</em></div>
+      <div class="a cta" id="octa" style="top:675px">pauperduelcommander.fr</div>
+      <div class="a osub" id="osub" style="top:782px">Règles · Ban list · Decklists · Tournois · Validateur</div>
+      <div class="a" id="odisc" style="top:858px"><span data-i="chat"></span>Et toute la communauté sur Discord</div>
+      <div class="a legal" id="olegal" style="top:1036px">Site communautaire. Wizards of the Coast, Magic: The Gathering, leurs logos respectifs sont des marques déposées de Wizards of the Coast LLC.</div>
+    </section>
+
+    <!-- the HUD of the rules: over the five rule scenes -->
+    <div class="layer" id="hud" style="display:none">
+      <div class="a" id="timer" style="left:1782px;top:112px">
+        <svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="rgba(20,24,33,.92)" stroke="#262C38" stroke-width="8"/><circle id="tring" cx="70" cy="70" r="60" fill="none" stroke="#FF5722" stroke-width="8" stroke-linecap="round" transform="rotate(-90 70 70)" stroke-dasharray="376.99" stroke-dashoffset="0"/></svg>
+        <div id="tnum">20</div><div id="tsec">sec</div>
+      </div>
+      <div class="a" id="segs" style="top:112px"></div>
+    </div>
+  </div>
+
+  <div class="layer" id="flash"></div>
+  <div class="layer" id="grain"></div>
+  <div class="layer" id="vig"></div>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s)
+const $$ = (s) => [...document.querySelectorAll(s)]
+const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x)
+const P = (t, a, b) => clamp((t - a) / (b - a))
+const lerp = (a, b, x) => a + (b - a) * x
+const E = {
+  out3: (x) => 1 - (1 - x) ** 3,
+  outExpo: (x) => (x >= 1 ? 1 : 1 - 2 ** (-10 * x)),
+  inOut: (x) => (x < 0.5 ? 4 * x * x * x : 1 - (-2 * x + 2) ** 3 / 2),
+  in3: (x) => x ** 3,
+  back: (x) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * (x - 1) ** 3 + c1 * (x - 1) ** 2 },
+}
+function rng(seed) { return () => { seed |= 0; seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296 } }
+
+/** Places an element anchored on its centre: x/y relative to its CSS anchor. */
+function T(el, { x = 0, y = 0, s = 1, r = 0, o = 1, b = 0 } = {}) {
+  el.style.transform = `translate(-50%,-50%) translate3d(${x}px,${y}px,0) scale(${s}) rotate(${r}deg)`
+  el.style.opacity = o
+  el.style.filter = b > 0.05 ? `blur(${b}px)` : 'none'
+}
+/** Same, for an element laid out by its parent (flex child, inline word). */
+function Tf(el, { x = 0, y = 0, s = 1, r = 0, o = 1, b = 0 } = {}) {
+  el.style.transform = `translate3d(${x}px,${y}px,0) scale(${s}) rotate(${r}deg)`
+  el.style.opacity = o
+  el.style.filter = b > 0.05 ? `blur(${b}px)` : 'none'
+}
+const vis = (el, on) => { el.style.display = on ? (el.dataset.d || 'block') : 'none' }
+const inR = (t, a, b) => t >= a && t < b
+
+/** A word that lands: big and blurred, then in place. */
+function slamW(el, t, t0, { d = 0.22, s0 = 1.9, r0 = 0 } = {}) {
+  const k = P(t, t0, t0 + d)
+  Tf(el, { s: lerp(s0, 1, E.outExpo(k)), r: lerp(r0, 0, E.back(k)), o: P(t, t0, t0 + 0.04), b: lerp(22, 0, P(k, 0, 0.6)) })
+}
+/** An anchored block that lands the same way. */
+function slamA(el, t, t0, { d = 0.25, s0 = 1.8, b0 = 20, x = 0, y = 0, r0 = 0, r = 0 } = {}) {
+  const k = P(t, t0, t0 + d)
+  T(el, { x, y, s: lerp(s0, 1, E.outExpo(k)), o: P(t, t0, t0 + 0.05), b: lerp(b0, 0, P(k, 0, 0.6)), r: lerp(r0, r, E.out3(k)) })
+}
+/** Rises into place from below. */
+function rise(el, t, t0, { d = 0.32, dy = 40, x = 0, y = 0, f = T } = {}) {
+  f(el, { x, y: y + lerp(dy, 0, E.outExpo(P(t, t0, t0 + d))), o: P(t, t0, t0 + 0.1) })
+}
+/** Pops in from nothing. */
+function pop(el, t, t0, { d = 0.28, x = 0, y = 0, r = 0, s = 1, f = T } = {}) {
+  f(el, { x, y, s: s * E.back(P(t, t0, t0 + d)), o: P(t, t0, t0 + 0.05), r })
+}
+/**
+ * Shows a scene from a to b, pushing in slowly, and zooms it away over its last `out` seconds.
+ * Returns null when the scene is off, so each scene function can bail out early.
+ */
+function scene(id, t, a, b, out = 0.25, zoom = 0.04) {
+  const el = $(id), on = t >= a && t < b
+  vis(el, on)
+  if (!on) return null
+  const k = E.in3(P(t, b - out, b))
+  el.style.transformOrigin = '960px 540px'
+  el.style.transform = `scale(${(1 + zoom * P(t, a, b)) * lerp(1, 0.86, k)})`
+  el.style.opacity = 1 - k
+  el.style.filter = k > 0.02 ? `blur(${12 * k}px)` : 'none'
+  return k
+}
+
+/* ---------------------------------------------------------------- timeline */
+// 120 BPM from the drop: every cut lands on a beat of the music (sfx.js). The entrances stay fast, but each
+// scene then holds long enough to be read, about three words a second once its last line is in.
+const D = 2.25
+const B = (n) => D + n * 0.5
+const HOOK_L = 0.75
+const T_RULES = B(11), T0 = B(13), RULES_S = 20, T_END = T0 + RULES_S   // the countdown, to the frame
+const HUD_IN = T0 - 0.17
+const R = [T0, B(20), B(30), B(37), B(44), T_END]                        // five rules, back to back
+const T_WHY = T_END + 1
+const W = [T_WHY + 2, B(66), B(74), B(85), B(93), B(101)]               // five reasons
+const T_VAL = W[5], T_CUBE = B(109), LAND = T_CUBE + 2, T_OUT = T_CUBE + 2.5, DUR = LAND + 6.75
+// inside the scenes
+const TAG = [['#tg0', D + 1.25], ['#tg1', D + 1.5], ['#tg2', D + 1.75], ['#tg3', D + 2.25], ['#tg4', D + 2.5]]
+const GRID_A = R[0] + 0.1, GRID_B = R[0] + 0.8, R1_GEN = R[0] + 1.0, R1_X1 = R[0] + 1.45
+const R2_ROWS = [R[1] + 0.8, R[1] + 1.4, R[1] + 2.1], NOPE = R[1] + 2.8, R2_NAME = R[1] + 3.3
+const FAN_T = R[2] + 0.4, FAN_DT = 0.07, FAN_LIFT = R[2] + 1.6
+const MANA_T = R[3] + 0.55, FOCUS = R[3] + 1.3
+const LIFE_A = R[4] + 0.3, LIFE_B = R[4] + 1.0
+const PLATES = W[0] + 0.45
+const RC_T = W[1] + 0.25, RC_OK = W[1] + 0.85, RC_NO = W[1] + 1.15
+const BIG = B(79), ROLL_A = W[2] + 0.5, ROLL_B = BIG - 0.15
+const MAP_T = W[3] + 0.45, FR_T = W[3] + 0.9
+const STAMPS = [W[4] + 0.55, W[4] + 0.8]
+const V_TYPE = [T_VAL + 0.2, T_VAL + 0.6], V_LINES = [T_VAL + 0.65, T_VAL + 1.1], V_PRESS = T_VAL + 1.25, V_CHECKS = T_VAL + 1.45, V_OK = T_VAL + 2.5
+
+/* ---------------------------------------------------------------- data */
+// Scryfall's large images, the printing chosen in the rarity that makes each card legal where it is shown
+const SCRY = 'https://cards.scryfall.io/large/front/'
+const CARD = {
+  'Crackling Drake': '7/3/73957e3b-504d-4ac7-a69c-0b81cb9af402.jpg?1783913293',
+  'Heartfire Hero': '4/8/48ace959-66b2-40c8-9bff-fd7ed9c99a82.jpg?1783910820',
+  'Juri, Master of the Revue': '5/0/5006eae5-3b77-45ab-a907-f5094b2eaf1f.jpg?1783906029',
+  'Soulherder': '5/0/50bc0f5b-7421-45b9-af85-86dd9821b7d8.jpg?1783928301',
+  'Palace Jailer': '7/8/78cef262-c753-4658-b3ec-fec8db47f944.jpg?1783937364',
+  'Third Path Iconoclast': 'a/d/ad56d60b-985e-470f-935b-036084957d2b.jpg?1783911895',
+  'Garland, Knight of Cornelia': 'd/d/dd463dbe-5f2c-4d4f-86f8-ad8ff407af62.jpg?1783906577',
+  'Satyr Enchanter': 'd/f/df83d28d-bb0b-4f3d-a16f-8ee8bf452e10.jpg?1783915411',
+  'Mayhem Devil': '6/7/674f3a8a-4552-4289-b92a-06ce158f115c.jpg?1783906026',
+  "Sailors' Bane": 'd/1/d175a716-5b69-401b-9902-684a30810288.jpg?1783922779',
+  'Black Waltz No. 3': 'f/e/fe86e41b-b0f6-4aa1-8827-c095c721f304.jpg?1783906575',
+  'Horrid Shadowspinner': '6/2/62b69aaf-0aae-4f6e-a27f-0129882dfe1d.jpg?1783911250',
+  'Sphinx of the Guildpact': 'f/3/f31cab5f-c05e-4688-b300-33ab0dd98598.jpg?1783930095',
+  'Fireglass Mentor': 'b/7/b78fbaa3-c580-4290-9c28-b74169aab2fc.jpg?1783910796',
+  'Gut, True Soul Zealot': '1/6/163a7729-b115-46dd-afb4-7a5df89c3ed1.jpg?1783922592',
+  'Wilson, Refined Grizzly': '9/1/91422b68-b4a8-4138-8aee-bc98d33d6a6c.jpg?1783922588',
+  'Tomik, Izzet Sparkmage': '5/c/5c5afd5f-6f37-4c3e-83f0-68fdcea98810.jpg?1789729773',
+  'Siona, Captain of the Pyleas': '9/a/9adb1528-dc72-4ec7-bcb4-a043bcd8d9d2.jpg?1783914944',
+  'Johann, Apprentice Sorcerer': 'b/8/b88a762d-19ed-451d-a3a9-b3e7eea40f67.jpg?1783915071',
+  'Tor Wauki the Younger': 'b/c/bc3f73f8-1825-4ae2-ade3-29a02bba05f3.jpg?1783921449',
+  'Baleful Strix': '0/6/06cb1bd6-73e0-4104-b344-4bc52d7dcedf.jpg?1783936138',
+  'Journey to Nowhere': '4/6/4686b51c-e02b-48c1-bafe-e8d08a5407b9.jpg?1783941252',
+  'Ephemerate': '2/d/2da5f3f8-5eef-498f-ba2c-2f3fbc3745aa.jpg?1783933164',
+  'Ponder': '8/c/8cbab1d1-25cb-456f-8d1c-3d64eb7265ea.jpg?1783909642',
+  'Counterspell': '8/4/8493131c-0a7b-4be6-a8a2-0b425f4f67fb.jpg?1783915703',
+  'Brainstorm': 'e/c/ec7d6864-7b6b-4f74-8474-9b9ec96b1d33.jpg?1789599806',
+  'Lightning Bolt': 'e/7/e768c957-3a1f-42f5-853a-96942f645df5.jpg?1783941805',
+  'Tolarian Terror': '2/5/2569d4f3-55ed-4f99-9592-34c7df0aab72.jpg?1783909076',
+  'Galvanic Discharge': '3/2/32aa6e33-221f-414c-9b51-850d97a7e051.jpg?1790212085',
+  'Cast Down': '4/8/480fecdd-5978-47e6-9c25-7a04cdf616db.jpg?1783930185',
+  'Snuff Out': 'a/3/a3b1fc65-3620-4052-a1f8-1779d95029c7.jpg?1783906269',
+  'Arcane Signet': '3/d/3d994115-378d-4685-a5dc-e448831da434.jpg?1783906051',
+  'Mana Leak': '1/7/179236d9-6fe2-4db6-bdfb-f851e8d531a2.jpg?1783921915',
+  'Abrade': '6/d/6d7c1ad4-5bbf-4d84-8494-953e95ed2717.jpg?1789753065',
+  'Daze': '9/0/90261920-05c2-4297-8531-7b813e51545b.jpg?1783938743',
+  'Snap': 'f/2/f21a70d2-53ec-4fee-b7bc-b459309fe657.jpg?1783914955',
+  'Monastery Swiftspear': 'e/8/e8b9d59d-bac9-4092-901e-2b861c186868.jpg?1783921886',
+  'Duress': '6/8/68cd43ba-646b-44b3-a1a5-0e6b6ceca866.jpg?1783918480',
+  'Hymn to Tourach': '5/7/57315f88-6cc5-4b1c-b56e-c8cdbc04f1a1.jpg?1783946283',
+  'Troll of Khazad-dûm': 'a/6/a6539e26-b63b-4725-9407-caaf451de084.jpg?1783916292',
+  'Terminate': '8/6/86018265-560f-41e6-8325-88c75b29e5f3.jpg?1783936225',
+  'Firebolt': '9/0/90aae741-88af-4d21-a230-9a2592acdc87.jpg?1783937581',
+  'Fiery Cannonade': '3/9/396f1cdf-712b-4518-a0e8-0039303dccdc.jpg?1783928815',
+  'Faithless Looting': '5/2/52e47757-0aa9-48b0-8b43-e2483d7eed67.jpg?1783908121',
+  'Treasure Cruise': '4/2/42c45880-15c7-4259-8066-c04d031d8216.jpg?1783903788',
+  'Price of Progress': 'b/1/b1342144-7a15-438b-a848-3196238a79e8.jpg?1788525462',
+}
+const img = (name) => SCRY + CARD[name]
+// the roll of generals: no favourite, it stops on a blank card, the viewer's
+const ROLL = ['Heartfire Hero', 'Juri, Master of the Revue', 'Soulherder', 'Palace Jailer', 'Third Path Iconoclast', 'Garland, Knight of Cornelia', 'Satyr Enchanter', 'Mayhem Devil', "Sailors' Bane", 'Black Waltz No. 3', 'Baleful Strix', 'Horrid Shadowspinner', 'Crackling Drake', 'Sphinx of the Guildpact', 'Fireglass Mentor', 'Gut, True Soul Zealot', 'Wilson, Refined Grizzly', 'Tomik, Izzet Sparkmage', 'Siona, Captain of the Pyleas', 'Johann, Apprentice Sorcerer', 'Tor Wauki the Younger']
+const ROLL_N = ROLL.length + 1, ROLL_TOTAL = 3 * ROLL_N + (ROLL_N - 1), ROLL_PITCH = 300
+// from Garland's list (Artefacts #7), black on the left, red on the right
+const FAN = ['Duress', 'Hymn to Tourach', 'Troll of Khazad-dûm', 'Snuff Out', 'Cast Down', 'Lightning Bolt', 'Terminate', 'Galvanic Discharge', 'Firebolt', 'Fiery Cannonade', 'Faithless Looting']
+// the English version: node render.cjs --en (reel.html?lang=en). The French one is written in the markup.
+const LANG = new URLSearchParams(location.search).get('lang') === 'en' ? 'en' : 'fr'
+const SEGS = LANG === 'en' ? ['Deck', 'Commander', 'Commons', 'Colors', 'Game'] : ['Deck', 'Général', 'Communes', 'Couleurs', 'Partie']
+// W U B R G, and the two that Garland keeps
+const MANA = [['', '#F8F6D8'], ['', '#AAE0FA'], ['', '#CBC2BF'], ['', '#F9AA8F'], ['', '#9BD3AE']]
+const MANA_KEEP = [false, false, true, true, false]
+const MANA_GLOW = ['', '', 'rgba(190,160,255,.6)', 'rgba(255,120,80,.75)', '']
+const DECK = ['1 Lightning Bolt', '1 Snuff Out', '1 Cast Down', '1 Hymn to Tourach', '1 Terminate', '1 Galvanic Discharge', '1 Chain Lightning', '1 Duress', '1 Unearth', '1 Troll of Khazad-dûm', '1 Fiery Cannonade', '1 Firebolt', '1 Faithless Looting', '1 Command Tower', '11 Swamp', '11 Mountain']
+const VROWS = LANG === 'en' ? ['100 cards', 'Uncommon commander', 'Common cards', 'Color identity', 'No duplicates', 'Ban list'] : ['100 cartes', 'Général peu commun', 'Cartes communes', 'Identité de couleur', 'Pas de doublon', 'Ban list']
+// the English copy, by selector; the wording is the site's own (src/i18n/en.json) wherever it has one
+const EN = {
+  '#s1t0': '<span style="color:var(--gold)">1</span> commander.',
+  '#s1t1': '<span style="color:#F3EEE3">99</span> commons.',
+  '#s1t2': '<span style="color:var(--or)">1</span> duel.',
+  '#s2l1': '<span id="tg0">Competitive</span> <span id="tg1" class="or">1v1</span>',
+  '#s2l2': '<span id="tg2">Commander,</span>',
+  '#s2l3': '<span id="tg3">played with</span> <span id="tg4" class="or">commons.</span>',
+  '#s2sub': '100 cards · an uncommon commander · 20 life',
+  '#s3t': 'The rules',
+  '#s3p': '<span data-i="watch"></span>in 20 seconds',
+  '#r1lab': 'Rule 01 · The deck',
+  '#r1w': 'cards',
+  '#r1gen': '<i class="dot"></i>commander included',
+  '#r1x1': '<b class="or">×1</b>one copy of each card',
+  '#r1basic': 'basic lands excepted',
+  '#r2badge': 'Uncommon',
+  '#r2lab': 'Rule 02 · The commander',
+  '#r2t1': 'An <span class="gold">uncommon</span>',
+  '#r2t2': '<span style="color:#fff">commander</span>',
+  '#r2a': '<span>Creature, Vehicle, Spacecraft or Background</span><span class="ck" data-i="check"></span>',
+  '#r2b': '<span>Printed at least once at uncommon</span><span class="ck" data-i="check"></span>',
+  '#r2c': '<span class="strk">Legendary?<i id="r2strike"></i></span>',
+  '#r2no': 'Not needed',
+  '#r3lab': 'Rule 03 · The rest of the deck',
+  '#r3t': '<span class="or">99</span> commons',
+  '#r3s': 'Only cards printed at common.',
+  '#r4lab': 'Rule 04 · Colors',
+  '#r4t1': 'The commander’s colors',
+  '#r4t2': 'rule the deck',
+  '#r4cap': 'With <span class="bel" style="color:#fff">Garland</span>: black and red, nothing else.',
+  '#r4s': 'Every card in the deck must fit the commander’s color identity.',
+  '#r5lab': 'Rule 05 · The game',
+  '#r5t1': '<span class="or">20</span> life,',
+  '#r5t2': 'not 40',
+  '#r5s': 'Fast, decisive games.',
+  '#r5c': '<span style="color:var(--no)" data-i="cross"></span>no commander damage',
+  '#endT': 'That’s it.',
+  '#wp': 'Why',
+  '#why2': '<span id="wy">play</span> <span id="wj" class="or">PDC</span><span id="wq">?</span>',
+  '#w1lab': 'Why · 01',
+  '#w1t': 'A real duel',
+  '#plA .who': '<span data-i="user"></span>Player 1',
+  '#plB .who': '<span data-i="user"></span>Player 2',
+  '#w1s': 'No alliances, no politics: every decision counts.',
+  '#w2lab': 'Why · 02',
+  '#rc0': 'Common<span class="mk ok1" data-i="check"></span>',
+  '#rc1': 'Uncommon<span class="mk ok1" data-i="check"></span>',
+  '#rc3': 'Mythic<span class="mk no1" data-i="cross"></span><i class="bar"></i>',
+  '#rcap': 'the commander',
+  '#w2s': 'The Pauper card pool, without the rarities that drive other formats’ prices.',
+  '#w3t': 'Thousands of commanders',
+  '#w3s': 'Any uncommon creature can be your commander.',
+  '#w3n': '<span style="font-size:240px">What’s yours?</span>',
+  '#w3c': 'Dozens of different commanders already meet in tournaments.',
+  '#w4lab': 'Why · 04',
+  '#w4t': 'A living format',
+  '#w4w1': 'Tournaments',
+  '#w4w2': 'across France',
+  '#w4s': 'In stores, in clubs, and even online.',
+  '#bc0 .bstamp': 'Banned',
+  '#bc1 .bstamp': 'Banned',
+  '#w5lab': 'Why · 05',
+  '#w5t1': '<span style="font-size:108px">A ban list</span>',
+  '#w5t2': '<span style="font-size:108px">watched closely</span>',
+  '#w5s': 'A committee, published reasoning, an announcement every two months.',
+  '#w5c': 'Two lists: banned as commander,<br>banned in the deck.',
+  '#vlab': 'On the site',
+  '#vt': 'Is your deck legal?',
+  '#vlabG': 'Commander',
+  '#vlabD': 'Decklist · MTGO format',
+  '#vbtn': 'Validate deck',
+  '#vlabR': 'Result',
+  '#vok': '<span data-i="check"></span>Valid deck!',
+  '#f0 .ft': 'Rules<br><b>&amp; ban list</b>',
+  '#f1 .ft': 'Decks<br><b>to try</b>',
+  '#f3 .ft': 'Tournaments<br><b>&amp; meta</b>',
+  '#oslo': 'The depth of Commander, <em>the accessibility of Pauper.</em>',
+  // the site's root goes to /fr/, and a path is case-sensitive: written as it must be typed
+  '#octa': '<span style="text-transform:none">pauperduelcommander.fr/en</span>',
+  '#osub': 'Rules · Ban list · Decklists · Tournaments · Validator',
+  '#odisc': '<span data-i="chat"></span>And the whole community on Discord',
+  '#olegal': 'Community site. Wizards of the Coast, Magic: The Gathering, and their respective logos are trademarks of Wizards of the Coast LLC.',
+}
+// France, simplified: [longitude, latitude], clockwise from Dunkirk
+const FRANCE = [[2.37,51.05],[2.55,51.09],[2.63,50.95],[2.9,50.7],[3.15,50.79],[3.28,50.53],[3.62,50.49],[4.02,50.35],[4.23,49.96],[4.68,49.99],[4.83,50.16],[4.87,49.8],[5.4,49.62],[5.82,49.55],[6.37,49.46],[6.73,49.17],[7.1,49.14],[7.63,49.05],[8.23,48.97],[7.8,48.51],[7.55,47.95],[7.59,47.59],[7.13,47.5],[6.93,47.33],[6.43,46.9],[6.12,46.6],[5.97,46.2],[6.25,46.25],[6.5,46.4],[6.8,46.45],[6.88,46.12],[7.04,45.93],[6.8,45.83],[7.0,45.64],[6.9,45.25],[6.63,45.1],[7.0,44.7],[6.85,44.53],[7.0,44.25],[7.65,44.15],[7.53,43.78],[7.42,43.73],[7.25,43.69],[6.95,43.53],[6.64,43.27],[6.36,43.1],[6.13,43.03],[5.93,43.1],[5.6,43.18],[5.37,43.29],[5.05,43.33],[4.6,43.36],[4.15,43.46],[3.7,43.4],[3.25,43.23],[3.05,42.95],[3.04,42.6],[3.17,42.43],[2.65,42.34],[1.95,42.45],[1.45,42.6],[0.7,42.85],[-0.3,42.83],[-0.75,42.95],[-1.4,43.05],[-1.78,43.37],[-1.55,43.5],[-1.36,43.95],[-1.25,44.6],[-1.16,45.1],[-1.05,45.6],[-1.25,45.95],[-1.2,46.2],[-1.8,46.5],[-2.15,46.85],[-2.05,47.1],[-2.25,47.27],[-2.6,47.4],[-3.1,47.5],[-3.45,47.72],[-3.95,47.84],[-4.35,47.8],[-4.73,48.04],[-4.45,48.1],[-4.55,48.28],[-4.78,48.4],[-4.6,48.62],[-4.0,48.72],[-3.5,48.83],[-3.0,48.8],[-2.6,48.55],[-2.05,48.64],[-1.55,48.63],[-1.6,48.95],[-1.8,49.4],[-1.94,49.72],[-1.62,49.65],[-1.26,49.69],[-1.2,49.35],[-0.6,49.34],[-0.2,49.3],[0.1,49.45],[0.2,49.7],[1.08,49.93],[1.55,50.2],[1.58,50.6],[1.6,50.87],[1.86,50.96]]
+const CORSE = [[9.4,43.0],[9.55,42.7],[9.55,42.15],[9.4,41.75],[9.2,41.38],[8.8,41.55],[8.6,41.9],[8.55,42.25],[8.7,42.55],[9.05,42.7],[9.3,42.85]]
+// the towns that have already hosted a tournament (site/content/tournaments); the online ones are in the caption
+const TOWNS = [[-0.58, 44.84, 7, 'Bordeaux', -1], [3.1, 50.67, 4, 'Lille', 1], [2.87, 50.43, 1, null], [6.18, 49.12, 2, 'Metz', 1], [4.72, 45.99, 1, 'Lyon', 1], [5.93, 43.12, 3, 'Toulon', -1], [6.13, 43.12, 1, null]]
+const MX = (lon) => (lon + 5.2) * 0.69 * 60, MY = (lat) => (51.3 - lat) * 60
+
+/* Impacts: shake and flash, timed on the sound effects. */
+const SHAKES = [[0, 8], [HOOK_L, 8], [2 * HOOK_L, 8], [D, 26], [GRID_B, 8], [NOPE, 14], [LIFE_B, 10], [T_END, 18], [PLATES, 16], [BIG, 26], [STAMPS[0], 12], [STAMPS[1], 12], [V_OK, 8], [T_CUBE + 0.35, 14], [LAND, 8]]
+const FLASHES = [[D, 0.85], [T_END, 0.3], [BIG, 0.85], [V_OK, 0.2]]
+
+/* ---------------------------------------------------------------- build */
+const ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.8l5 5L19.5 6.5"/></svg>',
+  cross: '<svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
+  crown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"><path d="M3.2 8.4l4.6 4 4.2-7.2 4.2 7.2 4.6-4-1.9 10.1H5.1z" fill="currentColor" fill-opacity=".14"/><path d="M5.4 21h13.2"/><circle cx="12" cy="4.4" r="1" fill="currentColor"/><circle cx="3.2" cy="8.4" r="1" fill="currentColor"/><circle cx="20.8" cy="8.4" r="1" fill="currentColor"/></svg>',
+  cards: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><rect x="8.6" y="2.6" width="10.6" height="15.4" rx="1.8" transform="rotate(10 13.9 10.3)" fill="currentColor" fill-opacity=".12"/><rect x="4.6" y="5.4" width="10.6" height="15.4" rx="1.8" transform="rotate(-8 9.9 13.1)" fill="#0A0E13"/><rect x="4.6" y="5.4" width="10.6" height="15.4" rx="1.8" transform="rotate(-8 9.9 13.1)" fill="currentColor" fill-opacity=".16"/></svg>',
+  swords: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4l10 10M11.8 16.2l4.4-4.4M14 14l3.6 3.6"/><circle cx="18.6" cy="18.6" r="1.1"/><path d="M20 4L10 14M7.8 11.8l4.4 4.4M10 14l-3.6 3.6"/><circle cx="5.4" cy="18.6" r="1.1"/></svg>',
+  watch: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.6M9.5 2.6h5M12 2.6V6M18.3 7.2l1.5-1.5"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5h9v4.2a4.5 4.5 0 0 1-9 0z"/><path d="M7.5 6H4.8v1.2a3 3 0 0 0 3 3M16.5 6h2.7v1.2a3 3 0 0 1-3 3M12 13.2v3.3M8.5 20.5h7M9.8 16.5h4.4l.6 4H9.2z"/></svg>',
+  heart: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.8-4.7-9.6-9.6C1.1 7.9 3.2 4.5 6.8 4.5c2.1 0 3.7 1.1 5.2 3.1 1.5-2 3.1-3.1 5.2-3.1 3.6 0 5.7 3.4 4.4 6.9C19.8 16.3 12 21 12 21z"/></svg>',
+  user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15.5H6.5A1.5 1.5 0 0 0 5 20z"/><path d="M5 20a1.5 1.5 0 0 0 1.5 1.5H19M9 7.5h6M9 11h6"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H10.5L6 19.5V16H4z"/></svg>',
+}
+if (LANG === 'en') {
+  document.documentElement.lang = 'en'
+  for (const [sel, html] of Object.entries(EN)) $(sel).innerHTML = html
+}
+$$('[data-i]').forEach((el) => { el.innerHTML = ICON[el.dataset.i] })
+// the wall: the format's own cards, blurred into a texture
+{
+  const names = Object.keys(CARD), R0 = rng(5)
+  for (let k = 0; k < 17 * 7; k++) {
+    const i = document.createElement('img')
+    i.src = img(names[Math.floor(R0() * names.length)])
+    $('#wall').appendChild(i)
+  }
+}
+// S2 sparks, and the reveal's
+function makeParts(host, n, cols, seed) {
+  const R0 = rng(seed), arr = []
+  for (let k = 0; k < n; k++) {
+    const d = document.createElement('div')
+    d.className = 'part'
+    const sz = 10 + R0() * 22
+    d.style.width = sz + 'px'
+    d.style.height = (R0() < 0.5 ? sz : sz * 0.4) + 'px'
+    d.style.background = cols[k % cols.length]
+    d.style.borderRadius = R0() < 0.4 ? '50%' : '3px'
+    host.appendChild(d)
+    arr.push({ el: d, a: (k / n) * Math.PI * 2 + R0() * 0.3, D: 300 + R0() * 460, spin: (R0() - 0.5) * 900, sz })
+  }
+  return arr
+}
+const PARTS_A = makeParts($('#s2parts'), 36, ['#FF5722', '#FFA500', '#FF7043'], 3)
+const PARTS_B = makeParts($('#w3parts'), 40, ['#FF5722', '#FFB84D'], 9)
+// the rules' steps
+SEGS.forEach((s, i) => { const d = document.createElement('div'); d.className = 'seg'; d.innerHTML = `<b>0${i + 1}</b>${s}`; $('#segs').appendChild(d) })
+const SEG_EL = $$('.seg')
+// R1: 100 cards, one of them the general
+const CELLS = []
+{
+  const R0 = rng(21), hues = [['#e9e2cc', '#b9ae90'], ['#4a86c4', '#24507d'], ['#57504b', '#2b2622'], ['#d0553d', '#8a2b1b'], ['#3f9a63', '#1f5a36'], ['#a9a39a', '#6c675f']]
+  for (let i = 0; i < 100; i++) {
+    const c = document.createElement('i'), [h1, h2] = hues[Math.floor(R0() * hues.length)]
+    c.style.background = `linear-gradient(160deg, ${h1}, ${h2})`
+    $('#grid').appendChild(c)
+    CELLS.push(c)
+  }
+}
+const GEN_CELL = 45
+// R2: the general
+$('#r2card').innerHTML = `<img class="mc" src="${img('Garland, Knight of Cornelia')}" alt="">`
+// R3: the fan of commons
+const FAN_EL = FAN.map((n, i) => {
+  const el = document.createElement('img')
+  el.className = 'fan mc'
+  el.src = img(n)
+  el.style.zIndex = i
+  $('#fan').appendChild(el)
+  return el
+})
+// R4: the five colours
+const MANA_EL = MANA.map(([g, bg]) => {
+  const el = document.createElement('div')
+  el.className = 'a mana'
+  el.style.top = '655px'
+  el.style.background = `radial-gradient(circle at 35% 30%, #fff8, transparent 55%), ${bg}`
+  el.innerHTML = `<span>${g}</span>`
+  $('#mrow').appendChild(el)
+  return el
+})
+// why: the five colours, small
+MANA.forEach(([g, bg]) => { const i = document.createElement('i'); i.textContent = g; i.style.background = bg; $('#pips').appendChild(i) })
+// W3: the roll of generals, closed by a blank card
+const ROLL_EL = ROLL.map((n) => {
+  const el = document.createElement('img')
+  el.className = 'sc mc'
+  el.src = img(n)
+  $('#strip').appendChild(el)
+  return el
+})
+{
+  const q = document.createElement('div')
+  q.className = 'sc qcard'
+  q.textContent = '?'
+  $('#strip').appendChild(q)
+  ROLL_EL.push(q)
+}
+// W4: the map
+{
+  const path = (pts) => 'M' + pts.map(([lo, la]) => `${MX(lo).toFixed(1)} ${MY(la).toFixed(1)}`).join('L') + 'Z'
+  for (const [id, pts] of [['#fr', FRANCE], ['#corse', CORSE]]) {
+    const p = $(id)
+    p.setAttribute('d', path(pts))
+    p.setAttribute('pathLength', '1')
+    p.setAttribute('fill', 'rgba(20,24,33,.9)')
+    p.setAttribute('stroke', '#FF5722')
+    p.setAttribute('stroke-width', '3')
+    p.setAttribute('stroke-linejoin', 'round')
+    p.setAttribute('stroke-dasharray', '1')
+  }
+  const NS = 'http://www.w3.org/2000/svg', g = $('#dots')
+  TOWNS.forEach(([lo, la, n, name, side]) => {
+    const x = MX(lo), y = MY(la), r = 7 + 3.2 * Math.sqrt(n)
+    const grp = document.createElementNS(NS, 'g')
+    grp.innerHTML = `<circle class="pulse" cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#FF7043" stroke-width="3"/><circle class="dot" cx="${x}" cy="${y}" r="${r}" fill="#FF5722"/>` +
+      (name ? `<text x="${x + side * (r + 12)}" y="${y + 9}" text-anchor="${side > 0 ? 'start' : 'end'}">${name}</text>` : '')
+    g.appendChild(grp)
+  })
+}
+const TOWN_EL = [...$('#dots').children]
+// W5: two bans
+$('#bc0').insertAdjacentHTML('afterbegin', `<img class="mc" src="${img('Treasure Cruise')}" alt="">`)
+$('#bc1').insertAdjacentHTML('afterbegin', `<img class="mc" src="${img('Price of Progress')}" alt="">`)
+// the validator
+DECK.forEach((l) => { const d = document.createElement('div'); d.textContent = l; $('#vlines').appendChild(d) })
+const VLINE_EL = [...$('#vlines').children]
+VROWS.forEach((r, i) => {
+  const d = document.createElement('div')
+  d.className = 'vrow'
+  d.style.top = 88 + i * 62 + 'px'
+  d.innerHTML = `<span>${r}</span><span class="vk">${ICON.check}</span>`
+  $('#vrows').appendChild(d)
+})
+const VROW_EL = $$('.vrow')
+// the cube's faces
+{
+  const tz = 'translateZ(220px)'
+  $('#f0').style.transform = `rotateY(0deg) ${tz}`
+  $('#f1').style.transform = `rotateY(90deg) ${tz}`
+  $('#f2').style.transform = `rotateY(180deg) ${tz}`
+  $('#f3').style.transform = `rotateY(270deg) ${tz}`
+  $('#ftop').style.transform = `rotateX(90deg) ${tz}`
+  $('#fbot').style.transform = `rotateX(-90deg) ${tz}`
+}
+
+let LOGO = { x: 0, y: 0 }
+window.__DUR = DUR
+window.__ready = (async () => {
+  const sample = 'AÀÂÉÈÊËÎÏÔÙÛÜÇŒaàâéèêëîïôùûüçœ’«»×·?0123456789'
+  await Promise.all([
+    document.fonts.load('700 100px "Barlow Condensed"', sample),
+    document.fonts.load('600 100px "Barlow Condensed"', sample),
+    document.fonts.load('400 40px "Inter"', sample),
+    document.fonts.load('600 40px "Inter"', sample),
+    document.fonts.load('700 40px "Beleren"', 'Garland, Knight of Cornelia'),
+    document.fonts.load('40px "Mana"', MANA.map((m) => m[0]).join('')),
+  ])
+  await document.fonts.ready
+  await Promise.all([...document.images].map((i) => i.decode()))
+  // final place of the logo (the cube lands there)
+  const s = $('#out'); s.style.display = 'block'
+  T($('#ologo'))
+  const r = $('#ologo').getBoundingClientRect()
+  LOGO = { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  s.style.display = ''
+  return true
+})()
+
+/* ---------------------------------------------------------------- render */
+function shake(t) {
+  let x = 0, y = 0
+  for (const [t0, A] of SHAKES) {
+    const u = t - t0
+    if (u < 0 || u > 0.5) continue
+    const k = A * Math.exp(-u * 12)
+    x += k * Math.sin(u * 97)
+    y += k * Math.cos(u * 83)
+  }
+  return [x, y]
+}
+function burst(parts, t, t0, cx, cy) {
+  const up = t - t0
+  for (const p of parts) {
+    if (up < 0 || up > 1.1) { p.el.style.opacity = 0; continue }
+    const r = p.D * E.outExpo(P(up, 0, 0.8))
+    const x = cx + Math.cos(p.a) * r - p.sz / 2, y = cy + Math.sin(p.a) * r * 0.75 + 220 * up * up - p.sz / 2
+    p.el.style.transform = `translate(${x}px,${y}px) rotate(${p.spin * up}deg)`
+    p.el.style.opacity = 1 - P(up, 0.45, 1.0)
+  }
+}
+
+function render(t) {
+  const [sx, sy] = shake(t)
+  $('#cam').style.transform = `translate(${sx}px,${sy}px)`
+  let fl = 0
+  for (const [t0, A] of FLASHES) if (t >= t0 && t < t0 + 0.25) fl = Math.max(fl, A * Math.exp(-(t - t0) * 28))
+  $('#flash').style.opacity = fl
+  BG(t)
+  S1(t); S2(t); S3(t); R1(t); R2(t); R3(t); R4(t); R5(t); END(t); HUD(t)
+  WHY(t); W1(t); W2(t); W3(t); W4(t); W5(t); VAL(t); CUBE(t); OUT(t)
+}
+
+const S1C = ['#FFA500', '#F3EEE3', '#FF5722']
+const S1G = ['rgba(255,165,0,.55)', 'rgba(243,238,227,.4)', 'rgba(255,87,34,.6)']
+function BG(t) {
+  let g = 'rgba(255,87,34,.12)'
+  if (t < D) g = ['rgba(255,165,0,.2)', 'rgba(243,238,227,.13)', 'rgba(255,87,34,.22)'][Math.min(2, Math.floor(t / HOOK_L))]
+  else if (t < T_RULES) g = `rgba(255,87,34,${(0.16 + 0.22 * Math.exp(-(t - D) * 2)).toFixed(3)})`
+  else if (inR(t, T_END, T_WHY)) g = 'rgba(255,59,31,.2)'
+  else if (inR(t, BIG, W[3])) g = 'rgba(255,87,34,.26)'
+  else if (inR(t, W[4], W[5])) g = 'rgba(255,59,31,.14)'
+  else if (inR(t, V_OK, T_CUBE)) g = 'rgba(52,211,153,.16)'
+  $('#glow').style.background = `radial-gradient(1300px 900px at 50% 45%, ${g}, transparent 70%)`
+  // the floor: the three colours of the hook, then orange
+  const fo = t < D ? 0.35 : t < T_RULES ? 0.22 : t < T_CUBE ? (inR(t, W[3], W[4]) ? 0 : 0.1) : t < T_OUT - 0.3 ? 0 : 0.26 * P(t, T_OUT - 0.1, T_OUT + 0.5)
+  $('#floorWrap').style.opacity = fo
+  const fc = t < D ? S1C[Math.min(2, Math.floor(t / HOOK_L))] : '#FF5722'
+  $('#floor').style.backgroundImage = `linear-gradient(${fc}80 3px,transparent 3px),linear-gradient(90deg,${fc}80 3px,transparent 3px)`
+  $('#floor').style.backgroundPosition = `0 ${(t * 140) % 140}px`
+  // the wall of cards, except over the photo and the cube
+  const wo = inR(t, D, T_CUBE) ? P(t, D, D + 0.4) * (1 - P(t, W[3], W[3] + 0.2) + P(t, W[4] - 0.2, W[4])) : t >= T_OUT ? 0.8 * P(t, T_OUT, T_OUT + 0.8) : 0
+  $('#wallL').style.opacity = clamp(wo)
+  $('#wall').style.transform = `rotate(-8deg) translateY(${-((t * 30) % 231)}px)`
+  // the tournament photo, behind "un format vivant"
+  const po = inR(t, W[3] - 0.1, W[4]) ? P(t, W[3] - 0.1, W[3] + 0.25) * (1 - P(t, W[4] - 0.25, W[4])) : 0
+  vis($('#photoL'), po > 0)
+  if (po > 0) { $('#photoL').style.opacity = po; $('#photo').style.transform = `scale(${lerp(1.04, 1.12, P(t, W[3], W[4]))})` }
+}
+
+function S1(t) {
+  const on = t < D
+  vis($('#s1'), on)
+  if (!on) return
+  const L = HOOK_L, bi = Math.min(2, Math.floor(t / L)), v = t - bi * L, c = S1C[bi]
+  const zoom = 1 + 0.035 * (v / L)
+  const r1 = $('#s1r1'), r2 = $('#s1r2'), w = $('#s1w')
+  r1.style.borderColor = c; r2.style.borderColor = c; w.style.borderColor = c
+  r1.style.boxShadow = `0 0 60px ${S1G[bi]}, inset 0 0 60px ${S1G[bi]}`
+  T(r1, { s: lerp(0.55, 1, E.outExpo(P(v, 0, 0.4))) * zoom, o: P(v, 0, 0.05) })
+  T(r2, { s: lerp(0.7, 1, E.outExpo(P(v, 0.04, 0.45))) * zoom, o: 0.45 * P(v, 0.04, 0.1) })
+  T(w, { s: lerp(0.95, 1.9, E.out3(P(v, 0, 0.5))), o: 0.9 * (1 - P(v, 0, 0.5)) })
+  for (let i = 0; i < 3; i++) {
+    const ic = $('#s1i' + i), wd = $('#s1t' + i)
+    if (i !== bi) { ic.style.opacity = 0; wd.style.opacity = 0; continue }
+    let s = lerp(1.7, 1, E.back(P(v, 0, 0.3))) * zoom, o = P(v, 0, 0.06), b = lerp(18, 0, P(v, 0, 0.16))
+    let ws = zoom, wo = P(v, 0.04, 0.1), wy = lerp(80, 0, E.outExpo(P(v, 0.04, 0.32))), wb = lerp(12, 0, P(v, 0.04, 0.2))
+    if (bi < 2 && v > L - 0.07) { const k = P(v, L - 0.07, L); s *= 1 + 0.2 * k; o *= 1 - k; ws *= 1 + 0.08 * k; wo *= 1 - k; b = 10 * k; wb = 8 * k }
+    if (bi === 2 && v > L - 0.1) { const k = E.in3(P(v, L - 0.1, L)); s *= 1 + 4 * k; o *= 1 - k; ws *= 1 + 0.5 * k; wo *= 1 - k; b = 20 * k; wb = 12 * k }
+    T(ic, { s, o, b, r: lerp(-8, 0, E.out3(P(v, 0, 0.3))) })
+    ic.style.filter = (b > 0.05 ? `blur(${b}px) ` : '') + `drop-shadow(0 0 40px ${S1G[i]})`
+    T(wd, { y: wy, s: ws, o: wo, b: wb })
+  }
+  if (bi === 2 && v > L - 0.1) { const k = E.in3(P(v, L - 0.1, L)); T(r1, { s: 1 + 3 * k, o: 1 - k }); T(r2, { s: 1 + 3 * k, o: 0.45 * (1 - k) }) }
+}
+
+function S2(t) {
+  const k = scene('#s2', t, D, T_RULES, 0.25, 0.03)
+  if (k === null) return
+  const ks = E.outExpo(P(t, D, D + 0.32)), kUp = E.inOut(P(t, D + 0.9, D + 1.25))
+  T($('#s2logo'), { y: lerp(0, -300, kUp), s: lerp(2.6, 1, ks) * lerp(1, 0.6, kUp), o: P(t, D, D + 0.04), b: lerp(26, 0, P(t, D, D + 0.12)), r: lerp(-8, 0, ks) })
+  T($('#s2rays'), { s: lerp(0.4, 1.1, E.outExpo(P(t, D, D + 0.5))), o: 0.9 * P(t, D, D + 0.08) * (1 - P(t, D + 0.75, D + 1.25)), r: t * 14 })
+  T($('#s2ring'), { s: lerp(0.3, 3.2, E.out3(P(t, D, D + 0.6))), o: 0.9 * (1 - P(t, D, D + 0.6)) })
+  burst(PARTS_A, t, D + 0.02, 960, 540)
+  for (const [id, t0] of TAG) slamW($(id), t, t0)
+  for (const id of ['#s2l1', '#s2l2', '#s2l3']) T($(id))
+  rise($('#s2sub'), t, D + 3.25)
+}
+
+function S3(t) {
+  const k = scene('#s3', t, T_RULES, T0, 0.1, 0.02)
+  if (k === null) return
+  const a = T_RULES, kt = E.in3(P(t, a + 0.6, a + 0.8))
+  slamA($('#s3t'), t, a, { s0: 2 })
+  if (kt > 0) T($('#s3t'), { y: -60 * kt, s: lerp(1, 0.8, kt), o: 1 - kt, b: 12 * kt })
+  // the pill flies to the corner and becomes the countdown
+  const kf = E.in3(P(t, a + 0.65, a + 0.87))
+  T($('#s3p'), { x: lerp(0, 820, kf), y: lerp(0, -560, kf), s: E.back(P(t, a + 0.25, a + 0.53)) * lerp(1, 0.3, kf), o: P(t, a + 0.25, a + 0.3) * (1 - P(t, a + 0.77, a + 0.87)), b: 10 * kf })
+}
+
+/** The countdown and the five steps: over the rules, from the title to "C'est tout." */
+function HUD(t) {
+  const on = inR(t, HUD_IN, T_WHY)
+  vis($('#hud'), on)
+  if (!on) return
+  $('#hud').style.opacity = 1 - E.in3(P(t, T_WHY - 0.3, T_WHY))
+  const rem = clamp(Math.ceil(T_END - t - 1e-6), 0, RULES_S)
+  const last = T0 + (RULES_S - rem), done = t >= T_END
+  const num = $('#tnum')
+  num.textContent = rem
+  num.style.color = done ? 'var(--no)' : rem <= 3 ? 'var(--or-hi)' : '#fff'
+  num.style.transform = `scale(${1 + (done ? 0.35 : 0.22) * (1 - E.out3(P(t, last, last + 0.2)))})`
+  $('#tring').setAttribute('stroke-dashoffset', (376.99 * P(t, T0, T_END)).toFixed(2))
+  T($('#timer'), { s: E.back(P(t, HUD_IN, HUD_IN + 0.28)) * (done ? 1 + 0.12 * (1 - P(t, T_END, T_END + 0.3)) : 1), o: P(t, HUD_IN, HUD_IN + 0.04) })
+  const idx = R.findIndex((r, i) => i < 5 && t >= r && t < R[i + 1])
+  SEG_EL.forEach((el, i) => {
+    const t0 = HUD_IN + 0.02 + i * 0.05
+    el.classList.toggle('on', i === idx)
+    el.classList.toggle('done', t >= R[i + 1])
+    Tf(el, { y: lerp(-40, 0, E.outExpo(P(t, t0, t0 + 0.3))), o: P(t, t0, t0 + 0.06), s: i === idx ? 1 + 0.06 * (1 - E.out3(P(t, R[i], R[i] + 0.3))) : 1 })
+  })
+  T($('#segs'))
+}
+
+function R1(t) {
+  const k = scene('#r1', t, R[0], R[1])
+  if (k === null) return
+  CELLS.forEach((c, i) => {
+    const t0 = GRID_A + (i / 100) * (GRID_B - GRID_A), gen = i === GEN_CELL && t >= R1_GEN
+    c.style.transform = `scale(${E.back(P(t, t0, t0 + 0.16)) * (gen ? 1 + 0.3 * E.back(P(t, R1_GEN, R1_GEN + 0.3)) : 1)})`
+    c.style.opacity = P(t, t0, t0 + 0.04)
+    c.classList.toggle('gen', gen)
+  })
+  const n = $('#r1n')
+  n.textContent = Math.round(100 * P(t, GRID_A, GRID_B))
+  T(n, { s: t >= GRID_B ? 1 + 0.14 * (1 - E.out3(P(t, GRID_B, GRID_B + 0.3))) : 1, o: P(t, GRID_A - 0.05, GRID_A) })
+  n.style.color = t >= GRID_B ? 'var(--or)' : '#fff'
+  rise($('#r1lab'), t, R[0] + 0.05)
+  slamA($('#r1w'), t, GRID_B)
+  rise($('#r1gen'), t, R1_GEN)
+  pop($('#r1x1'), t, R1_X1)
+  rise($('#r1basic'), t, R1_X1 + 0.2)
+}
+
+function R2(t) {
+  const k = scene('#r2', t, R[1], R[2])
+  if (k === null) return
+  const a = R[1], kc = E.outExpo(P(t, a + 0.05, a + 0.55)), card = $('#r2card')
+  card.style.opacity = P(t, a + 0.05, a + 0.11)
+  card.style.transform = `translate(-50%,-50%) translate(${lerp(560, 0, kc)}px,${lerp(140, 0, kc)}px) perspective(1600px) rotateY(${lerp(-55, -9, kc) + 3 * Math.sin(t * 1.4)}deg) rotateZ(${lerp(16, -2, kc)}deg) scale(${lerp(0.8, 1, kc)})`
+  T($('#r2glow'), { o: P(t, a + 0.25, a + 0.75) * (0.85 + 0.15 * Math.sin(t * 3)) })
+  pop($('#r2badge'), t, a + 0.6, { r: 8 })
+  pop($('#r2name'), t, R2_NAME)
+  rise($('#r2lab'), t, a + 0.1)
+  slamA($('#r2t1'), t, a + 0.2)
+  slamA($('#r2t2'), t, a + 0.35)
+  ;['#r2a', '#r2b', '#r2c'].forEach((id, i) => {
+    const t0 = R2_ROWS[i], el = $(id)
+    T(el, { y: lerp(60, 0, E.outExpo(P(t, t0, t0 + 0.35))), o: P(t, t0, t0 + 0.1) })
+    el.classList.toggle('sel', i < 2 && t >= t0 + 0.25)
+    const ck = el.querySelector('.ck')
+    if (ck) ck.style.transform = `scale(${E.back(P(t, t0 + 0.25, t0 + 0.5))})`
+  })
+  $('#r2strike').style.width = `calc(${100 * E.out3(P(t, NOPE - 0.12, NOPE + 0.05))}% + 16px)`
+  $('#r2strike').style.opacity = P(t, NOPE - 0.12, NOPE - 0.1)
+  $('#r2c').style.color = t >= NOPE ? 'var(--ink-3)' : 'var(--ink)'
+  slamA($('#r2no'), t, NOPE, { s0: 2.6, d: 0.18, r0: -16, r: -6 })
+}
+
+function R3(t) {
+  const k = scene('#r3', t, R[2], R[3])
+  if (k === null) return
+  const a = R[2]
+  rise($('#r3lab'), t, a + 0.05)
+  slamA($('#r3t'), t, a + 0.1)
+  rise($('#r3s'), t, a + 0.3)
+  const spread = 1 + 0.08 * E.inOut(P(t, FAN_LIFT - 0.25, R[3])), RAD = 1000, PIV = 1760
+  FAN_EL.forEach((el, i) => {
+    const t0 = FAN_T + i * FAN_DT, kk = E.outExpo(P(t, t0, t0 + 0.42)), centre = i === 5
+    const a = (i - 5) * 7.2 * spread, rad = (a * Math.PI) / 180
+    const lift = centre ? 60 * E.back(P(t, FAN_LIFT, FAN_LIFT + 0.3)) : 0
+    const x = 960 + RAD * Math.sin(rad) - 125, y = PIV - RAD * Math.cos(rad) - 174 - lift
+    el.style.transform = `translate(${x}px,${y + lerp(760, 0, kk)}px) rotate(${a + lerp((i - 5) * 6, 0, kk)}deg) scale(${centre ? 1 + 0.08 * E.out3(P(t, FAN_LIFT, FAN_LIFT + 0.3)) : 1})`
+    el.style.opacity = P(t, t0, t0 + 0.05)
+    el.style.zIndex = centre && t >= FAN_LIFT ? 50 : i
+    el.style.boxShadow = centre && t >= FAN_LIFT ? `0 40px 80px -30px #000, 0 0 ${60 * P(t, FAN_LIFT, FAN_LIFT + 0.25)}px rgba(255,87,34,.6)` : ''
+  })
+}
+
+function R4(t) {
+  const k = scene('#r4', t, R[3], R[4])
+  if (k === null) return
+  const a = R[3]
+  rise($('#r4lab'), t, a + 0.05)
+  slamA($('#r4t1'), t, a + 0.1)
+  slamA($('#r4t2'), t, a + 0.25)
+  const kf = E.inOut(P(t, FOCUS, FOCUS + 0.3))
+  MANA_EL.forEach((el, i) => {
+    const t0 = MANA_T + i * 0.08, keep = MANA_KEEP[i]
+    T(el, { x: (i - 2) * 215, s: E.back(P(t, t0, t0 + 0.3)) * (keep ? 1 + 0.16 * kf : 1 - 0.28 * kf), o: P(t, t0, t0 + 0.05) * (keep ? 1 : 1 - 0.75 * kf) })
+    el.style.filter = keep ? 'none' : `grayscale(${kf})`
+    el.style.boxShadow = keep ? `0 18px 40px -10px rgba(0,0,0,.6), 0 0 ${70 * kf}px ${MANA_GLOW[i]}` : '0 18px 40px -10px rgba(0,0,0,.6)'
+  })
+  rise($('#r4cap'), t, FOCUS + 0.12)
+  rise($('#r4s'), t, a + 0.75)
+}
+
+function R5(t) {
+  const k = scene('#r5', t, R[4], R[5], 0.2)
+  if (k === null) return
+  const a = R[4]
+  rise($('#r5lab'), t, a + 0.05)
+  pop($('#life'), t, a + 0.05)
+  // 40 rolls down to 20: Commander's life total, halved
+  const q = P(t, LIFE_A, LIFE_B), pos = 20 * (1 - (1 - q) ** 2.2), cur = 40 - Math.floor(pos), fr = pos - Math.floor(pos)
+  const A = $('#lifeA'), Bn = $('#lifeB')
+  A.textContent = cur; Bn.textContent = cur - 1
+  A.style.transform = `translateY(${fr * 270}px)`
+  Bn.style.transform = `translateY(${(fr - 1) * 270}px)`
+  Bn.style.display = q >= 1 ? 'none' : 'block'
+  const sp = q < 1 ? (20 * 2.2 * (1 - q) ** 1.2) / (LIFE_B - LIFE_A) : 0
+  const bl = clamp(sp * 0.18, 0, 8)
+  A.style.filter = bl > 0.1 ? `blur(${bl}px)` : 'none'
+  Bn.style.filter = A.style.filter
+  A.style.color = q >= 1 ? 'var(--or)' : '#fff'
+  $('#lifeBox').style.borderColor = q >= 1 ? 'rgba(255,87,34,.7)' : ''
+  $('#lifeBox').style.boxShadow = q >= 1 ? `0 40px 90px -40px #000, 0 0 ${60 * (1 - 0.5 * P(t, LIFE_B, LIFE_B + 0.6))}px rgba(255,87,34,.45)` : ''
+  if (q >= 1) T($('#life'), { s: 1 + 0.08 * (1 - E.out3(P(t, LIFE_B, LIFE_B + 0.3))) })
+  slamA($('#r5t1'), t, LIFE_B)
+  slamA($('#r5t2'), t, LIFE_B + 0.15)
+  rise($('#r5s'), t, a + 1.4)
+  pop($('#r5c'), t, a + 2.0)
+}
+
+function END(t) {
+  const k = scene('#end', t, T_END, T_WHY, 0.2, 0.03)
+  if (k === null) return
+  slamA($('#endT'), t, T_END, { s0: 2.6, d: 0.2, r0: -8, r: -3 })
+}
+
+function WHY(t) {
+  const k = scene('#why', t, T_WHY, W[0], 0.25, 0.03)
+  if (k === null) return
+  const a = T_WHY
+  slamW($('#wp'), t, a)
+  slamW($('#wy'), t, a + 0.25)
+  slamW($('#wj'), t, a + 0.37)
+  slamW($('#wq'), t, a + 0.55, { s0: 2.2, r0: -30 })
+  T($('#why1')); T($('#why2'))
+  ;[...$('#pips').children].forEach((p, i) => {
+    const t0 = a + 0.7 + i * 0.06
+    Tf(p, { s: E.back(P(t, t0, t0 + 0.25)) * (1 + 0.12 * Math.max(0, Math.sin(t * 7 - i * 0.6))), o: P(t, t0, t0 + 0.05) })
+  })
+  T($('#pips'))
+}
+
+function W1(t) {
+  const k = scene('#w1', t, W[0], W[1])
+  if (k === null) return
+  const a = W[0]
+  rise($('#w1lab'), t, a + 0.05)
+  slamA($('#w1t'), t, a + 0.1)
+  const kin = E.in3(P(t, a + 0.1, PLATES)), kb = E.back(P(t, PLATES, PLATES + 0.35))
+  const recoil = t >= PLATES ? 40 * (1 - kb) : 0
+  T($('#plA'), { x: lerp(-760, 0, kin) - recoil, o: P(t, a + 0.1, a + 0.15), r: lerp(-8, 0, kin) })
+  T($('#plB'), { x: lerp(760, 0, kin) + recoil, o: P(t, a + 0.1, a + 0.15), r: lerp(8, 0, kin) })
+  slamA($('#vs'), t, PLATES, { s0: 2.8, d: 0.22, r0: -30 })
+  rise($('#w1s'), t, a + 0.8)
+}
+
+function W2(t) {
+  const k = scene('#w2', t, W[1], W[2])
+  if (k === null) return
+  const a = W[1]
+  rise($('#w2lab'), t, a + 0.05)
+  slamA($('#w2t'), t, a + 0.05)
+  for (let i = 0; i < 4; i++) {
+    const el = $('#rc' + i), t0 = RC_T + i * 0.12, ok = i < 2
+    const tm = ok ? RC_OK + i * 0.12 : RC_NO + (i - 2) * 0.12
+    Tf(el, { y: lerp(50, 0, E.outExpo(P(t, t0, t0 + 0.35))), o: P(t, t0, t0 + 0.08) * (ok ? 1 : 1 - 0.5 * P(t, tm, tm + 0.2)), s: ok ? 1 + 0.06 * Math.sin(Math.PI * P(t, tm, tm + 0.25)) : 1 })
+    el.querySelector('.mk').style.transform = `scale(${E.back(P(t, tm, tm + 0.25))})`
+    const bar = el.querySelector('.bar')
+    if (bar) bar.style.transform = `scaleX(${E.out3(P(t, tm, tm + 0.18))})`
+  }
+  T($('#rar'))
+  // "le général", under the uncommon
+  const r1 = $('#rc1')
+  T($('#rcap'), { x: r1.offsetLeft + r1.offsetWidth / 2 - $('#rar').offsetWidth / 2, y: lerp(20, 0, E.outExpo(P(t, RC_OK + 0.12, RC_OK + 0.4))), o: P(t, RC_OK + 0.12, RC_OK + 0.2) })
+  rise($('#w2s'), t, a + 1.5)
+}
+
+function W3(t) {
+  const k = scene('#w3', t, W[2], W[3], 0.25, 0.02)
+  if (k === null) return
+  const a = W[2]
+  slamA($('#w3t'), t, a + 0.05)
+  T($('#w3s'), { y: lerp(40, 0, E.outExpo(P(t, a + 0.25, a + 0.55))), o: P(t, a + 0.25, a + 0.35) * (1 - P(t, BIG - 0.1, BIG)) })
+  // the roll: fast, then slower and slower, until it stops on the blank card
+  const q = P(t, ROLL_A, ROLL_B), idx = ROLL_TOTAL * (1 - (1 - q) ** 2.4)
+  const speed = q < 1 ? (ROLL_TOTAL * 2.4 * (1 - q) ** 1.4) / (ROLL_B - ROLL_A) : 0
+  const kOut = E.in3(P(t, BIG - 0.08, BIG + 0.12))
+  const strip = $('#strip')
+  strip.style.opacity = P(t, ROLL_A - 0.1, ROLL_A) * (1 - kOut)
+  const bl = clamp(speed * 0.05, 0, 10)
+  strip.style.filter = bl > 0.1 ? `blur(${bl}px)` : 'none'
+  ROLL_EL.forEach((el, i) => {
+    let rel = (((i - idx) % ROLL_N) + ROLL_N) % ROLL_N
+    if (rel > ROLL_N / 2) rel -= ROLL_N
+    const x = 960 + rel * ROLL_PITCH, centre = Math.abs(rel) < 0.5 && q >= 1
+    el.style.display = Math.abs(rel) < 4.5 ? '' : 'none'
+    el.style.transform = `translate(${x - 140}px,${620 - 195 + 60 * kOut}px) scale(${(1 - 0.12 * Math.min(1, Math.abs(rel) / 3)) * (centre ? 1 + 0.08 * E.back(P(t, ROLL_B, ROLL_B + 0.15)) : 1) * lerp(1, 0.7, kOut)})`
+    el.style.boxShadow = centre ? '0 0 70px rgba(255,87,34,.8)' : ''
+  })
+  // "Et le tien ?"
+  T($('#w3rays'), { s: lerp(0.4, 1.1, E.outExpo(P(t, BIG, BIG + 0.5))), o: 0.9 * P(t, BIG, BIG + 0.1), r: t * 14 })
+  burst(PARTS_B, t, BIG + 0.02, 960, 580)
+  T($('#w3n'), { s: lerp(2.6, 1, E.outExpo(P(t, BIG, BIG + 0.3))) * (1 + 0.015 * Math.sin(t * 6)), o: P(t, BIG, BIG + 0.04), b: lerp(26, 0, P(t, BIG, BIG + 0.12)), r: lerp(-10, -3, E.outExpo(P(t, BIG, BIG + 0.4))) })
+  rise($('#w3c'), t, BIG + 0.5)
+}
+
+function W4(t) {
+  const k = scene('#w4', t, W[3], W[4], 0.25, 0.03)
+  if (k === null) return
+  const a = W[3]
+  // the outline draws itself, then the towns light up
+  const kd = E.inOut(P(t, a + 0.05, a + 0.6))
+  for (const id of ['#fr', '#corse']) {
+    $(id).setAttribute('stroke-dashoffset', (1 - kd).toFixed(4))
+    $(id).setAttribute('fill-opacity', P(t, a + 0.25, a + 0.65).toFixed(3))
+  }
+  T($('#map'), { s: lerp(0.94, 1, E.out3(P(t, a, a + 0.65))), o: P(t, a, a + 0.1) })
+  TOWN_EL.forEach((g, i) => {
+    const t0 = MAP_T + i * 0.09, dot = g.querySelector('.dot'), pulse = g.querySelector('.pulse'), txt = g.querySelector('text')
+    const s = E.back(P(t, t0, t0 + 0.3))
+    const cx = +dot.getAttribute('cx'), cy = +dot.getAttribute('cy')
+    dot.setAttribute('transform', `translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})`)
+    const u = ((t - t0) % 1.2 + 1.2) % 1.2, ps = t >= t0 ? 1 + 1.6 * E.out3(u / 1.2) : 0
+    pulse.setAttribute('transform', `translate(${cx} ${cy}) scale(${ps}) translate(${-cx} ${-cy})`)
+    pulse.setAttribute('opacity', t >= t0 ? (0.8 * (1 - u / 1.2)).toFixed(3) : '0')
+    if (txt) txt.setAttribute('opacity', P(t, t0 + 0.1, t0 + 0.25).toFixed(3))
+  })
+  rise($('#w4lab'), t, a + 0.05)
+  slamA($('#w4t'), t, a + 0.1)
+  slamA($('#w4w1'), t, FR_T)
+  slamA($('#w4w2'), t, FR_T + 0.15)
+  rise($('#w4s'), t, FR_T + 0.5)
+}
+
+function W5(t) {
+  const k = scene('#w5', t, W[4], W[5])
+  if (k === null) return
+  const a = W[4]
+  for (let i = 0; i < 2; i++) {
+    const c = $('#bc' + i), t0 = a + 0.05 + i * 0.1, kk = E.outExpo(P(t, t0, t0 + 0.4)), ts = STAMPS[i]
+    const hit = t >= ts ? 1 + 0.04 * (1 - E.out3(P(t, ts, ts + 0.25))) : 1
+    T(c, { y: lerp(500, 0, kk), r: lerp(i ? 20 : -20, i ? 4 : -5, kk), s: hit, o: P(t, t0, t0 + 0.05) })
+    const st = c.querySelector('.bstamp'), ks = P(t, ts, ts + 0.16)
+    st.style.transform = `translate(-50%,-50%) rotate(-14deg) scale(${lerp(2.6, 1, E.outExpo(ks))})`
+    st.style.opacity = P(t, ts, ts + 0.03)
+    st.style.filter = ks < 0.6 ? `blur(${lerp(14, 0, ks / 0.6)}px)` : 'none'
+  }
+  rise($('#w5lab'), t, a + 0.05)
+  slamA($('#w5t1'), t, a + 0.1)
+  slamA($('#w5t2'), t, a + 0.25)
+  rise($('#w5s'), t, a + 1.1)
+  rise($('#w5c'), t, a + 1.6)
+}
+
+function VAL(t) {
+  const k = scene('#val', t, T_VAL, T_CUBE, 0.25, 0.02)
+  if (k === null) return
+  const a = T_VAL
+  rise($('#vlab'), t, a + 0.05)
+  slamA($('#vt'), t, a + 0.05)
+  rise($('#vL'), t, a + 0.1, { dy: 80, d: 0.45 })
+  rise($('#vR'), t, a + 0.2, { dy: 80, d: 0.45 })
+  // the general is typed, then the list pours in and scrolls
+  const name = 'Garland, Knight of Cornelia'
+  $('#vcmdT').textContent = name.slice(0, Math.round(name.length * P(t, V_TYPE[0], V_TYPE[1])))
+  $('#vcaret').style.opacity = t < V_LINES[0] && Math.floor(t * 4) % 2 === 0 ? 1 : 0
+  const nl = Math.round(DECK.length * P(t, V_LINES[0], V_LINES[1]))
+  VLINE_EL.forEach((el, i) => { el.style.opacity = i < nl ? 1 : 0 })
+  $('#vlines').style.transform = `translateY(${-36 * Math.max(0, nl - 6)}px)`
+  // the button, pressed
+  const kp = Math.sin(Math.PI * P(t, V_PRESS, V_PRESS + 0.16))
+  $('#vbtn').style.transform = `scale(${1 - 0.05 * kp})`
+  $('#vbtn').style.filter = `brightness(${1 + 0.3 * kp})`
+  // the checks, one per rule, then the verdict
+  VROW_EL.forEach((el, i) => {
+    const t0 = V_CHECKS + i * 0.15
+    el.style.opacity = P(t, V_PRESS, V_PRESS + 0.1) * (0.35 + 0.65 * P(t, t0, t0 + 0.05))
+    el.querySelector('.vk').style.transform = `scale(${E.back(P(t, t0, t0 + 0.25))})`
+  })
+  const ok = $('#vok')
+  ok.style.opacity = P(t, V_OK, V_OK + 0.05)
+  ok.style.transform = `scale(${lerp(1.5, 1, E.outExpo(P(t, V_OK, V_OK + 0.3)))})`
+}
+
+function CUBE(t) {
+  const on = inR(t, T_CUBE, T_OUT)
+  vis($('#cub'), on)
+  if (!on) return
+  // the orange wave, then the cube falls, turns twice and lands as the logo
+  const a = T_CUBE
+  $('#wipe').style.clipPath = `circle(${lerp(0, 1300, E.inOut(P(t, a, a + 0.3)))}px at 960px 600px)`
+  const drop = E.in3(P(t, a + 0.12, a + 0.35)), hop = 40 * Math.sin(Math.PI * P(t, a + 0.35, a + 0.5))
+  const turns = E.back(P(t, a + 0.85, a + 1.11)) + E.inOut(P(t, a + 1.5, a + 1.8))
+  const kL = E.inOut(P(t, LAND - 0.4, LAND))
+  const sway = (1 - kL) * 5 * Math.sin(t * 2.4)
+  const rx = lerp(lerp(-40, -14, drop), 0, kL)
+  const ry = -90 * turns - 22 * (1 - kL) + sway
+  $('#cube').style.transform = `translateZ(-220px) rotateX(${rx}deg) rotateY(${ry}deg)`
+  const cx = lerp(0, LOGO.x - 960, kL), cy = lerp(lerp(-1100, 0, drop) - hop, LOGO.y - 520, kL)
+  T($('#cubeWrap'), { x: cx, y: cy, s: lerp(1, 300 / 336, kL), o: P(t, a + 0.12, a + 0.16) })
+  T($('#cshadow'), { s: lerp(0.3, 1, drop) * (1 - kL), o: 0.9 * drop * (1 - kL) })
+}
+
+function OUT(t) {
+  const on = t >= LAND - 0.05
+  vis($('#out'), on)
+  if (!on) return
+  // the dark comes back from the logo
+  const kd = E.inOut(P(t, LAND + 0.05, LAND + 0.35))
+  T($('#dwipe'), { x: LOGO.x - 960, y: LOGO.y - 540, s: lerp(0, 50, kd), o: 1 - P(t, LAND + 0.55, LAND + 1.05) })
+  $('#out').style.transformOrigin = '960px 540px'
+  $('#out').style.transform = `scale(${lerp(1, 1.035, P(t, LAND + 0.75, DUR))})`
+  const lg = $('#ologo')
+  T(lg)
+  lg.style.opacity = t >= LAND ? 1 : 0
+  lg.querySelector('img').style.filter = `drop-shadow(0 0 30px rgba(255,87,34,${(0.4 * P(t, LAND, LAND + 0.45)).toFixed(3)}))`
+  rise($('#oslo'), t, LAND + 0.3)
+  const cta = $('#octa')
+  T(cta, { s: lerp(0.6, 1, E.back(P(t, LAND + 0.55, LAND + 0.85))), o: P(t, LAND + 0.55, LAND + 0.6) })
+  const pulse = 0.35 + 0.2 * (0.5 + 0.5 * Math.sin((t - LAND - 0.85) * 4))
+  cta.style.boxShadow = `0 0 ${50 + 30 * pulse}px rgba(255,87,34,${pulse})`
+  rise($('#osub'), t, LAND + 0.75, { dy: 20 })
+  rise($('#odisc'), t, LAND + 0.95, { dy: 20 })
+  T($('#olegal'), { o: P(t, LAND + 1.1, LAND + 1.5) })
+}
+
+window.__render = render
+</script>
+<script src="sfx.js"></script>
+</body>
+</html>
