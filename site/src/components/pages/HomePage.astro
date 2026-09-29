@@ -42,6 +42,23 @@ interface Props {
 
 const { locale } = Astro.props;
 
+/**
+ * Vidéo de présentation, par langue.
+ *
+ * L'italien reprend la version anglaise, comme le repli des traductions
+ * (it → en → fr) : une vidéo qu'on comprend vaut mieux que pas de vidéo. Le
+ * `Record<Locale, …>` est délibéré — ajouter une langue casse le build ici, ce
+ * qui force à décider quelle vidéo elle sert plutôt qu'à en hériter une au
+ * hasard. Chaque fichier a son poster (`<slug>-poster.webp`) et sa version
+ * YouTube, qui porte la qualité adaptative que l'auto-hébergement n'offre pas.
+ */
+const VIDEOS: Record<Locale, { slug: string; youtube: string }> = {
+  fr: { slug: 'pauper-duel-commander-fr', youtube: 'https://youtu.be/jxSWDmU4ki0' },
+  en: { slug: 'pauper-duel-commander-en', youtube: 'https://youtu.be/oEKmg2SVg5I' },
+  it: { slug: 'pauper-duel-commander-en', youtube: 'https://youtu.be/oEKmg2SVg5I' },
+};
+const video = VIDEOS[locale];
+
 const [meta, banlistDate, lastAnnouncement, upcoming, past] = await Promise.all([
   getMeta(),
   getBanlistDate(),
@@ -186,7 +203,38 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
         <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
           {t('onboarding.title', locale)}
         </h2>
-        <p class="text-text-secondary mb-8">{t('onboarding.subtitle', locale)}</p>
+        <p class="text-text-secondary mb-6">{t('onboarding.subtitle', locale)}</p>
+
+        {/* `preload="none"` est ce qui rend la vidéo acceptable ici : le fichier
+            pèse 14 Mo et ne part qu'au clic, la page ne télécharge que le poster
+            (72 Ko). Le lecteur est auto-hébergé et pas une iframe YouTube, qui
+            passerait derrière le bandeau de consentement : un visiteur refusant
+            les cookies verrait un bloc vide en accueil. Le lien YouTube à côté
+            donne la portée et la qualité adaptative sans ce coût.
+            Ré-encodage : `scripts/encode-video.sh`. */}
+        <figure class="mb-10">
+          <div class="panel">
+            <video class="block w-full aspect-video bg-black"
+                   controls preload="none" playsinline
+                   poster={`/img/${video.slug}-poster.webp`}
+                   aria-label={t('onboarding.videoLabel', locale)}
+                   width="1920" height="1080">
+              <source src={`/video/${video.slug}.mp4`} type="video/mp4" />
+            </video>
+          </div>
+          <figcaption class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-muted mt-2.5">
+            <span>{t('onboarding.videoCaption', locale)}</span>
+            <a href={video.youtube} target="_blank" rel="noopener"
+               data-analytics="home_video_youtube" data-analytics-locale={locale}
+               class="inline-flex items-center gap-1.5 font-semibold text-brand-orange hover:text-magic-gold transition-colors">
+              {t('onboarding.videoYoutube', locale)}
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+          </figcaption>
+        </figure>
 
         <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[

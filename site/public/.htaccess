@@ -66,8 +66,10 @@ ErrorDocument 404 /404.html
 <IfModule mod_headers.c>
     Header set Cache-Control "public, max-age=31536000, immutable" env=PDC_IMMUTABLE
 
-    # Images are stable but not fingerprinted: a month, revalidated after.
-    <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|woff2)$">
+    # Images and video: stable but not fingerprinted, so a month then revalidate.
+    # Without mp4 here the host answers its own max-age=900 and a returning
+    # visitor re-downloads fourteen megabytes twice an hour.
+    <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|woff2|mp4)$">
         Header set Cache-Control "public, max-age=2592000, stale-while-revalidate=86400"
     </FilesMatch>
 

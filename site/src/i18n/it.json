@@ -705,6 +705,9 @@
   "onboarding": {
     "title": "Sei nuovo?",
     "subtitle": "Quattro passi da «che formato è?» alla tua prima partita.",
+    "videoLabel": "Il Pauper Duel Commander spiegato in 1 minuto",
+    "videoCaption": "Le regole del formato in video, prima dei quattro passi. Video in inglese.",
+    "videoYoutube": "Guarda su YouTube",
     "step1": "Impara le regole",
     "step1Text": "100 carte, un comandante non comune, 20 punti vita, solo comuni. Il riepilogo richiede trenta secondi.",
     "step1Cta": "Le regole in 30 secondi",
