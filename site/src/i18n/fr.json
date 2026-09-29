@@ -705,6 +705,8 @@
   "onboarding": {
     "title": "Nouveau ici ?",
     "subtitle": "Quatre étapes pour passer de « c’est quoi ce format ? » à votre première partie.",
+    "videoLabel": "Le Pauper Duel Commander en 51 secondes",
+    "videoCaption": "Les règles du format en vidéo, avant les quatre étapes.",
     "step1": "Comprendre les règles",
     "step1Text": "100 cartes, un général peu commun, 20 points de vie, des communes. Le résumé tient en trente secondes.",
     "step1Cta": "Les règles en 30 secondes",

@@ -186,7 +186,28 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
         <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
           {t('onboarding.title', locale)}
         </h2>
-        <p class="text-text-secondary mb-8">{t('onboarding.subtitle', locale)}</p>
+        <p class="text-text-secondary mb-6">{t('onboarding.subtitle', locale)}</p>
+
+        {/* `preload="none"` est ce qui rend la vidéo acceptable ici : le fichier
+            pèse 11 Mo et ne part qu'au clic, la page ne télécharge que le poster
+            (35 Ko). Auto-hébergée et pas en iframe YouTube, sinon le lecteur
+            passerait derrière le bandeau de consentement et un visiteur qui
+            refuse les cookies verrait un bloc vide en accueil.
+            Ré-encodage : `scripts/encode-video.sh`. */}
+        <figure class="mb-10">
+          <div class="panel">
+            <video class="block w-full aspect-video bg-black"
+                   controls preload="none" playsinline
+                   poster="/img/pauper-duel-commander-poster.webp"
+                   aria-label={t('onboarding.videoLabel', locale)}
+                   width="1920" height="1080">
+              <source src="/video/pauper-duel-commander.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <figcaption class="text-sm text-text-muted mt-2.5">
+            {t('onboarding.videoCaption', locale)}
+          </figcaption>
+        </figure>
 
         <ol class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[

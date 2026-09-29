@@ -705,6 +705,8 @@
   "onboarding": {
     "title": "New here?",
     "subtitle": "Four steps from “what is this format?” to your first game.",
+    "videoLabel": "Pauper Duel Commander in 51 seconds",
+    "videoCaption": "The format's rules in video, before the four steps.",
     "step1": "Learn the rules",
     "step1Text": "100 cards, an uncommon commander, 20 life, commons only. The summary takes thirty seconds.",
     "step1Cta": "The rules in 30 seconds",
