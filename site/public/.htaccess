@@ -65,7 +65,7 @@ ErrorDocument 404 /404.html
 
     # Images and video: stable but not fingerprinted, so a month then revalidate.
     # Without mp4 here the host answers its own max-age=900 and a returning
-    # visitor re-downloads eleven megabytes twice an hour.
+    # visitor re-downloads fourteen megabytes twice an hour.
     <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|woff2|mp4)$">
         Header set Cache-Control "public, max-age=2592000, stale-while-revalidate=86400"
     </FilesMatch>
