@@ -136,6 +136,24 @@ cd site && npm ci && npm run build
 # puis envoyer le CONTENU de site/dist/ dans www/ via SFTP
 ```
 
+## Prévisualisation (staging)
+
+`deploy-staging.sh`, à la racine, publie une branche sur
+**staging.pauperduelcommander.fr** (Surge) avant qu'elle n'atteigne la prod. Il
+construit le checkout depuis lequel on le lance, donc depuis le worktree de la
+branche à montrer :
+
+```bash
+cd .claude/worktrees/<branche>
+/chemin/vers/pdc/deploy-staging.sh
+```
+
+Statique seulement : le PHP (validateur, formulaires) ne tourne pas sur Surge, le
+formulaire de soumission y est masqué, et un `robots.txt` interdit l'indexation.
+Il faut s'être connecté une fois (`npx surge login`) ; le script ne manipule
+aucun identifiant. `main` n'y passe que si on le lance depuis `main`, et le
+script prévient.
+
 ## Limites connues
 
 - **Le déploiement n'envoie que ce qui a changé.** `site/scripts/deploy-sftp.sh`

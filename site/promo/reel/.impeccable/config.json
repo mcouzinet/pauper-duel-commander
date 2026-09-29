@@ -1,0 +1,35 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "site/promo/reel/reel.html"
+        ],
+        "createdAt": "2026-09-28T21:49:43.473Z",
+        "reason": "Claude: motion-graphics promo video; glows are the house style of the user's reference reels (Endstep Tracker, Deck Compare), not site UI"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "site/promo/reel/thumbnail.html"
+        ],
+        "createdAt": "2026-09-29T07:16:02.571Z",
+        "reason": "Claude: YouTube thumbnail of the promo reel, glows match the video's house style (Endstep Tracker, Deck Compare thumbnails), not site UI"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "files": [
+          "site/promo/reel/thumbnail.html"
+        ],
+        "createdAt": "2026-09-29T07:18:02.947Z",
+        "reason": "Claude: Inter is the PDC site's own body font (DESIGN.md, self-hosted in site/public/fonts); the cover follows the brand"
+      }
+    ]
+  }
+}
