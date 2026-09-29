@@ -39,6 +39,9 @@ const venueOptions = [...venues.entries()].sort((a, b) => b[1] - a[1] || a[0].lo
 
 const withResults = past.filter(tournament => tournament.top8.length > 0).length;
 
+/** Results shown per page. Read by the script below through `data-page-size`. */
+const PAGE_SIZE = 10;
+
 const title = t('tournament.seoTitle', locale);
 const description = t('tournament.seoDescription', locale)
   .replace('%total%', String(past.length))
@@ -271,26 +274,85 @@ const description = t('tournament.seoDescription', locale)
         <p id="tournament-empty" class="hidden text-center py-10 text-text-secondary">
           {t('tournament.noneForFilter', locale)}
         </p>
+
+        {/* Hidden until the script decides there is more than one page, so the
+            list reads whole with no JavaScript instead of stopping at ten. */}
+        {past.length > 0 && (
+          <nav id="tournament-pager" data-page-size={PAGE_SIZE} hidden
+               aria-label={t('tournament.results', locale)}
+               class="mt-6 flex items-center justify-center gap-3">
+            <button type="button" id="tournament-prev" class="btn-secondary !px-4 !py-2 !text-sm">
+              {t('archive.paginationPrevious', locale)}
+            </button>
+            <span id="tournament-pager-status" aria-live="polite"
+                  class="text-sm font-mono tabular-nums text-text-muted min-w-16 text-center"></span>
+            <button type="button" id="tournament-next" class="btn-secondary !px-4 !py-2 !text-sm">
+              {t('archive.paginationNext', locale)}
+            </button>
+          </nav>
+        )}
       </div>
     </div>
   </section>
 
   <script>
+    /**
+     * Venue filter and pagination, in one pass.
+     *
+     * The whole list is in the HTML: it reads complete without JavaScript and
+     * stays crawlable, and paging is applied on top rather than fetched. That
+     * also keeps the filter honest — server-side pages would only ever filter
+     * the ten rows on screen, so "Artefacts (7)" could return three.
+     *
+     * Both concerns write the same `hidden` flag, so they share one render
+     * instead of overwriting each other.
+     */
     const venue = document.getElementById('filter-venue') as HTMLSelectElement | null;
     const list = document.getElementById('tournament-list');
     const empty = document.getElementById('tournament-empty');
+    const pager = document.getElementById('tournament-pager');
+    const prev = document.getElementById('tournament-prev') as HTMLButtonElement | null;
+    const next = document.getElementById('tournament-next') as HTMLButtonElement | null;
+    const status = document.getElementById('tournament-pager-status');
+
+    const perPage = Number(pager?.dataset.pageSize) || 10;
+    let page = 1;
+
+    function render() {
+      if (!list) return;
+      const items = [...list.children] as HTMLElement[];
+      const wanted = venue?.value ?? '';
+      const matching = items.filter(item => !wanted || item.dataset.venue === wanted);
+
+      const pageCount = Math.max(1, Math.ceil(matching.length / perPage));
+      page = Math.min(page, pageCount);
+      const start = (page - 1) * perPage;
+
+      for (const item of items) item.hidden = true;
+      for (const item of matching.slice(start, start + perPage)) item.hidden = false;
+
+      empty?.classList.toggle('hidden', matching.length > 0);
+      if (pager) pager.hidden = matching.length <= perPage;
+      if (status) status.textContent = `${page} / ${pageCount}`;
+      if (prev) prev.disabled = page === 1;
+      if (next) next.disabled = page === pageCount;
+    }
+
+    function turn(by: number) {
+      page += by;
+      render();
+      // Page 2 starting mid-scroll would look like rows vanished.
+      list?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
     venue?.addEventListener('change', () => {
-      if (!list) return;
-      const wanted = venue.value;
-      let visible = 0;
-      for (const item of [...list.children] as HTMLElement[]) {
-        const match = !wanted || item.dataset.venue === wanted;
-        item.hidden = !match;
-        if (match) visible++;
-      }
-      empty?.classList.toggle('hidden', visible > 0);
-      window.pdcTrack?.('tournament_filter', { venue: wanted });
+      page = 1;
+      render();
+      window.pdcTrack?.('tournament_filter', { venue: venue.value });
     });
+    prev?.addEventListener('click', () => turn(-1));
+    next?.addEventListener('click', () => turn(1));
+
+    render();
   </script>
 </Base>
