@@ -144,19 +144,22 @@ run({
 function loadGA4() {
   if (document.querySelector('script[src*="googletagmanager"]')) return;
 
+  (window as any).dataLayer = (window as any).dataLayer || [];
+  // Must push `arguments`, not a rest-parameter array: gtag.js reads a plain
+  // array as a different kind of command and drops it without an error. That is
+  // what sent zero hits from the Astro cutover (9 August 2026) until this fix.
+  const gtag: (...args: unknown[]) => void = function () {
+    (window as any).dataLayer.push(arguments);
+  };
+  // Published on window so scripts/analytics.ts can send journey events. Kept
+  // here rather than there so consent stays the single gate: no gtag on the
+  // window means track() is a no-op.
+  (window as any).gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', 'G-4J2Y2V33VE');
+
   const script = document.createElement('script');
   script.async = true;
   script.src = 'https://www.googletagmanager.com/gtag/js?id=G-4J2Y2V33VE';
   document.head.appendChild(script);
-
-  script.onload = () => {
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    function gtag(...args: any[]) { (window as any).dataLayer.push(args); }
-    // Published on window so scripts/analytics.ts can send journey events. Kept
-    // here rather than there so consent stays the single gate: no gtag on the
-    // window means track() is a no-op.
-    (window as any).gtag = gtag;
-    gtag('js', new Date());
-    gtag('config', 'G-4J2Y2V33VE');
-  };
 }
