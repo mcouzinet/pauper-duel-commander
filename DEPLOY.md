@@ -83,8 +83,8 @@ pas supprimé sa sauvegarde (dump SQL + fichiers, hors dépôt).
   git checkout <commit-sain> -- .        # ou git revert <commit-fautif>
   gh workflow run deploy.yml
   ```
-  Le SFTP écrase les fichiers modifiés ; `delete_remote_files` est à `false`,
-  donc rien n'est supprimé côté serveur.
+  Le déploiement écrase les fichiers dont le contenu diffère et ne supprime
+  rien côté serveur.
 - **Revenir à WordPress** (cas extrême) : restaurer les fichiers WP dans `www/`
   et la base depuis la sauvegarde. À ne faire que si la version Astro pose un
   problème majeur non corrigeable rapidement.
@@ -138,11 +138,34 @@ cd site && npm ci && npm run build
 
 ## Limites connues
 
-- **Le SFTP n'envoie pas les fichiers cachés** (glob `dist/*`). En pratique sans
-  effet : le `.htaccess` racine (redirections) et `api/.htaccess` sont déjà en
-  ligne et `delete_remote_files` est à `false`, donc ils restent en place. **Mais
-  si un `.htaccess` est modifié**, il faut le pousser une fois à la main (ou
-  adapter le workflow). Idem pour tout futur fichier commençant par un point.
+- **Le déploiement n'envoie que ce qui a changé.** `site/scripts/deploy-sftp.sh`
+  garde sur le serveur un manifeste d'empreintes SHA-256, `www/.ht-deploy-manifest`,
+  et ne transfère que les fichiers dont l'empreinte diffère. Sans manifeste
+  (premier passage, fichier perdu, `force_full`), il envoie tout : un raté se
+  paie en temps, jamais en fichiers manquants. Pour forcer : onglet Actions →
+  *Deploy to OVH* → *Run workflow* → cocher **Tout renvoyer**.
+
+  Le manifeste s'appelle `.ht-…` pour que la configuration Apache par défaut
+  refuse de le servir : la liste des fichiers du site n'est pas publique.
+
+  Comparaison sur l'empreinte et pas sur la date, parce que le runner
+  reconstruit tout à chaque fois : chaque fichier local est plus récent que son
+  homologue distant même quand ses octets sont identiques, et une comparaison
+  sur la date renverrait tout. Pas sur la taille non plus — un score « 2-1 »
+  corrigé en « 3-0 » ne change pas la taille du HTML.
+
+  `site/scripts/deploy-sftp.test.sh` vérifie tout ça contre un faux serveur
+  local, puisqu'on ne peut pas se brancher sur OVH depuis une PR.
+- **Les fichiers cachés partent maintenant tout seuls.** L'ancienne étape
+  utilisait le glob `dist/*`, qui les ignorait, et un `.htaccess` modifié devait
+  être poussé à la main. Ce n'est plus le cas : le script parcourt l'arbre et
+  prend les dotfiles.
+- **Rien n'est supprimé à distance.** Comme avant : `api/cache/` et l'état du
+  rate limit vivent sur le serveur et ne sont pas dans `dist/`. Un fichier retiré
+  du site reste donc en ligne jusqu'à suppression manuelle.
+- **Un fichier modifié à la main sur le serveur ne sera pas réparé** par le
+  déploiement suivant : le manifeste le croit conforme. C'est le prix de
+  l'incrémental. *Tout renvoyer* remet tout d'aplomb.
 - **Le typage est vérifié sur PR, pas au déploiement.** `npm run check` est propre
   — **0 erreur, 0 avertissement, 8 hints** (mesuré sur `main` le 18 août 2026 ;
   `npm run lint`, qui y ajoute `tsc --noEmit`, l'est aussi). La dernière « erreur

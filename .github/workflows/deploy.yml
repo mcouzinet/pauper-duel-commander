@@ -6,6 +6,11 @@ name: Deploy to OVH
 # Pour déployer automatiquement à chaque push sur main, décommenter le bloc `push`.
 on:
   workflow_dispatch:
+    inputs:
+      force_full:
+        description: "Tout renvoyer, sans tenir compte du manifeste"
+        type: boolean
+        default: false
   # Auto-deploy when the site changes (e.g. a merged submission PR). Doc-only
   # changes don't trigger a deploy.
   push:
@@ -73,18 +78,27 @@ jobs:
           vendor/bin/phpunit
 
       # Envoi SFTP de dist/ vers la racine web OVH (www/), sur le port 22 avec les
-      # mêmes identifiants FTP-SSH. Le mot de passe ne transite plus en clair.
-      # delete_remote_files: false -> ne supprime rien côté serveur (ni le cache
-      # d'exécution sous api/cache/, ni le .htaccess déjà en place — les dotfiles
-      # ne sont pas repris par le glob dist/*, mais ils sont déjà déployés).
-      - name: Deploy to OVH (SFTP)
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
-        with:
-          server: ${{ secrets.OVH_FTP_SERVER }}
-          port: 22
-          username: ${{ secrets.OVH_FTP_USERNAME }}
-          password: ${{ secrets.OVH_FTP_PASSWORD }}
-          local_path: './site/dist/*'
-          remote_path: './www/'
-          sftp_only: true
-          delete_remote_files: false
+      # mêmes identifiants FTP-SSH. Le mot de passe ne transite pas en clair.
+      #
+      # Script maison plutôt que wlixcc/SFTP-Deploy-Action : cette action ne
+      # peut pas être incrémentale, son entrypoint se résume à un
+      # `sftp -b "put -r dist/* www/"` qui renvoie tout à chaque fois. Avec les
+      # deux vidéos, c'est 53 Mo et 585 fichiers par déploiement, dont 28 Mo qui
+      # ne bougent jamais. Le script compare un manifeste d'empreintes SHA-256
+      # gardé sur le serveur et n'envoie que ce qui diffère. Sans manifeste il
+      # envoie tout, donc l'échec se paie en temps, jamais en fichiers manquants.
+      #
+      # Il ne supprime rien à distance, comme l'étape précédente : api/cache/ et
+      # l'état du rate limit vivent sur le serveur et ne sont pas dans dist/. Il
+      # envoie en revanche les dotfiles, que le glob `dist/*` laissait de côté :
+      # .htaccess part donc tout seul, plus besoin de le pousser à la main.
+      - name: Install sshpass
+        run: sudo apt-get install -y --no-install-recommends sshpass
+
+      - name: Deploy to OVH (SFTP incrémental)
+        env:
+          SFTP_HOST: ${{ secrets.OVH_FTP_SERVER }}
+          SFTP_USER: ${{ secrets.OVH_FTP_USERNAME }}
+          SFTP_PASSWORD: ${{ secrets.OVH_FTP_PASSWORD }}
+          FORCE_FULL: ${{ inputs.force_full }}
+        run: ./site/scripts/deploy-sftp.sh
