@@ -52,16 +52,19 @@ ErrorDocument 404 /404.html
 # apart. Astro fingerprints /_astro/, and the fonts are versioned in their
 # filenames, so both can be cached indefinitely; HTML must not be.
 # ---------------------------------------------------------------------------
-<IfModule mod_headers.c>
-    # Fingerprinted build output — the filename changes when the bytes do.
-    <LocationMatch "^/_astro/">
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </LocationMatch>
+# Path-based rules go through SetEnvIf, never <LocationMatch>: that directive is
+# server-config only, and Apache answers 500 to every request when it appears in
+# a .htaccess. The file carried it for months without anyone noticing, because
+# the deploy skipped dotfiles and the server kept an older hand-pushed copy. The
+# day the deploy started sending them, the whole site went down.
+<IfModule mod_setenvif.c>
+    # Fingerprinted build output and fonts: the filename changes when the bytes
+    # do, so they can be cached indefinitely.
+    SetEnvIf Request_URI "^/(_astro|fonts)/" PDC_IMMUTABLE
+</IfModule>
 
-    # Fonts: filenames carry the subset and version.
-    <LocationMatch "^/fonts/">
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </LocationMatch>
+<IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable" env=PDC_IMMUTABLE
 
     # Images are stable but not fingerprinted: a month, revalidated after.
     <FilesMatch "\.(webp|jpg|jpeg|png|svg|ico|woff2)$">
