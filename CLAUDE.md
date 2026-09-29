@@ -286,8 +286,13 @@ en place : `docs/external/README.md`.
 - **Redirections** : `public/.htaccess` (racine) redirige en 301 les anciennes
   URLs WordPress non préfixées vers les routes `/fr/…`. Apache uniquement
   (OVH mutualisé) ; équivalent nginx en commentaire.
-- Le déploiement SFTP n'envoie pas les fichiers cachés (`dist/*`) : un `.htaccess`
-  modifié doit être poussé à la main une fois (cf. `DEPLOY.md`).
+- **Le déploiement n'envoie que ce qui a changé** (`site/scripts/deploy-sftp.sh`) :
+  un manifeste d'empreintes SHA-256 vit sur le serveur et seuls les fichiers qui
+  en diffèrent partent. Sans manifeste, tout part — un raté coûte du temps, pas
+  des fichiers manquants. Les dotfiles sont inclus, donc un `.htaccess` modifié
+  n'a plus besoin d'être poussé à la main. Rien n'est supprimé à distance, et un
+  fichier retouché directement sur le serveur ne sera pas réparé : relancer le
+  workflow avec *Tout renvoyer*. Test : `site/scripts/deploy-sftp.test.sh`.
 - Le site est **entièrement généré au build**, « aujourd'hui » compris : un
   tournoi passé reste « à venir » jusqu'au prochain build. D'où le rebuild
   hebdomadaire (cron dans `deploy.yml`) en plus du déploiement au push.
