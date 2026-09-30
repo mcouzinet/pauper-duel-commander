@@ -1,0 +1,108 @@
+{
+    "title": "Tournoi de l'automne",
+    "date": "2026-09-29",
+    "location": "Gaming & Caux",
+    "city": "Caux",
+    "playerCount": 0,
+    "actualPlayerCount": 10,
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Gilbertino le Mojo",
+            "commanderName": "Quaketusk Boar",
+            "score": "3-0-0",
+            "decklistSlug": "quaketusk-boar-tournoi-de-l-automne-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Skoon",
+            "commanderName": "Izzet Guildmage",
+            "score": "2-1-0",
+            "decklistSlug": "izzet-guildmage-tournoi-de-l-automne-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "WeeZky",
+            "commanderName": "Slippery Bogle",
+            "score": "2-0-1",
+            "decklistSlug": "slippery-bogle-tournoi-de-l-automne-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Herbette",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "2-0-1",
+            "decklistSlug": null
+        },
+        {
+            "place": 5,
+            "playerName": "Piy00",
+            "commanderName": "Savvy Hunter",
+            "score": "2-0-1",
+            "decklistSlug": null
+        },
+        {
+            "place": 6,
+            "playerName": "Darkviper",
+            "commanderName": "The Emperor of Palamecia",
+            "score": "1-1-1",
+            "decklistSlug": null
+        },
+        {
+            "place": 7,
+            "playerName": "Sam",
+            "commanderName": "Heartfire Hero",
+            "score": "1-0-2",
+            "decklistSlug": null
+        },
+        {
+            "place": 8,
+            "playerName": "Adam",
+            "commanderName": "Kutzil, Malamet Exemplar",
+            "score": "1-0-2",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Kutzil, Malamet Exemplar",
+            "count": 1
+        },
+        {
+            "name": "Quaketusk Boar",
+            "count": 1
+        },
+        {
+            "name": "Izzet Guildmage",
+            "count": 1
+        },
+        {
+            "name": "Slippery Bogle",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        },
+        {
+            "name": "Savvy Hunter",
+            "count": 1
+        },
+        {
+            "name": "The Emperor of Palamecia",
+            "count": 1
+        },
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        },
+        {
+            "name": "Tetsuko Umezawa, Fugitive",
+            "count": 1
+        },
+        {
+            "name": "Crackling Drake",
+            "count": 1
+        }
+    ]
+}
