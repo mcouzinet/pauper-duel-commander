@@ -8,26 +8,25 @@
  * way from a commander to the decks playing it.
  *
  * All the aggregation lives in lib/meta.ts (shared with the home page). What is
- * left here is presentation, in the decklist page's language since its
- * redesign: a compact header that states the sample before any number, then one
- * ranking at a time (every player, or the top 4) chosen in a sticky bar that
- * also switches between rows and cards. The colours sit beside the ranking on
- * desktop, as printed bars rather than a donut. The faint card art behind the
- * header is gone: barely visible, it was still the page's largest paint.
- *
- * Without JavaScript the bar is hidden and both rankings read one after the
- * other, which is what the page used to be.
+ * left here is presentation: a compact header that states the sample before
+ * any number, then for each ranking (every player, or the top 4):
+ *   - the mosaic, where a commander's tile is its share of the field and the
+ *     long tail fills the last box: the shape of the meta before any figure;
+ *   - a dense table for the exact figures, beside the guild grid and the
+ *     colour columns.
+ * A row of chips shows one ranking at a time. Without JavaScript the chips are
+ * hidden and both rankings read one after the other.
  */
 import Base from '@/layouts/Base.astro';
-import CommanderRanking from '@/components/CommanderRanking.astro';
-import IdentityBars from '@/components/IdentityBars.astro';
-import ColorBars from '@/components/ColorBars.astro';
-import ViewSwitch from '@/components/ViewSwitch.astro';
+import MetaMosaic from '@/components/MetaMosaic.astro';
+import GuildGrid from '@/components/GuildGrid.astro';
+import ColorColumns from '@/components/ColorColumns.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t, tf, type Locale } from '@/lib/i18n';
+import { t, tf, localeTag, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
-import { getMeta, type Aggregate } from '@/lib/meta';
+import { getMeta, type Aggregate, type CommanderStat } from '@/lib/meta';
 import { formatBanlistDate } from '@/lib/banlist';
+import { formatColorSymbols } from '@/lib/mana';
 
 interface Props {
   locale: Locale;
@@ -39,14 +38,17 @@ const meta = await getMeta();
 const hasData = meta.global.commanders.length > 0;
 const top4HasData = meta.top4.commanders.length > 0;
 
-/** Rows shown before the fold. */
+/** Table rows before the fold. */
 const VISIBLE = 15;
 
 interface Panel {
   id: 'global' | 'top4';
   aggregate: Aggregate;
-  heading: string;
+  glance: string;
+  glanceHelp: string;
   intro: string | null;
+  tableTitle: string;
+  countLabel: string;
   ciTitle: string;
   colorTitle: string;
 }
@@ -55,20 +57,35 @@ const panels: Panel[] = [
   {
     id: 'global',
     aggregate: meta.global,
-    heading: t('meta.mostPlayed', locale),
+    glance: t('meta.glanceTitle', locale),
+    glanceHelp: t('meta.glanceHelp', locale),
     intro: null,
+    tableTitle: t('meta.mostPlayed', locale),
+    countLabel: t('meta.colPlayers', locale),
     ciTitle: t('meta.ciTitle', locale),
     colorTitle: t('meta.colorPresence', locale),
   },
   ...(top4HasData ? [{
     id: 'top4' as const,
     aggregate: meta.top4,
-    heading: t('meta.top4Commanders', locale),
+    glance: t('meta.top4GlanceTitle', locale),
+    glanceHelp: t('meta.top4GlanceHelp', locale),
     intro: `${t('meta.top4Desc', locale)} ${meta.top4.tournamentCount} ${t('meta.tournaments', locale)} · ${meta.top4.total} ${t('meta.top4Spots', locale)}`,
+    tableTitle: t('meta.top4Commanders', locale),
+    countLabel: t('meta.colSpots', locale),
     ciTitle: t('meta.top4Ci', locale),
     colorTitle: t('meta.top4Colors', locale),
   }] : []),
 ];
+
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (count: number, total: number) => {
+  const value = total > 0 ? count / total : 0;
+  return value > 0 && value < 0.005 ? `< ${percent.format(0.01)}` : percent.format(value);
+};
+/** Decklists filtered to this commander; the index reads ?commander= on load. */
+const decklistHref = (name: string) => `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
+const struck = (c: CommanderStat) => c.isBanned && 'line-through decoration-red-500/70';
 
 const title = t('meta.seoTitle', locale);
 const description = hasData
@@ -90,6 +107,7 @@ const description = hasData
           <ul class="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="list">
             <li class="stat-pill"><strong>{meta.global.tournamentCount}</strong> {t('meta.tournaments', locale)}</li>
             <li class="stat-pill"><strong>{meta.global.total}</strong> {t('meta.playerEntries', locale)}</li>
+            <li class="stat-pill"><strong>{meta.global.commanders.length}</strong> {t('meta.distinctCommanders', locale)}</li>
             <li class="stat-pill">{tf('metaPage.window', locale, {
               from: formatBanlistDate(meta.from, locale),
               to: formatBanlistDate(meta.to, locale),
@@ -107,57 +125,112 @@ const description = hasData
 
     {hasData ? (
       <>
-        <!-- Sticky: which ranking, and how it is drawn. -->
-        <div class="sticky top-[68px] md:top-[76px] z-30 -mx-4 px-4 md:mx-0 md:px-0 bg-bg-primary/95 backdrop-blur-sm border-y border-white/8">
-          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2">
-            {panels.length > 1 && (
-              <div class="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-labelledby="meta-ranking-label" data-needs-js>
-                <span id="meta-ranking-label" class="hidden sm:inline mr-1 text-sm text-text-muted">{t('meta.rankingLabel', locale)}</span>
-                <label class="choice" data-analytics="meta_scope" data-analytics-scope="global">
-                  <input type="radio" name="meta-ranking" value="global" checked class="sr-only" />
-                  <span class="choice__box">{t('meta.allPlayers', locale)}</span>
-                </label>
-                <label class="choice" data-analytics="meta_scope" data-analytics-scope="top4">
-                  <input type="radio" name="meta-ranking" value="top4" class="sr-only" />
-                  <span class="choice__box">{t('meta.top4Short', locale)}</span>
-                </label>
-              </div>
-            )}
-            <ViewSwitch locale={locale} scope="meta" compact={true} class="ml-auto" />
+        {panels.length > 1 && (
+          <div class="flex flex-wrap items-center gap-1.5 py-3 border-t border-white/8" role="radiogroup" aria-labelledby="meta-ranking-label" data-needs-js>
+            <span id="meta-ranking-label" class="mr-1 text-sm text-text-muted">{t('meta.rankingLabel', locale)}</span>
+            <label class="choice" data-analytics="meta_scope" data-analytics-scope="global">
+              <input type="radio" name="meta-ranking" value="global" checked class="sr-only" />
+              <span class="choice__box">{t('meta.allPlayers', locale)}</span>
+            </label>
+            <label class="choice" data-analytics="meta_scope" data-analytics-scope="top4">
+              <input type="radio" name="meta-ranking" value="top4" class="sr-only" />
+              <span class="choice__box">{t('meta.top4Short', locale)}</span>
+            </label>
           </div>
-        </div>
+        )}
 
-        {panels.map((panel, index) => (
-          <section class:list={['scroll-mt-36', index > 0 && 'border-t border-white/8']}
-                   aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id}>
-            <div class="pt-6 md:pt-8 pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-x-10 lg:items-start">
-              <div class="min-w-0">
-                <h2 id={`meta-${panel.id}-title`} class="section-title">{panel.heading}</h2>
-                {panel.intro && <p class="-mt-2 mb-4 text-sm text-text-secondary">{panel.intro}</p>}
-                <CommanderRanking
-                  commanders={panel.aggregate.commanders}
-                  total={panel.aggregate.total}
-                  locale={locale}
-                  limit={VISIBLE}
-                  foldRest={true}
-                  tiles={true}
-                />
-                {panel.aggregate.unattributed > 0 && (
-                  <p class="mt-3 text-xs text-text-muted">{tf('metaPage.unattributed', locale, { n: panel.aggregate.unattributed })}</p>
-                )}
+        {panels.map((panel, index) => {
+          const a = panel.aggregate;
+          // Folding a single row costs more than showing it.
+          const cut = a.commanders.length === VISIBLE + 1 ? VISIBLE + 1 : VISIBLE;
+          const head = a.commanders.slice(0, cut);
+          const rest = a.commanders.slice(cut);
+          return (
+            <section class="scroll-mt-24 border-t border-white/8 pt-6 md:pt-8 pb-8" aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id}>
+              <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
+                <h2 id={`meta-${panel.id}-title`} class="section-title !mb-0">{panel.glance}</h2>
+                <p class="text-sm text-text-secondary">{panel.glanceHelp}</p>
               </div>
+              {panel.intro && <p class="-mt-2 mb-4 text-sm text-text-secondary">{panel.intro}</p>}
 
-              <aside class="mt-6 lg:mt-0 flex flex-col gap-4"
-                     aria-label={t('a11y.colors', locale)}>
-                <IdentityBars counts={panel.aggregate.ciCounts} locale={locale} title={panel.ciTitle} limit={8} />
-                <ColorBars counts={panel.aggregate.colorCounts}
-                           total={panel.aggregate.total - panel.aggregate.unattributed}
-                           locale={locale}
-                           title={panel.colorTitle} />
-              </aside>
-            </div>
-          </section>
-        ))}
+              <MetaMosaic commanders={a.commanders} total={a.total} unattributed={a.unattributed} locale={locale} label={panel.glance} eager={index === 0} />
+
+              <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start">
+                <section class="panel p-3 sm:p-5" aria-labelledby={`meta-${panel.id}-table`}>
+                  <h3 id={`meta-${panel.id}-table`} class="px-1 mb-3 font-heading font-bold text-base uppercase tracking-wider text-text-primary">{panel.tableTitle}</h3>
+                  <table class="meta-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="w-8 pl-1">#</th>
+                        <th scope="col">{t('meta.colCommander', locale)}</th>
+                        <th scope="col" class="hidden sm:table-cell">{t('a11y.colors', locale)}</th>
+                        <th scope="col" class="text-right">{t('meta.colShare', locale)}</th>
+                        <th scope="col" class="hidden sm:table-cell text-right pr-1">{panel.countLabel}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {head.map(c => (
+                        <tr>
+                          <td class="pl-1 font-heading font-bold text-text-muted tabular-nums">{c.rank}</td>
+                          <td>
+                            <span class="flex items-center gap-2.5">
+                              {c.image ? (
+                                <span class:list={['w-8 h-8 flex-shrink-0 overflow-hidden rounded ring-1 ring-white/10 card-hover-trigger', c.isBanned && 'grayscale']}
+                                      data-card-name={c.mainName} data-card-image={c.cardImage ?? c.image}>
+                                  <img src={c.image} alt="" width="32" height="32" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                                </span>
+                              ) : (
+                                <span class="w-8 h-8 flex-shrink-0 rounded bg-bg-tertiary" aria-hidden="true"></span>
+                              )}
+                              <span class="min-w-0">
+                                <a href={decklistHref(c.mainName)} lang="en"
+                                   data-analytics="meta_commander_click" data-analytics-commander={c.mainName}
+                                   class:list={['font-beleren text-[15px] leading-snug text-text-primary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
+                                {c.partnerName && <span class:list={['block font-beleren text-xs leading-snug text-text-secondary', struck(c)]} lang="en">+ {c.partnerName}</span>}
+                                {c.isBanned && <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>}
+                              </span>
+                            </span>
+                          </td>
+                          <td class="hidden sm:table-cell"><span class="inline-flex" set:html={formatColorSymbols(c.colors)} /></td>
+                          <td class="text-right font-heading font-bold text-base text-text-primary tabular-nums">{share(c.count, a.total)}</td>
+                          <td class="hidden sm:table-cell text-right pr-1 text-text-muted tabular-nums">{c.count}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  {rest.length > 0 && (
+                    <details class="group/fold mt-2">
+                      <summary class="cursor-pointer select-none inline-flex items-center min-h-11 px-1 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors"
+                               data-analytics="meta_expand">
+                        <span class="group-open/fold:hidden">{tf('metaPage.showAll', locale, { n: rest.length })}</span>
+                        <span class="hidden group-open/fold:inline">{t('metaPage.hideAll', locale)}</span>
+                      </summary>
+                      <ol class="mt-1 sm:columns-2 sm:gap-x-8 text-sm" role="list">
+                        {rest.map(c => (
+                          <li class="break-inside-avoid flex items-baseline gap-2 py-1.5 border-t border-white/6">
+                            <span class="w-7 flex-shrink-0 text-right text-xs text-text-muted tabular-nums">{c.rank}</span>
+                            <a href={decklistHref(c.mainName)} lang="en"
+                               class:list={['flex-1 min-w-0 font-beleren text-text-secondary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
+                            <span class="flex-shrink-0 text-xs text-text-muted tabular-nums">{share(c.count, a.total)} · {c.count}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </details>
+                  )}
+                  {a.unattributed > 0 && (
+                    <p class="mt-3 px-1 text-xs text-text-muted">{tf('metaPage.unattributed', locale, { n: a.unattributed })}</p>
+                  )}
+                </section>
+
+                <div class="flex flex-col gap-6">
+                  <GuildGrid counts={a.ciCounts} locale={locale} title={panel.ciTitle} />
+                  <ColorColumns counts={a.colorCounts} total={a.total - a.unattributed} locale={locale} title={panel.colorTitle} />
+                </div>
+              </div>
+            </section>
+          );
+        })}
 
         <div class="pt-6 border-t border-white/8 flex flex-wrap gap-3">
           <a href={route('tournaments', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('home.resultsCta', locale)}</a>

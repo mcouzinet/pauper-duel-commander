@@ -19,8 +19,8 @@ import type { CollectionEntry } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Top8, { type Top8Entry } from '@/components/Top8.astro';
 import CommanderRanking from '@/components/CommanderRanking.astro';
-import IdentityBars from '@/components/IdentityBars.astro';
-import ColorBars from '@/components/ColorBars.astro';
+import GuildGrid from '@/components/GuildGrid.astro';
+import ColorColumns from '@/components/ColorColumns.astro';
 import ViewSwitch from '@/components/ViewSwitch.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, tf, type Locale } from '@/lib/i18n';
@@ -131,6 +131,7 @@ const commanders: CommanderStat[] = recorded.map((entry, index) => {
     percentage: metaTotal > 0 ? Math.round((entry.count / metaTotal) * 100) : 0,
     image: getCardImage(card, 'art_crop'),
     cardImage: getCardImage(card, 'normal'),
+    thumb: getCardImage(card, 'small'),
     colors,
     ciKey,
     isBanned: isBanned(entry.name),
@@ -354,8 +355,8 @@ const schemas: Record<string, unknown>[] = [
                   )}
                 </section>
                 <div class="grid gap-4 md:grid-cols-2 items-start">
-                  <IdentityBars counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} limit={6} />
-                  <ColorBars counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
+                  <GuildGrid counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} />
+                  <ColorColumns counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
                 </div>
               </div>
             ) : (

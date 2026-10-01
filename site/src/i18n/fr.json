@@ -174,7 +174,18 @@
     "allPlayers": "Tous les joueurs",
     "top4Short": "Top 4",
     "colorPresence": "Présence des couleurs",
-    "colorPresenceHelp": "Part des joueurs dont le général contient la couleur. Un général bicolore compte pour ses deux couleurs."
+    "colorPresenceHelp": "Part des joueurs dont le général contient la couleur. Un général bicolore compte pour ses deux couleurs.",
+    "glanceTitle": "Le méta en un coup d’œil",
+    "top4GlanceTitle": "Le top 4 en un coup d’œil",
+    "glanceHelp": "Chaque tuile est proportionnelle au nombre de joueurs.",
+    "top4GlanceHelp": "Chaque tuile est proportionnelle au nombre de places en top 4.",
+    "othersTile": "%n% autres généraux",
+    "distinctCommanders": "généraux différents",
+    "colCommander": "Général",
+    "colShare": "Part",
+    "colPlayers": "Joueurs",
+    "colSpots": "Places",
+    "guildHelp": "Une couleur sur la diagonale, deux au-dessus. Plus la case est claire, plus l’identité est jouée."
   },
   "ci": {
     "W": "Mono Blanc",
@@ -836,7 +847,6 @@
     "seeDecklists": "Ses decklists",
     "playedOnce": "joué une fois",
     "window": "du %from% au %to%",
-    "showAllIdentities": "Voir les %n% autres identités",
     "unattributed": "%n% entrée(s) sans général renseigné, comptée(s) dans le total."
   },
   "community": {

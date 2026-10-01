@@ -65,7 +65,7 @@ site/
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
-│   ├── components/              # BanListGrid, CardList, ManaCurve, CommanderRanking, Top8, ViewSwitch...
+│   ├── components/              # BanListGrid, CardList, ManaCurve, CommanderRanking, Top8, MetaMosaic, GuildGrid...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
 │   ├── i18n/{fr,en,it}.json
 │   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail, view-switch)
@@ -305,12 +305,19 @@ réencodées, pas des sources :
 - Les styles d'une page dans un fichier à part (`decklist.css`) vont dans
   `@layer components` : hors couche, ils battraient les utilitaires Tailwind
   (`lg:hidden` restait sans effet).
-- Méta et tournois suivent le même principe que la page decklist : le classement
-  (`CommanderRanking`, option `tiles`) et le top 8 (`Top8`) sont rendus une fois,
-  lignes et cartes ensemble, et `ViewSwitch` bascule `<html data-view>` avant le
-  premier rendu (choix gardé par portée, `pdc:view:<scope>`). Styles dans
-  `results.css` : un élément dont l'affichage change avec la vue prend sa mise en
-  page de ce fichier, jamais d'un utilitaire `flex`/`grid`, qui l'emporterait.
+- Le top 8 d'un tournoi suit le même principe que la page decklist : `Top8` est
+  rendu une fois, lignes et cartes ensemble, et `ViewSwitch` bascule
+  `<html data-view>` avant le premier rendu (choix gardé par portée,
+  `pdc:view:<scope>`). Styles dans `results.css` : un élément dont l'affichage
+  change avec la vue prend sa mise en page de ce fichier, jamais d'un utilitaire
+  `flex`/`grid`, qui l'emporterait.
+- Page méta : la mosaïque (`MetaMosaic`, treemap de `lib/treemap.ts`, contrôle
+  `node scripts/check-treemap.mjs`) donne à chaque général une surface égale à
+  sa part ; la traîne remplit la dernière case de petites vignettes. Chaque tuile
+  est un conteneur de taille : ses libellés apparaissent selon la place
+  (requêtes `@container` dans `results.css`, tailles de police hors utilitaires).
+  Identités en grille des guildes (`GuildGrid`), couleurs en colonnes
+  (`ColorColumns`), sur la page méta comme sur chaque tournoi.
 - Une barre de part (`share-bar`) mesure sa part sur 100 %, jamais par rapport au
   plus grand de sa liste, et se lit à côté de son nombre imprimé. Avec une échelle
   par graphique, 6 % dessinait une barre pleine à côté d'une couleur à 51 % en
@@ -325,6 +332,10 @@ réencodées, pas des sources :
   `panel`, `deck-card`, `badge`, `stat-pill`, `quick-tile`) en `@apply`
 - `magic-card` (bordure orange) est réservée aux objets cliquables ; utiliser
   `panel` pour un simple conteneur, sinon l'orange perd sa fonction d'accent
+- Une couleur lue par `var()` dans un style en ligne (barres de `DeckColors`,
+  colonnes de `ColorColumns`) doit vivre dans `@theme static` : Tailwind n'émet
+  que les variables qu'une classe utilise, et sans `static` ces barres
+  s'affichaient sans couleur
 - Titres en blanc (`text-text-primary`), jamais de grand titre en orange :
   `text-magic-gradient` ne sert plus qu'à « Commander » dans le titre d'accueil,
   qui reprend le logo

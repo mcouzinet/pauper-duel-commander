@@ -174,7 +174,18 @@
     "allPlayers": "All players",
     "top4Short": "Top 4",
     "colorPresence": "Color presence",
-    "colorPresenceHelp": "Share of players whose commander includes the color. A two-color commander counts for both."
+    "colorPresenceHelp": "Share of players whose commander includes the color. A two-color commander counts for both.",
+    "glanceTitle": "The meta at a glance",
+    "top4GlanceTitle": "The top 4 at a glance",
+    "glanceHelp": "Each tile is sized by its number of players.",
+    "top4GlanceHelp": "Each tile is sized by its number of top 4 spots.",
+    "othersTile": "%n% other commanders",
+    "distinctCommanders": "different commanders",
+    "colCommander": "Commander",
+    "colShare": "Share",
+    "colPlayers": "Players",
+    "colSpots": "Spots",
+    "guildHelp": "One color on the diagonal, two above it. The lighter the square, the more the identity is played."
   },
   "ci": {
     "W": "Mono White",
@@ -836,7 +847,6 @@
     "seeDecklists": "Its decklists",
     "playedOnce": "played once",
     "window": "%from% to %to%",
-    "showAllIdentities": "Show the %n% other identities",
     "unattributed": "%n% entry(ies) with no commander recorded, counted in the total."
   },
   "community": {

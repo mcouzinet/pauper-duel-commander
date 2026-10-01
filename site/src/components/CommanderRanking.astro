@@ -10,9 +10,7 @@
  * `limit` + `foldRest` render the tail inside a `<details>`: the page listed 68
  * commanders, 39 of them played exactly once, as one 7,500px scroll.
  *
- * `tiles` adds the visual presentation: each row also carries the commander's
- * card, shown instead of the row when the page's ViewSwitch is on "visual"
- * (results.css). Names wrap rather than truncate, so they read whole on a phone.
+ * Names wrap rather than truncate, so they read whole on a phone.
  *
  * No bars: shares here run from 1 to 6 %. Stretched to the leader, they drew a
  * full-width bar for 6 % beside a half bar for a colour played by half the
@@ -35,8 +33,6 @@ interface Props {
   /** Link each commander to its decklists. */
   linkToDecklists?: boolean;
   showTrend?: boolean;
-  /** Also render the card tiles of the visual view (needs a ViewSwitch on the page). */
-  tiles?: boolean;
   /** Number the rows. Off where ties are the rule, as in one tournament's ten players. */
   ranked?: boolean;
 }
@@ -49,7 +45,6 @@ const {
   foldRest = false,
   linkToDecklists = true,
   showTrend = false,
-  tiles = false,
   ranked = true,
 } = Astro.props;
 
@@ -75,10 +70,9 @@ function decklistHref(name: string): string {
 {/* Banned rows carry no row-level opacity: it diluted every token inside them
     below the contrast floor. Banned is signalled by the strikethrough, the badge
     and the greyscale art instead. */}
-<ol class:list={['rank-list', tiles && 'rank-list--tiles']} role="list">
+<ol class="rank-list" role="list">
   {head.map(commander => {
     const href = linkToDecklists ? decklistHref(commander.mainName) : null;
-    const Tile = href ? 'a' : 'div';
     return (
       <li>
         <div class="rank-row">
@@ -144,38 +138,6 @@ function decklistHref(name: string): string {
             </span>
           </span>
         </div>
-
-        {tiles && (
-          <Tile class="rank-tile group"
-                {...(href ? {
-                  href,
-                  'data-analytics': 'meta_commander_click',
-                  'data-analytics-commander': commander.mainName,
-                  'data-analytics-view': 'visual',
-                } : {})}>
-            <span class:list={['tile-face', commander.isBanned && 'grayscale']}>
-              {commander.cardImage ? (
-                <img src={commander.cardImage} alt="" width="488" height="680" loading="lazy" decoding="async" />
-              ) : (
-                <span class="tile-face__fallback" lang="en">{commander.mainName}</span>
-              )}
-              <span class:list={['tile-badge', commander.rank === 1 && 'tile-badge--gold']}>{commander.rank}</span>
-              {commander.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
-            </span>
-            <span lang="en" class:list={[
-              'font-beleren text-sm sm:text-[15px] leading-snug text-text-primary transition-colors',
-              href && 'group-hover:text-brand-orange',
-              commander.isBanned && 'line-through decoration-red-500/70',
-            ]}>
-              {commander.mainName}
-              {commander.partnerName && <span class="block text-xs text-text-secondary">+ {commander.partnerName}</span>}
-            </span>
-            <span class="flex items-baseline gap-1.5">
-              <span class="font-heading font-bold text-lg leading-none text-text-primary tabular-nums">{share(commander.count)}</span>
-              <span class="text-xs text-text-muted tabular-nums">{commander.count}/{total}</span>
-            </span>
-          </Tile>
-        )}
       </li>
     );
   })}

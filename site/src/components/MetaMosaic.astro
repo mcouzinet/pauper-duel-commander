@@ -1,0 +1,124 @@
+---
+/**
+ * The meta as a mosaic: each commander's tile is its share of the field.
+ *
+ * A squarified treemap (lib/treemap.ts) of the most played commanders, then one
+ * box for everyone else, itself filled with a small tile per commander so the
+ * long tail reads as what it is, many small pieces, rather than a blank block.
+ * In this format that box is often half the field, and saying so is the point.
+ *
+ * Two layouts are rendered, wide and tall, and CSS shows the one that fits the
+ * screen. Labels grow and shrink with each tile through container queries
+ * (results.css), so a tile only ever prints what it has room for; the full
+ * name and share are always in the link's accessible name.
+ *
+ * Weight: on a phone the tail's tiles stay empty shapes. Their 70-odd scans
+ * weighed about a megabyte for squares a few pixels wide; on a wide screen,
+ * where they are a texture worth seeing, they load at low priority.
+ */
+import '@/styles/results.css';
+import { t, tf, localeTag, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { squarify } from '@/lib/treemap';
+import type { CommanderStat } from '@/lib/meta';
+
+interface Props {
+  commanders: CommanderStat[];
+  /** Every entry, unattributed ones included: the denominator of each share. */
+  total: number;
+  unattributed: number;
+  locale: Locale;
+  /** Accessible name of the mosaic. */
+  label: string;
+  /** Commanders drawn as their own tile; the rest share the last box. */
+  limit?: number;
+  /** Load the first tiles at once: only for the mosaic visible on arrival. */
+  eager?: boolean;
+}
+
+const { commanders, total, unattributed, locale, label, limit = 20, eager = false } = Astro.props;
+
+const head = commanders.slice(0, limit);
+const tail = commanders.slice(limit);
+const tailCount = tail.reduce((sum, c) => sum + c.count, 0) + unattributed;
+
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (count: number) => {
+  const value = total > 0 ? count / total : 0;
+  return value > 0 && value < 0.005 ? `< ${percent.format(0.01)}` : percent.format(value);
+};
+const href = (name: string) => `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
+
+type Cell = { commander: CommanderStat } | { tail: true };
+const items: { value: number; data: Cell }[] = [
+  ...head.map(commander => ({ value: commander.count, data: { commander } as Cell })),
+  ...(tailCount > 0 ? [{ value: tailCount, data: { tail: true } as Cell }] : []),
+];
+
+// Sizes in CSS pixels at which each layout is drawn: the wide one fills the
+// container from 640 px up, the tall one a phone's width.
+const layouts = [
+  { W: 1232, H: 540, class: 'hidden sm:block', thumbs: true },
+  { W: 343, H: 560, class: 'sm:hidden', thumbs: false },
+].map(layout => ({ ...layout, boxes: squarify(items, layout.W, layout.H) }));
+
+const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
+  `left:${((x / W) * 100).toFixed(3)}%;top:${((y / H) * 100).toFixed(3)}%;width:${((w / W) * 100).toFixed(3)}%;height:${((h / H) * 100).toFixed(3)}%`;
+---
+
+{layouts.map(layout => (
+  <ul class:list={['mosaic', layout.class]} style={`aspect-ratio: ${layout.W} / ${layout.H}`} role="list" aria-label={label}>
+    {layout.boxes.map(box => {
+      const pos = at(box.x, box.y, box.w, box.h, layout.W, layout.H);
+      if ('tail' in box.data) {
+        const inner = squarify(tail.map(c => ({ value: c.count, data: c })), box.w, box.h);
+        return (
+          <li class="mosaic-tile" style={pos}>
+            <span class="mosaic-tile__face bg-bg-secondary">
+              <span aria-hidden="true">
+                {inner.map(small => (
+                  <span class="absolute p-px" style={at(small.x, small.y, small.w, small.h, box.w, box.h)}>
+                    <span class="relative block h-full w-full overflow-hidden rounded-[3px] bg-bg-tertiary">
+                      {layout.thumbs && small.data.thumb && (
+                        <img src={small.data.thumb} alt="" width="146" height="204" loading="lazy" decoding="async" fetchpriority="low"
+                             class:list={['mosaic-tile__thumb', small.h > small.w && 'mosaic-tile__thumb--tall']} />
+                      )}
+                    </span>
+                  </span>
+                ))}
+              </span>
+              <span class="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-bg-primary/45 to-bg-primary/15"></span>
+              <span class="mosaic-tile__label">
+                <span class="mosaic-tile__share">{share(tailCount)}</span>
+                <span class="mosaic-tile__others">{tf('meta.othersTile', locale, { n: tail.length })}</span>
+              </span>
+            </span>
+          </li>
+        );
+      }
+      const c = box.data.commander;
+      // The accessible name holds the visible text, in its order (WCAG 2.5.3):
+      // a tile too small to print the name still names its commander.
+      const name = [share(c.count), c.mainName, c.isBanned ? t('meta.banned', locale) : ''].filter(Boolean).join(' ');
+      return (
+        <li class="mosaic-tile" style={pos}>
+          <a href={href(c.mainName)} class="mosaic-tile__face" aria-label={name}
+             data-analytics="meta_commander_click" data-analytics-commander={c.mainName} data-analytics-view="mosaic">
+            {c.image && (
+              <img src={c.image} alt="" width="626" height="457" decoding="async"
+                   loading={eager && c.rank <= 4 ? 'eager' : 'lazy'}
+                   fetchpriority={eager && c.rank === 1 ? 'high' : c.rank > 4 ? 'low' : undefined}
+                   class:list={['mosaic-tile__img', c.isBanned && 'grayscale']} />
+            )}
+            <span class="absolute inset-0 bg-gradient-to-t from-bg-primary/95 via-bg-primary/30 to-transparent"></span>
+            <span class="mosaic-tile__label" aria-hidden="true">
+              <span class="mosaic-tile__share">{share(c.count)}</span>
+              <span lang="en" class:list={['mosaic-tile__name', c.isBanned && 'line-through decoration-red-500/70']}>{c.mainName}</span>
+            </span>
+            {c.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+))}

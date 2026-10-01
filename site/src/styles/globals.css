@@ -43,14 +43,6 @@
   --color-brand-black-light: #1A1F26;
   --color-brand-black-dark: #000000;
 
-  /* Colors - Mana */
-  --color-mana-white: #F8F6F1;
-  --color-mana-blue: #0E68AB;
-  --color-mana-black: #150B00;
-  --color-mana-red: #D3202A;
-  --color-mana-green: #00733E;
-  --color-mana-colorless: #BEB9B2;
-
   /* Colors - Magic Gold */
   --color-magic-gold: #FFA500;
   --color-magic-gold-light: #FFB84D;
@@ -90,6 +82,30 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in: fadeIn 0.6s ease-out;
   --animate-slide-up: slideUp 0.6s ease-out;
+}
+
+/* Colours read through var() in inline styles (DeckColors, ColorColumns)
+   rather than through a utility class. Tailwind only emits the
+   variables a class uses, so without `static` these were never in the CSS and
+   every colour bar drew its outline alone. */
+@theme static {
+  /* Colors - Mana */
+  --color-mana-white: #F8F6F1;
+  --color-mana-blue: #0E68AB;
+  --color-mana-black: #150B00;
+  --color-mana-red: #D3202A;
+  --color-mana-green: #00733E;
+  --color-mana-colorless: #BEB9B2;
+
+  /* Chart fills: the tints of the mana symbols themselves (mana.css), so a bar
+     or a column matches the symbol printed under it. The saturated colours
+     above are too dark on the page, black most of all. */
+  --color-chart-w: #FDFBCE;
+  --color-chart-u: #BCDAF7;
+  --color-chart-b: #A7999E;
+  --color-chart-r: #F19B79;
+  --color-chart-g: #9FCBA6;
+  --color-chart-c: #D0C6BB;
 }
 
 @keyframes shimmer {

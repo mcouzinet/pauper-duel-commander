@@ -27,12 +27,6 @@
     @apply block h-full rounded-full bg-text-secondary/55;
   }
 
-  /* Black mana is near the page colour: the outline keeps every bar visible. */
-  .share-bar__fill--mana {
-    background: var(--bar);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
-  }
-
   /* ---- Medals (rank in a ranking, place in a top 8) -------------------------- */
 
   .medal {
@@ -111,22 +105,110 @@
     @apply text-brand-orange;
   }
 
-  .rank-tile {
+
+  /* ---- Meta mosaic (MetaMosaic.astro) ----------------------------------------
+     Each tile is a size container: its label shows what fits, from nothing on
+     the smallest tiles to the share and the name on the largest. The font sizes
+     live here, not in utilities, which would beat the container queries. */
+
+  .mosaic {
+    @apply relative w-full overflow-hidden rounded-xl;
+  }
+
+  .mosaic-tile {
+    @apply absolute p-[2px];
+    container-type: size;
+  }
+
+  .mosaic-tile__face {
+    @apply relative block h-full w-full overflow-hidden rounded-md bg-bg-tertiary no-underline;
+  }
+
+  a.mosaic-tile__face:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .mosaic-tile__img {
+    @apply absolute inset-0 h-full w-full object-cover transition-transform duration-300;
+  }
+
+  a.mosaic-tile__face:hover .mosaic-tile__img {
+    transform: scale(1.05);
+  }
+
+  /* The tail: one small dimmed scan per commander, a texture under its label.
+     Scryfall's small scan (a tenth of an art crop's weight) is the whole card,
+     whose illustration runs from 11 to 55 % of its height. At 160 % of the
+     tile's width and lifted by 11 % of its own height, the card shows only
+     that band in a square tile. */
+  .mosaic-tile__thumb {
+    @apply absolute top-0 left-1/2 opacity-60;
+    width: 160%;
+    max-width: none;
+    height: auto;
+    transform: translate(-50%, -11%);
+  }
+
+  /* A tile taller than wide: sized by its height, the band (44 % of the card)
+     at 227 % covers it top to bottom. */
+  .mosaic-tile__thumb--tall {
+    width: auto;
+    height: 227%;
+  }
+
+  .mosaic-tile__label {
+    @apply absolute inset-x-0 bottom-0 p-2;
+  }
+
+  .mosaic-tile__share {
+    @apply block font-heading font-bold leading-none text-text-primary tabular-nums;
+    font-size: 0.875rem;
+  }
+
+  .mosaic-tile__name {
+    @apply font-beleren text-xs leading-tight text-text-primary truncate mt-0.5;
     display: none;
   }
 
-  html[data-view="visual"] .rank-list--tiles {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
-    gap: 1.25rem 0.75rem;
+  .mosaic-tile__others {
+    @apply mt-1 block text-sm text-text-primary;
   }
 
-  html[data-view="visual"] .rank-list--tiles .rank-row {
-    display: none;
+  @container (min-width: 5.5rem) and (min-height: 3.75rem) {
+    .mosaic-tile__share { font-size: 1.25rem; }
+    .mosaic-tile__name { display: block; }
   }
 
-  html[data-view="visual"] .rank-list--tiles .rank-tile {
-    @apply flex flex-col gap-1.5 no-underline;
+  @container (min-width: 10rem) and (min-height: 6.5rem) {
+    .mosaic-tile__label { padding: 0.75rem; }
+    .mosaic-tile__share { font-size: 2.25rem; }
+    .mosaic-tile__name { font-size: 1.125rem; margin-top: 0.25rem; }
+  }
+
+  @container (max-width: 2.75rem), (max-height: 2rem) {
+    .mosaic-tile__label { display: none; }
+  }
+
+  /* ---- Meta table -------------------------------------------------------------- */
+
+  .meta-table {
+    @apply w-full text-sm;
+  }
+
+  .meta-table th {
+    @apply py-2 text-left font-heading font-semibold text-xs uppercase tracking-wider text-text-muted;
+  }
+
+  .meta-table td {
+    @apply py-2 align-middle;
+  }
+
+  .meta-table tbody tr {
+    @apply border-t border-white/6 transition-colors;
+  }
+
+  .meta-table tbody tr:hover {
+    @apply bg-white/3;
   }
 
   /* ---- Top 8 (Top8.astro) ----------------------------------------------------- */

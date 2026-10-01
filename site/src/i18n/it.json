@@ -174,7 +174,18 @@
     "allPlayers": "Tutti i giocatori",
     "top4Short": "Top 4",
     "colorPresence": "Presenza dei colori",
-    "colorPresenceHelp": "Quota di giocatori il cui comandante include il colore. Un comandante bicolore conta per entrambi."
+    "colorPresenceHelp": "Quota di giocatori il cui comandante include il colore. Un comandante bicolore conta per entrambi.",
+    "glanceTitle": "Il meta in un colpo d’occhio",
+    "top4GlanceTitle": "Il top 4 in un colpo d’occhio",
+    "glanceHelp": "Ogni riquadro è proporzionale al numero di giocatori.",
+    "top4GlanceHelp": "Ogni riquadro è proporzionale ai posti in top 4.",
+    "othersTile": "Altri %n% comandanti",
+    "distinctCommanders": "comandanti diversi",
+    "colCommander": "Comandante",
+    "colShare": "Quota",
+    "colPlayers": "Giocatori",
+    "colSpots": "Posti",
+    "guildHelp": "Un colore sulla diagonale, due sopra. Più la casella è chiara, più l’identità è giocata."
   },
   "ci": {
     "W": "Mono Bianco",
@@ -836,7 +847,6 @@
     "seeDecklists": "Le sue decklist",
     "playedOnce": "giocato una volta",
     "window": "dal %from% al %to%",
-    "showAllIdentities": "Mostra le altre %n% identità",
     "unattributed": "%n% iscrizione/i senza comandante registrato, conteggiata/e nel totale."
   },
   "community": {
