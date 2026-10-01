@@ -325,6 +325,9 @@ réencodées, pas des sources :
   `panel`, `deck-card`, `badge`, `stat-pill`, `quick-tile`) en `@apply`
 - `magic-card` (bordure orange) est réservée aux objets cliquables ; utiliser
   `panel` pour un simple conteneur, sinon l'orange perd sa fonction d'accent
+- Titres en blanc (`text-text-primary`), jamais de grand titre en orange :
+  `text-magic-gradient` ne sert plus qu'à « Commander » dans le titre d'accueil,
+  qui reprend le logo
 - `--color-text-muted` est le plancher de contraste (4,9:1) : ne pas le diluer
   avec une opacité
 
