@@ -173,7 +173,7 @@
   /* Skip link: off-screen until focused. */
   .skip-link {
     @apply absolute left-4 z-[10001] px-4 py-2 rounded-lg font-heading font-bold uppercase tracking-wider text-sm;
-    @apply bg-brand-orange text-white;
+    @apply bg-brand-orange text-bg-primary;
     top: -100px;
     transition: top 0.15s ease-out;
   }
@@ -612,13 +612,15 @@ html:not(.js) [data-needs-js] {
   --cc-font-family: "Inter", system-ui, sans-serif;
   --cc-bg: #141821;
   --cc-primary-color: #B8BEC8;
-  --cc-secondary-color: #6B7280;
+  --cc-secondary-color: var(--color-text-muted);
 
+  /* Dark text on the orange fill: white on #FF5722 is 3.16:1, under WCAG AA
+     at this size. */
   --cc-btn-primary-bg: #FF5722;
-  --cc-btn-primary-color: #fff;
+  --cc-btn-primary-color: var(--color-bg-primary);
   --cc-btn-primary-border-color: #FF5722;
   --cc-btn-primary-hover-bg: #E64A19;
-  --cc-btn-primary-hover-color: #fff;
+  --cc-btn-primary-hover-color: var(--color-bg-primary);
   --cc-btn-primary-hover-border-color: #E64A19;
 
   --cc-btn-secondary-bg: transparent;

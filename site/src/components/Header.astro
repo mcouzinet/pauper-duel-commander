@@ -107,7 +107,7 @@ const languageLinks = locales.map(target => ({
                aria-current={link.isCurrent ? 'true' : undefined}
                aria-label={link.label.long}
                data-analytics="lang_switch" data-analytics-to={link.locale}
-               class:list={['px-2.5 py-2 transition-colors', link.isCurrent ? 'bg-brand-orange text-white' : 'text-brand-orange hover:bg-brand-orange/15']}>{link.label.short}</a>
+               class:list={['px-2.5 py-2 transition-colors', link.isCurrent ? 'bg-brand-orange text-bg-primary' : 'text-brand-orange hover:bg-brand-orange/15']}>{link.label.short}</a>
           ))}
         </div>
       </div>
@@ -180,7 +180,7 @@ const languageLinks = locales.map(target => ({
           <a href={link.href} hreflang={link.locale} lang={link.locale}
              aria-current={link.isCurrent ? 'true' : undefined}
              data-analytics="lang_switch" data-analytics-to={link.locale}
-             class:list={['flex-1 text-center px-3 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', link.isCurrent ? 'bg-brand-orange border-brand-orange text-white' : 'border-brand-orange/30 text-brand-orange']}>{link.label.long}</a>
+             class:list={['flex-1 text-center px-3 py-3 rounded-lg border font-heading font-bold uppercase tracking-wider text-sm transition-colors', link.isCurrent ? 'bg-brand-orange border-brand-orange text-bg-primary' : 'border-brand-orange/30 text-brand-orange']}>{link.label.long}</a>
         ))}
       </div>
     </div>

@@ -350,6 +350,8 @@ réencodées, pas des sources :
   qui reprend le logo
 - `--color-text-muted` est le plancher de contraste (4,9:1) : ne pas le diluer
   avec une opacité
+- Texte sur un aplat orange : `text-bg-primary` (6,1:1), jamais blanc (3,16:1,
+  sous AA). Même principe que les badges pleins
 
 ## Points d'Attention
 - `site/dist/`, `site/public/api/{data,cache}/` et `public/api/data/banlist.json`
