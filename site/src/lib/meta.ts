@@ -33,6 +33,11 @@ export interface CommanderStat {
   percentage: number;
   image: string | null;
   cardImage: string | null;
+  /** Scryfall's small scan, for the mosaic's smallest tiles. */
+  thumb: string | null;
+  /** The partner's or background's art crop and card, drawn beside the main card. */
+  partnerImage: string | null;
+  partnerCardImage: string | null;
   colors: string[];
   ciKey: string;
   isBanned: boolean;
@@ -217,6 +222,9 @@ function aggregate(
       percentage: total > 0 ? Math.round((entry.count / total) * 100) : 0,
       image: mainCard ? getCardImage(mainCard, 'art_crop') : null,
       cardImage: mainCard ? getCardImage(mainCard, 'normal') : null,
+      thumb: mainCard ? getCardImage(mainCard, 'small') : null,
+      partnerImage: partnerCard ? getCardImage(partnerCard, 'art_crop') : null,
+      partnerCardImage: partnerCard ? getCardImage(partnerCard, 'normal') : null,
       colors,
       ciKey,
       isBanned: parts.some(p => banned.has(p.toLowerCase())),

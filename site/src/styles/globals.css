@@ -43,18 +43,15 @@
   --color-brand-black-light: #1A1F26;
   --color-brand-black-dark: #000000;
 
-  /* Colors - Mana */
-  --color-mana-white: #F8F6F1;
-  --color-mana-blue: #0E68AB;
-  --color-mana-black: #150B00;
-  --color-mana-red: #D3202A;
-  --color-mana-green: #00733E;
-  --color-mana-colorless: #BEB9B2;
-
   /* Colors - Magic Gold */
   --color-magic-gold: #FFA500;
   --color-magic-gold-light: #FFB84D;
   --color-magic-gold-dark: #CC8400;
+
+  /* Medals: second and third place beside the gold above. Bronze is browner
+     than the gold so the two never read as the same medal. */
+  --color-medal-silver: #C9D1DB;
+  --color-medal-bronze: #CD7F32;
 
   /* Colors - Interface */
   --color-card-bg: #141821;
@@ -90,6 +87,30 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in: fadeIn 0.6s ease-out;
   --animate-slide-up: slideUp 0.6s ease-out;
+}
+
+/* Colours read through var() in inline styles (DeckColors, ColorColumns)
+   rather than through a utility class. Tailwind only emits the
+   variables a class uses, so without `static` these were never in the CSS and
+   every colour bar drew its outline alone. */
+@theme static {
+  /* Colors - Mana */
+  --color-mana-white: #F8F6F1;
+  --color-mana-blue: #0E68AB;
+  --color-mana-black: #150B00;
+  --color-mana-red: #D3202A;
+  --color-mana-green: #00733E;
+  --color-mana-colorless: #BEB9B2;
+
+  /* Chart fills: the tints of the mana symbols themselves (mana.css), so a bar
+     or a column matches the symbol printed under it. The saturated colours
+     above are too dark on the page, black most of all. */
+  --color-chart-w: #FDFBCE;
+  --color-chart-u: #BCDAF7;
+  --color-chart-b: #A7999E;
+  --color-chart-r: #F19B79;
+  --color-chart-g: #9FCBA6;
+  --color-chart-c: #D0C6BB;
 }
 
 @keyframes shimmer {
@@ -165,10 +186,53 @@
   [id] { scroll-margin-top: 5rem; }
 }
 
+/* Controls that only work with JavaScript (view switches, filters, the opening
+   hand) stay out of the way without it. Base.astro adds `js` to <html> before
+   the body is parsed, so they never pop in after the first paint. Unlayered and
+   !important: it has to beat any display utility on the control itself. */
+html:not(.js) [data-needs-js] {
+  display: none !important;
+}
+
 /* ============================
    Components
    ============================ */
 @layer components {
+  /* ---- Shared controls ------------------------------------------------- */
+
+  /* One option of a segmented switch (list / visual). */
+  .view-toggle {
+    @apply inline-flex items-center justify-center gap-1.5 min-h-11 min-w-11 lg:min-h-9 px-3 rounded-md;
+    @apply font-heading font-bold text-sm uppercase tracking-wider text-text-secondary transition-colors;
+  }
+
+  .view-toggle:hover {
+    @apply text-text-primary;
+  }
+
+  .view-toggle[aria-pressed="true"] {
+    @apply bg-brand-orange/15 text-brand-orange-light;
+  }
+
+  /* A radio styled as a chip: the native input keeps arrow-key selection. */
+  .choice__box {
+    @apply inline-flex items-center min-h-11 lg:min-h-9 px-3.5 rounded-full cursor-pointer;
+    @apply border border-white/15 text-sm text-text-secondary transition-colors;
+  }
+
+  .choice__box:hover {
+    @apply border-white/30 text-text-primary;
+  }
+
+  .choice input:checked + .choice__box {
+    @apply border-brand-orange bg-brand-orange/15 text-brand-orange-light;
+  }
+
+  .choice input:focus-visible + .choice__box {
+    outline: 2px solid var(--color-brand-orange);
+    outline-offset: 2px;
+  }
+
   /* Card Frame Effect */
   .magic-card {
     @apply relative overflow-hidden bg-card-bg border-2 border-brand-orange/20 shadow-card transition-all duration-300 rounded-xl;
@@ -284,78 +348,6 @@
 
   .section-divider::before { @apply left-[48%]; }
   .section-divider::after { @apply right-[48%]; }
-
-  /* Tournament Styles */
-  .tournament-hero {
-    border-bottom: 1px solid rgba(255, 87, 34, 0.12);
-  }
-
-  .tournament-badge {
-    @apply inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-heading font-semibold uppercase tracking-wide;
-    @apply bg-bg-secondary/80 border border-white/10 rounded text-text-secondary;
-  }
-
-  .tournament-badge--primary {
-    @apply bg-brand-orange/10 border-brand-orange/25 text-brand-orange;
-  }
-
-  .tournament-winner {
-    @apply p-3 rounded-lg overflow-hidden;
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.08) 0%, rgba(234, 179, 8, 0.02) 100%);
-    border: 1px solid rgba(234, 179, 8, 0.15);
-  }
-
-  .tournament-place {
-    @apply flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-xs font-bold font-heading;
-    @apply bg-bg-tertiary text-text-muted border border-white/5;
-  }
-
-  .tournament-place--1 { @apply bg-yellow-500/20 text-yellow-400 border-yellow-500/40; }
-  .tournament-place--2 { @apply bg-slate-400/15 text-slate-300 border-slate-400/30; }
-  .tournament-place--3 { @apply bg-amber-700/15 text-amber-500 border-amber-700/30; }
-
-  .tournament-table { @apply space-y-1; }
-
-  .tournament-row {
-    @apply flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 rounded-lg overflow-hidden transition-colors duration-200;
-    @apply bg-bg-secondary/40 hover:bg-bg-secondary/70;
-    border: 1px solid transparent;
-  }
-
-  .tournament-row:hover {
-    border-color: rgba(255, 87, 34, 0.08);
-  }
-
-  .tournament-meta-panel {
-    @apply p-4 rounded-lg bg-bg-secondary overflow-hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .tournament-commander-row {
-    @apply flex items-center gap-2 overflow-hidden;
-  }
-
-  .tournament-row--link {
-    @apply no-underline cursor-pointer;
-  }
-
-  .tournament-row--link:hover {
-    @apply bg-bg-secondary/70;
-    border-color: rgba(255, 87, 34, 0.15);
-  }
-
-  .tournament-row--link:hover .text-text-primary {
-    @apply text-brand-orange;
-  }
-
-  .tournament-winner--link {
-    @apply no-underline cursor-pointer transition-all duration-200;
-  }
-
-  .tournament-winner--link:hover {
-    border-color: rgba(234, 179, 8, 0.3);
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.04) 100%);
-  }
 
   /* ---- Shared page furniture ------------------------------------------- */
 
@@ -571,12 +563,6 @@
   .rich-text p { margin-bottom: 0.75rem; }
   .rich-text p:last-child { margin-bottom: 0; }
   .rich-text strong { @apply text-text-primary; }
-
-  /* Pie chart */
-  .tournament-pie { transform: rotate(-90deg); }
-  .tournament-pie__slice { transition: opacity 0.2s ease; }
-  .tournament-pie:hover .tournament-pie__slice { opacity: 0.7; }
-  .tournament-pie:hover .tournament-pie__slice:hover { opacity: 1; }
 }
 
 /* ============================

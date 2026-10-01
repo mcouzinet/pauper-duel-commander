@@ -105,18 +105,6 @@ export function expandCommanderNames(names: string[]): string[] {
   return names.flatMap(splitCommanderName);
 }
 
-const WUBRG_ORDER: Record<string, number> = { W: 0, U: 1, B: 2, R: 3, G: 4 };
-
-/**
- * Sort color counts by count desc, WUBRG order as tiebreaker.
- */
-export function sortColorCounts(counts: Record<string, number>): [string, number][] {
-  return Object.entries(counts).sort(([a, countA], [b, countB]) => {
-    if (countB !== countA) return countB - countA;
-    return (WUBRG_ORDER[a] ?? 99) - (WUBRG_ORDER[b] ?? 99);
-  });
-}
-
 /**
  * Is this field a placeholder rather than a value?
  *

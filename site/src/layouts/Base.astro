@@ -75,6 +75,9 @@ const websiteSchema = {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  {/* Before any paint: controls that need JavaScript (view switches, filters)
+      are hidden without it by `html:not(.js) [data-needs-js]` in globals.css. */}
+  <script is:inline>document.documentElement.classList.add('js');</script>
   <title>{fullTitle}</title>
   <meta name="description" content={metaDescription} />
 

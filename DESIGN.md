@@ -147,7 +147,7 @@ Une salle sombre traversée par deux chaleurs : l'orange qui appelle à l'action
 
 ### Primary
 - **Orange Brasier** (`#FF5722`) : l'unique couleur d'action. Boutons primaires, liens actifs, bordure des objets cliquables, item de navigation courant, anneau de focus clavier. Sa rareté est ce qui le rend lisible : dès qu'il apparaît deux fois dans un même bloc pour deux raisons différentes, il ne signale plus rien.
-- **Orange Brasier Clair** (`#FF7043`) et **Sombre** (`#E64A19`) : uniquement les extrémités du dégradé à 135° des boutons primaires et du texte en `text-magic-gradient`. Ne jamais les employer en aplat seuls.
+- **Orange Brasier Clair** (`#FF7043`) et **Sombre** (`#E64A19`) : uniquement les extrémités du dégradé à 135° des boutons primaires et du texte en `text-magic-gradient`, réservé au mot « Commander » du titre d'accueil, qui reprend le logo. Ne jamais les employer en aplat seuls.
 
 ### Secondary
 - **Or Peu Commune** (`#FFA500`) : le mérite et la rareté. Places de podium, badges de résultat, surtitres (`eyebrow`), libellés des tuiles d'accès rapide. Le nom n'est pas décoratif : en Pauper Duel Commander, la rareté « peu commune » est précisément ce qui définit un général légal. L'or dit « cette chose a été distinguée ».
@@ -190,6 +190,8 @@ Les trois familles sont **auto-hébergées** en WOFF2 (`site/public/fonts/`), en
 ### Named Rules
 
 **La Règle des Capitales Condensées.** Les titres sont en capitales, condensés, avec un interlettrage serré (`-0.025em`) et une ombre portée `0 2px 8px rgba(0,0,0,0.5)`. Cette ombre est omise sur le texte en dégradé : le texte y est transparent, l'ombre ne rendrait rien tout en coûtant un repaint.
+
+**La Règle des Titres Blancs.** Un titre de page ou de section est en Texte Principal, jamais en orange : un grand titre orange dépense l'accent sur ce qui ne se clique pas, et la barre orange de 4 px des titres de section suffit comme signal. Seul « Commander » du titre d'accueil garde le dégradé, parce qu'il reprend le logo.
 
 **La Règle de la Langue des Cartes.** Un nom de carte s'écrit toujours dans son orthographe canonique Scryfall, en Beleren, marqué `lang="en"`. Le texte d'interface qui l'accompagne, lui, se traduit. Les deux ne se mélangent jamais dans le même élément.
 

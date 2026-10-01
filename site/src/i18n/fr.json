@@ -169,7 +169,23 @@
     "noData": "Aucune donnée de méta disponible",
     "noDataDesc": "Les statistiques du métagame seront disponibles après les premiers tournois.",
     "seoTitle": "Méta Pauper Duel Commander : généraux les plus joués",
-    "seoDescription": "Les généraux les plus joués en Pauper Duel Commander, mesurés sur %tournaments% tournois et %entries% entrées joueurs. Identités de couleur, répartition et top 4."
+    "seoDescription": "Les généraux les plus joués en Pauper Duel Commander, mesurés sur %tournaments% tournois et %entries% entrées joueurs. Identités de couleur, répartition et top 4.",
+    "rankingLabel": "Classement",
+    "allPlayers": "Tous les joueurs",
+    "top4Short": "Top 4",
+    "colorPresence": "Présence des couleurs",
+    "colorPresenceHelp": "Part des joueurs dont le général contient la couleur. Un général bicolore compte pour ses deux couleurs.",
+    "glanceTitle": "Le méta en un coup d’œil",
+    "top4GlanceTitle": "Le top 4 en un coup d’œil",
+    "glanceHelp": "Chaque tuile est proportionnelle au nombre de joueurs.",
+    "top4GlanceHelp": "Chaque tuile est proportionnelle au nombre de places en top 4.",
+    "othersTile": "%n% autres généraux",
+    "distinctCommanders": "généraux différents",
+    "colCommander": "Général",
+    "colShare": "Part",
+    "colPlayers": "Joueurs",
+    "colSpots": "Places",
+    "guildHelp": "Une couleur sur la diagonale, deux au-dessus. Plus la case est claire, plus l’identité est jouée."
   },
   "ci": {
     "W": "Mono Blanc",
@@ -249,7 +265,10 @@
     "unattributed": "%n% place(s) sans général renseigné",
     "seoTitle": "Tournois Pauper Duel Commander",
     "seoDescription": "%total% tournois Pauper Duel Commander référencés, dont %withResults% avec résultats et méta. Top 8, decklists et statistiques par événement.",
-    "seoDetail": "%title% — %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists."
+    "seoDetail": "%title% · %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists.",
+    "winnerDeck": "Decklist du vainqueur",
+    "organizerNotes": "Infos de l’organisateur",
+    "placeN": "place %n%"
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
@@ -827,7 +846,9 @@
     "trendDown": "en baisse",
     "trendHint": "Évolution en points par rapport aux tournois précédents.",
     "seeDecklists": "Ses decklists",
-    "playedOnce": "joué une fois"
+    "playedOnce": "joué une fois",
+    "window": "du %from% au %to%",
+    "unattributed": "%n% entrée(s) sans général renseigné, comptée(s) dans le total."
   },
   "community": {
     "title": "Communauté",

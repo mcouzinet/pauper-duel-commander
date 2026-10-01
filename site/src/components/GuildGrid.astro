@@ -1,0 +1,85 @@
+---
+/**
+ * Colour identities as the grid every Magic player already knows: one colour
+ * on the diagonal, each two-colour guild above it, the lighter the square the
+ * more it is played. Identities of three colours or more, and colourless, follow
+ * as chips: in a format of uncommon commanders they are the exception.
+ *
+ * The heat is relative to the most played square (it is a heat map); the share
+ * of the players is printed in each square.
+ */
+import { localeTag, t, type Locale } from '@/lib/i18n';
+import { colorIdentityLabel } from '@/lib/colors';
+import { formatColorSymbols } from '@/lib/mana';
+
+interface Props {
+  /** Players per identity key ("BR", "C"...), as lib/meta counts them. */
+  counts: Record<string, number>;
+  locale: Locale;
+  title: string;
+  class?: string;
+}
+
+const { counts, locale, title, class: className } = Astro.props;
+
+const WUBRG = ['W', 'U', 'B', 'R', 'G'];
+const keyOf = (...colors: string[]) => [...colors].sort().join('');
+const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (n: number) => percent.format(total > 0 ? n / total : 0);
+
+const rows = WUBRG.map((a, i) => WUBRG.map((b, j) => {
+  if (j < i) return null;
+  const key = i === j ? a : keyOf(a, b);
+  return { key, n: counts[key] ?? 0, label: colorIdentityLabel(key, locale) };
+}));
+const max = Math.max(0, ...rows.flat().map(cell => cell?.n ?? 0));
+const inGrid = new Set(rows.flat().filter(Boolean).map(cell => cell!.key));
+const beyond = Object.entries(counts)
+  .filter(([key, n]) => n > 0 && !inGrid.has(key))
+  .sort((a, b) => b[1] - a[1]);
+---
+
+{total > 0 && (
+  <section class:list={['panel p-4 sm:p-5', className]}>
+    <h3 class="font-heading font-bold text-base uppercase tracking-wider text-text-primary">{title}</h3>
+    <p class="mt-1 mb-4 text-xs leading-relaxed text-text-muted">{t('meta.guildHelp', locale)}</p>
+
+    <div class="grid grid-cols-[1.75rem_repeat(5,minmax(0,1fr))] gap-1" role="presentation">
+      <span></span>
+      {WUBRG.map(color => <span class="flex justify-center pb-1" aria-hidden="true" set:html={formatColorSymbols(color)} />)}
+      {rows.map((row, i) => (
+        <>
+          <span class="flex items-center" aria-hidden="true" set:html={formatColorSymbols(WUBRG[i])} />
+          {row.map(cell => cell ? (
+            <span class="flex aspect-square min-w-0 flex-col items-center justify-center rounded-md px-0.5 text-center"
+                  style={`background: rgb(255 255 255 / ${(0.03 + (max > 0 ? cell.n / max : 0) * 0.32).toFixed(3)})`}
+                  title={`${cell.label} · ${cell.n}`}>
+              {cell.n > 0 ? (
+                <>
+                  <span class="font-heading font-bold text-sm sm:text-lg leading-none text-text-primary tabular-nums">{share(cell.n)}</span>
+                  <span class="mt-0.5 hidden sm:block max-w-full truncate text-xs leading-none text-text-secondary">{cell.label}</span>
+                  <span class="sr-only sm:hidden">{cell.label}</span>
+                </>
+              ) : (
+                <span class="text-sm text-text-muted" aria-hidden="true">·</span>
+              )}
+            </span>
+          ) : <span></span>)}
+        </>
+      ))}
+    </div>
+
+    {beyond.length > 0 && (
+      <ul class="mt-4 flex flex-wrap gap-1.5" role="list">
+        {beyond.map(([key, n]) => (
+          <li class="inline-flex items-center gap-1.5 rounded-full border border-white/10 py-1 pl-1.5 pr-2.5 text-xs">
+            <span class="inline-flex" aria-hidden="true" set:html={formatColorSymbols(key)} />
+            <span class="text-text-secondary">{colorIdentityLabel(key, locale)}</span>
+            <span class="font-semibold tabular-nums text-text-primary">{share(n)}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+)}

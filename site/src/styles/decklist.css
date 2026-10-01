@@ -85,30 +85,10 @@
   @apply text-brand-orange hover:text-brand-orange-light transition-colors;
 }
 
-/* Controls that only work with JavaScript (view switch, grouping, opening hand)
-   stay out of the way without it. The page's inline script adds `js` before
-   they are parsed, so they never pop in after the first paint. */
-html:not(.js) [data-needs-js] {
-  display: none !important;
-}
-
 /* Page components live in the components layer, like globals.css's, so a
    Tailwind utility on the same element (`lg:hidden`, `lg:flex`) still wins. */
 @layer components {
   /* ---- Toolbar --------------------------------------------------------------- */
-
-  .view-toggle {
-    @apply inline-flex items-center gap-1.5 min-h-11 lg:min-h-9 px-3 rounded-md;
-    @apply font-heading font-bold text-sm uppercase tracking-wider text-text-secondary transition-colors;
-  }
-
-  .view-toggle:hover {
-    @apply text-text-primary;
-  }
-
-  .view-toggle[aria-pressed="true"] {
-    @apply bg-brand-orange/15 text-brand-orange-light;
-  }
 
   .arrange-toggle {
     @apply inline-flex items-center gap-1.5 min-h-11 px-3 rounded-lg text-sm;
@@ -117,25 +97,6 @@ html:not(.js) [data-needs-js] {
 
   .arrange-toggle[aria-expanded="true"] {
     @apply border-brand-orange/50 text-brand-orange-light;
-  }
-
-  /* A radio styled as a chip: the native input keeps arrow-key selection. */
-  .choice__box {
-    @apply inline-flex items-center min-h-11 lg:min-h-9 px-3.5 rounded-full cursor-pointer;
-    @apply border border-white/15 text-sm text-text-secondary transition-colors;
-  }
-
-  .choice__box:hover {
-    @apply border-white/30 text-text-primary;
-  }
-
-  .choice input:checked + .choice__box {
-    @apply border-brand-orange bg-brand-orange/15 text-brand-orange-light;
-  }
-
-  .choice input:focus-visible + .choice__box {
-    outline: 2px solid var(--color-brand-orange);
-    outline-offset: 2px;
   }
 
   .deck-nav__link {

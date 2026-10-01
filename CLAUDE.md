@@ -65,7 +65,7 @@ site/
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
-│   ├── components/              # BanListGrid, CardList, ManaCurve, SampleHand, Top8Table...
+│   ├── components/              # BanListGrid, CardList, ManaCurve, Top8, MetaMosaic, CommanderTable, GuildGrid...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
 │   ├── i18n/{fr,en,it}.json
 │   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail)
@@ -87,7 +87,7 @@ site/
 cd site
 npm run dev       # Dev (copie la ban list + réchauffe le cache Scryfall au préalable)
 npm run build     # Build -> site/dist/  (même prélude que dev)
-npm run check     # astro check — propre (0 erreur, 0 avertissement, 9 hints)
+npm run check     # astro check : propre (0 erreur, 0 avertissement, 7 hints)
 npm test          # PHPUnit (API)
 ```
 
@@ -305,6 +305,35 @@ réencodées, pas des sources :
 - Les styles d'une page dans un fichier à part (`decklist.css`) vont dans
   `@layer components` : hors couche, ils battraient les utilitaires Tailwind
   (`lg:hidden` restait sans effet).
+- Le top 8 d'un tournoi est un podium (`Top8`) : les trois premiers en cartes,
+  dans l'ordre des places dans le balisage et dessinés 2-1-3 par CSS, puis les
+  places suivantes en lignes compactes, à côté du podium quand l'écran le
+  permet. Pas de mosaïque ici : un top 8 est un classement, pas une part.
+- Une paire (partenaires, général et background) montre ses deux cartes partout :
+  en éventail sur le podium, deux vignettes superposées dans les lignes et le
+  tableau (`pair-thumb`, seule la principale déclenche l'aperçu), une tuile
+  coupée en deux dans la mosaïque. `CommanderStat` et `Top8Entry` portent
+  `partnerImage` / `partnerCardImage`. Styles dans `results.css` : un élément dont ces
+  règles fixent la mise en page n'en reçoit pas d'un utilitaire `flex`/`grid`,
+  qui l'emporterait.
+- Page méta : la mosaïque (`MetaMosaic`, treemap de `lib/treemap.ts`, contrôle
+  `node scripts/check-treemap.mjs`) donne à chaque général une surface égale à
+  sa part ; la traîne remplit la dernière case de petites vignettes. Chaque tuile
+  est un conteneur de taille : ses libellés apparaissent selon la place
+  (requêtes `@container` dans `results.css`, tailles de police hors utilitaires).
+  Identités en grille des guildes (`GuildGrid`), couleurs en colonnes
+  (`ColorColumns`), chiffres exacts dans `CommanderTable`.
+- Page d'un tournoi : son plateau suit le même schéma (mosaïque, tableau, guildes,
+  couleurs) ; la meilleure place de chaque général au top 8 est marquée sur sa
+  tuile (`places`, clé sur le nom complet et sur la carte principale, car un top 8
+  peut écrire une paire sans son partenaire).
+- Une barre de part (`share-bar`) mesure sa part sur 100 %, jamais par rapport au
+  plus grand de sa liste, et se lit à côté de son nombre imprimé. Avec une échelle
+  par graphique, 6 % dessinait une barre pleine à côté d'une couleur à 51 % en
+  demi-barre. Le classement des généraux n'a pas de barre : à quelques %, elle
+  n'aurait été qu'un trait.
+- Un contrôle qui ne marche qu'avec JavaScript porte `data-needs-js` : il est
+  masqué sans JS (`globals.css`, la classe `js` est posée dans `Base.astro`).
 
 ### CSS
 - Tailwind 4 : tokens dans `@theme {}` de `globals.css`, pas de fichier de config
@@ -312,6 +341,13 @@ réencodées, pas des sources :
   `panel`, `deck-card`, `badge`, `stat-pill`, `quick-tile`) en `@apply`
 - `magic-card` (bordure orange) est réservée aux objets cliquables ; utiliser
   `panel` pour un simple conteneur, sinon l'orange perd sa fonction d'accent
+- Une couleur lue par `var()` dans un style en ligne (barres de `DeckColors`,
+  colonnes de `ColorColumns`) doit vivre dans `@theme static` : Tailwind n'émet
+  que les variables qu'une classe utilise, et sans `static` ces barres
+  s'affichaient sans couleur
+- Titres en blanc (`text-text-primary`), jamais de grand titre en orange :
+  `text-magic-gradient` ne sert plus qu'à « Commander » dans le titre d'accueil,
+  qui reprend le logo
 - `--color-text-muted` est le plancher de contraste (4,9:1) : ne pas le diluer
   avec une opacité
 
@@ -323,9 +359,9 @@ réencodées, pas des sources :
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` est propre** : 0 erreur, 0 avertissement, 9 hints (variables
+- **`npm run check` est propre** : 0 erreur, 0 avertissement, 7 hints (variables
   inutilisées, scripts traités comme `is:inline`). `npm run lint` y ajoute
-  `tsc --noEmit`, tout aussi propre (mesuré sur `main` le 18 août 2026). C'est la
+  `tsc --noEmit`, tout aussi propre (mesuré le 1er octobre 2026). C'est la
   référence : une erreur qui apparaît est une régression du changement en cours,
   pas un héritage. La dernière « erreur préexistante » connue, celle
   d'`astro.config.ts` (conflit de types entre deux majeures de Vite), a été

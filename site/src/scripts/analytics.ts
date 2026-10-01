@@ -46,6 +46,9 @@ function paramsFrom(element: HTMLElement): Record<string, unknown> {
 document.addEventListener('click', event => {
   const target = (event.target as HTMLElement | null)?.closest<HTMLElement>('[data-analytics]');
   if (!target) return;
+  // A click on a label is replayed on its input, which bubbles here too: count
+  // the input's click only, the one keyboard selection also produces.
+  if (target instanceof HTMLLabelElement && target.control && event.target !== target.control) return;
   track(target.dataset.analytics!, paramsFrom(target));
 });
 

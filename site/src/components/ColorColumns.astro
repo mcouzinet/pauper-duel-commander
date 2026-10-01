@@ -1,0 +1,55 @@
+---
+/**
+ * How many players' commanders include each colour, as one column per colour.
+ *
+ * Colours overlap (a Rakdos commander counts in black and in red), so they are
+ * not a split of 100 % and do not belong in a pie or a stacked bar: each column
+ * stands on its own, its height the share of the players out of 100 %, with a
+ * rule at 50 % to read it against.
+ */
+import { t, localeTag, type Locale } from '@/lib/i18n';
+import { formatColorSymbols } from '@/lib/mana';
+
+interface Props {
+  /** Players per colour, a multicolour commander counting in each of its colours. */
+  counts: Record<string, number>;
+  /** Players whose commander is known: the denominator of every column. */
+  total: number;
+  locale: Locale;
+  title: string;
+  class?: string;
+}
+
+const { counts, total, locale, title, class: className } = Astro.props;
+
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const columns = ['W', 'U', 'B', 'R', 'G', 'C']
+  .filter(color => color !== 'C' || (counts.C ?? 0) > 0)
+  .map(color => {
+    const value = total > 0 ? Math.min(1, (counts[color] ?? 0) / total) : 0;
+    return { color, name: t(`color.${color}`, locale), value, share: percent.format(value) };
+  });
+---
+
+{total > 0 && (
+  <section class:list={['panel p-4 sm:p-5', className]}>
+    <h3 class="font-heading font-bold text-base uppercase tracking-wider text-text-primary">{title}</h3>
+    <ul class="relative mt-6 flex h-40 items-end justify-around gap-2" role="list">
+      <li class="pointer-events-none absolute inset-x-0 top-1/2 border-t border-dashed border-white/12" aria-hidden="true">
+        <span class="absolute right-0 -top-4 text-xs text-text-muted">{percent.format(0.5)}</span>
+      </li>
+      {columns.map(column => (
+        <li class="flex h-full w-full max-w-12 flex-col items-center justify-end gap-1.5">
+          <span class="font-heading font-bold text-sm sm:text-base leading-none text-text-primary tabular-nums">{column.share}</span>
+          <span class="w-full max-w-9 rounded-t" aria-hidden="true"
+                style={`height: ${(column.value * 100).toFixed(1)}%; background: var(--color-chart-${column.color.toLowerCase()})`}></span>
+          <span class="sr-only">{column.name}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-2 flex justify-around gap-2" aria-hidden="true">
+      {columns.map(column => <span class="flex w-full max-w-12 justify-center" set:html={formatColorSymbols(column.color)} />)}
+    </div>
+    <p class="mt-4 text-xs leading-relaxed text-text-muted">{t('meta.colorPresenceHelp', locale)}</p>
+  </section>
+)}
