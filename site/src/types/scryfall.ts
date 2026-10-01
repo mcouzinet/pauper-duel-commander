@@ -28,6 +28,8 @@ export interface ScryfallCard {
   image_uris?: ScryfallImageUris;
   card_faces?: ScryfallCardFace[];
   legalities: Record<string, string>;
+  /** Colours of mana the card can add (lands, rocks, rituals). */
+  produced_mana?: string[];
 }
 
 export type ImageSize = keyof ScryfallImageUris;

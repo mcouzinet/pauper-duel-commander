@@ -58,6 +58,11 @@ export function t(key: string, locale: Locale = 'fr'): string {
   return key;
 }
 
+/** `t()` with its `%name%` placeholders filled in. Unknown placeholders stay visible. */
+export function tf(key: string, locale: Locale, vars: Record<string, string | number>): string {
+  return t(key, locale).replace(/%(\w+)%/g, (match, name: string) => (name in vars ? String(vars[name]) : match));
+}
+
 /**
  * The whole message tree for a locale, with the fallback chain already merged in.
  *

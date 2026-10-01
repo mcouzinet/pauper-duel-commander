@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--prefix", "site", "--", "--port", "4321"],
       "port": 4321
+    },
+    {
+      "name": "pdc-preview",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "preview", "--prefix", "site", "--", "--port", "4322"],
+      "port": 4322
     }
   ]
 }

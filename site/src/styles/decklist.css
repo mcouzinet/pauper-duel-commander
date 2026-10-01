@@ -84,3 +84,330 @@
 .decklist-prose a {
   @apply text-brand-orange hover:text-brand-orange-light transition-colors;
 }
+
+/* Controls that only work with JavaScript (view switch, grouping, opening hand)
+   stay out of the way without it. The page's inline script adds `js` before
+   they are parsed, so they never pop in after the first paint. */
+html:not(.js) [data-needs-js] {
+  display: none !important;
+}
+
+/* Page components live in the components layer, like globals.css's, so a
+   Tailwind utility on the same element (`lg:hidden`, `lg:flex`) still wins. */
+@layer components {
+  /* ---- Toolbar --------------------------------------------------------------- */
+
+  .view-toggle {
+    @apply inline-flex items-center gap-1.5 min-h-11 lg:min-h-9 px-3 rounded-md;
+    @apply font-heading font-bold text-sm uppercase tracking-wider text-text-secondary transition-colors;
+  }
+
+  .view-toggle:hover {
+    @apply text-text-primary;
+  }
+
+  .view-toggle[aria-pressed="true"] {
+    @apply bg-brand-orange/15 text-brand-orange-light;
+  }
+
+  .arrange-toggle {
+    @apply inline-flex items-center gap-1.5 min-h-11 px-3 rounded-lg text-sm;
+    @apply bg-bg-secondary border border-white/12 text-text-secondary transition-colors;
+  }
+
+  .arrange-toggle[aria-expanded="true"] {
+    @apply border-brand-orange/50 text-brand-orange-light;
+  }
+
+  /* A radio styled as a chip: the native input keeps arrow-key selection. */
+  .choice__box {
+    @apply inline-flex items-center min-h-11 lg:min-h-9 px-3.5 rounded-full cursor-pointer;
+    @apply border border-white/15 text-sm text-text-secondary transition-colors;
+  }
+
+  .choice__box:hover {
+    @apply border-white/30 text-text-primary;
+  }
+
+  .choice input:checked + .choice__box {
+    @apply border-brand-orange bg-brand-orange/15 text-brand-orange-light;
+  }
+
+  .choice input:focus-visible + .choice__box {
+    outline: 2px solid var(--color-brand-orange);
+    outline-offset: 2px;
+  }
+
+  .deck-nav__link {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg whitespace-nowrap no-underline;
+    @apply text-text-secondary transition-colors;
+  }
+
+  .deck-nav__link:hover {
+    @apply text-brand-orange bg-brand-orange/10;
+  }
+
+  .export-item {
+    @apply w-full px-3 py-2.5 rounded-md text-left text-sm text-text-primary transition-colors;
+  }
+
+  .export-item:hover,
+  .export-item:focus-visible {
+    @apply bg-brand-orange/12;
+  }
+
+  /* ---- Deck list: one set of rows, two presentations -------------------------
+     Rows are rendered once. Grouping, sorting and the cost filter move or hide
+     those rows (scripts/decklist-detail.ts); the visual view is CSS only, read
+     from <html data-deck-view> so a stored choice applies before paint. */
+
+  .deck-group + .deck-group {
+    @apply mt-6;
+  }
+
+  /* Clear the fixed header and the sticky contents bar (taller on a phone while
+     a filter is on) when a contents link or the curve scrolls here. */
+  .deck-list,
+  .deck-group {
+    scroll-margin-top: 8.5rem;
+  }
+
+  @media (max-width: 1023px) {
+    .deck-list { scroll-margin-top: 11rem; }
+  }
+
+  .deck-group__title {
+    @apply flex flex-wrap items-baseline gap-x-2 gap-y-1 pb-2 mb-1;
+    @apply text-lg sm:text-xl font-heading font-bold uppercase tracking-wider text-text-primary;
+    @apply border-b border-brand-orange/15;
+  }
+
+  .deck-group__count {
+    @apply text-text-muted tabular-nums;
+  }
+
+  /* One column on a phone, so names are read whole; more as the room allows. */
+  .deck-group__cards {
+    column-gap: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .deck-group__cards { columns: 2; }
+  }
+
+  @media (min-width: 1280px) {
+    .deck-group__cards { columns: 3; }
+  }
+
+  .deck-item {
+    break-inside: avoid;
+  }
+
+  .deck-row {
+    @apply flex w-full items-center gap-2.5 min-h-8 py-1 px-1.5 rounded text-left transition-colors;
+  }
+
+  .deck-row:hover {
+    @apply bg-brand-orange/8;
+  }
+
+  .deck-row__qty {
+    @apply w-5 flex-shrink-0 text-right text-sm text-text-muted tabular-nums;
+  }
+
+  .deck-row__name {
+    @apply flex-1 min-w-0 font-beleren text-[15px] leading-snug text-text-primary transition-colors;
+  }
+
+  .deck-row:hover .deck-row__name {
+    @apply text-brand-orange;
+  }
+
+  .deck-row__cost {
+    @apply flex-shrink-0;
+  }
+
+  .deck-row--banned {
+    @apply bg-red-500/8;
+  }
+
+  .deck-row--banned:hover {
+    @apply bg-red-500/15;
+  }
+
+  .deck-row--banned .deck-row__name {
+    @apply text-red-300 line-through decoration-red-500/70;
+  }
+
+  .deck-row__visual {
+    display: none;
+  }
+
+  html[data-deck-view="visual"] .deck-group__cards {
+    columns: auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    html[data-deck-view="visual"] .deck-group__cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  @media (min-width: 768px) {
+    html[data-deck-view="visual"] .deck-group__cards { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.75rem; }
+  }
+
+  @media (min-width: 1280px) {
+    html[data-deck-view="visual"] .deck-group__cards { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  }
+
+  html[data-deck-view="visual"] .deck-row {
+    @apply block p-0 rounded-[4.75%/3.5%];
+  }
+
+  html[data-deck-view="visual"] .deck-row:hover {
+    background: none;
+  }
+
+  html[data-deck-view="visual"] .deck-row > :not(.deck-row__visual) {
+    display: none;
+  }
+
+  /* The card's own proportions; it is scaled by the number of columns, never cropped. */
+  html[data-deck-view="visual"] .deck-row__visual {
+    @apply relative block aspect-[488/680] overflow-hidden rounded-[4.75%/3.5%] bg-bg-tertiary shadow-card transition-shadow;
+  }
+
+  html[data-deck-view="visual"] .deck-row:hover .deck-row__visual {
+    @apply shadow-card-hover;
+  }
+
+  .deck-row__img {
+    @apply block w-full h-full object-cover;
+  }
+
+  /* Scryfall had no scan: the card stays in the grid, named. */
+  .deck-row__fallback {
+    @apply flex flex-col items-start gap-1.5 h-full p-2 text-left;
+    @apply rounded-[inherit] border border-dashed border-white/25 bg-bg-secondary;
+  }
+
+  /* Solid, because they sit on a card scan. */
+  .deck-row__badge {
+    @apply absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded font-heading font-bold text-xs leading-tight;
+    @apply bg-bg-primary/90 border border-white/20 text-text-primary;
+  }
+
+  .deck-row__badge--banned {
+    @apply top-1.5 right-1.5 bottom-auto left-auto uppercase tracking-wider bg-red-600 border-red-400 text-white;
+  }
+
+  /* ---- Mana curve: bars are filter buttons ------------------------------------ */
+
+  .curve {
+    @apply grid grid-cols-8 items-end gap-1.5 h-36;
+  }
+
+  .curve-bar {
+    @apply flex h-full flex-col items-center gap-1 rounded-md pt-1 transition-colors;
+  }
+
+  .curve-bar:disabled {
+    @apply cursor-default opacity-40;
+  }
+
+  .curve-bar__count {
+    @apply text-xs font-semibold text-text-primary tabular-nums;
+  }
+
+  .curve-bar__track {
+    @apply flex w-full flex-1 flex-col justify-end;
+  }
+
+  .curve-bar__fill {
+    @apply w-full rounded-t-sm bg-text-muted/60 transition-colors;
+  }
+
+  .curve-bar:not(:disabled):hover .curve-bar__fill {
+    @apply bg-text-secondary/80;
+  }
+
+  .curve-bar[aria-pressed="true"] .curve-bar__fill {
+    @apply bg-brand-orange;
+  }
+
+  .curve-bar__label {
+    @apply font-heading font-bold text-sm text-text-muted;
+  }
+
+  .curve-bar[aria-pressed="true"] .curve-bar__label {
+    @apply text-brand-orange-light;
+  }
+
+  /* The same buttons as chips, in the sticky bar while a filter is on. */
+  .cost-chip {
+    @apply flex min-h-11 flex-col items-center justify-center rounded-lg leading-none;
+    @apply border border-white/12 bg-bg-secondary font-heading font-bold text-base text-text-secondary transition-colors;
+  }
+
+  .cost-chip:disabled {
+    @apply opacity-40;
+  }
+
+  .cost-chip[aria-pressed="true"] {
+    @apply border-brand-orange bg-brand-orange text-white;
+  }
+
+  .cost-chip__n {
+    @apply mt-0.5 font-body font-normal text-[10px] text-text-muted;
+  }
+
+  .cost-chip[aria-pressed="true"] .cost-chip__n {
+    @apply text-white;
+  }
+
+  /* ---- Colours: symbols (solid) against sources (hatched) -------------------- */
+
+  .color-bar {
+    @apply block h-2.5 min-w-1 rounded-sm;
+    background: var(--bar);
+    /* Black mana is near the page colour: the outline keeps every bar visible. */
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+
+  .color-bar--sources {
+    background: repeating-linear-gradient(135deg, var(--bar) 0 3px, transparent 3px 6px);
+  }
+
+  /* ---- Opening hand ----------------------------------------------------------- */
+
+  .hand-card {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .hand-card__face {
+    @apply block w-full aspect-[488/680] overflow-hidden rounded-[4.75%/3.5%] bg-bg-tertiary shadow-card;
+  }
+
+  .hand-card__face img {
+    @apply block w-full h-full object-cover;
+  }
+
+  .hand-card__fallback {
+    @apply flex h-full items-start p-1.5 text-left font-beleren text-xs leading-tight text-text-primary;
+    @apply rounded-[inherit] border border-dashed border-white/25;
+  }
+
+  .hand-card.is-bottom .hand-card__face {
+    @apply opacity-50;
+  }
+
+  .hand-card__bottom {
+    @apply min-h-9 rounded-md border border-white/15 font-heading font-bold text-xs uppercase tracking-wider text-text-secondary transition-colors;
+  }
+
+  .hand-card__bottom[aria-pressed="true"] {
+    @apply border-brand-orange bg-brand-orange text-white;
+  }
+}

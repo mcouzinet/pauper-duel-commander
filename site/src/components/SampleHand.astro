@@ -1,0 +1,217 @@
+---
+/**
+ * Opening hand: seven random cards from the 99, to see how the deck starts
+ * without sleeving it.
+ *
+ * The library is read from the deck list already in the page (`.deck-item`
+ * rows), so there is no second copy of the deck. The commander is not in it:
+ * it starts in the command zone. Mulligans follow the London rule the format
+ * uses (rule 3.2): draw seven again, then put one card per mulligan on the
+ * bottom. Card images load on the first draw, never with the page.
+ *
+ * Without JavaScript the section is hidden (decklist.css), since it can do
+ * nothing.
+ */
+import { t, tf, type Locale } from '@/lib/i18n';
+
+interface Props {
+  locale: Locale;
+  librarySize: number;
+}
+
+const { locale, librarySize } = Astro.props;
+
+const labels = {
+  status: t('decklist.handStatus', locale),
+  bottom: t('decklist.handBottom', locale),
+  bottomToggle: t('decklist.handBottomToggle', locale),
+  bottomAria: t('decklist.handBottomAria', locale),
+  inHand: t('decklist.handInHand', locale),
+};
+const button = 'btn-secondary !px-4 !py-0 h-11 !text-sm';
+---
+
+<section class="py-8 md:py-10 border-t border-white/8" aria-labelledby="sample-hand-title" data-needs-js data-sample-hand>
+  <h2 id="sample-hand-title" class="section-title">{t('decklist.hand', locale)}</h2>
+  <p class="max-w-2xl text-sm leading-relaxed text-text-secondary">{tf('decklist.handIntro', locale, { n: librarySize })}</p>
+
+  <div class="mt-4 flex flex-wrap gap-2">
+    <button type="button" class={button} data-hand-action="new"
+            data-label-again={t('decklist.handNew', locale)}
+            data-analytics="decklist_hand" data-analytics-action="new">{t('decklist.handDraw', locale)}</button>
+    <button type="button" class={button} data-hand-action="mulligan" disabled
+            data-analytics="decklist_hand" data-analytics-action="mulligan">{t('decklist.handMulligan', locale)}</button>
+    <button type="button" class={button} data-hand-action="draw" disabled
+            data-analytics="decklist_hand" data-analytics-action="draw">{t('decklist.handNext', locale)}</button>
+  </div>
+
+  <p class="mt-4 text-sm text-text-secondary" role="status" data-hand-status></p>
+  <ul class="mt-3 grid grid-cols-4 sm:grid-cols-7 gap-2 md:gap-3" role="list" data-hand-cards></ul>
+  <div class="mt-3" hidden data-hand-keep-row>
+    <button type="button" class={button} data-hand-action="keep" disabled
+            data-analytics="decklist_hand" data-analytics-action="keep">{t('decklist.handKeep', locale)}</button>
+  </div>
+  <p class="mt-3 text-sm leading-relaxed text-text-secondary" hidden data-hand-names></p>
+
+  <script type="application/json" data-hand-labels set:html={JSON.stringify(labels)} is:inline />
+</section>
+
+<script>
+  interface Card { name: string; image: string; land: boolean }
+
+  const root = document.querySelector<HTMLElement>('[data-sample-hand]');
+  if (root) {
+    const labels = JSON.parse(root.querySelector('[data-hand-labels]')?.textContent || '{}') as Record<string, string>;
+    const fill = (template: string, vars: Record<string, string | number>) =>
+      template.replace(/%(\w+)%/g, (match, name: string) => (name in vars ? String(vars[name]) : match));
+
+    // One entry per copy: "24 Mountain" is twenty-four cards in the library.
+    const deck: Card[] = [];
+    document.querySelectorAll<HTMLElement>('.deck-item').forEach(item => {
+      const card = {
+        name: item.dataset.name ?? '',
+        image: item.querySelector<HTMLElement>('[data-card-image]')?.dataset.cardImage ?? '',
+        land: item.dataset.land === '1',
+      };
+      for (let i = 0; i < Number(item.dataset.qty ?? 1); i++) deck.push(card);
+    });
+
+    const status = root.querySelector<HTMLElement>('[data-hand-status]')!;
+    const list = root.querySelector<HTMLElement>('[data-hand-cards]')!;
+    const keepRow = root.querySelector<HTMLElement>('[data-hand-keep-row]')!;
+    const names = root.querySelector<HTMLElement>('[data-hand-names]')!;
+    const action = (name: string) => root.querySelector<HTMLButtonElement>(`[data-hand-action="${name}"]`)!;
+
+    let library: Card[] = [];
+    let hand: Card[] = [];
+    let mulligans = 0;
+    let selecting = false;
+    // A kept hand is played: no more mulligans, as at the table.
+    let kept = false;
+    const toBottom = new Set<number>();
+
+    function shuffle(cards: Card[]): Card[] {
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
+      return cards;
+    }
+
+    function deal() {
+      library = shuffle([...deck]);
+      hand = library.splice(0, 7);
+      toBottom.clear();
+    }
+
+    function cardElement(card: Card, index: number): HTMLLIElement {
+      const item = document.createElement('li');
+      item.className = 'hand-card';
+
+      const preview = document.createElement('button');
+      preview.type = 'button';
+      preview.className = 'hand-card__face card-hover-trigger';
+      preview.dataset.cardName = card.name;
+      preview.dataset.cardImage = card.image;
+      if (card.image) {
+        const img = document.createElement('img');
+        img.src = card.image;
+        img.alt = card.name;
+        img.width = 488;
+        img.height = 680;
+        img.decoding = 'async';
+        preview.append(img);
+      } else {
+        // No scan: the card stays present and named.
+        const name = document.createElement('span');
+        name.className = 'hand-card__fallback';
+        name.lang = 'en';
+        name.textContent = card.name;
+        preview.append(name);
+      }
+      item.append(preview);
+      window.pdcBindCardPreview?.(preview);
+
+      if (selecting) {
+        const chosen = toBottom.has(index);
+        const bottom = document.createElement('button');
+        bottom.type = 'button';
+        bottom.className = 'hand-card__bottom';
+        bottom.textContent = labels.bottomToggle;
+        bottom.setAttribute('aria-pressed', String(chosen));
+        bottom.setAttribute('aria-label', fill(labels.bottomAria, { name: card.name }));
+        if (chosen) item.classList.add('is-bottom');
+        bottom.addEventListener('click', () => {
+          if (toBottom.has(index)) toBottom.delete(index);
+          else if (toBottom.size < mulligans) toBottom.add(index);
+          render();
+          root!.querySelectorAll<HTMLButtonElement>('.hand-card__bottom')[index]?.focus();
+        });
+        item.append(bottom);
+      }
+      return item;
+    }
+
+    function render() {
+      list.replaceChildren(...hand.map(cardElement));
+
+      const drawn = hand.length > 0;
+      const newButton = action('new');
+      if (drawn) newButton.textContent = newButton.dataset.labelAgain ?? newButton.textContent;
+      action('mulligan').disabled = !drawn || kept || mulligans >= 7;
+      action('draw').disabled = !drawn || selecting || library.length === 0;
+      keepRow.hidden = !selecting;
+      action('keep').disabled = toBottom.size !== mulligans;
+
+      status.textContent = selecting
+        ? fill(labels.bottom, { m: mulligans, c: toBottom.size, k: mulligans })
+        : fill(labels.status, { n: hand.length, l: hand.filter(card => card.land).length });
+
+      // The names, readable without opening each card. "Mountain ×2" for repeats.
+      const counts = new Map<string, number>();
+      hand.forEach(card => counts.set(card.name, (counts.get(card.name) ?? 0) + 1));
+      names.replaceChildren(document.createTextNode(`${labels.inHand} `));
+      [...counts].forEach(([name, count], i) => {
+        if (i > 0) names.append(', ');
+        const span = document.createElement('span');
+        span.className = 'font-beleren text-text-primary';
+        span.lang = 'en';
+        span.textContent = name;
+        names.append(span, count > 1 ? ` ×${count}` : '');
+      });
+      names.hidden = !drawn;
+    }
+
+    action('new').addEventListener('click', () => {
+      mulligans = 0;
+      selecting = false;
+      kept = false;
+      deal();
+      render();
+    });
+
+    action('mulligan').addEventListener('click', () => {
+      mulligans += 1;
+      selecting = true;
+      deal();
+      render();
+    });
+
+    action('keep').addEventListener('click', () => {
+      const remaining = hand.filter((_, index) => !toBottom.has(index));
+      library.push(...hand.filter((_, index) => toBottom.has(index)));
+      hand = remaining;
+      toBottom.clear();
+      selecting = false;
+      kept = true;
+      render();
+    });
+
+    action('draw').addEventListener('click', () => {
+      const card = library.shift();
+      if (card) hand.push(card);
+      kept = true;
+      render();
+    });
+  }
+</script>

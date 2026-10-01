@@ -1,0 +1,59 @@
+---
+/**
+ * What a reader does with a list: copy it, export it, check it.
+ *
+ * "Copier la liste" is the page's only primary action; the other formats sit
+ * behind "Exporter" so the header shows three buttons instead of four equal
+ * ones. Rendered twice by the decklist page (header on a phone, sticky sidebar
+ * on desktop), so everything is wired by data attributes, never by id.
+ */
+import { t, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+
+interface Props {
+  locale: Locale;
+  /** Unique per instance: the export menu needs an id for aria-controls. */
+  idPrefix: string;
+  layout: 'row' | 'stack';
+}
+
+const { locale, idPrefix, layout } = Astro.props;
+const menuId = `${idPrefix}-export`;
+const compact = '!px-3 !py-0 h-11 !text-sm';
+---
+
+<div class:list={['deck-actions', layout === 'row' ? 'flex gap-2' : 'flex flex-col gap-2']}>
+  <button type="button" class:list={['btn-primary', compact, layout === 'row' && 'flex-1 sm:flex-none']}
+          data-deck-copy
+          data-label-done={t('decklist.exportCopied', locale)}
+          data-analytics="decklist_export" data-analytics-format="clipboard">
+    {t('decklist.copy', locale)}
+  </button>
+  <div class={layout === 'row' ? 'contents' : 'grid grid-cols-2 gap-2'}>
+    <div class="relative">
+      <button type="button" class:list={['btn-secondary w-full', compact]}
+              aria-expanded="false" aria-controls={menuId} data-export-toggle>
+        {t('decklist.export', locale)}<span aria-hidden="true" class="ml-1.5">▾</span>
+      </button>
+      <div id={menuId} hidden data-export-menu
+           class:list={['absolute top-full mt-2 z-40 w-64 p-1.5 rounded-lg bg-bg-tertiary border border-white/12 shadow-card-hover flex flex-col', layout === 'row' ? 'right-0' : 'left-0']}>
+        <button type="button" class="export-item" data-export="text"
+                data-analytics="decklist_export" data-analytics-format="arena_moxfield">
+          {t('decklist.exportText', locale)}
+        </button>
+        <button type="button" class="export-item" data-export="mtgo"
+                data-analytics="decklist_export" data-analytics-format="mtgo">
+          {t('decklist.exportMtgo', locale)}
+        </button>
+        <button type="button" class="export-item" data-export="download"
+                data-analytics="decklist_export" data-analytics-format="txt">
+          {t('decklist.download', locale)}
+        </button>
+      </div>
+    </div>
+    <a href={route('validator', locale)} class:list={['btn-secondary', compact]}
+       data-deck-validate data-analytics="decklist_validate_click">
+      {t('decklist.validateShort', locale)}
+    </a>
+  </div>
+</div>

@@ -65,10 +65,10 @@ site/
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
-│   ├── components/              # BanListGrid, CardList, DeckStats, Top8Table...
+│   ├── components/              # BanListGrid, CardList, ManaCurve, SampleHand, Top8Table...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
 │   ├── i18n/{fr,en,it}.json
-│   ├── scripts/                 # JS client (mobile-menu, card-hover, deck-export)
+│   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail)
 │   └── styles/globals.css       # @theme Tailwind 4 + classes composites
 ├── promo/reel/                  # Sources de la vidéo de présentation (cf. plus bas)
 ├── scripts/
@@ -295,6 +295,16 @@ réencodées, pas des sources :
   routes minces (`pages/fr/…` et `pages/en/…`)
 - Un script client `is:inline` ne voit pas les variables Astro : passer les
   valeurs par des `data-*` attributs (cf. bouton d'export de decklist)
+- Page decklist : chaque carte est rendue **une seule fois** (`CardList`), en
+  ligne qui sert aussi de déclencheur d'aperçu. Regrouper, trier, filtrer par
+  coût et la vue Visuel travaillent sur ces mêmes lignes et leurs `data-*`
+  (`scripts/decklist-detail.ts`) : ne pas dupliquer la liste par mode. Les
+  images de la vue Visuel sont `loading="lazy"` dans une boîte non affichée ;
+  c'est ce qui évite à la vue Liste de télécharger 99 images, ne pas l'enlever.
+  Les libellés du script viennent d'un bloc JSON construit avec `t()`.
+- Les styles d'une page dans un fichier à part (`decklist.css`) vont dans
+  `@layer components` : hors couche, ils battraient les utilitaires Tailwind
+  (`lg:hidden` restait sans effet).
 
 ### CSS
 - Tailwind 4 : tokens dans `@theme {}` de `globals.css`, pas de fichier de config

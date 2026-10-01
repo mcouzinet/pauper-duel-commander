@@ -1,0 +1,97 @@
+---
+/**
+ * Mana symbols against mana sources, per colour of the deck.
+ *
+ * Replaces the colour donut, which counted cards rather than symbols and so
+ * could not answer the question a player asks of a two-colour list: does the
+ * mana base follow what the spells cost? A monocolour deck gets one sentence; a
+ * deck with more colours gets paired bars, solid for symbols and hatched for
+ * sources, with the numbers printed beside them.
+ *
+ * Sources are the copies that can produce the colour (Scryfall's produced_mana),
+ * which leaves out lands that fetch another land.
+ */
+import { t, tf, localeTag, type Locale } from '@/lib/i18n';
+import { formatColorSymbols } from '@/lib/mana';
+
+interface Props {
+  /** The deck's colour identity, e.g. ["W", "G"]. */
+  identity: string[];
+  symbols: Record<string, number>;
+  sources: Record<string, number>;
+  landSources: Record<string, number>;
+  locale: Locale;
+  /** Placement classes from the parent grid. */
+  class?: string;
+}
+
+const { identity, symbols, sources, landSources, locale, class: className } = Astro.props;
+
+const ORDER = ['W', 'U', 'B', 'R', 'G'];
+const TOKEN: Record<string, string> = { W: 'white', U: 'blue', B: 'black', R: 'red', G: 'green' };
+
+const colors = ORDER.filter(color => identity.includes(color));
+const symbolTotal = colors.reduce((sum, color) => sum + (symbols[color] ?? 0), 0);
+const sourceTotal = colors.reduce((sum, color) => sum + (sources[color] ?? 0), 0);
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (part: number, whole: number) => (whole > 0 ? part / whole : 0);
+
+const rows = colors.map(color => {
+  const symbolShare = share(symbols[color] ?? 0, symbolTotal);
+  const sourceShare = share(sources[color] ?? 0, sourceTotal);
+  return {
+    color,
+    name: t(`color.${color}`, locale),
+    barColor: `var(--color-mana-${TOKEN[color]})`,
+    symbolWidth: Math.round(symbolShare * 100),
+    sourceWidth: Math.round(sourceShare * 100),
+    symbolText: tf('decklist.symbolsCount', locale, { n: symbols[color] ?? 0, p: percent.format(symbolShare) }),
+    sourceText: tf('decklist.sourcesCount', locale, { n: sources[color] ?? 0, p: percent.format(sourceShare) }),
+    line: tf('decklist.colorLine', locale, {
+      c: t(`color.${color}`, locale),
+      s: symbols[color] ?? 0,
+      n: sources[color] ?? 0,
+      l: landSources[color] ?? 0,
+    }),
+  };
+});
+---
+
+{rows.length > 0 && (
+  <div class:list={['panel p-5 flex flex-col gap-3', className]}>
+    <h3 class="font-heading font-bold text-base uppercase tracking-wider text-text-primary">{t('decklist.manaColors', locale)}</h3>
+    {rows.length === 1 ? (
+      <p class="flex items-start gap-2.5 text-sm leading-relaxed text-text-secondary">
+        <span class="flex-shrink-0 mt-0.5" aria-hidden="true" set:html={formatColorSymbols(rows[0].color)} />
+        <span>{rows[0].line}</span>
+      </p>
+    ) : (
+      <>
+        <dl class="flex flex-col gap-3">
+          {rows.map(row => (
+            <div class="grid grid-cols-[5.5rem_minmax(0,1fr)] items-center gap-x-3">
+              <dt class="flex items-center gap-2 text-sm text-text-primary">
+                <span aria-hidden="true" set:html={formatColorSymbols(row.color)} />
+                {row.name}
+              </dt>
+              <dd class="flex flex-col gap-1.5 min-w-0">
+                <span class="flex items-center gap-2">
+                  <span class="color-bar" style={`width: ${row.symbolWidth}%; --bar: ${row.barColor}`}></span>
+                  <span class="text-xs text-text-secondary whitespace-nowrap">{row.symbolText}</span>
+                </span>
+                <span class="flex items-center gap-2">
+                  <span class="color-bar color-bar--sources" style={`width: ${row.sourceWidth}%; --bar: ${row.barColor}`}></span>
+                  <span class="text-xs text-text-secondary whitespace-nowrap">{row.sourceText}</span>
+                </span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <ul class="flex flex-col gap-1 text-xs text-text-muted" role="list">
+          <li class="flex items-center gap-2"><span class="color-bar w-5 flex-shrink-0" style="--bar: var(--color-text-secondary)"></span>{t('decklist.symbolsLegend', locale)}</li>
+          <li class="flex items-center gap-2"><span class="color-bar color-bar--sources w-5 flex-shrink-0" style="--bar: var(--color-text-secondary)"></span>{t('decklist.sourcesLegend', locale)}</li>
+        </ul>
+      </>
+    )}
+  </div>
+)}
