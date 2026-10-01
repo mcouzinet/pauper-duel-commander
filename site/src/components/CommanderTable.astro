@@ -65,14 +65,20 @@ const struck = (c: CommanderStat) => c.isBanned && 'line-through decoration-red-
           {ranked && <td class="pl-1 font-heading font-bold text-text-muted tabular-nums">{c.rank}</td>}
           <td class:list={[!ranked && 'pl-1']}>
             <span class="flex items-center gap-2.5">
-              {c.image ? (
-                <span class:list={['w-8 h-8 flex-shrink-0 overflow-hidden rounded ring-1 ring-white/10 card-hover-trigger', c.isBanned && 'grayscale']}
-                      data-card-name={c.mainName} data-card-image={c.cardImage ?? c.image}>
-                  <img src={c.image} alt="" width="32" height="32" class="w-full h-full object-cover" loading="lazy" decoding="async" />
-                </span>
-              ) : (
-                <span class="w-8 h-8 flex-shrink-0 rounded bg-bg-tertiary" aria-hidden="true"></span>
-              )}
+              <span class:list={['pair-thumb pair-thumb--sm', c.isBanned && 'grayscale']}>
+                {c.partnerImage && c.partnerName && (
+                  <span class="pair-thumb__partner" aria-hidden="true">
+                    <img src={c.partnerImage} alt="" width="32" height="32" loading="lazy" decoding="async" />
+                  </span>
+                )}
+                {c.image ? (
+                  <span class="pair-thumb__main card-hover-trigger" data-card-name={c.mainName} data-card-image={c.cardImage ?? c.image}>
+                    <img src={c.image} alt="" width="32" height="32" loading="lazy" decoding="async" />
+                  </span>
+                ) : (
+                  <span class="pair-thumb__main" aria-hidden="true"></span>
+                )}
+              </span>
               <span class="min-w-0">
                 <a href={decklistHref(c.mainName)} lang="en"
                    data-analytics="meta_commander_click" data-analytics-commander={c.mainName}

@@ -73,10 +73,17 @@ function commanderColors(name: string): string[] {
 
 const isBanned = (name: string) => splitNames(name).some(part => banned.has(part.toLowerCase()));
 
+/** The second card of a pair (partner, background), when there is one. */
+function partnerCardOf(name: string): ScryfallCard | null {
+  const second = splitNames(name)[1];
+  return second ? cards.get(second.toLowerCase()) ?? null : null;
+}
+
 const top8: Top8Entry[] = data.top8
   .map(finish => {
     const unknown = isPlaceholder(finish.commanderName);
     const card = unknown ? null : resolveCard(finish.commanderName);
+    const partner = unknown ? null : partnerCardOf(finish.commanderName);
     return {
       place: finish.place,
       // Placeholders never reach the UI as a name.
@@ -86,6 +93,8 @@ const top8: Top8Entry[] = data.top8
       score: finish.score,
       commanderImage: getCardImage(card, 'art_crop'),
       cardImage: getCardImage(card, 'normal'),
+      partnerImage: getCardImage(partner, 'art_crop'),
+      partnerCardImage: getCardImage(partner, 'normal'),
       // The bug: this used to interpolate a route that does not exist.
       decklistUrl: finish.decklistSlug ? route('decklists', locale, finish.decklistSlug) : null,
       isBanned: unknown ? false : isBanned(finish.commanderName),
@@ -125,6 +134,8 @@ const commanders: CommanderStat[] = recorded.map((entry, index) => {
     image: getCardImage(card, 'art_crop'),
     cardImage: getCardImage(card, 'normal'),
     thumb: getCardImage(card, 'small'),
+    partnerImage: getCardImage(partnerCardOf(entry.name), 'art_crop'),
+    partnerCardImage: getCardImage(partnerCardOf(entry.name), 'normal'),
     colors,
     ciKey,
     isBanned: isBanned(entry.name),
@@ -134,15 +145,22 @@ const commanders: CommanderStat[] = recorded.map((entry, index) => {
 
 const hasMeta = commanders.length > 0;
 
-// Best place reached by each commander of the field, for the mosaic's badges.
-// Keyed by the full name and by the main card too: a top 8 can record a pair
-// as "Gut, True Soul Zealot" where the field wrote it with its partner.
+// Best place reached by each entry of the field, for the mosaic's badges, keyed
+// by the field's own name for it. A top 8 can record a pair by its first card
+// alone ("Gut, True Soul Zealot" for the pair with its background): it then
+// goes to the field entry with that first card, but only if there is just one,
+// so two pairs sharing a first card never trade places.
 const places: Record<string, number> = {};
 for (const finish of data.top8) {
   if (isPlaceholder(finish.commanderName)) continue;
-  for (const key of new Set([finish.commanderName, splitNames(finish.commanderName)[0]].map(name => name.toLowerCase()))) {
-    places[key] = Math.min(places[key] ?? Infinity, finish.place);
-  }
+  const full = finish.commanderName.toLowerCase();
+  const main = splitNames(finish.commanderName)[0].toLowerCase();
+  const exact = commanders.find(c => c.name.toLowerCase() === full);
+  const byMain = commanders.filter(c => c.mainName.toLowerCase() === main);
+  const target = exact ?? (byMain.length === 1 ? byMain[0] : null);
+  if (!target) continue;
+  const key = target.name.toLowerCase();
+  places[key] = Math.min(places[key] ?? Infinity, finish.place);
 }
 const hasResults = top8.length > 0 || hasMeta;
 const winner = top8.find(finish => finish.place === 1) ?? null;

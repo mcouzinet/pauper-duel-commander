@@ -99,14 +99,14 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
         );
       }
       const c = box.data.commander;
-      const place = places[c.name.toLowerCase()] ?? places[c.mainName.toLowerCase()] ?? null;
+      const place = places[c.name.toLowerCase()] ?? null;
       // The link's name comes from this text, always present: a tile too small
       // to print the name still names its commander. What is drawn on the tile
       // is hidden from assistive technology, so the two never disagree.
       const name = [
         place ? tf('tournament.placeN', locale, { n: place }) : '',
         share(c.count),
-        c.mainName,
+        c.partnerName ? `${c.mainName} + ${c.partnerName}` : c.mainName,
         c.isBanned ? t('meta.banned', locale) : '',
       ].filter(Boolean).join(', ');
       return (
@@ -117,7 +117,11 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
               <img src={c.image} alt="" width="626" height="457" decoding="async"
                    loading={eager && c.rank <= 4 ? 'eager' : 'lazy'}
                    fetchpriority={eager && c.rank === 1 ? 'high' : c.rank > 4 ? 'low' : undefined}
-                   class:list={['mosaic-tile__img', c.isBanned && 'grayscale']} />
+                   class:list={['mosaic-tile__img', c.partnerImage && 'mosaic-tile__img--left', c.isBanned && 'grayscale']} />
+            )}
+            {c.image && c.partnerImage && (
+              <img src={c.partnerImage} alt="" width="626" height="457" decoding="async" loading="lazy"
+                   class:list={['mosaic-tile__img mosaic-tile__img--right', c.isBanned && 'grayscale']} />
             )}
             <span class="absolute inset-0 bg-gradient-to-t from-bg-primary/95 via-bg-primary/30 to-transparent"></span>
             <span class="sr-only">{name}</span>
@@ -125,6 +129,7 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
             <span class="mosaic-tile__label" aria-hidden="true">
               <span class="mosaic-tile__share">{share(c.count)}</span>
               <span lang="en" class:list={['mosaic-tile__name', c.isBanned && 'line-through decoration-red-500/70']}>{c.mainName}</span>
+              {c.partnerName && <span lang="en" class="mosaic-tile__partner">+ {c.partnerName}</span>}
             </span>
             {c.isBanned && <span class="tile-badge tile-badge--banned" aria-hidden="true">{t('meta.banned', locale)}</span>}
           </a>

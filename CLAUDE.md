@@ -307,8 +307,13 @@ réencodées, pas des sources :
   (`lg:hidden` restait sans effet).
 - Le top 8 d'un tournoi est un podium (`Top8`) : les trois premiers en cartes,
   dans l'ordre des places dans le balisage et dessinés 2-1-3 par CSS, puis les
-  places suivantes en lignes compactes. Pas de mosaïque ici : un top 8 est un
-  classement, pas une part. Styles dans `results.css` : un élément dont ces
+  places suivantes en lignes compactes, à côté du podium quand l'écran le
+  permet. Pas de mosaïque ici : un top 8 est un classement, pas une part.
+- Une paire (partenaires, général et background) montre ses deux cartes partout :
+  en éventail sur le podium, deux vignettes superposées dans les lignes et le
+  tableau (`pair-thumb`, seule la principale déclenche l'aperçu), une tuile
+  coupée en deux dans la mosaïque. `CommanderStat` et `Top8Entry` portent
+  `partnerImage` / `partnerCardImage`. Styles dans `results.css` : un élément dont ces
   règles fixent la mise en page n'en reçoit pas d'un utilitaire `flex`/`grid`,
   qui l'emporterait.
 - Page méta : la mosaïque (`MetaMosaic`, treemap de `lib/treemap.ts`, contrôle

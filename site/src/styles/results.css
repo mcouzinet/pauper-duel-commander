@@ -135,6 +135,17 @@
     transform: scale(1.05);
   }
 
+  /* A pair's tile: each card's art on its own half. */
+  .mosaic-tile__img--left {
+    width: 50%;
+  }
+
+  .mosaic-tile__img--right {
+    left: 50%;
+    width: 50%;
+    border-left: 2px solid var(--color-bg-primary);
+  }
+
   /* The tail: one small dimmed scan per commander, a texture under its label.
      Scryfall's small scan (a tenth of an art crop's weight) is the whole card,
      whose illustration runs from 11 to 55 % of its height. At 160 % of the
@@ -169,6 +180,11 @@
     display: none;
   }
 
+  .mosaic-tile__partner {
+    @apply font-beleren text-xs leading-tight text-text-secondary truncate;
+    display: none;
+  }
+
   .mosaic-tile__others {
     @apply mt-1 block text-sm text-text-primary;
   }
@@ -182,6 +198,7 @@
     .mosaic-tile__label { padding: 0.75rem; }
     .mosaic-tile__share { font-size: 2.25rem; }
     .mosaic-tile__name { font-size: 1.125rem; margin-top: 0.25rem; }
+    .mosaic-tile__partner { display: block; font-size: 0.875rem; }
   }
 
   @container (max-width: 2.75rem), (max-height: 2rem) {
@@ -245,8 +262,24 @@
   }
 
   /* Gold is merit: the winner, and only the winner. */
-  .podium__step--1 .tile-face {
+  .podium__step--1 .podium__main {
     @apply ring-2 ring-magic-gold/70;
+  }
+
+  /* A pair: the main card in front, its partner or background fanned behind,
+     as on the decklist page. */
+  .podium__card--pair {
+    @apply relative pr-[12%] pt-[4%];
+  }
+
+  .podium__card--pair .podium__main {
+    @apply z-[1];
+    transform: rotate(-2deg);
+  }
+
+  .podium__partner {
+    @apply absolute top-0 right-0 w-[88%];
+    transform: rotate(5deg);
   }
 
   .podium__name {
@@ -258,7 +291,7 @@
   }
 
   .podium__deck {
-    @apply inline-flex items-center min-h-8 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors;
+    @apply inline-flex items-center gap-1 min-h-8 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors;
   }
 
   /* The step it stands on, as high as the place is good. */
@@ -270,8 +303,47 @@
   .podium__step--2 .podium__base { @apply h-6 sm:h-9 border-slate-300/60 bg-slate-300/5; }
   .podium__step--3 .podium__base { @apply h-3 sm:h-5 border-amber-600/60 bg-amber-700/10; }
 
+  .top8--split {
+    @apply lg:grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-10 lg:items-center;
+  }
+
   .standings {
-    @apply mt-8 lg:columns-2 lg:gap-x-12;
+    @apply mt-8 md:columns-2 md:gap-x-10 lg:mt-0 lg:columns-1;
+  }
+
+  /* A row's thumbnail: one art, or a pair's two, the partner behind. A single
+     card keeps the pair's width, so the names stay aligned. Only the main card
+     previews on hover: two overlapping triggers would leave the partner's a
+     sliver too small to hit. */
+  .pair-thumb {
+    @apply relative block flex-shrink-0 w-[3.25rem] h-10;
+  }
+
+  .pair-thumb__main,
+  .pair-thumb__partner {
+    @apply absolute top-0 left-0 block w-10 h-10 overflow-hidden rounded-md ring-1 ring-white/10 bg-bg-tertiary;
+  }
+
+  .pair-thumb__partner {
+    left: 0.75rem;
+    transform: rotate(6deg);
+  }
+
+  .pair-thumb img {
+    @apply block w-full h-full object-cover;
+  }
+
+  .pair-thumb--sm {
+    @apply w-[2.75rem] h-8;
+  }
+
+  .pair-thumb--sm .pair-thumb__main,
+  .pair-thumb--sm .pair-thumb__partner {
+    @apply w-8 h-8 rounded;
+  }
+
+  .pair-thumb--sm .pair-thumb__partner {
+    left: 0.625rem;
   }
 
   .standing {
