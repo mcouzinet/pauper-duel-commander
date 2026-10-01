@@ -11,8 +11,16 @@
  * preview is a route to the card's full rules text rather than a dead end.
  *
  * Triggers are `.card-hover-trigger[data-card-image]`, with an optional
- * `data-card-name` used for the label and the Scryfall query.
+ * `data-card-name` used for the label and the Scryfall query. Triggers present at
+ * load are bound here; markup built later (a drawn opening hand) binds its own
+ * through `window.pdcBindCardPreview`.
  */
+declare global {
+  interface Window {
+    pdcBindCardPreview?: (trigger: HTMLElement) => void;
+  }
+}
+
 const MARGIN = 12;
 const WIDTH = 244; // Scryfall "normal" is 488px wide; half of it stays crisp.
 
@@ -175,6 +183,7 @@ function bind(trigger: HTMLElement) {
 }
 
 document.querySelectorAll<HTMLElement>('.card-hover-trigger').forEach(bind);
+window.pdcBindCardPreview = bind;
 
 document.addEventListener('click', () => {
   if (pinnedTo) hide();
@@ -193,3 +202,6 @@ window.addEventListener('resize', () => {
   if (pinnedTo) position(pinnedTo);
   else hide();
 });
+
+// A module, so the `declare global` above augments Window instead of erroring.
+export {};

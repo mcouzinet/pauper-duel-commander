@@ -1,13 +1,21 @@
 ---
 /**
- * Deck cards grouped by type.
+ * Deck cards grouped by type, in two presentations.
  *
- * Two columns from 360px up rather than one: at one column, ninety-nine cards
- * made a 12,700px page on a phone, which is the device this gets read on. Each
- * group gets a stable anchor so the contents bar above can jump into it.
+ * Each card is rendered once, as a row that is also a preview trigger. The list
+ * view is the default and is what a visitor without JavaScript reads; the visual
+ * view is the same rows restyled as a grid of card images (decklist.css), so
+ * switching costs no second copy of the deck. Its images are `loading="lazy"`
+ * inside an undisplayed box: the list view never fetches them, the visual view
+ * fetches the ones it shows.
+ *
+ * The `data-*` attributes are what `scripts/deck-view.ts` regroups, sorts and
+ * filters on. One column on a phone, so card names are never truncated: the old
+ * two-column list cut them down to "Brimstone V…".
  */
 import { formatManaCost } from '@/lib/mana';
 import { t, type Locale } from '@/lib/i18n';
+import { TYPE_LABEL_KEYS } from '@/lib/deck-renderer';
 import type { EnrichedCard } from '@/types/decklist';
 
 interface Props {
@@ -17,68 +25,69 @@ interface Props {
 
 const { cardsByType, locale } = Astro.props;
 
-const TYPE_LABEL_KEYS: Record<string, string> = {
-  Creature: 'common.creatures',
-  Instant: 'common.instants',
-  Sorcery: 'common.sorceries',
-  Artifact: 'common.artifacts',
-  Enchantment: 'common.enchantments',
-  Land: 'common.lands',
-  Planeswalker: 'common.planeswalkers',
-  Other: 'common.other',
-};
+const typeLabel = (type: string) => t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale);
 
 const groups = Object.entries(cardsByType).map(([type, cards]) => ({
   type,
   anchor: `type-${type.toLowerCase()}`,
-  label: t(TYPE_LABEL_KEYS[type] ?? 'common.other', locale),
+  label: typeLabel(type),
   total: cards.reduce((sum, card) => sum + card.quantity, 0),
   bannedCount: cards.filter(card => card.isBanned).length,
   cards,
 }));
+
+const bannedLabel = (count: number) => count === 1
+  ? t('decklist.bannedCardsShortOne', locale)
+  : `${count} ${t('decklist.bannedCardsShort', locale)}`;
 ---
 
-<div class="space-y-8">
+<div class="deck-list" data-deck-list>
   {groups.map(group => (
-    <section id={group.anchor}>
-      <h2 class="text-xl sm:text-2xl font-heading font-bold text-magic-gradient uppercase tracking-wider mb-3 pb-2 border-b border-brand-orange/15">
-        {group.label} <span class="text-text-muted tabular-nums">({group.total})</span>
+    <section class="deck-group" id={group.anchor} data-group={group.type} aria-labelledby={`${group.anchor}-title`}>
+      <h2 class="deck-group__title" id={`${group.anchor}-title`}>
+        <span>{group.label}</span>
+        <span class="deck-group__count" data-group-count data-total={group.total}>{group.total}</span>
         {group.bannedCount > 0 && (
-          <span class="badge badge--danger ml-2 align-middle normal-case tracking-normal">
-            {group.bannedCount} {group.bannedCount === 1
-              ? t('decklist.bannedCardsShortOne', locale)
-              : t('decklist.bannedCardsShort', locale)}
-          </span>
+          <span class="badge badge--danger normal-case tracking-normal">{bannedLabel(group.bannedCount)}</span>
         )}
       </h2>
-
-      <ul class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-0.5">
+      <ul class="deck-group__cards" role="list">
         {group.cards.map(card => (
-          <li class:list={[
-                'card-hover-trigger group flex items-center gap-2 py-1.5 px-1.5 -mx-1.5 rounded transition-colors cursor-pointer min-w-0',
-                card.isBanned ? 'bg-red-500/8 hover:bg-red-500/15' : 'hover:bg-brand-orange/8',
-              ]}
-              data-card-name={card.name}
-              data-card-image={card.imageUrl ?? ''}>
-            <span class="text-sm font-mono text-text-muted w-4 text-right flex-shrink-0 tabular-nums">
-              {card.quantity}
-            </span>
-            <span class:list={[
-              'text-sm sm:text-base truncate flex-1 font-beleren transition-colors',
-              card.isBanned
-                ? 'text-red-300 line-through decoration-red-500/70'
-                : 'text-text-primary group-hover:text-brand-orange',
-            ]} lang="en">
-              {card.name}
-            </span>
-            {card.isBanned && (
-              <span class="badge badge--danger flex-shrink-0 uppercase tracking-wider" title={t('decklist.bannedCardTitle', locale)}>
-                {t('meta.banned', locale)}
+          <li class="deck-item"
+              data-name={card.name}
+              data-qty={card.quantity}
+              data-cmc={card.cmc}
+              data-type={card.type}
+              data-colors={card.colors.join('')}
+              data-land={card.type === 'Land' ? '1' : '0'}
+              data-banned={card.isBanned ? '1' : undefined}>
+            <button type="button"
+                    class:list={['deck-row card-hover-trigger', card.isBanned && 'deck-row--banned']}
+                    data-card-name={card.name}
+                    data-card-image={card.imageUrl ?? ''}>
+              <span class="deck-row__qty">{card.quantity}</span>
+              <span class="deck-row__name" lang="en">{card.name}</span>
+              {card.isBanned && (
+                <span class="badge badge--danger flex-shrink-0 uppercase tracking-wider" title={t('decklist.bannedCardTitle', locale)}>
+                  {t('meta.banned', locale)}
+                </span>
+              )}
+              {card.manaCost && <span class="deck-row__cost" set:html={formatManaCost(card.manaCost)} />}
+              <span class="deck-row__visual">
+                {card.imageUrl ? (
+                  <img src={card.imageUrl} alt={card.name} width="488" height="680"
+                       loading="lazy" decoding="async" class="deck-row__img" />
+                ) : (
+                  <span class="deck-row__fallback">
+                    <span class="font-beleren text-sm leading-tight text-text-primary" lang="en">{card.name}</span>
+                    {card.manaCost && <span set:html={formatManaCost(card.manaCost)} />}
+                    <span class="text-xs text-text-muted">{typeLabel(card.type)}</span>
+                  </span>
+                )}
+                {card.isBanned && <span class="deck-row__badge deck-row__badge--banned">{t('meta.banned', locale)}</span>}
+                {card.quantity > 1 && <span class="deck-row__badge">×{card.quantity}</span>}
               </span>
-            )}
-            {card.manaCost && (
-              <span class="flex-shrink-0" set:html={formatManaCost(card.manaCost)} />
-            )}
+            </button>
           </li>
         ))}
       </ul>

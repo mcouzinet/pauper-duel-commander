@@ -1,0 +1,71 @@
+---
+/**
+ * Mana curve whose bars are buttons: picking one filters the deck list to that
+ * mana value (scripts/deck-view.ts listens on `[data-cost-filter]`).
+ *
+ * Rendered as a chart in the sticky sidebar on desktop and in the profile
+ * section on smaller screens, where the list it filters sits above; rendered as
+ * `chips` in the sticky bar while a filter is on, to hop from one value to the
+ * next without scrolling back down. The count is printed on every bar, so the
+ * bar heights are never the only way to read a value.
+ */
+import { t, tf, type Locale } from '@/lib/i18n';
+
+interface Props {
+  distribution: Record<string, number>;
+  locale: Locale;
+  variant?: 'chart' | 'chips';
+}
+
+const { distribution, locale, variant = 'chart' } = Astro.props;
+
+const BUCKETS = ['0', '1', '2', '3', '4', '5', '6', '7+'];
+const max = Math.max(1, ...BUCKETS.map(bucket => distribution[bucket] ?? 0));
+
+const bars = BUCKETS.map(bucket => {
+  const count = distribution[bucket] ?? 0;
+  return {
+    bucket,
+    count,
+    height: count > 0 ? Math.max(4, Math.round((count / max) * 100)) : 0,
+    label: tf('decklist.costAria', locale, {
+      label: tf('decklist.costGroup', locale, { n: bucket }),
+      n: count,
+      cards: count === 1 ? t('decklist.cardOne', locale) : t('decklist.cardCount', locale),
+    }),
+  };
+});
+---
+
+{variant === 'chips' ? (
+  <div class="grid grid-cols-8 gap-1" role="group" aria-label={t('decklist.filterByCost', locale)}>
+    {bars.map(bar => (
+      <button type="button" class="cost-chip"
+              data-cost-filter={bar.bucket}
+              aria-pressed="false"
+              aria-label={bar.label}
+              disabled={bar.count === 0}>
+        <span aria-hidden="true">{bar.bucket}</span>
+        <span class="cost-chip__n" aria-hidden="true">{bar.count}</span>
+      </button>
+    ))}
+  </div>
+) : (
+  <div class="curve" role="group" aria-label={t('decklist.filterByCost', locale)}>
+    {bars.map(bar => (
+      <button type="button" class="curve-bar"
+              data-cost-filter={bar.bucket}
+              aria-pressed="false"
+              aria-label={bar.label}
+              disabled={bar.count === 0}
+              data-analytics="decklist_curve_filter"
+              data-analytics-cost={bar.bucket}>
+        <span class="curve-bar__count" aria-hidden="true">{bar.count}</span>
+        <span class="curve-bar__track" aria-hidden="true">
+          <span class="curve-bar__fill" style={`height: ${bar.height}%`}></span>
+        </span>
+        <span class="curve-bar__label" aria-hidden="true">{bar.bucket}</span>
+      </button>
+    ))}
+  </div>
+)}

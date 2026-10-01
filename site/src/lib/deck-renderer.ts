@@ -3,7 +3,19 @@ import { bannedNameSet } from './banlist';
 import type { ScryfallCard } from '../types/scryfall';
 import type { ParsedCard, EnrichedCard, DeckStats, DeckData } from '../types/decklist';
 
-const TYPE_ORDER: Record<string, number> = {
+/** i18n key of each primary type's group label. */
+export const TYPE_LABEL_KEYS: Record<string, string> = {
+  Creature: 'common.creatures',
+  Planeswalker: 'common.planeswalkers',
+  Instant: 'common.instants',
+  Sorcery: 'common.sorceries',
+  Artifact: 'common.artifacts',
+  Enchantment: 'common.enchantments',
+  Land: 'common.lands',
+  Other: 'common.other',
+};
+
+export const TYPE_ORDER: Record<string, number> = {
   Creature: 1,
   Planeswalker: 2,
   Instant: 3,
@@ -13,6 +25,17 @@ const TYPE_ORDER: Record<string, number> = {
   Land: 7,
   Other: 8,
 };
+
+const COLORS = ['W', 'U', 'B', 'R', 'G'] as const;
+
+/**
+ * The cost printed on the front face. Scryfall gives adventure and split cards
+ * both costs ("{3}{R} // {1}{R}"), which in a list row squeezed the name down to
+ * "Gr…": the card is cast for its front cost, and that is the one to read.
+ */
+function frontFaceCost(manaCost: string): string {
+  return manaCost.split(' // ')[0];
+}
 
 /**
  * Fetch Scryfall data for all cards and enrich them.
@@ -31,10 +54,11 @@ export async function fetchCardData(parsedCards: ParsedCard[]): Promise<Enriched
       cmc: getCmc(data),
       type: getPrimaryType(data),
       typeLine: getTypeLine(data) ?? 'Unknown',
-      manaCost: getManaCost(data) ?? '',
+      manaCost: frontFaceCost(getManaCost(data) ?? ''),
       colors: getColors(data),
       imageUrl: getCardImage(data, 'normal'),
       imageUrlSmall: getCardImage(data, 'small'),
+      producedMana: data?.produced_mana ?? [],
       isBanned: banned.has(card.name.toLowerCase()),
     };
   });
@@ -74,48 +98,55 @@ export function groupByType(cards: EnrichedCard[]): Record<string, EnrichedCard[
 export function calculateStats(cards: EnrichedCard[]): DeckStats {
   let totalCards = 0;
   let totalCmc = 0;
-  let nonLandCards = 0;
+  let spellCmc = 0;
+  let spellCards = 0;
   const typeCounts: Record<string, number> = {};
   const cmcDistribution: Record<string, number> = { '0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7+': 0 };
-  const colorCounts: Record<string, number> = {};
+  const colorSymbols: Record<string, number> = {};
+  const colorSources: Record<string, number> = {};
+  const landSources: Record<string, number> = {};
+  const add = (counts: Record<string, number>, key: string, n: number) => { counts[key] = (counts[key] ?? 0) + n; };
 
   for (const card of cards) {
-    totalCards += card.quantity;
+    const n = card.quantity;
+    const isLand = card.type === 'Land';
+    totalCards += n;
+    totalCmc += card.cmc * n;
+    add(typeCounts, card.type, n);
 
-    // Type counts
-    typeCounts[card.type] = (typeCounts[card.type] ?? 0) + card.quantity;
-
-    // CMC distribution (excluding lands)
-    if (card.type !== 'Land') {
-      const cmcKey = card.cmc >= 7 ? '7+' : String(card.cmc);
-      cmcDistribution[cmcKey] = (cmcDistribution[cmcKey] ?? 0) + card.quantity;
-      totalCmc += card.cmc * card.quantity;
-      nonLandCards += card.quantity;
+    if (!isLand) {
+      add(cmcDistribution, card.cmc >= 7 ? '7+' : String(card.cmc), n);
+      spellCmc += card.cmc * n;
+      spellCards += n;
     }
 
-    // Color counts
-    const colors = card.colors;
-    if (!colors || colors.length === 0) {
-      colorCounts['C'] = (colorCounts['C'] ?? 0) + card.quantity;
-    } else if (colors.length > 1) {
-      colorCounts['Multi'] = (colorCounts['Multi'] ?? 0) + card.quantity;
-    } else {
-      colorCounts[colors[0]] = (colorCounts[colors[0]] ?? 0) + card.quantity;
+    // "{W/U}" counts for both colours, "{R/P}" for red, "{2}" for none.
+    for (const symbol of card.manaCost.match(/\{[^}]+\}/g) ?? []) {
+      for (const color of COLORS) if (symbol.includes(color)) add(colorSymbols, color, n);
+    }
+
+    for (const color of card.producedMana) {
+      if (!(COLORS as readonly string[]).includes(color)) continue;
+      add(colorSources, color, n);
+      if (isLand) add(landSources, color, n);
     }
   }
 
-  // Remove zero entries
-  for (const key of Object.keys(colorCounts)) {
-    if (colorCounts[key] === 0) delete colorCounts[key];
-  }
+  const round1 = (value: number) => Math.round(value * 10) / 10;
+  const landCount = typeCounts.Land ?? 0;
 
   return {
     totalCards,
     uniqueCards: cards.length,
     typeCounts,
     cmcDistribution,
-    colorCounts,
-    averageCmc: nonLandCards > 0 ? Math.round((totalCmc / nonLandCards) * 10) / 10 : 0,
+    averageCmc: spellCards > 0 ? round1(spellCmc / spellCards) : 0,
+    averageCmcWithLands: totalCards > 0 ? round1(totalCmc / totalCards) : 0,
+    landCount,
+    landsPerHand: totalCards > 0 ? round1((7 * landCount) / totalCards) : 0,
+    colorSymbols,
+    colorSources,
+    landSources,
   };
 }
 
