@@ -317,7 +317,7 @@
   }
 
   .cost-chip[aria-pressed="true"] {
-    @apply border-brand-orange bg-brand-orange text-white;
+    @apply border-brand-orange bg-brand-orange text-bg-primary;
   }
 
   .cost-chip__n {
@@ -325,7 +325,7 @@
   }
 
   .cost-chip[aria-pressed="true"] .cost-chip__n {
-    @apply text-white;
+    @apply text-bg-primary;
   }
 
   /* ---- Colours: symbols (solid) against sources (hatched) -------------------- */
@@ -369,6 +369,6 @@
   }
 
   .hand-card__bottom[aria-pressed="true"] {
-    @apply border-brand-orange bg-brand-orange text-white;
+    @apply border-brand-orange bg-brand-orange text-bg-primary;
   }
 }
