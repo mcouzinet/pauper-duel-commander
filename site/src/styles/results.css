@@ -30,8 +30,8 @@
   }
 
   .medal--1 { @apply bg-magic-gold/20 border-magic-gold/45 text-magic-gold-light; }
-  .medal--2 { @apply bg-slate-300/12 border-slate-300/35 text-text-primary; }
-  .medal--3 { @apply bg-amber-700/20 border-amber-600/35 text-amber-400; }
+  .medal--2 { @apply bg-medal-silver/12 border-medal-silver/40 text-text-primary; }
+  .medal--3 { @apply bg-medal-bronze/20 border-medal-bronze/45 text-medal-bronze; }
 
   /* Solid, because it sits on a card scan. Placed as on the decklist: the rank
      bottom left, over the collector line, never over the card's name. */
@@ -294,14 +294,23 @@
     @apply inline-flex items-center gap-1 min-h-8 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors;
   }
 
-  /* The step it stands on, as high as the place is good. */
+  /* The step it stands on, as high as the place is good, the place written on
+     it in its medal's colour: the first thing read on a podium. */
   .podium__base {
-    @apply block w-full mt-1 rounded-t-md border-t-2;
+    @apply flex w-full mt-1 justify-center rounded-t-md border-t-2 pt-1 sm:pt-2;
   }
 
-  .podium__step--1 .podium__base { @apply h-10 sm:h-14 border-magic-gold bg-magic-gold/10; }
-  .podium__step--2 .podium__base { @apply h-6 sm:h-9 border-slate-300/60 bg-slate-300/5; }
-  .podium__step--3 .podium__base { @apply h-3 sm:h-5 border-amber-600/60 bg-amber-700/10; }
+  .podium__rank {
+    @apply font-heading font-bold leading-none tabular-nums;
+  }
+
+  .podium__step--1 .podium__base { @apply h-14 sm:h-24 border-magic-gold bg-gradient-to-b from-magic-gold/25 to-magic-gold/5; }
+  .podium__step--2 .podium__base { @apply h-11 sm:h-[4.5rem] border-medal-silver/70 bg-gradient-to-b from-medal-silver/20 to-medal-silver/5; }
+  .podium__step--3 .podium__base { @apply h-8 sm:h-14 border-medal-bronze/70 bg-gradient-to-b from-medal-bronze/25 to-medal-bronze/5; }
+
+  .podium__step--1 .podium__rank { @apply text-4xl sm:text-6xl text-magic-gold; }
+  .podium__step--2 .podium__rank { @apply text-3xl sm:text-5xl text-medal-silver; }
+  .podium__step--3 .podium__rank { @apply text-2xl sm:text-4xl text-medal-bronze; }
 
   .top8--split {
     @apply lg:grid lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-10 lg:items-center;

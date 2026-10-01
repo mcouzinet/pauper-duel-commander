@@ -4,7 +4,7 @@
  *
  * A top 8 is a ranking, not a share of anything, so it is drawn as one: the
  * winner raised in the middle and gilded, second and third on either side, each
- * card standing on a step of its height. Places 4 to 8 follow as compact rows,
+ * card standing on a step of its height with its place written large on it. Places 4 to 8 follow as compact rows,
  * beside the podium when the screen has room. Names wrap rather than truncate.
  * A pair (partners, a commander and its background) shows both cards: fanned on
  * the podium, two overlapping thumbnails in a row.
@@ -70,7 +70,6 @@ const rest = places.filter(entry => entry.place > 3);
               ) : (
                 <span class="tile-face__fallback" lang={entry.isUnknown ? undefined : 'en'}>{entry.main}</span>
               )}
-              <span class:list={['tile-badge', entry.place === 1 && 'tile-badge--gold']} aria-hidden="true">{entry.place}</span>
               {entry.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
             </span>
           </Card>
@@ -90,7 +89,7 @@ const rest = places.filter(entry => entry.place > 3);
           {entry.decklistUrl && (
             <a href={entry.decklistUrl} class="podium__deck">{t('tournament.deck', locale)}{' '}<span aria-hidden="true">›</span></a>
           )}
-          <span class="podium__base" aria-hidden="true"></span>
+          <span class="podium__base" aria-hidden="true"><span class="podium__rank">{entry.place}</span></span>
         </li>
       );
     })}

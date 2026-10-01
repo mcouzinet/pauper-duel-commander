@@ -48,6 +48,11 @@
   --color-magic-gold-light: #FFB84D;
   --color-magic-gold-dark: #CC8400;
 
+  /* Medals: second and third place beside the gold above. Bronze is browner
+     than the gold so the two never read as the same medal. */
+  --color-medal-silver: #C9D1DB;
+  --color-medal-bronze: #CD7F32;
+
   /* Colors - Interface */
   --color-card-bg: #141821;
   --color-card-border: #FF5722;
