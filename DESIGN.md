@@ -169,7 +169,7 @@ Les six couleurs officielles de Magic — **Blanc** (`#F8F6F1`), **Bleu** (`#0E6
 
 **La Règle du Plancher de Contraste.** `#8B93A1` est le gris le plus clair autorisé pour du texte : il mesure 4,9:1 sur `#141821`. Il ne se dilue jamais avec une opacité. Le gris précédent (`#6B7280`) tombait à 3,67:1 et échouait à WCAG AA partout où il servait — pieds de page, noms de joueurs, dates.
 
-**La Règle du Texte sur Aplat Orange.** Un texte posé sur un aplat Orange Brasier (langue courante, boutons du bandeau cookies, lien d'évitement) est en Fond Salle (`#0A0E13`) : 6,1:1. Le blanc n'y mesure que 3,16:1, sous le seuil WCAG AA de 4,5:1 pour tout texte de moins de 24 px (18,66 px en gras). C'est le principe des badges pleins : fond plein, texte sombre.
+**La Règle du Texte sur Aplat Orange.** Un texte posé sur un aplat Orange Brasier (langue courante, boutons du bandeau cookies, lien d'évitement) est en Fond Salle (`#0A0E13`) : 6,1:1. Le blanc n'y mesure que 3,16:1, sous le seuil WCAG AA de 4,5:1 pour tout texte de moins de 24 px (18,66 px en gras). Assombrir l'orange ne suffit pas : sur `#E64A19`, le blanc ne fait encore que 3,92:1. C'est le principe des badges pleins : fond plein, texte sombre.
 
 ## Typography
 
@@ -240,7 +240,6 @@ Aucun angle vif, aucune découpe, aucune forme irrégulière : la géométrie ne
 - **Primary:** dégradé orange à 135° (`#FF7043` → `#FF5722` → `#E64A19`), texte blanc avec ombre portée pour tenir sur la partie claire du dégradé, halo orange en guise d'ombre.
 - **Hover / Focus:** le halo passe à sa version intense sur 300 ms. Le focus clavier ajoute un contour orange de 2 px décalé de 2 px.
 - **Secondary:** bordure orange de 2 px sur fond orange à 10 %, texte orange. Au survol, le fond monte à 20 % et la bordure s'éclaircit.
-- **Aplat :** là où le dégradé ne s'applique pas (bandeau cookies), l'Orange Brasier plein porte un texte Fond Salle (`#0A0E13`, 6,1:1). Le blanc y tombe à 3,16:1, et à 3,92:1 seulement sur `#E64A19` : assombrir l'orange ne suffit pas, c'est le même renversement que pour les badges pleins.
 
 ### Cards / Containers
 - **Corner Style:** 12 px.
