@@ -311,9 +311,11 @@ réencodées, pas des sources :
   premier rendu (choix gardé par portée, `pdc:view:<scope>`). Styles dans
   `results.css` : un élément dont l'affichage change avec la vue prend sa mise en
   page de ce fichier, jamais d'un utilitaire `flex`/`grid`, qui l'emporterait.
-- Une barre de part (`share-bar`) se lit à côté de son nombre imprimé, et toutes
-  les pistes d'une liste commencent et finissent au même endroit : sinon deux
-  valeurs égales dessinent deux longueurs différentes.
+- Une barre de part (`share-bar`) mesure sa part sur 100 %, jamais par rapport au
+  plus grand de sa liste, et se lit à côté de son nombre imprimé. Avec une échelle
+  par graphique, 6 % dessinait une barre pleine à côté d'une couleur à 51 % en
+  demi-barre. Le classement des généraux n'a pas de barre : à quelques %, elle
+  n'aurait été qu'un trait.
 - Un contrôle qui ne marche qu'avec JavaScript porte `data-needs-js` : il est
   masqué sans JS (`globals.css`, la classe `js` est posée dans `Base.astro`).
 

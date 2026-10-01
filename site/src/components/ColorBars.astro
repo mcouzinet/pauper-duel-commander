@@ -46,25 +46,27 @@ const rows = Object.keys(TOKEN)
 {rows.length > 0 && (
   <section class:list={['panel p-4 sm:p-5 flex flex-col gap-3', className]}>
     <h3 class="font-heading font-bold text-base uppercase tracking-wider text-text-primary">{title}</h3>
-    {/* One grid for every row (the row wrappers are display: contents), so each
-        track starts and ends at the same place whatever the numbers' width. */}
-    <dl class="grid grid-cols-[6.25rem_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2.5">
+    {/* The same row as IdentityBars: label and numbers, then a bar the full
+        width of the panel, so the two panels measure on one track. */}
+    <ul class="flex flex-col gap-2.5" role="list">
       {rows.map(row => (
-        <div class="contents">
-          <dt class="flex items-center gap-2 text-sm text-text-primary">
-            <span aria-hidden="true" set:html={formatColorSymbols(row.color)} />
-            {row.name}
-          </dt>
-          <dd class="share-bar" aria-hidden="true">
+        <li class="flex flex-col gap-1">
+          <span class="flex items-center justify-between gap-3">
+            <span class="flex items-center gap-2 min-w-0 text-sm text-text-primary">
+              <span class="flex-shrink-0" aria-hidden="true" set:html={formatColorSymbols(row.color)} />
+              {row.name}
+            </span>
+            <span class="flex-shrink-0 text-sm tabular-nums whitespace-nowrap">
+              <strong class="font-semibold text-text-primary">{row.share}</strong>{' '}
+              <span class="text-text-muted">{row.count}</span>
+            </span>
+          </span>
+          <span class="share-bar" aria-hidden="true">
             <span class="share-bar__fill share-bar__fill--mana" style={`width: ${row.width}%; --bar: ${row.bar}`}></span>
-          </dd>
-          <dd class="text-sm text-right tabular-nums whitespace-nowrap">
-            <strong class="font-semibold text-text-primary">{row.share}</strong>{' '}
-            <span class="text-text-muted">{row.count}</span>
-          </dd>
-        </div>
+          </span>
+        </li>
       ))}
-    </dl>
+    </ul>
     <p class="text-xs leading-relaxed text-text-muted">{t('meta.colorPresenceHelp', locale)}</p>
   </section>
 )}

@@ -5,6 +5,9 @@
  * Was written out three times, twice on the meta page and once in the
  * tournament's MetaPanel, each with its own arithmetic. The tail folds like the
  * commander ranking's: past the first rows, identities are played once or twice.
+ *
+ * A bar is its share out of 100 %, like the colour bars it sits beside. Scaled
+ * to the most played identity, 17 % drew a full bar above a colour at 51 %.
  */
 import '@/styles/results.css';
 import { t, tf, localeTag, type Locale } from '@/lib/i18n';
@@ -27,7 +30,6 @@ const sorted = Object.entries(counts)
   .filter(([, count]) => count > 0)
   .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 const total = sorted.reduce((sum, [, count]) => sum + count, 0);
-const max = sorted[0]?.[1] ?? 0;
 const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
 
 const rows = sorted.map(([key, count]) => ({
@@ -36,7 +38,7 @@ const rows = sorted.map(([key, count]) => ({
   label: colorIdentityLabel(key, locale),
   symbols: formatColorSymbols(key),
   share: percent.format(total > 0 ? count / total : 0),
-  width: max > 0 ? Math.round((count / max) * 100) : 0,
+  width: total > 0 ? Math.round((count / total) * 100) : 0,
 }));
 // Folding one row behind "show the 1 other" costs more than showing it.
 const shown = rows.length === limit + 1 ? limit + 1 : limit;

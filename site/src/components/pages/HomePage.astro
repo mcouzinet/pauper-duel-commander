@@ -378,7 +378,7 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
                     </div>
                     <div class="share-bar" aria-hidden="true">
                       <div class="share-bar__fill"
-                           style={`width: ${Math.round((count / (topIdentities[0]?.[1] || 1)) * 100)}%`}></div>
+                           style={`width: ${meta.global.total > 0 ? Math.round((count / meta.global.total) * 100) : 0}%`}></div>
                     </div>
                   </li>
                 ))}

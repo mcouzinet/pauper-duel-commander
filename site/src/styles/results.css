@@ -86,11 +86,17 @@
   }
 
   .rank-row {
-    @apply flex items-start gap-3 py-2 px-1.5 rounded-lg transition-colors;
+    @apply flex items-start gap-3 py-2.5 px-1.5 transition-colors;
   }
 
   .rank-row:hover {
     @apply bg-white/3;
+  }
+
+  /* Nothing fills a wide row between the name and its share: a rule between
+     rows carries the eye across, as in a table. */
+  .rank-list > li + li > .rank-row {
+    @apply border-t border-white/6;
   }
 
   .rank-row__art {

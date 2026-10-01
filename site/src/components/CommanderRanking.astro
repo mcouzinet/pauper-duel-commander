@@ -13,6 +13,10 @@
  * `tiles` adds the visual presentation: each row also carries the commander's
  * card, shown instead of the row when the page's ViewSwitch is on "visual"
  * (results.css). Names wrap rather than truncate, so they read whole on a phone.
+ *
+ * No bars: shares here run from 1 to 6 %. Stretched to the leader, they drew a
+ * full-width bar for 6 % beside a half bar for a colour played by half the
+ * field; on a 0-100 % scale they were slivers. The printed share does the job.
  */
 import '@/styles/results.css';
 import { t, tf, localeTag, type Locale } from '@/lib/i18n';
@@ -53,9 +57,6 @@ const {
 const shown = foldRest && commanders.length === limit + 1 ? limit + 1 : limit;
 const head = commanders.slice(0, shown);
 const rest = foldRest ? commanders.slice(shown) : [];
-
-const maxCount = commanders.reduce((max, c) => Math.max(max, c.count), 0);
-const barWidth = (count: number) => (maxCount > 0 ? Math.round((count / maxCount) * 100) : 0);
 
 // A commander played once among a few hundred entries rounds to "0 %", which
 // reads as "never played".
@@ -121,30 +122,25 @@ function decklistHref(name: string): string {
                 paint and is wider than its fallback, so symbols sharing the
                 name's line wrapped under it once the font loaded and pushed
                 every row below down. */}
-            <span class="flex flex-wrap items-center gap-2 mt-1">
-              <span class="inline-flex items-center text-sm">
-                <span class="sr-only">{t('a11y.colors', locale)}</span>
-                <span set:html={formatColorSymbols(commander.colors)} />
-              </span>
-              {commander.isBanned && (
-                <span class="badge badge--danger uppercase tracking-wider">{t('meta.banned', locale)}</span>
-              )}
-              {showTrend && commander.trend !== null && commander.trend !== 0 && (
-                <span class:list={[
-                  'inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums',
-                  commander.trend > 0 ? 'text-green-400' : 'text-text-muted',
-                ]} title={commander.trend > 0 ? t('metaPage.trendUp', locale) : t('metaPage.trendDown', locale)}>
-                  {commander.trend > 0 ? '▲' : '▼'}{Math.abs(commander.trend)}
+            <span class="flex items-center justify-between gap-3 mt-1">
+              <span class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center text-sm">
+                  <span class="sr-only">{t('a11y.colors', locale)}</span>
+                  <span set:html={formatColorSymbols(commander.colors)} />
                 </span>
-              )}
-            </span>
-
-            {/* Same start and end for every track, so equal counts draw equal bars. */}
-            <span class="flex items-center gap-3 mt-1.5">
-              <span class="share-bar flex-1" aria-hidden="true">
-                <span class="share-bar__fill" style={`width: ${barWidth(commander.count)}%`}></span>
+                {commander.isBanned && (
+                  <span class="badge badge--danger uppercase tracking-wider">{t('meta.banned', locale)}</span>
+                )}
+                {showTrend && commander.trend !== null && commander.trend !== 0 && (
+                  <span class:list={[
+                    'inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums',
+                    commander.trend > 0 ? 'text-green-400' : 'text-text-muted',
+                  ]} title={commander.trend > 0 ? t('metaPage.trendUp', locale) : t('metaPage.trendDown', locale)}>
+                    {commander.trend > 0 ? '▲' : '▼'}{Math.abs(commander.trend)}
+                  </span>
+                )}
               </span>
-              <span class="w-14 flex-shrink-0 text-right text-xs text-text-muted tabular-nums">{commander.count}/{total}</span>
+              <span class="flex-shrink-0 text-xs text-text-muted tabular-nums">{commander.count}/{total}</span>
             </span>
           </span>
         </div>
