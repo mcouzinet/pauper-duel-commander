@@ -169,7 +169,7 @@ Les six couleurs officielles de Magic — **Blanc** (`#F8F6F1`), **Bleu** (`#0E6
 
 **La Règle du Plancher de Contraste.** `#8B93A1` est le gris le plus clair autorisé pour du texte : il mesure 4,9:1 sur `#141821`. Il ne se dilue jamais avec une opacité. Le gris précédent (`#6B7280`) tombait à 3,67:1 et échouait à WCAG AA partout où il servait — pieds de page, noms de joueurs, dates.
 
-**La Règle du Texte sur Aplat Orange.** Un texte posé sur un aplat Orange Brasier (langue courante, boutons du bandeau cookies, lien d'évitement) est en Fond Salle (`#0A0E13`) : 6,1:1. Le blanc n'y mesure que 3,16:1, sous le seuil WCAG AA de 4,5:1 pour tout texte de moins de 24 px (18,66 px en gras). C'est le principe des badges pleins : fond plein, texte sombre.
+**La Règle du Texte sur Aplat Orange.** Un texte posé sur un aplat Orange Brasier (langue courante, boutons du bandeau cookies, lien d'évitement) est en Fond Salle (`#0A0E13`) : 6,1:1. Le blanc n'y mesure que 3,16:1, sous le seuil WCAG AA de 4,5:1 pour tout texte de moins de 24 px (18,66 px en gras). Assombrir l'orange ne suffit pas : sur `#E64A19`, le blanc ne fait encore que 3,92:1. C'est le principe des badges pleins : fond plein, texte sombre.
 
 ## Typography
 

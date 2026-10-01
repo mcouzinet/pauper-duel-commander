@@ -17,6 +17,12 @@
         "value": "15px",
         "createdAt": "2026-10-01T13:16:53.091Z",
         "reason": "Established card-name size in list rows (decklist.css .deck-row__name, CommanderRanking, CommanderTable since #56)"
+      },
+      {
+        "rule": "overused-font",
+        "value": "inter",
+        "createdAt": "2026-10-01T14:32:05.491Z",
+        "reason": "Claude, evidence: DESIGN.md names Inter as the body font (typography.body, self-hosted in site/public/fonts); the cookie banner reuses it"
       }
     ]
   }
