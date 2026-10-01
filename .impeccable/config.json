@@ -11,6 +11,12 @@
         ],
         "createdAt": "2026-10-01T06:47:30.437Z",
         "reason": "Claude, evidence: the <img> is the preview popover template; show() sets img.src before root.hidden is cleared, so it is never displayed empty"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "15px",
+        "createdAt": "2026-10-01T13:16:53.091Z",
+        "reason": "Established card-name size in list rows (decklist.css .deck-row__name, CommanderRanking, CommanderTable since #56)"
       }
     ]
   }

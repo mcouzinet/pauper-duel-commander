@@ -1,19 +1,13 @@
 @reference "./globals.css";
 
 /**
- * Rankings and standings: the meta ranking, a tournament's top 8, and the bars
- * that go with them.
- *
- * As on the decklist (decklist.css), each list is rendered once with two
- * presentations: rows, and a grid of card images read from <html data-view>,
- * which ViewSwitch.astro sets before the list is parsed. The card images are
- * lazy and undisplayed in the list view, so a visitor who never switches
- * downloads none of them.
+ * Rankings and standings: the meta mosaic, its table, a tournament's podium,
+ * and the bars and medals that go with them.
  *
  * Everything sits in the components layer, like globals.css's, so a utility on
- * the same element still wins. The flip side: the elements whose display
- * changes with the view (rows, tiles, the lists themselves) take their layout
- * from here, never from a display utility, which would beat these rules.
+ * the same element still wins. The flip side: an element whose layout these
+ * rules change (a mosaic tile, a podium step) takes it from here, never from a
+ * display utility, which would beat them.
  */
 @layer components {
   /* ---- Bars ------------------------------------------------------------------ */
@@ -216,61 +210,87 @@
     @apply bg-white/3;
   }
 
-  /* ---- Top 8 (Top8.astro) ----------------------------------------------------- */
+  /* ---- Top 8 (Top8.astro): a podium, then the other places ------------------- */
 
-  .top8 {
-    @apply flex flex-col gap-1.5;
+  .podium {
+    @apply grid items-end gap-3 sm:gap-6 mx-auto;
   }
 
-  .top8-row {
-    @apply flex items-center gap-3 p-2 sm:p-2.5 rounded-lg no-underline;
-    @apply bg-bg-secondary/70 border border-white/6 transition-colors;
+  .podium--3 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr) minmax(0, 1fr);
+    max-width: 46rem;
   }
 
-  a.top8-row:hover {
-    @apply bg-bg-secondary border-brand-orange/35;
+  .podium--2 {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.18fr);
+    max-width: 30rem;
+  }
+
+  .podium--1 {
+    grid-template-columns: minmax(0, 15rem);
+    justify-content: center;
+  }
+
+  /* Markup in place order, drawn 2 - 1 - 3. */
+  .podium__step--1 { order: 2; }
+  .podium__step--2 { order: 1; }
+  .podium__step--3 { order: 3; }
+
+  .podium__step {
+    @apply flex flex-col items-center gap-1 text-center;
+  }
+
+  .podium__card {
+    @apply block w-full mb-1 no-underline;
   }
 
   /* Gold is merit: the winner, and only the winner. */
-  .top8-item--winner .top8-row {
-    @apply bg-magic-gold/[0.07] border-magic-gold/30;
+  .podium__step--1 .tile-face {
+    @apply ring-2 ring-magic-gold/70;
   }
 
-  .top8-item--winner a.top8-row:hover {
-    @apply border-magic-gold/55;
+  .podium__name {
+    @apply font-beleren text-sm sm:text-lg leading-tight text-text-primary;
   }
 
-  .top8-row__art {
-    @apply relative block w-11 h-11 flex-shrink-0 overflow-hidden rounded-md bg-bg-tertiary ring-1 ring-white/10;
+  .podium__step--1 .podium__name {
+    @apply text-base sm:text-xl;
   }
 
-  .top8-row__deck {
-    @apply inline-flex flex-shrink-0 items-center gap-1 text-sm font-semibold text-brand-orange transition-colors;
+  .podium__deck {
+    @apply inline-flex items-center min-h-8 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors;
   }
 
-  a.top8-row:hover .top8-row__deck {
+  /* The step it stands on, as high as the place is good. */
+  .podium__base {
+    @apply block w-full mt-1 rounded-t-md border-t-2;
+  }
+
+  .podium__step--1 .podium__base { @apply h-10 sm:h-14 border-magic-gold bg-magic-gold/10; }
+  .podium__step--2 .podium__base { @apply h-6 sm:h-9 border-slate-300/60 bg-slate-300/5; }
+  .podium__step--3 .podium__base { @apply h-3 sm:h-5 border-amber-600/60 bg-amber-700/10; }
+
+  .standings {
+    @apply mt-8 lg:columns-2 lg:gap-x-12;
+  }
+
+  .standing {
+    @apply break-inside-avoid border-t border-white/6;
+  }
+
+  .standing__row {
+    @apply flex items-center gap-3 py-2.5 px-1 no-underline transition-colors;
+  }
+
+  a.standing__row:hover {
+    @apply bg-white/3;
+  }
+
+  .standing__deck {
+    @apply flex-shrink-0 text-sm font-semibold text-brand-orange transition-colors;
+  }
+
+  a.standing__row:hover .standing__deck {
     @apply text-brand-orange-light;
-  }
-
-  .top8-tile {
-    display: none;
-  }
-
-  html[data-view="visual"] .top8 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.25rem 0.75rem;
-  }
-
-  @media (min-width: 640px) {
-    html[data-view="visual"] .top8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  }
-
-  html[data-view="visual"] .top8-row {
-    display: none;
-  }
-
-  html[data-view="visual"] .top8-tile {
-    @apply flex flex-col gap-1 no-underline;
   }
 }

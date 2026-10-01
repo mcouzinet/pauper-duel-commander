@@ -65,10 +65,10 @@ site/
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
-│   ├── components/              # BanListGrid, CardList, ManaCurve, CommanderRanking, Top8, MetaMosaic, GuildGrid...
+│   ├── components/              # BanListGrid, CardList, ManaCurve, Top8, MetaMosaic, CommanderTable, GuildGrid...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
 │   ├── i18n/{fr,en,it}.json
-│   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail, view-switch)
+│   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail)
 │   └── styles/globals.css       # @theme Tailwind 4 + classes composites
 ├── promo/reel/                  # Sources de la vidéo de présentation (cf. plus bas)
 ├── scripts/
@@ -305,12 +305,12 @@ réencodées, pas des sources :
 - Les styles d'une page dans un fichier à part (`decklist.css`) vont dans
   `@layer components` : hors couche, ils battraient les utilitaires Tailwind
   (`lg:hidden` restait sans effet).
-- Le top 8 d'un tournoi suit le même principe que la page decklist : `Top8` est
-  rendu une fois, lignes et cartes ensemble, et `ViewSwitch` bascule
-  `<html data-view>` avant le premier rendu (choix gardé par portée,
-  `pdc:view:<scope>`). Styles dans `results.css` : un élément dont l'affichage
-  change avec la vue prend sa mise en page de ce fichier, jamais d'un utilitaire
-  `flex`/`grid`, qui l'emporterait.
+- Le top 8 d'un tournoi est un podium (`Top8`) : les trois premiers en cartes,
+  dans l'ordre des places dans le balisage et dessinés 2-1-3 par CSS, puis les
+  places suivantes en lignes compactes. Pas de mosaïque ici : un top 8 est un
+  classement, pas une part. Styles dans `results.css` : un élément dont ces
+  règles fixent la mise en page n'en reçoit pas d'un utilitaire `flex`/`grid`,
+  qui l'emporterait.
 - Page méta : la mosaïque (`MetaMosaic`, treemap de `lib/treemap.ts`, contrôle
   `node scripts/check-treemap.mjs`) donne à chaque général une surface égale à
   sa part ; la traîne remplit la dernière case de petites vignettes. Chaque tuile

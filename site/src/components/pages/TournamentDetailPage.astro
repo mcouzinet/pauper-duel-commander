@@ -22,7 +22,6 @@ import CommanderTable from '@/components/CommanderTable.astro';
 import MetaMosaic from '@/components/MetaMosaic.astro';
 import GuildGrid from '@/components/GuildGrid.astro';
 import ColorColumns from '@/components/ColorColumns.astro';
-import ViewSwitch from '@/components/ViewSwitch.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, tf, type Locale } from '@/lib/i18n';
 import { route, homeRoute } from '@/lib/routes';
@@ -94,13 +93,6 @@ const top8: Top8Entry[] = data.top8
   })
   .sort((a, b) => a.place - b.place);
 
-// The winner's card: 64 px wide under the title on a phone, the full column on
-// desktop. The phone gets Scryfall's small scan (about a tenth of the weight),
-// and since the desktop column is in the page at every width, its <picture>
-// falls back to that same small file, so a phone downloads one image.
-const winnerFinish = data.top8.find(finish => finish.place === 1 && !isPlaceholder(finish.commanderName));
-const winnerSmall = winnerFinish ? getCardImage(resolveCard(winnerFinish.commanderName), 'small') : null;
-
 const topLabel = top8.length <= 4 ? 'Top 4' : 'Top 8';
 
 // The meta of the day, in the shape the meta page's ranking reads. Unrecorded
@@ -154,9 +146,6 @@ for (const finish of data.top8) {
 }
 const hasResults = top8.length > 0 || hasMeta;
 const winner = top8.find(finish => finish.place === 1) ?? null;
-const winnerParts = winner && !winner.isUnknown ? splitNames(winner.commanderName) : [];
-// The column only earns its place with a commander to show.
-const showAside = isPast && winner !== null && !winner.isUnknown;
 const decklistCount = top8.filter(finish => finish.decklistUrl).length;
 
 // `city` is empty for an online event, and all three `seoDetail` templates
@@ -217,182 +206,115 @@ const schemas: Record<string, unknown>[] = [
       { label: data.title },
     ]} />
 
-    <div class:list={['mt-4', showAside && 'lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-x-10']}>
-
-      <header class="min-w-0 pb-6 lg:col-start-2 lg:row-start-1">
-        {isPast && (
-          <div class="flex flex-wrap items-center gap-2 mb-2">
-            {hasResults ? (
-              <span class="badge badge--gold sm:text-sm">{t('tournament.resultsPublished', locale)}</span>
-            ) : (
-              <span class="badge badge--muted sm:text-sm">{t('tournament.resultsPending', locale)}</span>
-            )}
-          </div>
-        )}
-
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-primary leading-tight">{data.title}</h1>
-
-        <p class="mt-2 text-base text-text-secondary">
-          {dateFormatted}{venue && <>{' · '}{venue}</>}
-        </p>
-
-        {(playerCount > 0 || decklistCount > 0) && (
-          <ul class="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="list">
-            {playerCount > 0 && (
-              <li class="stat-pill"><strong>{playerCount}</strong> {isPast ? t('tournament.players', locale) : t('tournament.spots', locale)}</li>
-            )}
-            {top8.length > 0 && <li class="stat-pill">{topLabel}</li>}
-            {decklistCount > 0 && (
-              <li class="stat-pill">{tf('tournament.decklistsCount', locale, { n: decklistCount })}</li>
-            )}
-          </ul>
-        )}
-
-        {!isPast && data.signupUrl && (
-          <a href={data.signupUrl} target="_blank" rel="noopener noreferrer"
-             data-analytics="tournament_signup_click" data-analytics-slug={entry.id}
-             class="btn-primary !px-6 !py-3 !text-sm mt-5">
-            {t('tournament.signUp', locale)}
-          </a>
-        )}
-
-        {/* Phone: the winner under the title. Same image as the desktop column,
-            so the two share one download. */}
-        {showAside && winner && (
-          <div class="lg:hidden mt-5 flex flex-col gap-3">
-            <div class="flex items-center gap-3.5 p-3 rounded-lg border border-magic-gold/30 bg-magic-gold/[0.07]">
-              {winner.cardImage && (
-                <button type="button"
-                        class:list={['card-hover-trigger flex-shrink-0 w-16 overflow-hidden rounded-[4.75%/3.5%] shadow-card', winner.isBanned && 'grayscale']}
-                        data-card-name={winnerParts[0]}
-                        data-card-image={winner.cardImage}>
-                  <img src={winnerSmall ?? winner.cardImage} alt={winnerParts[0]} width="146" height="204"
-                       class="block w-full h-auto" fetchpriority="high" decoding="async" />
-                </button>
-              )}
-              <div class="min-w-0">
-                <p class="eyebrow">{t('tournament.winner', locale)}</p>
-                <p class="mt-1 font-beleren text-lg leading-snug text-text-primary" lang="en">{winnerParts[0]}</p>
-                {winnerParts[1] && <p class="font-beleren text-sm leading-snug text-text-secondary" lang="en">+ {winnerParts[1]}</p>}
-                {(winner.playerName || winner.score) && (
-                  <p class="mt-0.5 text-sm text-text-secondary">
-                    {winner.playerName}{winner.playerName && winner.score && ' · '}<span class="whitespace-nowrap tabular-nums">{winner.score}</span>
-                  </p>
-                )}
-              </div>
-            </div>
-            {winner.decklistUrl && (
-              <a href={winner.decklistUrl} class="btn-secondary !px-5 !py-3 !text-sm w-full">{t('tournament.winnerDeck', locale)}</a>
-            )}
-          </div>
-        )}
-      </header>
-
-      {showAside && winner && (
-        <aside class="hidden lg:flex lg:col-start-1 lg:row-start-1 lg:row-span-2 self-start sticky top-[96px] flex-col gap-3">
-          <p class="eyebrow">{t('tournament.winner', locale)}</p>
-          {winner.cardImage ? (
-            <button type="button"
-                    class:list={['card-hover-trigger block w-full overflow-hidden rounded-[4.75%/3.5%] shadow-card', winner.isBanned && 'grayscale']}
-                    data-card-name={winnerParts[0]}
-                    data-card-image={winner.cardImage}>
-              <picture>
-                <source media="(min-width: 1024px)" srcset={winner.cardImage} />
-                <img src={winnerSmall ?? winner.cardImage} alt={winnerParts[0]} width="488" height="680"
-                     class="block w-full h-auto" fetchpriority="high" decoding="async" />
-              </picture>
-            </button>
+    <header class="mt-4 pb-6">
+      {isPast && (
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          {hasResults ? (
+            <span class="badge badge--gold sm:text-sm">{t('tournament.resultsPublished', locale)}</span>
           ) : (
-            <p class="panel p-4 font-beleren text-lg text-text-primary" lang="en">{winnerParts[0]}</p>
+            <span class="badge badge--muted sm:text-sm">{t('tournament.resultsPending', locale)}</span>
           )}
-          <div>
-            <p class:list={['font-beleren text-xl leading-snug text-text-primary', winner.isBanned && 'line-through decoration-red-500/70']} lang="en">{winnerParts[0]}</p>
-            {winnerParts[1] && <p class="font-beleren text-base leading-snug text-text-secondary" lang="en">+ {winnerParts[1]}</p>}
-            {(winner.playerName || winner.score) && (
-              <p class="mt-1 text-sm text-text-secondary">
-                {winner.playerName}{winner.playerName && winner.score && ' · '}<span class="whitespace-nowrap tabular-nums">{winner.score}</span>
-              </p>
-            )}
-          </div>
-          {winner.decklistUrl && (
-            <a href={winner.decklistUrl} class="btn-primary !px-4 !py-3 !text-sm w-full">{t('tournament.winnerDeck', locale)}</a>
-          )}
-        </aside>
+        </div>
       )}
 
-      <div class="min-w-0 lg:col-start-2 lg:row-start-2">
-        {!isPast && data.details && (
-          <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-notes">
-            <h2 id="tournament-notes" class="section-title">{t('tournament.organizerNotes', locale)}</h2>
-            <div class="rich-text max-w-3xl text-text-secondary leading-relaxed" set:html={data.details} />
-          </section>
-        )}
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-text-primary leading-tight">{data.title}</h1>
 
-        {isPast && !hasResults && (
-          <div class="panel p-6 max-w-2xl">
-            <p class="font-heading font-bold uppercase tracking-wide text-text-primary mb-2">
-              {t('tournament.resultsPending', locale)}
-            </p>
-            <p class="text-sm text-text-secondary leading-relaxed mb-4">
-              {t('tournament.resultsUnavailable', locale)} {t('tournament.upcomingNoneText', locale)}
-            </p>
-            <a href={route('community', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
-              {t('nav.community', locale)}
-            </a>
-          </div>
-        )}
+      <p class="mt-2 text-base text-text-secondary">
+        {dateFormatted}{venue && <>{' · '}{venue}</>}
+      </p>
 
-        {isPast && top8.length > 0 && (
-          <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-top">
-            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-              <h2 id="tournament-top" class="section-title !mb-0">{topLabel}</h2>
-              <ViewSwitch locale={locale} scope="top8" />
-            </div>
-            <Top8 entries={top8} locale={locale} />
-          </section>
-        )}
-
-        {isPast && hasResults && (
-          <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-meta">
-            <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
-              <h2 id="tournament-meta" class="section-title !mb-0">{t('tournament.metaLabel', locale)}</h2>
-              {hasMeta && <p class="text-sm text-text-secondary">{t('meta.glanceHelp', locale)}</p>}
-            </div>
-            {hasMeta ? (
-              <div class="flex flex-col gap-6">
-                <MetaMosaic commanders={commanders} total={metaTotal} unattributed={unattributed} locale={locale}
-                            label={t('tournament.commandersPlayed', locale)} places={places} />
-                <div class="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] xl:items-start">
-                  <CommanderTable commanders={commanders} total={metaTotal} locale={locale} ranked={false}
-                                  id="tournament-table" title={t('tournament.commandersPlayed', locale)} countLabel={t('meta.colPlayers', locale)}
-                                  note={unattributed > 0 ? tf('tournament.unattributed', locale, { n: unattributed }) : null} />
-                  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-1">
-                    <GuildGrid counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} />
-                    <ColorColumns counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p class="panel p-4 text-sm text-text-muted">{t('tournament.metaUnavailable', locale)}</p>
-            )}
-          </section>
-        )}
-
-        {isPast && data.details && (
-          <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-notes">
-            <h2 id="tournament-notes" class="section-title">{t('tournament.organizerNotes', locale)}</h2>
-            <div class="rich-text max-w-3xl text-sm text-text-secondary leading-relaxed" set:html={data.details} />
-          </section>
-        )}
-
-        <div class="pt-6 border-t border-white/8 flex flex-wrap gap-3">
-          <a href={route('tournaments', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('tournament.backToList', locale)}</a>
-          {isPast && hasMeta && (
-            <a href={route('meta', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('home.metaCta', locale)}</a>
+      {(playerCount > 0 || decklistCount > 0) && (
+        <ul class="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="list">
+          {playerCount > 0 && (
+            <li class="stat-pill"><strong>{playerCount}</strong> {isPast ? t('tournament.players', locale) : t('tournament.spots', locale)}</li>
           )}
-          <a href={route('decklists', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('archive.allDecklists', locale)}</a>
-        </div>
+          {top8.length > 0 && <li class="stat-pill">{topLabel}</li>}
+          {decklistCount > 0 && (
+            <li class="stat-pill">{tf('tournament.decklistsCount', locale, { n: decklistCount })}</li>
+          )}
+        </ul>
+      )}
+
+      {!isPast && data.signupUrl && (
+        <a href={data.signupUrl} target="_blank" rel="noopener noreferrer"
+           data-analytics="tournament_signup_click" data-analytics-slug={entry.id}
+           class="btn-primary !px-6 !py-3 !text-sm mt-5">
+          {t('tournament.signUp', locale)}
+        </a>
+      )}
+
+      {isPast && winner?.decklistUrl && (
+        <a href={winner.decklistUrl} class="btn-secondary !px-5 !py-2.5 !text-sm mt-5">{t('tournament.winnerDeck', locale)}</a>
+      )}
+    </header>
+
+    {!isPast && data.details && (
+      <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-notes">
+        <h2 id="tournament-notes" class="section-title">{t('tournament.organizerNotes', locale)}</h2>
+        <div class="rich-text max-w-3xl text-text-secondary leading-relaxed" set:html={data.details} />
+      </section>
+    )}
+
+    {isPast && !hasResults && (
+      <div class="panel p-6 max-w-2xl">
+        <p class="font-heading font-bold uppercase tracking-wide text-text-primary mb-2">
+          {t('tournament.resultsPending', locale)}
+        </p>
+        <p class="text-sm text-text-secondary leading-relaxed mb-4">
+          {t('tournament.resultsUnavailable', locale)} {t('tournament.upcomingNoneText', locale)}
+        </p>
+        <a href={route('community', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
+          {t('nav.community', locale)}
+        </a>
       </div>
+    )}
+
+    {isPast && top8.length > 0 && (
+      <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-top">
+        <h2 id="tournament-top" class="section-title">{topLabel}</h2>
+        <Top8 entries={top8} locale={locale} />
+      </section>
+    )}
+
+    {isPast && hasResults && (
+      <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-meta">
+        <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
+          <h2 id="tournament-meta" class="section-title !mb-0">{t('tournament.metaLabel', locale)}</h2>
+          {hasMeta && <p class="text-sm text-text-secondary">{t('meta.glanceHelp', locale)}</p>}
+        </div>
+        {hasMeta ? (
+          <div class="flex flex-col gap-6">
+            <MetaMosaic commanders={commanders} total={metaTotal} unattributed={unattributed} locale={locale}
+                        label={t('tournament.commandersPlayed', locale)} places={places} />
+            <div class="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] xl:items-start">
+              <CommanderTable commanders={commanders} total={metaTotal} locale={locale} ranked={false}
+                              id="tournament-table" title={t('tournament.commandersPlayed', locale)} countLabel={t('meta.colPlayers', locale)}
+                              note={unattributed > 0 ? tf('tournament.unattributed', locale, { n: unattributed }) : null} />
+              <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-1">
+                <GuildGrid counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} />
+                <ColorColumns counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p class="panel p-4 text-sm text-text-muted">{t('tournament.metaUnavailable', locale)}</p>
+        )}
+      </section>
+    )}
+
+    {isPast && data.details && (
+      <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-notes">
+        <h2 id="tournament-notes" class="section-title">{t('tournament.organizerNotes', locale)}</h2>
+        <div class="rich-text max-w-3xl text-sm text-text-secondary leading-relaxed" set:html={data.details} />
+      </section>
+    )}
+
+    <div class="pt-6 border-t border-white/8 flex flex-wrap gap-3">
+      <a href={route('tournaments', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('tournament.backToList', locale)}</a>
+      {isPast && hasMeta && (
+        <a href={route('meta', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('home.metaCta', locale)}</a>
+      )}
+      <a href={route('decklists', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('archive.allDecklists', locale)}</a>
     </div>
   </article>
 </Base>
