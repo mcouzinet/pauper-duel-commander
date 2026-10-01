@@ -173,7 +173,7 @@
   /* Skip link: off-screen until focused. */
   .skip-link {
     @apply absolute left-4 z-[10001] px-4 py-2 rounded-lg font-heading font-bold uppercase tracking-wider text-sm;
-    @apply bg-brand-orange text-white;
+    @apply bg-brand-orange text-bg-primary;
     top: -100px;
     transition: top 0.15s ease-out;
   }
@@ -612,17 +612,15 @@ html:not(.js) [data-needs-js] {
   --cc-font-family: "Inter", system-ui, sans-serif;
   --cc-bg: #141821;
   --cc-primary-color: #B8BEC8;
-  /* Le plancher de contraste du site (--color-text-muted). L'ancien #6B7280
-     tombait a 3,67:1 sur ce fond. */
-  --cc-secondary-color: #8B93A1;
+  --cc-secondary-color: var(--color-text-muted);
 
-  /* Texte sombre sur l'orange plein : le blanc n'y fait que 3,16:1 (3,92:1 sur
-     #E64A19), sous les 4,5:1 de WCAG AA. #0A0E13 donne 6,1:1, et 4,9:1 au survol. */
+  /* Dark text on the orange fill: white on #FF5722 is 3.16:1, under WCAG AA
+     at this size. */
   --cc-btn-primary-bg: #FF5722;
-  --cc-btn-primary-color: #0A0E13;
+  --cc-btn-primary-color: var(--color-bg-primary);
   --cc-btn-primary-border-color: #FF5722;
   --cc-btn-primary-hover-bg: #E64A19;
-  --cc-btn-primary-hover-color: #0A0E13;
+  --cc-btn-primary-hover-color: var(--color-bg-primary);
   --cc-btn-primary-hover-border-color: #E64A19;
 
   --cc-btn-secondary-bg: transparent;
