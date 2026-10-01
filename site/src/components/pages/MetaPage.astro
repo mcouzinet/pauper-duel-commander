@@ -19,14 +19,14 @@
  */
 import Base from '@/layouts/Base.astro';
 import MetaMosaic from '@/components/MetaMosaic.astro';
+import CommanderTable from '@/components/CommanderTable.astro';
 import GuildGrid from '@/components/GuildGrid.astro';
 import ColorColumns from '@/components/ColorColumns.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t, tf, localeTag, type Locale } from '@/lib/i18n';
+import { t, tf, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
-import { getMeta, type Aggregate, type CommanderStat } from '@/lib/meta';
+import { getMeta, type Aggregate } from '@/lib/meta';
 import { formatBanlistDate } from '@/lib/banlist';
-import { formatColorSymbols } from '@/lib/mana';
 
 interface Props {
   locale: Locale;
@@ -37,9 +37,6 @@ const meta = await getMeta();
 
 const hasData = meta.global.commanders.length > 0;
 const top4HasData = meta.top4.commanders.length > 0;
-
-/** Table rows before the fold. */
-const VISIBLE = 15;
 
 interface Panel {
   id: 'global' | 'top4';
@@ -77,15 +74,6 @@ const panels: Panel[] = [
     colorTitle: t('meta.top4Colors', locale),
   }] : []),
 ];
-
-const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
-const share = (count: number, total: number) => {
-  const value = total > 0 ? count / total : 0;
-  return value > 0 && value < 0.005 ? `< ${percent.format(0.01)}` : percent.format(value);
-};
-/** Decklists filtered to this commander; the index reads ?commander= on load. */
-const decklistHref = (name: string) => `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
-const struck = (c: CommanderStat) => c.isBanned && 'line-through decoration-red-500/70';
 
 const title = t('meta.seoTitle', locale);
 const description = hasData
@@ -141,10 +129,6 @@ const description = hasData
 
         {panels.map((panel, index) => {
           const a = panel.aggregate;
-          // Folding a single row costs more than showing it.
-          const cut = a.commanders.length === VISIBLE + 1 ? VISIBLE + 1 : VISIBLE;
-          const head = a.commanders.slice(0, cut);
-          const rest = a.commanders.slice(cut);
           return (
             <section class="scroll-mt-24 border-t border-white/8 pt-6 md:pt-8 pb-8" aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id}>
               <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
@@ -156,72 +140,9 @@ const description = hasData
               <MetaMosaic commanders={a.commanders} total={a.total} unattributed={a.unattributed} locale={locale} label={panel.glance} eager={index === 0} />
 
               <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start">
-                <section class="panel p-3 sm:p-5" aria-labelledby={`meta-${panel.id}-table`}>
-                  <h3 id={`meta-${panel.id}-table`} class="px-1 mb-3 font-heading font-bold text-base uppercase tracking-wider text-text-primary">{panel.tableTitle}</h3>
-                  <table class="meta-table">
-                    <thead>
-                      <tr>
-                        <th scope="col" class="w-8 pl-1">#</th>
-                        <th scope="col">{t('meta.colCommander', locale)}</th>
-                        <th scope="col" class="hidden sm:table-cell">{t('a11y.colors', locale)}</th>
-                        <th scope="col" class="text-right">{t('meta.colShare', locale)}</th>
-                        <th scope="col" class="hidden sm:table-cell text-right pr-1">{panel.countLabel}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {head.map(c => (
-                        <tr>
-                          <td class="pl-1 font-heading font-bold text-text-muted tabular-nums">{c.rank}</td>
-                          <td>
-                            <span class="flex items-center gap-2.5">
-                              {c.image ? (
-                                <span class:list={['w-8 h-8 flex-shrink-0 overflow-hidden rounded ring-1 ring-white/10 card-hover-trigger', c.isBanned && 'grayscale']}
-                                      data-card-name={c.mainName} data-card-image={c.cardImage ?? c.image}>
-                                  <img src={c.image} alt="" width="32" height="32" class="w-full h-full object-cover" loading="lazy" decoding="async" />
-                                </span>
-                              ) : (
-                                <span class="w-8 h-8 flex-shrink-0 rounded bg-bg-tertiary" aria-hidden="true"></span>
-                              )}
-                              <span class="min-w-0">
-                                <a href={decklistHref(c.mainName)} lang="en"
-                                   data-analytics="meta_commander_click" data-analytics-commander={c.mainName}
-                                   class:list={['font-beleren text-[15px] leading-snug text-text-primary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
-                                {c.partnerName && <span class:list={['block font-beleren text-xs leading-snug text-text-secondary', struck(c)]} lang="en">+ {c.partnerName}</span>}
-                                {c.isBanned && <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>}
-                              </span>
-                            </span>
-                          </td>
-                          <td class="hidden sm:table-cell"><span class="inline-flex" set:html={formatColorSymbols(c.colors)} /></td>
-                          <td class="text-right font-heading font-bold text-base text-text-primary tabular-nums">{share(c.count, a.total)}</td>
-                          <td class="hidden sm:table-cell text-right pr-1 text-text-muted tabular-nums">{c.count}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  {rest.length > 0 && (
-                    <details class="group/fold mt-2">
-                      <summary class="cursor-pointer select-none inline-flex items-center min-h-11 px-1 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors"
-                               data-analytics="meta_expand">
-                        <span class="group-open/fold:hidden">{tf('metaPage.showAll', locale, { n: rest.length })}</span>
-                        <span class="hidden group-open/fold:inline">{t('metaPage.hideAll', locale)}</span>
-                      </summary>
-                      <ol class="mt-1 sm:columns-2 sm:gap-x-8 text-sm" role="list">
-                        {rest.map(c => (
-                          <li class="break-inside-avoid flex items-baseline gap-2 py-1.5 border-t border-white/6">
-                            <span class="w-7 flex-shrink-0 text-right text-xs text-text-muted tabular-nums">{c.rank}</span>
-                            <a href={decklistHref(c.mainName)} lang="en"
-                               class:list={['flex-1 min-w-0 font-beleren text-text-secondary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
-                            <span class="flex-shrink-0 text-xs text-text-muted tabular-nums">{share(c.count, a.total)} · {c.count}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </details>
-                  )}
-                  {a.unattributed > 0 && (
-                    <p class="mt-3 px-1 text-xs text-text-muted">{tf('metaPage.unattributed', locale, { n: a.unattributed })}</p>
-                  )}
-                </section>
+                <CommanderTable commanders={a.commanders} total={a.total} locale={locale}
+                                id={`meta-${panel.id}-table`} title={panel.tableTitle} countLabel={panel.countLabel}
+                                note={a.unattributed > 0 ? tf('metaPage.unattributed', locale, { n: a.unattributed }) : null} />
 
                 <div class="flex flex-col gap-6">
                   <GuildGrid counts={a.ciCounts} locale={locale} title={panel.ciTitle} />

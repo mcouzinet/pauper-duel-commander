@@ -1,0 +1,113 @@
+---
+/**
+ * The exact figures behind a mosaic: rank, commander, colours, share, count.
+ *
+ * Dense on purpose: the mosaic above it carries the picture, this is where a
+ * number is looked up. The first rows are a table; the tail folds into a
+ * compact list, since past them commanders are played once or twice.
+ */
+import '@/styles/results.css';
+import { t, tf, localeTag, type Locale } from '@/lib/i18n';
+import { route } from '@/lib/routes';
+import { formatColorSymbols } from '@/lib/mana';
+import type { CommanderStat } from '@/lib/meta';
+
+interface Props {
+  commanders: CommanderStat[];
+  /** Every entry, unattributed ones included: the denominator of each share. */
+  total: number;
+  locale: Locale;
+  /** Heading id, for the section's accessible name. */
+  id: string;
+  title: string;
+  /** Header of the count column: players, or top 4 spots. */
+  countLabel: string;
+  /** Number the rows. Off where ties are the rule, as in one tournament. */
+  ranked?: boolean;
+  /** Rows before the fold. */
+  visible?: number;
+  /** A line under the table, e.g. how many entries named no commander. */
+  note?: string | null;
+}
+
+const { commanders, total, locale, id, title, countLabel, ranked = true, visible = 15, note = null } = Astro.props;
+
+// Folding a single row costs more than showing it.
+const cut = commanders.length === visible + 1 ? visible + 1 : visible;
+const head = commanders.slice(0, cut);
+const rest = commanders.slice(cut);
+
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (count: number) => {
+  const value = total > 0 ? count / total : 0;
+  return value > 0 && value < 0.005 ? `< ${percent.format(0.01)}` : percent.format(value);
+};
+/** Decklists filtered to this commander; the index reads ?commander= on load. */
+const decklistHref = (name: string) => `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
+const struck = (c: CommanderStat) => c.isBanned && 'line-through decoration-red-500/70';
+---
+
+<section class="panel p-3 sm:p-5" aria-labelledby={id}>
+  <h3 id={id} class="px-1 mb-3 font-heading font-bold text-base uppercase tracking-wider text-text-primary">{title}</h3>
+  <table class="meta-table">
+    <thead>
+      <tr>
+        {ranked && <th scope="col" class="w-8 pl-1">#</th>}
+        <th scope="col" class:list={[!ranked && 'pl-1']}>{t('meta.colCommander', locale)}</th>
+        <th scope="col" class="hidden sm:table-cell">{t('a11y.colors', locale)}</th>
+        <th scope="col" class="text-right">{t('meta.colShare', locale)}</th>
+        <th scope="col" class="hidden sm:table-cell text-right pr-1">{countLabel}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {head.map(c => (
+        <tr>
+          {ranked && <td class="pl-1 font-heading font-bold text-text-muted tabular-nums">{c.rank}</td>}
+          <td class:list={[!ranked && 'pl-1']}>
+            <span class="flex items-center gap-2.5">
+              {c.image ? (
+                <span class:list={['w-8 h-8 flex-shrink-0 overflow-hidden rounded ring-1 ring-white/10 card-hover-trigger', c.isBanned && 'grayscale']}
+                      data-card-name={c.mainName} data-card-image={c.cardImage ?? c.image}>
+                  <img src={c.image} alt="" width="32" height="32" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                </span>
+              ) : (
+                <span class="w-8 h-8 flex-shrink-0 rounded bg-bg-tertiary" aria-hidden="true"></span>
+              )}
+              <span class="min-w-0">
+                <a href={decklistHref(c.mainName)} lang="en"
+                   data-analytics="meta_commander_click" data-analytics-commander={c.mainName}
+                   class:list={['font-beleren text-[15px] leading-snug text-text-primary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
+                {c.partnerName && <span class:list={['block font-beleren text-xs leading-snug text-text-secondary', struck(c)]} lang="en">+ {c.partnerName}</span>}
+                {c.isBanned && <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>}
+              </span>
+            </span>
+          </td>
+          <td class="hidden sm:table-cell"><span class="inline-flex" set:html={formatColorSymbols(c.colors)} /></td>
+          <td class="text-right font-heading font-bold text-base text-text-primary tabular-nums">{share(c.count)}</td>
+          <td class="hidden sm:table-cell text-right pr-1 text-text-muted tabular-nums">{c.count}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  {rest.length > 0 && (
+    <details class="group/fold mt-2">
+      <summary class="cursor-pointer select-none inline-flex items-center min-h-11 px-1 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors"
+               data-analytics="meta_expand">
+        <span class="group-open/fold:hidden">{tf('metaPage.showAll', locale, { n: rest.length })}</span>
+        <span class="hidden group-open/fold:inline">{t('metaPage.hideAll', locale)}</span>
+      </summary>
+      <ol class="mt-1 sm:columns-2 sm:gap-x-8 text-sm" role="list">
+        {rest.map(c => (
+          <li class="break-inside-avoid flex items-baseline gap-2 py-1.5 border-t border-white/6">
+            {ranked && <span class="w-7 flex-shrink-0 text-right text-xs text-text-muted tabular-nums">{c.rank}</span>}
+            <a href={decklistHref(c.mainName)} lang="en"
+               class:list={['flex-1 min-w-0 font-beleren text-text-secondary hover:text-brand-orange transition-colors', struck(c)]}>{c.mainName}</a>
+            <span class="flex-shrink-0 text-xs text-text-muted tabular-nums">{share(c.count)} · {c.count}</span>
+          </li>
+        ))}
+      </ol>
+    </details>
+  )}
+  {note && <p class="mt-3 px-1 text-xs text-text-muted">{note}</p>}
+</section>

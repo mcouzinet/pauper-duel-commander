@@ -9,8 +9,8 @@
  *
  * Laid out like the decklist page since its redesign: a compact header, the
  * winner's card in a sticky column on desktop (a strip under the title on a
- * phone, the same image), the top 8 as rows or as cards, then the meta of the
- * day as printed numbers rather than a donut. The faint winner art behind the
+ * phone, the same image), the top 8 as rows or as cards, then the field as a
+ * mosaic like the meta page's, each place in the top 8 marked on its tile. The faint winner art behind the
  * header is gone: barely visible at 12 % opacity, it was still the page's
  * largest paint. Once the event is over, the organiser's notes (times, fees,
  * prizes) move below the results.
@@ -18,7 +18,8 @@
 import type { CollectionEntry } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Top8, { type Top8Entry } from '@/components/Top8.astro';
-import CommanderRanking from '@/components/CommanderRanking.astro';
+import CommanderTable from '@/components/CommanderTable.astro';
+import MetaMosaic from '@/components/MetaMosaic.astro';
 import GuildGrid from '@/components/GuildGrid.astro';
 import ColorColumns from '@/components/ColorColumns.astro';
 import ViewSwitch from '@/components/ViewSwitch.astro';
@@ -140,6 +141,17 @@ const commanders: CommanderStat[] = recorded.map((entry, index) => {
 });
 
 const hasMeta = commanders.length > 0;
+
+// Best place reached by each commander of the field, for the mosaic's badges.
+// Keyed by the full name and by the main card too: a top 8 can record a pair
+// as "Gut, True Soul Zealot" where the field wrote it with its partner.
+const places: Record<string, number> = {};
+for (const finish of data.top8) {
+  if (isPlaceholder(finish.commanderName)) continue;
+  for (const key of new Set([finish.commanderName, splitNames(finish.commanderName)[0]].map(name => name.toLowerCase()))) {
+    places[key] = Math.min(places[key] ?? Infinity, finish.place);
+  }
+}
 const hasResults = top8.length > 0 || hasMeta;
 const winner = top8.find(finish => finish.place === 1) ?? null;
 const winnerParts = winner && !winner.isUnknown ? splitNames(winner.commanderName) : [];
@@ -342,21 +354,22 @@ const schemas: Record<string, unknown>[] = [
 
         {isPast && hasResults && (
           <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-meta">
-            <h2 id="tournament-meta" class="section-title">{t('tournament.metaLabel', locale)}</h2>
+            <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
+              <h2 id="tournament-meta" class="section-title !mb-0">{t('tournament.metaLabel', locale)}</h2>
+              {hasMeta && <p class="text-sm text-text-secondary">{t('meta.glanceHelp', locale)}</p>}
+            </div>
             {hasMeta ? (
-              <div class="flex flex-col gap-4">
-                <section class="panel p-3 sm:p-4">
-                  <h3 class="px-1.5 mb-2 font-heading font-bold text-base uppercase tracking-wider text-text-primary">
-                    {t('tournament.commandersPlayed', locale)}
-                  </h3>
-                  <CommanderRanking commanders={commanders} total={metaTotal} locale={locale} limit={10} foldRest={true} ranked={false} />
-                  {unattributed > 0 && (
-                    <p class="mt-3 px-1.5 text-xs text-text-muted">{tf('tournament.unattributed', locale, { n: unattributed })}</p>
-                  )}
-                </section>
-                <div class="grid gap-4 md:grid-cols-2 items-start">
-                  <GuildGrid counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} />
-                  <ColorColumns counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
+              <div class="flex flex-col gap-6">
+                <MetaMosaic commanders={commanders} total={metaTotal} unattributed={unattributed} locale={locale}
+                            label={t('tournament.commandersPlayed', locale)} places={places} />
+                <div class="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] xl:items-start">
+                  <CommanderTable commanders={commanders} total={metaTotal} locale={locale} ranked={false}
+                                  id="tournament-table" title={t('tournament.commandersPlayed', locale)} countLabel={t('meta.colPlayers', locale)}
+                                  note={unattributed > 0 ? tf('tournament.unattributed', locale, { n: unattributed }) : null} />
+                  <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-1">
+                    <GuildGrid counts={ciCounts} locale={locale} title={t('tournament.colorIdentities', locale)} />
+                    <ColorColumns counts={colorCounts} total={metaTotal - unattributed} locale={locale} title={t('meta.colorPresence', locale)} />
+                  </div>
                 </div>
               </div>
             ) : (

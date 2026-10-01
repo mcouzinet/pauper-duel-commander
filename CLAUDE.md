@@ -317,7 +317,11 @@ réencodées, pas des sources :
   est un conteneur de taille : ses libellés apparaissent selon la place
   (requêtes `@container` dans `results.css`, tailles de police hors utilitaires).
   Identités en grille des guildes (`GuildGrid`), couleurs en colonnes
-  (`ColorColumns`), sur la page méta comme sur chaque tournoi.
+  (`ColorColumns`), chiffres exacts dans `CommanderTable`.
+- Page d'un tournoi : son plateau suit le même schéma (mosaïque, tableau, guildes,
+  couleurs) ; la meilleure place de chaque général au top 8 est marquée sur sa
+  tuile (`places`, clé sur le nom complet et sur la carte principale, car un top 8
+  peut écrire une paire sans son partenaire).
 - Une barre de part (`share-bar`) mesure sa part sur 100 %, jamais par rapport au
   plus grand de sa liste, et se lit à côté de son nombre imprimé. Avec une échelle
   par graphique, 6 % dessinait une barre pleine à côté d'une couleur à 51 % en

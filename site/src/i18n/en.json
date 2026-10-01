@@ -267,7 +267,8 @@
     "seoDescription": "%total% Pauper Duel Commander tournaments on record, %withResults% of them with results and metagame. Top 8, decklists and statistics per event.",
     "seoDetail": "%title% · %date%, %city%. Winner: %winner%. Top %top%, metagame and decklists.",
     "winnerDeck": "Winner’s decklist",
-    "organizerNotes": "Organizer’s notes"
+    "organizerNotes": "Organizer’s notes",
+    "placeN": "place %n%"
   },
   "archive": {
     "decklistTitle": "Some Decklists",

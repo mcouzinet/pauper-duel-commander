@@ -33,8 +33,6 @@ interface Props {
   /** Link each commander to its decklists. */
   linkToDecklists?: boolean;
   showTrend?: boolean;
-  /** Number the rows. Off where ties are the rule, as in one tournament's ten players. */
-  ranked?: boolean;
 }
 
 const {
@@ -45,7 +43,6 @@ const {
   foldRest = false,
   linkToDecklists = true,
   showTrend = false,
-  ranked = true,
 } = Astro.props;
 
 // Folding one row behind "show the 1 other" costs more than showing it.
@@ -76,9 +73,7 @@ function decklistHref(name: string): string {
     return (
       <li>
         <div class="rank-row">
-          {ranked && (
-            <span class:list={['medal', commander.rank <= 3 && `medal--${commander.rank}`]} aria-hidden="true">{commander.rank}</span>
-          )}
+          <span class:list={['medal', commander.rank <= 3 && `medal--${commander.rank}`]} aria-hidden="true">{commander.rank}</span>
 
           {commander.image ? (
             <span class:list={['rank-row__art card-hover-trigger', commander.isBanned && 'grayscale']}
@@ -154,9 +149,7 @@ function decklistHref(name: string): string {
     <ol class="grid gap-x-6 gap-y-0.5 mt-2 pt-3 border-t border-white/8 sm:grid-cols-2" role="list">
       {rest.map(commander => (
         <li class="flex items-center gap-2.5 py-1 text-sm">
-          {ranked && (
-            <span class="w-6 flex-shrink-0 text-right text-xs text-text-muted tabular-nums" aria-hidden="true">{commander.rank}</span>
-          )}
+          <span class="w-6 flex-shrink-0 text-right text-xs text-text-muted tabular-nums" aria-hidden="true">{commander.rank}</span>
 
           {commander.image ? (
             <span class:list={[

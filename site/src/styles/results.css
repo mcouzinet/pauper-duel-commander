@@ -50,6 +50,11 @@
     @apply bg-magic-gold border-magic-gold-light text-bg-primary;
   }
 
+  /* A place reached in the top 8, on a mosaic tile: its label is at the bottom. */
+  .tile-badge--top {
+    @apply top-1.5 bottom-auto;
+  }
+
   .tile-badge--banned {
     @apply top-1.5 right-1.5 bottom-auto left-auto text-xs uppercase tracking-wider bg-red-600 border-red-400 text-white;
   }

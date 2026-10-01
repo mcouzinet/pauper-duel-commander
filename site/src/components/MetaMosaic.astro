@@ -34,9 +34,11 @@ interface Props {
   limit?: number;
   /** Load the first tiles at once: only for the mosaic visible on arrival. */
   eager?: boolean;
+  /** One tournament's field: best place reached, by lowercased commander name. */
+  places?: Record<string, number>;
 }
 
-const { commanders, total, unattributed, locale, label, limit = 20, eager = false } = Astro.props;
+const { commanders, total, unattributed, locale, label, limit = 20, eager = false, places = {} } = Astro.props;
 
 const head = commanders.slice(0, limit);
 const tail = commanders.slice(limit);
@@ -99,7 +101,13 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
       const c = box.data.commander;
       // The accessible name holds the visible text, in its order (WCAG 2.5.3):
       // a tile too small to print the name still names its commander.
-      const name = [share(c.count), c.mainName, c.isBanned ? t('meta.banned', locale) : ''].filter(Boolean).join(' ');
+      const place = places[c.name.toLowerCase()] ?? places[c.mainName.toLowerCase()] ?? null;
+      const name = [
+        share(c.count),
+        c.mainName,
+        c.isBanned ? t('meta.banned', locale) : '',
+        place ? tf('tournament.placeN', locale, { n: place }) : '',
+      ].filter(Boolean).join(' ');
       return (
         <li class="mosaic-tile" style={pos}>
           <a href={href(c.mainName)} class="mosaic-tile__face" aria-label={name}
@@ -116,6 +124,7 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
               <span lang="en" class:list={['mosaic-tile__name', c.isBanned && 'line-through decoration-red-500/70']}>{c.mainName}</span>
             </span>
             {c.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
+            {place && <span class:list={['tile-badge tile-badge--top', place === 1 && 'tile-badge--gold']} aria-hidden="true">{place}</span>}
           </a>
         </li>
       );
