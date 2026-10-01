@@ -1,0 +1,124 @@
+---
+/**
+ * A tournament's standings, winner first.
+ *
+ * Replaces Top8Table, which wrote every row twice (with and without a decklist
+ * link) and cut commander names to one line, so on a phone most of them ended
+ * in an ellipsis. Names wrap now. Like the meta ranking, each place also carries
+ * the commander's card for the visual view (results.css, ViewSwitch scope
+ * "top8"); a place with a decklist links to it in both presentations.
+ */
+import '@/styles/results.css';
+import { t, type Locale } from '@/lib/i18n';
+import { splitCommanderName } from '@/lib/tournaments';
+
+export interface Top8Entry {
+  place: number;
+  /** Empty when the result named no player. */
+  playerName: string;
+  commanderName: string;
+  /** The result was published without naming the commander. */
+  isUnknown: boolean;
+  score: string;
+  commanderImage: string | null;
+  cardImage: string | null;
+  decklistUrl: string | null;
+  isBanned: boolean;
+}
+
+interface Props {
+  entries: Top8Entry[];
+  locale: Locale;
+}
+
+const { entries, locale } = Astro.props;
+
+const places = entries.map(entry => {
+  const [main, partner] = entry.isUnknown ? [entry.commanderName] : splitCommanderName(entry.commanderName);
+  return { ...entry, main, partner: partner ?? null };
+});
+---
+
+<ol class="top8" role="list">
+  {places.map(entry => {
+    const Tag = entry.decklistUrl ? 'a' : 'div';
+    const link = entry.decklistUrl ? { href: entry.decklistUrl } : {};
+    const struck = entry.isBanned && 'line-through decoration-red-500/70';
+    return (
+      <li class:list={['top8-item', entry.place === 1 && 'top8-item--winner']}>
+        <Tag class="top8-row" {...link}>
+          <span class:list={['medal', entry.place <= 3 && `medal--${entry.place}`]} aria-hidden="true">{entry.place}</span>
+
+          {entry.commanderImage ? (
+            <span class:list={['top8-row__art card-hover-trigger', entry.isBanned && 'grayscale']}
+                  data-card-name={entry.main}
+                  data-card-image={entry.cardImage ?? entry.commanderImage}>
+              <img src={entry.commanderImage} alt="" width="44" height="44"
+                   class="w-full h-full object-cover" loading="lazy" decoding="async" />
+            </span>
+          ) : (
+            <span class="top8-row__art" aria-hidden="true"></span>
+          )}
+
+          <span class="flex-1 min-w-0">
+            {entry.isUnknown ? (
+              <span class="block text-sm italic text-text-muted">{entry.main}</span>
+            ) : (
+              <span lang="en" class:list={['block font-beleren text-[15px] sm:text-base leading-snug text-text-primary', struck]}>{entry.main}</span>
+            )}
+            {entry.partner && (
+              <span lang="en" class:list={['block font-beleren text-sm leading-snug text-text-secondary', struck]}>+ {entry.partner}</span>
+            )}
+            {(entry.playerName || entry.score) && (
+              <span class="block mt-0.5 text-sm text-text-secondary">
+                {entry.playerName}{entry.playerName && entry.score && ' · '}<span class="whitespace-nowrap tabular-nums">{entry.score}</span>
+              </span>
+            )}
+            {entry.isBanned && (
+              <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>
+            )}
+          </span>
+
+          {entry.decklistUrl && (
+            <span class="top8-row__deck">
+              {t('tournament.deck', locale)}
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          )}
+        </Tag>
+
+        <Tag class="top8-tile group" {...link}>
+          <span class:list={['tile-face', entry.isBanned && 'grayscale']}>
+            {entry.cardImage ? (
+              <img src={entry.cardImage} alt="" width="488" height="680" loading="lazy" decoding="async" />
+            ) : (
+              <span class="tile-face__fallback" lang={entry.isUnknown ? undefined : 'en'}>{entry.main}</span>
+            )}
+            <span class:list={['tile-badge', entry.place === 1 && 'tile-badge--gold']}>{entry.place}</span>
+            {entry.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
+          </span>
+          {!entry.isUnknown && (
+            <span lang="en" class:list={[
+              'mt-0.5 font-beleren text-sm sm:text-[15px] leading-snug text-text-primary transition-colors',
+              entry.decklistUrl && 'group-hover:text-brand-orange',
+              struck,
+            ]}>
+              {entry.main}
+              {entry.partner && <span class="block text-xs text-text-secondary">+ {entry.partner}</span>}
+            </span>
+          )}
+          {(entry.playerName || entry.score) && (
+            <span class="text-sm text-text-secondary">
+              {entry.playerName}{entry.playerName && entry.score && ' · '}<span class="whitespace-nowrap tabular-nums">{entry.score}</span>
+            </span>
+          )}
+          {entry.decklistUrl && (
+            <span class="text-sm font-semibold text-brand-orange">{t('tournament.deck', locale)} <span aria-hidden="true">›</span></span>
+          )}
+        </Tag>
+      </li>
+    );
+  })}
+</ol>

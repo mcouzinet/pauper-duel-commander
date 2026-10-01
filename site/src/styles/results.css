@@ -1,0 +1,183 @@
+@reference "./globals.css";
+
+/**
+ * Rankings and standings: the meta ranking, a tournament's top 8, and the bars
+ * that go with them.
+ *
+ * As on the decklist (decklist.css), each list is rendered once with two
+ * presentations: rows, and a grid of card images read from <html data-view>,
+ * which ViewSwitch.astro sets before the list is parsed. The card images are
+ * lazy and undisplayed in the list view, so a visitor who never switches
+ * downloads none of them.
+ *
+ * Everything sits in the components layer, like globals.css's, so a utility on
+ * the same element still wins. The flip side: the elements whose display
+ * changes with the view (rows, tiles, the lists themselves) take their layout
+ * from here, never from a display utility, which would beat these rules.
+ */
+@layer components {
+  /* ---- Bars ------------------------------------------------------------------ */
+
+  /* A share, with its number printed beside it: the bar only helps compare. */
+  .share-bar {
+    @apply relative block h-1.5 min-w-8 rounded-full bg-white/8 overflow-hidden;
+  }
+
+  .share-bar__fill {
+    @apply block h-full rounded-full bg-text-secondary/55;
+  }
+
+  /* Black mana is near the page colour: the outline keeps every bar visible. */
+  .share-bar__fill--mana {
+    background: var(--bar);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+
+  /* ---- Medals (rank in a ranking, place in a top 8) -------------------------- */
+
+  .medal {
+    @apply flex items-center justify-center flex-shrink-0 w-7 h-7 rounded-full;
+    @apply font-heading font-bold text-sm tabular-nums;
+    @apply bg-bg-tertiary border border-white/8 text-text-secondary;
+  }
+
+  .medal--1 { @apply bg-magic-gold/20 border-magic-gold/45 text-magic-gold-light; }
+  .medal--2 { @apply bg-slate-300/12 border-slate-300/35 text-text-primary; }
+  .medal--3 { @apply bg-amber-700/20 border-amber-600/35 text-amber-400; }
+
+  /* Solid, because it sits on a card scan. Placed as on the decklist: the rank
+     bottom left, over the collector line, never over the card's name. */
+  .tile-badge {
+    @apply absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded font-heading font-bold text-sm leading-tight tabular-nums;
+    @apply bg-bg-primary/90 border border-white/20 text-text-primary;
+  }
+
+  .tile-badge--gold {
+    @apply bg-magic-gold border-magic-gold-light text-bg-primary;
+  }
+
+  .tile-badge--banned {
+    @apply top-1.5 right-1.5 bottom-auto left-auto text-xs uppercase tracking-wider bg-red-600 border-red-400 text-white;
+  }
+
+  /* The card's own proportions; scaled by the grid, never cropped. */
+  .tile-face {
+    @apply relative block aspect-[488/680] overflow-hidden rounded-[4.75%/3.5%] bg-bg-tertiary shadow-card transition-shadow;
+  }
+
+  .tile-face img {
+    @apply block w-full h-full object-cover;
+  }
+
+  /* Scryfall had no scan: the tile stays, named. */
+  .tile-face__fallback {
+    @apply flex h-full items-start p-2.5 font-beleren text-sm leading-tight text-text-primary;
+    @apply rounded-[inherit] border border-dashed border-white/25 bg-bg-secondary;
+  }
+
+  a:hover > .tile-face {
+    @apply shadow-card-hover;
+  }
+
+  /* ---- Ranking (CommanderRanking) -------------------------------------------- */
+
+  .rank-list {
+    @apply flex flex-col gap-0.5;
+  }
+
+  .rank-row {
+    @apply flex items-start gap-3 py-2 px-1.5 rounded-lg transition-colors;
+  }
+
+  .rank-row:hover {
+    @apply bg-white/3;
+  }
+
+  .rank-row__art {
+    @apply relative block w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0 overflow-hidden rounded-md bg-bg-tertiary ring-1 ring-white/10;
+  }
+
+  .rank-row__name {
+    @apply font-beleren text-[15px] sm:text-base leading-snug text-text-primary transition-colors;
+  }
+
+  a.rank-row__name:hover {
+    @apply text-brand-orange;
+  }
+
+  .rank-tile {
+    display: none;
+  }
+
+  html[data-view="visual"] .rank-list--tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: 1.25rem 0.75rem;
+  }
+
+  html[data-view="visual"] .rank-list--tiles .rank-row {
+    display: none;
+  }
+
+  html[data-view="visual"] .rank-list--tiles .rank-tile {
+    @apply flex flex-col gap-1.5 no-underline;
+  }
+
+  /* ---- Top 8 (Top8.astro) ----------------------------------------------------- */
+
+  .top8 {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .top8-row {
+    @apply flex items-center gap-3 p-2 sm:p-2.5 rounded-lg no-underline;
+    @apply bg-bg-secondary/70 border border-white/6 transition-colors;
+  }
+
+  a.top8-row:hover {
+    @apply bg-bg-secondary border-brand-orange/35;
+  }
+
+  /* Gold is merit: the winner, and only the winner. */
+  .top8-item--winner .top8-row {
+    @apply bg-magic-gold/[0.07] border-magic-gold/30;
+  }
+
+  .top8-item--winner a.top8-row:hover {
+    @apply border-magic-gold/55;
+  }
+
+  .top8-row__art {
+    @apply relative block w-11 h-11 flex-shrink-0 overflow-hidden rounded-md bg-bg-tertiary ring-1 ring-white/10;
+  }
+
+  .top8-row__deck {
+    @apply inline-flex flex-shrink-0 items-center gap-1 text-sm font-semibold text-brand-orange transition-colors;
+  }
+
+  a.top8-row:hover .top8-row__deck {
+    @apply text-brand-orange-light;
+  }
+
+  .top8-tile {
+    display: none;
+  }
+
+  html[data-view="visual"] .top8 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    html[data-view="visual"] .top8 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
+  html[data-view="visual"] .top8-row {
+    display: none;
+  }
+
+  html[data-view="visual"] .top8-tile {
+    @apply flex flex-col gap-1 no-underline;
+  }
+}

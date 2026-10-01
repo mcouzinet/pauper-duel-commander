@@ -3,24 +3,31 @@
  * Metagame.
  *
  * The site's most distinctive feature, and the one that told the reader least
- * about itself. It listed 68 commanders — 39 of them played exactly once — as an
+ * about itself. It listed 68 commanders (39 of them played exactly once) as an
  * unbroken 7,500px column, gave no analysis window, no freshness, and offered no
  * way from a commander to the decks playing it.
  *
- * All the aggregation moved to lib/meta.ts (shared with the home page). What is
- * left here is presentation: sample banner first, top 15 with the tail folded,
- * a trend against the earlier tournaments, and every commander linking out.
+ * All the aggregation lives in lib/meta.ts (shared with the home page). What is
+ * left here is presentation, in the decklist page's language since its
+ * redesign: a compact header that states the sample before any number, then one
+ * ranking at a time (every player, or the top 4) chosen in a sticky bar that
+ * also switches between rows and cards. The colours sit beside the ranking on
+ * desktop, as printed bars rather than a donut. The faint card art behind the
+ * header is gone: barely visible, it was still the page's largest paint.
+ *
+ * Without JavaScript the bar is hidden and both rankings read one after the
+ * other, which is what the page used to be.
  */
 import Base from '@/layouts/Base.astro';
 import CommanderRanking from '@/components/CommanderRanking.astro';
-import ColorPieChart from '@/components/ColorPieChart.astro';
+import IdentityBars from '@/components/IdentityBars.astro';
+import ColorBars from '@/components/ColorBars.astro';
+import ViewSwitch from '@/components/ViewSwitch.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t, type Locale } from '@/lib/i18n';
+import { t, tf, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getMeta, type Aggregate } from '@/lib/meta';
-import { colorIdentityLabel, sortColorCounts } from '@/lib/colors';
 import { formatBanlistDate } from '@/lib/banlist';
-import { formatColorSymbols } from '@/lib/mana';
 
 interface Props {
   locale: Locale;
@@ -35,40 +42,33 @@ const top4HasData = meta.top4.commanders.length > 0;
 /** Rows shown before the fold. */
 const VISIBLE = 15;
 
-interface CiRow {
-  key: string;
-  count: number;
-  pct: number;
-  barWidth: number;
-  label: string;
-  manaHtml: string;
+interface Panel {
+  id: 'global' | 'top4';
+  aggregate: Aggregate;
+  heading: string;
+  intro: string | null;
+  ciTitle: string;
+  colorTitle: string;
 }
 
-function ciRows(aggregate: Aggregate): CiRow[] {
-  const sorted = Object.entries(aggregate.ciCounts).sort((a, b) => b[1] - a[1]);
-  const total = sorted.reduce((sum, [, count]) => sum + count, 0);
-  const max = sorted.reduce((m, [, count]) => Math.max(m, count), 0);
-
-  return sorted.map(([key, count]) => ({
-    key,
-    count,
-    pct: total > 0 ? Math.round((count / total) * 100) : 0,
-    barWidth: max > 0 ? Math.round((count / max) * 100) : 0,
-    label: colorIdentityLabel(key, locale),
-    manaHtml: formatColorSymbols(key === 'C' ? 'C' : key),
-  }));
-}
-
-const globalCi = ciRows(meta.global);
-const top4Ci = ciRows(meta.top4);
-const globalCiTotal = globalCi.reduce((sum, row) => sum + row.count, 0);
-const top4CiTotal = top4Ci.reduce((sum, row) => sum + row.count, 0);
-
-const sampleLabel = t('metaPage.sample', locale)
-  .replace('%tournaments%', String(meta.global.tournamentCount))
-  .replace('%entries%', String(meta.global.total))
-  .replace('%from%', formatBanlistDate(meta.from, locale))
-  .replace('%to%', formatBanlistDate(meta.to, locale));
+const panels: Panel[] = [
+  {
+    id: 'global',
+    aggregate: meta.global,
+    heading: t('meta.mostPlayed', locale),
+    intro: null,
+    ciTitle: t('meta.ciTitle', locale),
+    colorTitle: t('meta.colorPresence', locale),
+  },
+  ...(top4HasData ? [{
+    id: 'top4' as const,
+    aggregate: meta.top4,
+    heading: t('meta.top4Commanders', locale),
+    intro: `${t('meta.top4Desc', locale)} ${meta.top4.tournamentCount} ${t('meta.tournaments', locale)} · ${meta.top4.total} ${t('meta.top4Spots', locale)}`,
+    ciTitle: t('meta.top4Ci', locale),
+    colorTitle: t('meta.top4Colors', locale),
+  }] : []),
+];
 
 const title = t('meta.seoTitle', locale);
 const description = hasData
@@ -78,215 +78,125 @@ const description = hasData
   : t('meta.subtitle', locale);
 ---
 <Base title={title} description={description} bareTitle={false}>
+  <div class="container mx-auto px-4 md:px-6 pt-5 md:pt-8 pb-12">
+    <Breadcrumb locale={locale} items={[{ label: t('meta.title', locale) }]} />
 
-  <section class="page-head">
-    <div class="page-head__bg"></div>
-    <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
-      <img src="/img/cards-background.webp" alt="" aria-hidden="true"
-           width="1024" height="356" class="w-full h-full object-cover" />
-    </div>
+    <header class="mt-4 pb-6 max-w-3xl">
+      <h1 class="text-[2rem] sm:text-5xl leading-[1.05] text-text-primary">{t('meta.title', locale)}</h1>
+      <p class="mt-3 text-lg leading-relaxed text-text-secondary">{t('meta.subtitle', locale)}</p>
 
-    <div class="container mx-auto px-4 md:px-6 relative z-10">
-      <div class="max-w-4xl">
-        <Breadcrumb locale={locale} items={[{ label: t('meta.title', locale) }]} />
-
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-magic-gradient mt-3 mb-3">
-          {t('meta.title', locale)}
-        </h1>
-        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mb-5">
-          {t('meta.subtitle', locale)}
-        </p>
-
-        {hasData && (
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="stat-pill">
-              <strong>{meta.global.tournamentCount}</strong> {t('meta.tournaments', locale)}
-            </span>
-            <span class="stat-pill">
-              <strong>{meta.global.total}</strong> {t('meta.playerEntries', locale)}
-            </span>
-            <span class="stat-pill">
-              {formatBanlistDate(meta.from, locale)} — {formatBanlistDate(meta.to, locale)}
-            </span>
-          </div>
-        )}
-      </div>
-    </div>
-  </section>
-
-  {hasData ? (
-    <>
-      <!-- Sample size, stated before any number is read ---------------------->
-      <section class="border-b border-card-border/25 bg-bg-secondary/50">
-        <div class="container mx-auto px-4 md:px-6 py-4">
-          <div class="max-w-4xl flex items-start gap-3">
-            <svg class="w-5 h-5 text-magic-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      {hasData && (
+        <>
+          <ul class="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="list">
+            <li class="stat-pill"><strong>{meta.global.tournamentCount}</strong> {t('meta.tournaments', locale)}</li>
+            <li class="stat-pill"><strong>{meta.global.total}</strong> {t('meta.playerEntries', locale)}</li>
+            <li class="stat-pill">{tf('metaPage.window', locale, {
+              from: formatBanlistDate(meta.from, locale),
+              to: formatBanlistDate(meta.to, locale),
+            })}</li>
+          </ul>
+          <p class="mt-4 flex items-start gap-2 text-sm leading-relaxed text-text-muted">
+            <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-magic-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <div class="text-sm">
-              <p class="text-text-secondary">{sampleLabel}</p>
-              <p class="text-text-muted mt-0.5">
-                {t('metaPage.sampleWarning', locale)} {t('metaPage.freshness', locale)}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Global metagame ---------------------------------------------------->
-      <section class="py-10 md:py-14">
-        <div class="container mx-auto px-4 md:px-6">
-          <div class="max-w-6xl">
-            <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-6">
-              {t('meta.global', locale)}
-            </h2>
-
-            <div class="grid lg:grid-cols-5 gap-5 lg:gap-8 items-start">
-
-              <div class="lg:col-span-3 min-w-0">
-                <h3 class="section-title">{t('meta.mostPlayed', locale)}</h3>
-                <div class="panel p-3 sm:p-4">
-                  <CommanderRanking
-                    commanders={meta.global.commanders}
-                    total={meta.global.total}
-                    locale={locale}
-                    limit={VISIBLE}
-                    foldRest={true}
-                  />
-                </div>
-              </div>
-
-              <div class="lg:col-span-2 min-w-0 space-y-6">
-                {globalCi.length > 0 && (
-                  <div>
-                    <h3 class="section-title">{t('meta.ciTitle', locale)}</h3>
-                    <div class="panel p-3 sm:p-4">
-                      <ul class="space-y-2">
-                        {globalCi.map(row => (
-                          <li class="py-1">
-                            <div class="flex items-center justify-between gap-2 mb-1">
-                              <span class="flex items-center gap-2 min-w-0">
-                                <span class="flex items-center gap-0.5 flex-shrink-0" set:html={row.manaHtml} />
-                                <span class="text-xs sm:text-sm text-text-primary truncate">{row.label}</span>
-                              </span>
-                              <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                                {row.count}<span class="text-text-muted">/{globalCiTotal}</span>
-                                <span class="ml-1 text-magic-gold font-semibold">{row.pct}%</span>
-                              </span>
-                            </div>
-                            <div class="w-full h-1.5 bg-bg-primary/60 rounded-full overflow-hidden" aria-hidden="true">
-                              <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
-                                   style={`width: ${row.barWidth}%`}></div>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                {Object.keys(meta.global.colorCounts).length > 0 && (
-                  <div>
-                    <h3 class="section-title">{t('meta.colorDist', locale)}</h3>
-                    <ColorPieChart colorCounts={sortColorCounts(meta.global.colorCounts)} locale={locale} />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Top 4 -------------------------------------------------------------->
-      {top4HasData && (
-        <section class="py-10 md:py-14 border-t border-card-border/20 bg-bg-secondary/40">
-          <div class="container mx-auto px-4 md:px-6">
-            <div class="max-w-6xl">
-              <h2 class="text-2xl sm:text-3xl font-heading font-bold text-magic-gradient mb-2">
-                {t('meta.top4', locale)}
-              </h2>
-              <p class="text-sm text-text-secondary mb-6">
-                {t('meta.top4Desc', locale)}{' '}
-                <strong class="text-magic-gold">{meta.top4.tournamentCount}</strong> {t('meta.tournaments', locale)}
-                {' — '}
-                <strong class="text-magic-gold">{meta.top4.total}</strong> {t('meta.top4Spots', locale)}
-              </p>
-
-              <div class="grid lg:grid-cols-5 gap-5 lg:gap-8 items-start">
-                <div class="lg:col-span-3 min-w-0">
-                  <h3 class="section-title">{t('meta.top4Commanders', locale)}</h3>
-                  <div class="panel p-3 sm:p-4">
-                    <CommanderRanking
-                      commanders={meta.top4.commanders}
-                      total={meta.top4.total}
-                      locale={locale}
-                      limit={VISIBLE}
-                      foldRest={true}
-                    />
-                  </div>
-                </div>
-
-                <div class="lg:col-span-2 min-w-0 space-y-6">
-                  {top4Ci.length > 0 && (
-                    <div>
-                      <h3 class="section-title">{t('meta.top4Ci', locale)}</h3>
-                      <div class="panel p-3 sm:p-4">
-                        <ul class="space-y-2">
-                          {top4Ci.map(row => (
-                            <li class="py-1">
-                              <div class="flex items-center justify-between gap-2 mb-1">
-                                <span class="flex items-center gap-2 min-w-0">
-                                  <span class="flex items-center gap-0.5 flex-shrink-0" set:html={row.manaHtml} />
-                                  <span class="text-xs sm:text-sm text-text-primary truncate">{row.label}</span>
-                                </span>
-                                <span class="flex-shrink-0 text-xs sm:text-sm text-text-secondary tabular-nums whitespace-nowrap">
-                                  {row.count}<span class="text-text-muted">/{top4CiTotal}</span>
-                                  <span class="ml-1 text-magic-gold font-semibold">{row.pct}%</span>
-                                </span>
-                              </div>
-                              <div class="w-full h-1.5 bg-bg-primary/60 rounded-full overflow-hidden" aria-hidden="true">
-                                <div class="h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
-                                     style={`width: ${row.barWidth}%`}></div>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-
-                  {Object.keys(meta.top4.colorCounts).length > 0 && (
-                    <div>
-                      <h3 class="section-title">{t('meta.top4Colors', locale)}</h3>
-                      <ColorPieChart colorCounts={sortColorCounts(meta.top4.colorCounts)} locale={locale} />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div class="flex flex-wrap gap-3 mt-8">
-                <a href={route('tournaments', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
-                  {t('home.resultsCta', locale)}
-                </a>
-                <a href={route('decklists', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
-                  {t('archive.allDecklists', locale)}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+            <span>{t('metaPage.sampleWarning', locale)} {t('metaPage.freshness', locale)}</span>
+          </p>
+        </>
       )}
-    </>
-  ) : (
-    <section class="py-16">
-      <div class="container mx-auto px-4 md:px-6 text-center">
-        <h2 class="text-2xl font-heading font-bold text-magic-gradient mb-3">{t('meta.noData', locale)}</h2>
+    </header>
+
+    {hasData ? (
+      <>
+        <!-- Sticky: which ranking, and how it is drawn. -->
+        <div class="sticky top-[68px] md:top-[76px] z-30 -mx-4 px-4 md:mx-0 md:px-0 bg-bg-primary/95 backdrop-blur-sm border-y border-white/8">
+          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2">
+            {panels.length > 1 && (
+              <div class="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-labelledby="meta-ranking-label" data-needs-js>
+                <span id="meta-ranking-label" class="hidden sm:inline mr-1 text-sm text-text-muted">{t('meta.rankingLabel', locale)}</span>
+                <label class="choice" data-analytics="meta_scope" data-analytics-scope="global">
+                  <input type="radio" name="meta-ranking" value="global" checked class="sr-only" />
+                  <span class="choice__box">{t('meta.allPlayers', locale)}</span>
+                </label>
+                <label class="choice" data-analytics="meta_scope" data-analytics-scope="top4">
+                  <input type="radio" name="meta-ranking" value="top4" class="sr-only" />
+                  <span class="choice__box">{t('meta.top4Short', locale)}</span>
+                </label>
+              </div>
+            )}
+            <ViewSwitch locale={locale} scope="meta" compact={true} class="ml-auto" />
+          </div>
+        </div>
+
+        {panels.map((panel, index) => (
+          <section class:list={['scroll-mt-36', index > 0 && 'border-t border-white/8']}
+                   aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id}>
+            <div class="pt-6 md:pt-8 pb-8 lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-x-10 lg:items-start">
+              <div class="min-w-0">
+                <h2 id={`meta-${panel.id}-title`} class="section-title">{panel.heading}</h2>
+                {panel.intro && <p class="-mt-2 mb-4 text-sm text-text-secondary">{panel.intro}</p>}
+                <CommanderRanking
+                  commanders={panel.aggregate.commanders}
+                  total={panel.aggregate.total}
+                  locale={locale}
+                  limit={VISIBLE}
+                  foldRest={true}
+                  tiles={true}
+                />
+                {panel.aggregate.unattributed > 0 && (
+                  <p class="mt-3 text-xs text-text-muted">{tf('metaPage.unattributed', locale, { n: panel.aggregate.unattributed })}</p>
+                )}
+              </div>
+
+              <aside class="mt-6 lg:mt-0 flex flex-col gap-4"
+                     aria-label={t('a11y.colors', locale)}>
+                <IdentityBars counts={panel.aggregate.ciCounts} locale={locale} title={panel.ciTitle} limit={8} />
+                <ColorBars counts={panel.aggregate.colorCounts}
+                           total={panel.aggregate.total - panel.aggregate.unattributed}
+                           locale={locale}
+                           title={panel.colorTitle} />
+              </aside>
+            </div>
+          </section>
+        ))}
+
+        <div class="pt-6 border-t border-white/8 flex flex-wrap gap-3">
+          <a href={route('tournaments', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('home.resultsCta', locale)}</a>
+          <a href={route('decklists', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('archive.allDecklists', locale)}</a>
+        </div>
+      </>
+    ) : (
+      <div class="panel p-6 max-w-2xl">
+        <h2 class="font-heading font-bold text-xl uppercase tracking-wide text-text-primary mb-2">{t('meta.noData', locale)}</h2>
         <p class="text-text-secondary">{t('meta.noDataDesc', locale)}</p>
       </div>
-    </section>
-  )}
+    )}
+  </div>
 
   <script>
+    /**
+     * One ranking at a time. Both are in the HTML (they read one after the
+     * other without JavaScript); the radios hide the other. A browser that
+     * restores the radio on "back" gets the matching panel.
+     */
+    const radios = [...document.querySelectorAll<HTMLInputElement>('input[name="meta-ranking"]')];
+    const panels = [...document.querySelectorAll<HTMLElement>('[data-meta-panel]')];
+
+    function show(id: string) {
+      for (const panel of panels) panel.hidden = panel.dataset.metaPanel !== id;
+    }
+
+    if (radios.length > 0) {
+      show(radios.find(radio => radio.checked)?.value ?? 'global');
+      for (const radio of radios) {
+        radio.addEventListener('change', () => {
+          show(radio.value);
+          // Switching from far down the page: start the new ranking at its top.
+          const panel = panels.find(p => p.dataset.metaPanel === radio.value);
+          if (panel && panel.getBoundingClientRect().top < 0) panel.scrollIntoView({ block: 'start' });
+        });
+      }
+    }
+
     window.pdcTrack?.('meta_view', {});
   </script>
 </Base>

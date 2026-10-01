@@ -169,7 +169,12 @@
     "noData": "No meta data available",
     "noDataDesc": "Metagame statistics will be available after the first tournaments.",
     "seoTitle": "Pauper Duel Commander metagame: most played commanders",
-    "seoDescription": "The most played Pauper Duel Commander commanders, measured across %tournaments% tournaments and %entries% player entries. Color identities, distribution and top 4."
+    "seoDescription": "The most played Pauper Duel Commander commanders, measured across %tournaments% tournaments and %entries% player entries. Color identities, distribution and top 4.",
+    "rankingLabel": "Ranking",
+    "allPlayers": "All players",
+    "top4Short": "Top 4",
+    "colorPresence": "Color presence",
+    "colorPresenceHelp": "Share of players whose commander includes the color. A two-color commander counts for both."
   },
   "ci": {
     "W": "Mono White",
@@ -249,7 +254,9 @@
     "unattributed": "%n% place(s) with no commander recorded",
     "seoTitle": "Pauper Duel Commander tournaments",
     "seoDescription": "%total% Pauper Duel Commander tournaments on record, %withResults% of them with results and metagame. Top 8, decklists and statistics per event.",
-    "seoDetail": "%title% — %date%, %city%. Winner: %winner%. Top %top%, metagame and decklists."
+    "seoDetail": "%title% · %date%, %city%. Winner: %winner%. Top %top%, metagame and decklists.",
+    "winnerDeck": "Winner’s decklist",
+    "organizerNotes": "Organizer’s notes"
   },
   "archive": {
     "decklistTitle": "Some Decklists",
@@ -827,7 +834,10 @@
     "trendDown": "trending down",
     "trendHint": "Change in percentage points against earlier tournaments.",
     "seeDecklists": "Its decklists",
-    "playedOnce": "played once"
+    "playedOnce": "played once",
+    "window": "%from% to %to%",
+    "showAllIdentities": "Show the %n% other identities",
+    "unattributed": "%n% entry(ies) with no commander recorded, counted in the total."
   },
   "community": {
     "title": "Community",

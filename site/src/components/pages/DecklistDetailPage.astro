@@ -158,11 +158,9 @@ const schemas: Record<string, unknown>[] = [
 >
 
   <article class="decklist-single">
-    <!-- Before anything is painted: mark JS as available (decklist.css hides the
-         JS-only controls otherwise) and apply a stored visual view, so neither
-         shifts the page once it is on screen. -->
+    <!-- Before anything is painted: apply a stored visual view, so the page
+         does not shift once it is on screen. -->
     <script is:inline>
-      document.documentElement.classList.add('js');
       try {
         if (localStorage.getItem('pdc:deck-view') === 'visual') document.documentElement.dataset.deckView = 'visual';
       } catch (e) {}

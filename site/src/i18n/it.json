@@ -169,7 +169,12 @@
     "noData": "Nessun dato sul meta disponibile",
     "noDataDesc": "Le statistiche del meta saranno disponibili dopo i primi tornei.",
     "seoTitle": "Meta Pauper Duel Commander: i comandanti più giocati",
-    "seoDescription": "I comandanti più giocati nel Pauper Duel Commander, misurati su %tournaments% tornei e %entries% iscrizioni. Identità di colore, distribuzione e top 4."
+    "seoDescription": "I comandanti più giocati nel Pauper Duel Commander, misurati su %tournaments% tornei e %entries% iscrizioni. Identità di colore, distribuzione e top 4.",
+    "rankingLabel": "Classifica",
+    "allPlayers": "Tutti i giocatori",
+    "top4Short": "Top 4",
+    "colorPresence": "Presenza dei colori",
+    "colorPresenceHelp": "Quota di giocatori il cui comandante include il colore. Un comandante bicolore conta per entrambi."
   },
   "ci": {
     "W": "Mono Bianco",
@@ -249,7 +254,9 @@
     "unattributed": "%n% piazzamento/i senza comandante registrato",
     "seoTitle": "Tornei Pauper Duel Commander",
     "seoDescription": "%total% tornei Pauper Duel Commander registrati, di cui %withResults% con risultati e meta. Top 8, decklist e statistiche per evento.",
-    "seoDetail": "%title% — %date%, %city%. Vincitore: %winner%. Top %top%, meta e decklist."
+    "seoDetail": "%title% · %date%, %city%. Vincitore: %winner%. Top %top%, meta e decklist.",
+    "winnerDeck": "Decklist del vincitore",
+    "organizerNotes": "Note dell’organizzatore"
   },
   "archive": {
     "decklistTitle": "Alcune decklist",
@@ -827,7 +834,10 @@
     "trendDown": "in calo",
     "trendHint": "Variazione in punti percentuali rispetto ai tornei precedenti.",
     "seeDecklists": "Le sue decklist",
-    "playedOnce": "giocato una volta"
+    "playedOnce": "giocato una volta",
+    "window": "dal %from% al %to%",
+    "showAllIdentities": "Mostra le altre %n% identità",
+    "unattributed": "%n% iscrizione/i senza comandante registrato, conteggiata/e nel totale."
   },
   "community": {
     "title": "Comunità",

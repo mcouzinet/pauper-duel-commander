@@ -6,13 +6,19 @@
  * scheduled the page looked like a dead archive rather than a live format with a
  * gap in its calendar. It also gave no way to tell the four tournaments published
  * without results from the eleven with them, and never named a winner.
+ *
+ * Since the decklist redesign: a compact header without the faint card art
+ * (barely visible, and still the page's largest paint), and each result led by
+ * its winner's commander art, so the list scans by picture as well as by name.
  */
 import Base from '@/layouts/Base.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
-import { t, type Locale } from '@/lib/i18n';
+import { t, tf, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getUpcomingTournaments, getPastTournaments, formatDate, isPlaceholder } from '@/lib/tournaments';
 import { getMeta } from '@/lib/meta';
+import { getCardsByNames, getCardImage } from '@/lib/scryfall';
+import { splitNames } from '@/lib/banlist';
 import { submissionsEnabled } from '@/lib/features';
 
 interface Props {
@@ -39,6 +45,15 @@ const venueOptions = [...venues.entries()].sort((a, b) => b[1] - a[1] || a[0].lo
 
 const withResults = past.filter(tournament => tournament.top8.length > 0).length;
 
+const winnerOf = (tournament: (typeof past)[number]) =>
+  tournament.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName)) ?? null;
+const winnerCards = await getCardsByNames([
+  ...new Set(past.flatMap(tournament => {
+    const winner = winnerOf(tournament);
+    return winner ? [splitNames(winner.commanderName)[0]] : [];
+  })),
+]);
+
 /** Results shown per page. Read by the script below through `data-page-size`. */
 const PAGE_SIZE = 10;
 
@@ -49,60 +64,48 @@ const description = t('tournament.seoDescription', locale)
 ---
 <Base title={title} description={description} bareTitle={false}>
 
-  <section class="page-head">
-    <div class="page-head__bg"></div>
-    <div class="absolute inset-0 opacity-[0.08] pointer-events-none">
-      <img src="/img/cards-background.webp" alt="" aria-hidden="true"
-           width="1024" height="356" class="w-full h-full object-cover" />
-    </div>
+  <div class="container mx-auto px-4 md:px-6 pt-5 md:pt-8">
+    <Breadcrumb locale={locale} items={[{ label: t('tournament.title', locale) }]} />
 
-    <div class="container mx-auto px-4 md:px-6 relative z-10">
-      <div class="max-w-4xl">
-        <Breadcrumb locale={locale} items={[{ label: t('tournament.title', locale) }]} />
+    <header class="mt-4 pb-8 max-w-3xl">
+      <h1 class="text-[2rem] sm:text-5xl leading-[1.05] text-text-primary">{t('tournament.title', locale)}</h1>
+      <p class="mt-3 text-lg leading-relaxed text-text-secondary">{t('tournament.desc', locale)}</p>
 
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-magic-gradient mt-3 mb-3">
-          {t('tournament.title', locale)}
-        </h1>
-        <p class="text-base sm:text-lg text-text-secondary leading-relaxed max-w-2xl mb-5">
-          {t('tournament.desc', locale)}
-        </p>
+      <ul class="mt-4 flex flex-wrap gap-1.5 sm:gap-2" role="list">
+        <li class="stat-pill"><strong>{past.length}</strong> {t('quick.tournamentsShort', locale)}</li>
+        <li class="stat-pill"><strong>{venueOptions.length}</strong> {t('common.venues', locale)}</li>
+      </ul>
 
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="stat-pill"><strong>{past.length}</strong> {t('quick.tournamentsShort', locale)}</span>
-          <span class="stat-pill"><strong>{venueOptions.length}</strong> {t('common.venues', locale)}</span>
-          <a href={route('meta', locale)} class="stat-pill no-underline hover:border-brand-orange/50 hover:text-brand-orange transition-colors">
-            {t('meta.title', locale)}
-          </a>
-        </div>
-
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a href={route('meta', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">{t('home.metaCta', locale)}</a>
         {submissionsEnabled && (
-          <a href={route('submitTournament', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm mt-5">
+          <a href={route('submitTournament', locale)} class="btn-secondary !px-5 !py-2.5 !text-sm">
             {t('submitTournament.cta', locale)}
           </a>
         )}
       </div>
-    </div>
-  </section>
+    </header>
+  </div>
 
   <!-- Upcoming: always present, with a real empty state ---------------------->
-  <section class="py-10 md:py-12 border-b border-card-border/25">
+  <section class="py-8 md:py-10 border-t border-white/8" aria-labelledby="tournaments-upcoming">
     <div class="container mx-auto px-4 md:px-6">
       <div class="max-w-5xl">
-        <div class="flex items-center gap-3 mb-5">
+        <div class="flex items-center gap-3 mb-4">
+          <h2 id="tournaments-upcoming" class="section-title !mb-0">{t('tournament.upcoming', locale)}</h2>
           {upcoming.length > 0 && (
             <span class="relative flex h-2.5 w-2.5" aria-hidden="true">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-orange"></span>
             </span>
           )}
-          <h2 class="text-2xl font-heading font-bold text-magic-gradient">{t('tournament.upcoming', locale)}</h2>
         </div>
 
         {upcoming.length > 0 ? (
           <ul class="grid md:grid-cols-2 gap-4">
             {upcoming.map(tournament => (
               <li>
-                <article class="magic-card p-5 h-full">
+                <article class="panel p-5 h-full">
                   <div class="flex items-start justify-between gap-3 mb-3">
                     <h3 class="text-lg font-heading font-bold text-text-primary">{tournament.title}</h3>
                     <span class="badge badge--orange flex-shrink-0 whitespace-nowrap">
@@ -170,13 +173,11 @@ const description = t('tournament.seoDescription', locale)
   </section>
 
   <!-- Past results ----------------------------------------------------------->
-  <section class="py-10 md:py-12">
+  <section class="py-8 md:py-10 border-t border-white/8" aria-labelledby="tournaments-results">
     <div class="container mx-auto px-4 md:px-6">
       <div class="max-w-5xl">
-        <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
-          <h2 class="text-2xl font-heading font-bold text-text-primary uppercase tracking-wide">
-            {t('tournament.results', locale)}
-          </h2>
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 id="tournaments-results" class="section-title !mb-0">{t('tournament.results', locale)}</h2>
 
           {venueOptions.length > 1 && (
             <div class="flex items-center gap-2">
@@ -195,70 +196,65 @@ const description = t('tournament.seoDescription', locale)
         </div>
 
         {past.length > 0 ? (
-          <ul class="space-y-2.5" id="tournament-list">
-            {past.map(tournament => {
+          <ul class="flex flex-col gap-2.5" id="tournament-list">
+            {past.map((tournament, index) => {
               const players = tournament.actualPlayerCount || tournament.playerCount;
-              const winner = tournament.top8.find(entry => entry.place === 1 && !isPlaceholder(entry.commanderName));
+              const winner = winnerOf(tournament);
+              const winnerName = winner ? splitNames(winner.commanderName)[0] : null;
+              const art = winnerName ? getCardImage(winnerCards.get(winnerName.toLowerCase()) ?? null, 'art_crop') : null;
               const hasResults = tournament.top8.length > 0;
               const decklistCount = tournament.top8.filter(entry => entry.decklistSlug).length;
               const isRecent = meta.recentSlugs.includes(tournament.slug);
+              const facts = [
+                formatDate(tournament.date, locale),
+                [tournament.location, tournament.city].filter(Boolean).join(', '),
+                players > 0 ? `${players} ${t('tournament.players', locale)}` : '',
+                decklistCount > 0 ? tf('tournament.decklistsCount', locale, { n: decklistCount }) : '',
+              ].filter(Boolean);
 
               return (
-                <li data-venue={tournament.location || tournament.city}>
+                <li data-venue={tournament.location || tournament.city} class:list={[index >= PAGE_SIZE && 'is-later']}>
                   <a href={route('tournaments', locale, tournament.slug)}
                      data-analytics="tournament_view" data-analytics-slug={tournament.slug}
-                     class="panel block p-4 sm:p-5 hover:border-brand-orange/40 transition-colors no-underline group">
-                    <div class="flex items-start gap-3 sm:gap-4">
-                      <div class="flex-1 min-w-0">
-                        <div class="flex flex-wrap items-center gap-2 mb-1">
-                          <h3 class="text-base sm:text-lg font-heading font-bold text-text-primary group-hover:text-magic-gold transition-colors">
-                            {tournament.title}
-                          </h3>
-                          {hasResults ? (
-                            <span class="badge badge--gold">{t('tournament.resultsPublished', locale)}</span>
-                          ) : (
-                            <span class="badge badge--muted">{t('tournament.resultsPending', locale)}</span>
-                          )}
-                          {isRecent && <span class="badge badge--new">{t('archive.shelfNew', locale)}</span>}
-                        </div>
+                     class="panel flex items-center gap-3 sm:gap-4 p-3 sm:p-4 hover:border-brand-orange/40 transition-colors no-underline group">
+                    <span class="relative flex items-center justify-center w-16 h-12 sm:w-24 sm:h-[70px] flex-shrink-0 self-start overflow-hidden rounded-md bg-bg-tertiary ring-1 ring-white/10" aria-hidden="true">
+                      {art ? (
+                        <img src={art} alt="" width="96" height="70" class="w-full h-full object-cover" loading="lazy" decoding="async" />
+                      ) : (
+                        <svg class="w-5 h-5 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                      )}
+                    </span>
 
-                        <p class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs sm:text-sm text-text-muted">
-                          <span>{formatDate(tournament.date, locale)}</span>
-                          {(tournament.location || tournament.city) && (
-                            <>
-                              <span aria-hidden="true" class="opacity-40">·</span>
-                              <span>{tournament.location}{tournament.city ? `, ${tournament.city}` : ''}</span>
-                            </>
-                          )}
-                          {players > 0 && (
-                            <>
-                              <span aria-hidden="true" class="opacity-40">·</span>
-                              <span>{players} {t('tournament.players', locale)}</span>
-                            </>
-                          )}
-                          {decklistCount > 0 && (
-                            <>
-                              <span aria-hidden="true" class="opacity-40">·</span>
-                              <span>{t('tournament.decklistsCount', locale).replace('%n%', String(decklistCount))}</span>
-                            </>
-                          )}
-                        </p>
-
-                        {winner && (
-                          <p class="text-sm text-text-secondary mt-2">
-                            <span class="text-magic-gold font-semibold">{t('tournament.winner', locale)}</span>
-                            {!isPlaceholder(winner.playerName) && <>{' · '}{winner.playerName}</>}
-                            {' — '}<span class="font-beleren" lang="en">{winner.commanderName.split(' // ')[0]}</span>
-                            {winner.score && <span class="text-text-muted font-mono text-xs ml-1.5">{winner.score}</span>}
-                          </p>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <h3 class="text-base sm:text-lg leading-tight text-text-primary group-hover:text-brand-orange transition-colors">
+                          {tournament.title}
+                        </h3>
+                        {hasResults ? (
+                          <span class="badge badge--gold">{t('tournament.resultsPublished', locale)}</span>
+                        ) : (
+                          <span class="badge badge--muted">{t('tournament.resultsPending', locale)}</span>
                         )}
+                        {isRecent && <span class="badge badge--new">{t('archive.shelfNew', locale)}</span>}
                       </div>
 
-                      <svg class="w-5 h-5 flex-shrink-0 text-magic-gold group-hover:translate-x-1 transition-transform duration-300 mt-1"
-                           fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
-                      </svg>
+                      <p class="mt-1 text-xs sm:text-sm text-text-muted">{facts.join(' · ')}</p>
+
+                      {winner && winnerName && (
+                        <p class="mt-1.5 text-sm text-text-secondary">
+                          <span class="font-semibold text-magic-gold">{t('tournament.winner', locale)}</span>{' '}
+                          <span class="font-beleren text-text-primary" lang="en">{winnerName}</span>
+                          {!isPlaceholder(winner.playerName) && <>{' · '}{winner.playerName}</>}
+                        </p>
+                      )}
                     </div>
+
+                    <svg class="hidden sm:block w-5 h-5 flex-shrink-0 text-text-muted group-hover:text-brand-orange group-hover:translate-x-1 transition duration-300"
+                         fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                    </svg>
                   </a>
                 </li>
               );
@@ -266,7 +262,7 @@ const description = t('tournament.seoDescription', locale)
           </ul>
         ) : (
           <div class="text-center py-12">
-            <h3 class="text-xl font-heading font-bold text-magic-gradient mb-3">{t('tournament.noYet', locale)}</h3>
+            <h3 class="text-xl font-heading font-bold text-text-primary mb-3">{t('tournament.noYet', locale)}</h3>
             <p class="text-text-secondary">{t('tournament.resultsComing', locale)}</p>
           </div>
         )}
@@ -354,5 +350,15 @@ const description = t('tournament.seoDescription', locale)
     next?.addEventListener('click', () => turn(1));
 
     render();
+    if (list) list.dataset.ready = '';
   </script>
+
+  <style is:global>
+    /* Rows past the first page, hidden from the first layout when the pager
+       will run: laid out even for the instant before it does, their lazy
+       thumbnails were already close enough to the viewport to download. */
+    html.js #tournament-list:not([data-ready]) > .is-later {
+      display: none;
+    }
+  </style>
 </Base>

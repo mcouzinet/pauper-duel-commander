@@ -65,10 +65,10 @@ site/
 │   ├── pages/404.astro
 │   ├── layouts/Base.astro       # Seul layout
 │   ├── components/pages/        # Une page = un composant partagé, prop `locale`
-│   ├── components/              # BanListGrid, CardList, ManaCurve, SampleHand, Top8Table...
+│   ├── components/              # BanListGrid, CardList, ManaCurve, CommanderRanking, Top8, ViewSwitch...
 │   ├── lib/                     # scryfall.ts, deck-renderer.ts, i18n.ts, routes.ts...
 │   ├── i18n/{fr,en,it}.json
-│   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail)
+│   ├── scripts/                 # JS client (mobile-menu, card-preview, analytics, decklist-detail, view-switch)
 │   └── styles/globals.css       # @theme Tailwind 4 + classes composites
 ├── promo/reel/                  # Sources de la vidéo de présentation (cf. plus bas)
 ├── scripts/
@@ -87,7 +87,7 @@ site/
 cd site
 npm run dev       # Dev (copie la ban list + réchauffe le cache Scryfall au préalable)
 npm run build     # Build -> site/dist/  (même prélude que dev)
-npm run check     # astro check — propre (0 erreur, 0 avertissement, 9 hints)
+npm run check     # astro check : propre (0 erreur, 0 avertissement, 7 hints)
 npm test          # PHPUnit (API)
 ```
 
@@ -305,6 +305,17 @@ réencodées, pas des sources :
 - Les styles d'une page dans un fichier à part (`decklist.css`) vont dans
   `@layer components` : hors couche, ils battraient les utilitaires Tailwind
   (`lg:hidden` restait sans effet).
+- Méta et tournois suivent le même principe que la page decklist : le classement
+  (`CommanderRanking`, option `tiles`) et le top 8 (`Top8`) sont rendus une fois,
+  lignes et cartes ensemble, et `ViewSwitch` bascule `<html data-view>` avant le
+  premier rendu (choix gardé par portée, `pdc:view:<scope>`). Styles dans
+  `results.css` : un élément dont l'affichage change avec la vue prend sa mise en
+  page de ce fichier, jamais d'un utilitaire `flex`/`grid`, qui l'emporterait.
+- Une barre de part (`share-bar`) se lit à côté de son nombre imprimé, et toutes
+  les pistes d'une liste commencent et finissent au même endroit : sinon deux
+  valeurs égales dessinent deux longueurs différentes.
+- Un contrôle qui ne marche qu'avec JavaScript porte `data-needs-js` : il est
+  masqué sans JS (`globals.css`, la classe `js` est posée dans `Base.astro`).
 
 ### CSS
 - Tailwind 4 : tokens dans `@theme {}` de `globals.css`, pas de fichier de config
@@ -323,9 +334,9 @@ réencodées, pas des sources :
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` est propre** : 0 erreur, 0 avertissement, 9 hints (variables
+- **`npm run check` est propre** : 0 erreur, 0 avertissement, 7 hints (variables
   inutilisées, scripts traités comme `is:inline`). `npm run lint` y ajoute
-  `tsc --noEmit`, tout aussi propre (mesuré sur `main` le 18 août 2026). C'est la
+  `tsc --noEmit`, tout aussi propre (mesuré le 1er octobre 2026). C'est la
   référence : une erreur qui apparaît est une régression du changement en cours,
   pas un héritage. La dernière « erreur préexistante » connue, celle
   d'`astro.config.ts` (conflit de types entre deux majeures de Vite), a été

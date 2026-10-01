@@ -169,7 +169,12 @@
     "noData": "Aucune donnée de méta disponible",
     "noDataDesc": "Les statistiques du métagame seront disponibles après les premiers tournois.",
     "seoTitle": "Méta Pauper Duel Commander : généraux les plus joués",
-    "seoDescription": "Les généraux les plus joués en Pauper Duel Commander, mesurés sur %tournaments% tournois et %entries% entrées joueurs. Identités de couleur, répartition et top 4."
+    "seoDescription": "Les généraux les plus joués en Pauper Duel Commander, mesurés sur %tournaments% tournois et %entries% entrées joueurs. Identités de couleur, répartition et top 4.",
+    "rankingLabel": "Classement",
+    "allPlayers": "Tous les joueurs",
+    "top4Short": "Top 4",
+    "colorPresence": "Présence des couleurs",
+    "colorPresenceHelp": "Part des joueurs dont le général contient la couleur. Un général bicolore compte pour ses deux couleurs."
   },
   "ci": {
     "W": "Mono Blanc",
@@ -249,7 +254,9 @@
     "unattributed": "%n% place(s) sans général renseigné",
     "seoTitle": "Tournois Pauper Duel Commander",
     "seoDescription": "%total% tournois Pauper Duel Commander référencés, dont %withResults% avec résultats et méta. Top 8, decklists et statistiques par événement.",
-    "seoDetail": "%title% — %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists."
+    "seoDetail": "%title% · %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists.",
+    "winnerDeck": "Decklist du vainqueur",
+    "organizerNotes": "Infos de l’organisateur"
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
@@ -827,7 +834,10 @@
     "trendDown": "en baisse",
     "trendHint": "Évolution en points par rapport aux tournois précédents.",
     "seeDecklists": "Ses decklists",
-    "playedOnce": "joué une fois"
+    "playedOnce": "joué une fois",
+    "window": "du %from% au %to%",
+    "showAllIdentities": "Voir les %n% autres identités",
+    "unattributed": "%n% entrée(s) sans général renseigné, comptée(s) dans le total."
   },
   "community": {
     "title": "Communauté",

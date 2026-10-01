@@ -7,10 +7,15 @@
  * the most-played commander in the format was a picture and a percentage, not a
  * link to the decks playing it.
  *
- * `limit` + `foldRest` render the tail inside a `<details>` — the page listed 68
+ * `limit` + `foldRest` render the tail inside a `<details>`: the page listed 68
  * commanders, 39 of them played exactly once, as one 7,500px scroll.
+ *
+ * `tiles` adds the visual presentation: each row also carries the commander's
+ * card, shown instead of the row when the page's ViewSwitch is on "visual"
+ * (results.css). Names wrap rather than truncate, so they read whole on a phone.
  */
-import { t, type Locale } from '@/lib/i18n';
+import '@/styles/results.css';
+import { t, tf, localeTag, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { formatColorSymbols } from '@/lib/mana';
 import type { CommanderStat } from '@/lib/meta';
@@ -26,6 +31,10 @@ interface Props {
   /** Link each commander to its decklists. */
   linkToDecklists?: boolean;
   showTrend?: boolean;
+  /** Also render the card tiles of the visual view (needs a ViewSwitch on the page). */
+  tiles?: boolean;
+  /** Number the rows. Off where ties are the rule, as in one tournament's ten players. */
+  ranked?: boolean;
 }
 
 const {
@@ -36,20 +45,25 @@ const {
   foldRest = false,
   linkToDecklists = true,
   showTrend = false,
+  tiles = false,
+  ranked = true,
 } = Astro.props;
 
-const head = commanders.slice(0, limit);
-const rest = foldRest ? commanders.slice(limit) : [];
+// Folding one row behind "show the 1 other" costs more than showing it.
+const shown = foldRest && commanders.length === limit + 1 ? limit + 1 : limit;
+const head = commanders.slice(0, shown);
+const rest = foldRest ? commanders.slice(shown) : [];
 
-const maxPct = commanders.reduce((max, c) => Math.max(max, c.percentage), 0);
-const barWidth = (pct: number) => (maxPct > 0 ? Math.round((pct / maxPct) * 100) : 0);
+const maxCount = commanders.reduce((max, c) => Math.max(max, c.count), 0);
+const barWidth = (count: number) => (maxCount > 0 ? Math.round((count / maxCount) * 100) : 0);
 
-function rankClass(rank: number): string {
-  if (rank === 1) return 'bg-yellow-500/20 text-yellow-300 ring-1 ring-yellow-500/30';
-  if (rank === 2) return 'bg-gray-400/15 text-gray-200 ring-1 ring-gray-400/25';
-  if (rank === 3) return 'bg-amber-700/25 text-amber-400 ring-1 ring-amber-700/30';
-  return 'bg-bg-tertiary text-text-secondary';
-}
+// A commander played once among a few hundred entries rounds to "0 %", which
+// reads as "never played".
+const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
+const share = (count: number) => {
+  const value = total > 0 ? count / total : 0;
+  return value > 0 && value < 0.005 ? `< ${percent.format(0.01)}` : percent.format(value);
+};
 
 /** Decklists filtered to this commander; the index reads ?commander= on load. */
 function decklistHref(name: string): string {
@@ -60,104 +74,136 @@ function decklistHref(name: string): string {
 {/* Banned rows carry no row-level opacity: it diluted every token inside them
     below the contrast floor. Banned is signalled by the strikethrough, the badge
     and the greyscale art instead. */}
-<ol class="space-y-2.5">
-  {head.map(commander => (
-    <li class="flex items-center gap-2.5">
-      <span class:list={[
-        'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold tabular-nums',
-        rankClass(commander.rank),
-      ]} aria-hidden="true">{commander.rank}</span>
-
-      {commander.image ? (
-        <span class:list={[
-          'relative w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 ring-1 card-hover-trigger',
-          commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10',
-        ]}
-              data-card-name={commander.mainName}
-              data-card-image={commander.cardImage ?? commander.image}>
-          <img src={commander.image} alt="" width="56" height="56"
-               class="w-full h-full object-cover" loading="lazy" decoding="async" />
-        </span>
-      ) : (
-        <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-bg-tertiary flex-shrink-0" aria-hidden="true"></span>
-      )}
-
-      <span class="flex-1 min-w-0">
-        <span class="flex items-baseline justify-between gap-2">
-          {linkToDecklists ? (
-            <a href={decklistHref(commander.mainName)}
-               data-analytics="meta_commander_click"
-               data-analytics-commander={commander.mainName}
-               class:list={[
-                 'font-beleren text-sm sm:text-base text-text-primary hover:text-brand-orange transition-colors truncate',
-                 commander.isBanned && 'line-through decoration-red-500/70',
-               ]}>
-              <span lang="en">{commander.mainName}</span>
-            </a>
-          ) : (
-            <span class:list={[
-              'font-beleren text-sm sm:text-base text-text-primary truncate',
-              commander.isBanned && 'line-through decoration-red-500/70',
-            ]} lang="en">{commander.mainName}</span>
+<ol class:list={['rank-list', tiles && 'rank-list--tiles']} role="list">
+  {head.map(commander => {
+    const href = linkToDecklists ? decklistHref(commander.mainName) : null;
+    const Tile = href ? 'a' : 'div';
+    return (
+      <li>
+        <div class="rank-row">
+          {ranked && (
+            <span class:list={['medal', commander.rank <= 3 && `medal--${commander.rank}`]} aria-hidden="true">{commander.rank}</span>
           )}
 
-          <span class="flex items-center gap-1.5 flex-shrink-0 text-xs sm:text-sm">
-            {commander.isBanned && (
-              <span class="badge badge--danger uppercase tracking-wider text-xs">{t('meta.banned', locale)}</span>
-            )}
-            {showTrend && commander.trend !== null && commander.trend !== 0 && (
-              <span class:list={[
-                'inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums',
-                commander.trend > 0 ? 'text-green-400' : 'text-text-muted',
-              ]} title={commander.trend > 0 ? t('metaPage.trendUp', locale) : t('metaPage.trendDown', locale)}>
-                {commander.trend > 0 ? '▲' : '▼'}{Math.abs(commander.trend)}
+          {commander.image ? (
+            <span class:list={['rank-row__art card-hover-trigger', commander.isBanned && 'grayscale']}
+                  data-card-name={commander.mainName}
+                  data-card-image={commander.cardImage ?? commander.image}>
+              <img src={commander.image} alt="" width="56" height="56"
+                   class="w-full h-full object-cover" loading="lazy" decoding="async" />
+            </span>
+          ) : (
+            <span class="rank-row__art" aria-hidden="true"></span>
+          )}
+
+          <span class="flex-1 min-w-0">
+            <span class="flex items-start justify-between gap-3">
+              <span class="min-w-0">
+                {href ? (
+                  <a href={href} lang="en"
+                     data-analytics="meta_commander_click"
+                     data-analytics-commander={commander.mainName}
+                     class:list={['rank-row__name', commander.isBanned && 'line-through decoration-red-500/70']}>{commander.mainName}</a>
+                ) : (
+                  <span lang="en" class:list={['rank-row__name', commander.isBanned && 'line-through decoration-red-500/70']}>{commander.mainName}</span>
+                )}
+                {commander.partnerName && (
+                  <span lang="en" class:list={[
+                    'block font-beleren text-sm leading-snug text-text-secondary',
+                    commander.isBanned && 'line-through decoration-red-500/70',
+                  ]}>+ {commander.partnerName}</span>
+                )}
               </span>
-            )}
-            <span class="text-text-secondary tabular-nums whitespace-nowrap">
-              {commander.count}<span class="text-text-muted">/{total}</span>
-              <span class="ml-1 text-magic-gold font-semibold">{commander.percentage}%</span>
+              <span class="flex-shrink-0 pt-0.5 font-heading font-bold text-lg leading-none text-text-primary tabular-nums">{share(commander.count)}</span>
+            </span>
+
+            {/* Its own line, not beside the name: Beleren arrives after the first
+                paint and is wider than its fallback, so symbols sharing the
+                name's line wrapped under it once the font loaded and pushed
+                every row below down. */}
+            <span class="flex flex-wrap items-center gap-2 mt-1">
+              <span class="inline-flex items-center text-sm">
+                <span class="sr-only">{t('a11y.colors', locale)}</span>
+                <span set:html={formatColorSymbols(commander.colors)} />
+              </span>
+              {commander.isBanned && (
+                <span class="badge badge--danger uppercase tracking-wider">{t('meta.banned', locale)}</span>
+              )}
+              {showTrend && commander.trend !== null && commander.trend !== 0 && (
+                <span class:list={[
+                  'inline-flex items-center gap-0.5 text-[11px] font-semibold tabular-nums',
+                  commander.trend > 0 ? 'text-green-400' : 'text-text-muted',
+                ]} title={commander.trend > 0 ? t('metaPage.trendUp', locale) : t('metaPage.trendDown', locale)}>
+                  {commander.trend > 0 ? '▲' : '▼'}{Math.abs(commander.trend)}
+                </span>
+              )}
+            </span>
+
+            {/* Same start and end for every track, so equal counts draw equal bars. */}
+            <span class="flex items-center gap-3 mt-1.5">
+              <span class="share-bar flex-1" aria-hidden="true">
+                <span class="share-bar__fill" style={`width: ${barWidth(commander.count)}%`}></span>
+              </span>
+              <span class="w-14 flex-shrink-0 text-right text-xs text-text-muted tabular-nums">{commander.count}/{total}</span>
             </span>
           </span>
-        </span>
+        </div>
 
-        {commander.partnerName && (
-          <span class:list={[
-            'block font-beleren text-[11px] text-text-muted truncate leading-tight',
-            commander.isBanned && 'line-through decoration-red-500/70',
-          ]} lang="en">+ {commander.partnerName}</span>
+        {tiles && (
+          <Tile class="rank-tile group"
+                {...(href ? {
+                  href,
+                  'data-analytics': 'meta_commander_click',
+                  'data-analytics-commander': commander.mainName,
+                  'data-analytics-view': 'visual',
+                } : {})}>
+            <span class:list={['tile-face', commander.isBanned && 'grayscale']}>
+              {commander.cardImage ? (
+                <img src={commander.cardImage} alt="" width="488" height="680" loading="lazy" decoding="async" />
+              ) : (
+                <span class="tile-face__fallback" lang="en">{commander.mainName}</span>
+              )}
+              <span class:list={['tile-badge', commander.rank === 1 && 'tile-badge--gold']}>{commander.rank}</span>
+              {commander.isBanned && <span class="tile-badge tile-badge--banned">{t('meta.banned', locale)}</span>}
+            </span>
+            <span lang="en" class:list={[
+              'font-beleren text-sm sm:text-[15px] leading-snug text-text-primary transition-colors',
+              href && 'group-hover:text-brand-orange',
+              commander.isBanned && 'line-through decoration-red-500/70',
+            ]}>
+              {commander.mainName}
+              {commander.partnerName && <span class="block text-xs text-text-secondary">+ {commander.partnerName}</span>}
+            </span>
+            <span class="flex items-baseline gap-1.5">
+              <span class="font-heading font-bold text-lg leading-none text-text-primary tabular-nums">{share(commander.count)}</span>
+              <span class="text-xs text-text-muted tabular-nums">{commander.count}/{total}</span>
+            </span>
+          </Tile>
         )}
-
-        <span class="flex items-center gap-1 mt-0.5 text-xs sm:text-sm">
-          <span class="sr-only">{t('a11y.colors', locale)}</span>
-          <span set:html={formatColorSymbols(commander.colors)} />
-        </span>
-      </span>
-
-      <span class="hidden sm:block flex-shrink-0 w-20 h-2 bg-bg-primary/60 rounded-full overflow-hidden self-center" aria-hidden="true">
-        <span class="block h-full rounded-full bg-gradient-to-r from-brand-orange to-magic-gold"
-              style={`width: ${barWidth(commander.percentage)}%`}></span>
-      </span>
-    </li>
-  ))}
+      </li>
+    );
+  })}
 </ol>
 
 {rest.length > 0 && (
-  <details class="mt-4 group">
-    <summary class="cursor-pointer select-none text-sm font-semibold text-brand-orange hover:text-magic-gold transition-colors"
+  <details class="mt-4 group/fold">
+    <summary class="cursor-pointer select-none inline-flex items-center min-h-11 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors"
              data-analytics="meta_expand">
-      <span class="group-open:hidden">{t('metaPage.showAll', locale).replace('%n%', String(rest.length))}</span>
-      <span class="hidden group-open:inline">{t('metaPage.hideAll', locale)}</span>
+      <span class="group-open/fold:hidden">{tf('metaPage.showAll', locale, { n: rest.length })}</span>
+      <span class="hidden group-open/fold:inline">{t('metaPage.hideAll', locale)}</span>
     </summary>
 
-    <ol class="space-y-2 mt-4 pt-4 border-t border-white/8">
+    <ol class="grid gap-x-6 gap-y-0.5 mt-2 pt-3 border-t border-white/8 sm:grid-cols-2" role="list">
       {rest.map(commander => (
-        <li class="flex items-center gap-2.5 text-sm">
-          <span class="w-7 text-right text-xs text-text-muted tabular-nums flex-shrink-0" aria-hidden="true">{commander.rank}</span>
+        <li class="flex items-center gap-2.5 py-1 text-sm">
+          {ranked && (
+            <span class="w-6 flex-shrink-0 text-right text-xs text-text-muted tabular-nums" aria-hidden="true">{commander.rank}</span>
+          )}
 
           {commander.image ? (
             <span class:list={[
-              'w-8 h-8 rounded overflow-hidden flex-shrink-0 ring-1 card-hover-trigger',
-              commander.isBanned ? 'ring-red-500/40 grayscale' : 'ring-white/10',
+              'w-8 h-8 flex-shrink-0 overflow-hidden rounded ring-1 ring-white/10 card-hover-trigger',
+              commander.isBanned && 'grayscale',
             ]}
                   data-card-name={commander.mainName}
                   data-card-image={commander.cardImage ?? commander.image}>
@@ -165,22 +211,21 @@ function decklistHref(name: string): string {
                    class="w-full h-full object-cover" loading="lazy" decoding="async" />
             </span>
           ) : (
-            <span class="w-8 h-8 rounded bg-bg-tertiary flex-shrink-0" aria-hidden="true"></span>
+            <span class="w-8 h-8 flex-shrink-0 rounded bg-bg-tertiary" aria-hidden="true"></span>
           )}
 
           <span class="flex-1 min-w-0 flex items-baseline justify-between gap-2">
             {linkToDecklists ? (
-              <a href={decklistHref(commander.mainName)}
+              <a href={decklistHref(commander.mainName)} lang="en"
                  class:list={[
-                   'font-beleren text-text-secondary hover:text-brand-orange transition-colors truncate',
+                   'font-beleren leading-snug text-text-secondary hover:text-brand-orange transition-colors',
                    commander.isBanned && 'line-through decoration-red-500/70',
-                 ]} lang="en">{commander.mainName}</a>
+                 ]}>{commander.mainName}</a>
             ) : (
-              <span class="font-beleren text-text-secondary truncate" lang="en">{commander.mainName}</span>
+              <span class="font-beleren leading-snug text-text-secondary" lang="en">{commander.mainName}</span>
             )}
-            <span class="text-text-muted tabular-nums flex-shrink-0 text-xs">
-              {commander.count}
-              <span class="ml-1 text-magic-gold/80">{commander.percentage}%</span>
+            <span class="flex-shrink-0 text-xs text-text-muted tabular-nums">
+              {share(commander.count)} · {commander.count}
             </span>
           </span>
         </li>
