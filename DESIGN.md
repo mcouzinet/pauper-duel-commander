@@ -238,6 +238,7 @@ Aucun angle vif, aucune découpe, aucune forme irrégulière : la géométrie ne
 - **Primary:** dégradé orange à 135° (`#FF7043` → `#FF5722` → `#E64A19`), texte blanc avec ombre portée pour tenir sur la partie claire du dégradé, halo orange en guise d'ombre.
 - **Hover / Focus:** le halo passe à sa version intense sur 300 ms. Le focus clavier ajoute un contour orange de 2 px décalé de 2 px.
 - **Secondary:** bordure orange de 2 px sur fond orange à 10 %, texte orange. Au survol, le fond monte à 20 % et la bordure s'éclaircit.
+- **Aplat :** là où le dégradé ne s'applique pas (bandeau cookies), l'Orange Brasier plein porte un texte Fond Salle (`#0A0E13`, 6,1:1). Le blanc y tombe à 3,16:1, et à 3,92:1 seulement sur `#E64A19` : assombrir l'orange ne suffit pas, c'est le même renversement que pour les badges pleins.
 
 ### Cards / Containers
 - **Corner Style:** 12 px.

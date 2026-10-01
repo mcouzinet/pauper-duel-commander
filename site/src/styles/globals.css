@@ -612,13 +612,17 @@ html:not(.js) [data-needs-js] {
   --cc-font-family: "Inter", system-ui, sans-serif;
   --cc-bg: #141821;
   --cc-primary-color: #B8BEC8;
-  --cc-secondary-color: #6B7280;
+  /* Le plancher de contraste du site (--color-text-muted). L'ancien #6B7280
+     tombait a 3,67:1 sur ce fond. */
+  --cc-secondary-color: #8B93A1;
 
+  /* Texte sombre sur l'orange plein : le blanc n'y fait que 3,16:1 (3,92:1 sur
+     #E64A19), sous les 4,5:1 de WCAG AA. #0A0E13 donne 6,1:1, et 4,9:1 au survol. */
   --cc-btn-primary-bg: #FF5722;
-  --cc-btn-primary-color: #fff;
+  --cc-btn-primary-color: #0A0E13;
   --cc-btn-primary-border-color: #FF5722;
   --cc-btn-primary-hover-bg: #E64A19;
-  --cc-btn-primary-hover-color: #fff;
+  --cc-btn-primary-hover-color: #0A0E13;
   --cc-btn-primary-hover-border-color: #E64A19;
 
   --cc-btn-secondary-bg: transparent;
