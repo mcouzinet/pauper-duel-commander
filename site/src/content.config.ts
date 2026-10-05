@@ -76,4 +76,27 @@ const banlistHistory = defineCollection({
   }),
 });
 
-export const collections = { tournaments, decklists, banlistHistory };
+// Pairings of a tournament, round by round, kept for matchup statistics to come
+// (nothing displays them yet). One file per tournament, named like it. A player
+// is their final place (`top8`, `standings`), which gives their commander.
+const matches = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './content/matches' }),
+  schema: z.object({
+    source: z.string().optional(),
+    rounds: z.array(z.object({
+      round: z.number().min(1),
+      stage: z.enum(['swiss', 'top8', 'top4', 'final']),
+      matches: z.array(z.object({
+        a: z.number().min(1),
+        b: z.number().min(1),
+        // Games won by a, then by b; a match is won on games, 1-1 is a draw.
+        games: z.tuple([z.number().min(0), z.number().min(0)]),
+        draws: z.number().min(0).default(0),
+      })),
+      // A bye counts as a match win; so does an opponent who never showed up.
+      byes: z.array(z.number().min(1)).default([]),
+    })),
+  }),
+});
+
+export const collections = { tournaments, decklists, banlistHistory, matches };

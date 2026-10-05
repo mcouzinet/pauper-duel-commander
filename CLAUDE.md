@@ -34,6 +34,7 @@ site/
 │   ├── banlist.json             # bannedAsCommander / bannedInDeck / cards (union)
 │   ├── banlist-history/*.json   # une annonce officielle par fichier (collection)
 │   ├── decklists/*.json         # decklist MTGO dans un champ texte
+│   ├── matches/*.json           # appariements par tournoi (pas encore affichés)
 │   └── tournaments/*.json       # top8, metaList, participants
 ├── public/
 │   ├── .htaccess                # Redirections 301 des anciennes URLs WordPress
@@ -140,6 +141,14 @@ facultatif), affichées repliées sous le top 8. Une decklist liée depuis
 `standings` porte son résultat comme celles du top 8 (`resultsBySlug`). C'est de
 l'affichage : la méta lit toujours `metaList`, qui doit compter les mêmes
 généraux. Une place inconnue s'écrit `???`, comme ailleurs.
+
+`content/matches/<tournoi>.json` garde les appariements ronde par ronde
+(`matches`, schéma dans `content.config.ts`), pour une future matrice des
+matchups : rien ne les affiche encore, trop peu de données. Un joueur y est sa
+place finale, qui donne son général ; une exemption, ou un adversaire absent,
+compte comme une victoire. Retoucher le classement d'un tournoi (une place qui
+saute) oblige à renuméroter son fichier de matchs. Les bilans qu'on en déduit
+doivent être ceux du classement.
 
 ## API / Validateur
 
