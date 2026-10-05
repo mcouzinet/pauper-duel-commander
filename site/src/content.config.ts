@@ -27,6 +27,7 @@ const tournaments = defineCollection({
       playerName: z.string(),
       commanderName: z.string(),
       score: z.string(),
+      decklistSlug: z.string().nullable().optional(),
     })).default([]),
     metaList: z.array(z.object({
       name: z.string(),

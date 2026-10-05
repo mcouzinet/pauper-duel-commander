@@ -203,7 +203,7 @@ const description = t('tournament.seoDescription', locale)
               const winnerName = winner ? splitNames(winner.commanderName)[0] : null;
               const art = winnerName ? getCardImage(winnerCards.get(winnerName.toLowerCase()) ?? null, 'art_crop') : null;
               const hasResults = tournament.top8.length > 0;
-              const decklistCount = tournament.top8.filter(entry => entry.decklistSlug).length;
+              const decklistCount = [...tournament.top8, ...tournament.standings].filter(entry => entry.decklistSlug).length;
               const isRecent = meta.recentSlugs.includes(tournament.slug);
               const facts = [
                 formatDate(tournament.date, locale),

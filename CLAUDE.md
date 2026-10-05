@@ -135,10 +135,11 @@ français dans les trois langues. Ne pas le passer en `{fr, en, it}` — cela
 obligerait chaque organisateur à écrire trois versions de son annonce.
 
 Un tournoi peut porter la suite de son classement final dans `standings`
-(facultatif) : les places après le top 8, même forme que `top8` sans
-`decklistSlug`, affichées repliées sous le top 8. C'est de l'affichage : la méta
-lit toujours `metaList`, qui doit compter les mêmes généraux. Une place inconnue
-s'écrit `???`, comme ailleurs.
+(facultatif) : les places après le top 8, même forme que `top8` (`decklistSlug`
+facultatif), affichées repliées sous le top 8. Une decklist liée depuis
+`standings` porte son résultat comme celles du top 8 (`resultsBySlug`). C'est de
+l'affichage : la méta lit toujours `metaList`, qui doit compter les mêmes
+généraux. Une place inconnue s'écrit `???`, comme ailleurs.
 
 ## API / Validateur
 
