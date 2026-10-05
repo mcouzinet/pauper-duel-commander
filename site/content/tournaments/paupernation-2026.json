@@ -83,9 +83,9 @@
         {
             "place": 11,
             "playerName": "Jeremie",
-            "commanderName": "???",
+            "commanderName": "Butch DeLoria, Tunnel Snake",
             "score": "3-2-0",
-            "decklistSlug": null
+            "decklistSlug": "butch-deloria-tunnel-snake-paupernation-2026-11eme"
         },
         {
             "place": 12,
@@ -277,8 +277,12 @@
             "count": 1
         },
         {
+            "name": "Butch DeLoria, Tunnel Snake",
+            "count": 1
+        },
+        {
             "name": "???",
-            "count": 4
+            "count": 3
         }
     ]
 }
