@@ -137,7 +137,8 @@ obligerait chaque organisateur à écrire trois versions de son annonce.
 
 Un tournoi peut porter la suite de son classement final dans `standings`
 (facultatif) : les places après le top 8, même forme que `top8` (`decklistSlug`
-facultatif), affichées repliées sous le top 8. Une decklist liée depuis
+facultatif), affichées repliées sous le top 8. Un bilan compte tous les matchs joués, phase
+finale comprise (une finale à 1-1 est un nul). Une decklist liée depuis
 `standings` porte son résultat comme celles du top 8 (`resultsBySlug`). C'est de
 l'affichage : la méta lit toujours `metaList`, qui doit compter les mêmes
 généraux. Une place inconnue s'écrit `???`, comme ailleurs.
@@ -147,8 +148,8 @@ généraux. Une place inconnue s'écrit `???`, comme ailleurs.
 matchups : rien ne les affiche encore, trop peu de données. Un joueur y est sa
 place finale, qui donne son général ; une exemption, ou un adversaire absent,
 compte comme une victoire. Retoucher le classement d'un tournoi (une place qui
-saute) oblige à renuméroter son fichier de matchs. Les bilans qu'on en déduit
-doivent être ceux du classement.
+saute) oblige à renuméroter son fichier de matchs. Les bilans qu'on en déduit,
+phase finale comprise, doivent être ceux du classement.
 
 ## API / Validateur
 
