@@ -13,13 +13,16 @@ use PHPUnit\Framework\TestCase;
  * Fixture cards (real Scryfall data, see tests/fixtures/scryfall/):
  *   Mother of Runes    uncommon Creature, W       -> legal commander
  *   Gorilla Shaman     uncommon Creature, R       -> legal partner
- *   Bastion Protector  rare Creature, W           -> banned as commander
+ *   Bastion Protector  rare Creature, W           -> banned as commander (*)
  *   Balance            mythic Sorcery, W          -> pauper not_legal
  *   Plains             Basic Land, W, legal       -> filler for a mono-W deck
  *   Prophetic Prism    common Artifact, colorless -> non-basic filler
  *   Lightning Bolt     R, pauper legal            -> off-colour for a W commander
- *   Goliath Paladin    common Creature, W, legal  -> banned in deck
+ *   Goliath Paladin    common Creature, W, legal  -> banned in deck (*)
  *   Snow-Covered Plains "Basic Snow Land - Plains" -> basic, but not "Basic Land"
+ *
+ * (*) on the test ban list, tests/fixtures/banlist.json, not the committee's:
+ * Bastion Protector has since been unbanned for real.
  *
  * Each fixture isolates one rule: Lightning Bolt is Pauper-legal so it can only
  * trip rule 8, Goliath Paladin is legal and on-colour so it can only trip rule 9.

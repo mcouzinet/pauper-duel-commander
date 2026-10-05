@@ -281,6 +281,10 @@ réencodées, pas des sources :
   de `tests/fixtures/scryfall/`. Toute carte utilisée dans un test doit y avoir
   sa fixture, sinon le test tape l'API réelle.
 - Les fixtures sont choisies pour isoler une règle à la fois.
+- La suite lit une ban list figée (`tests/fixtures/banlist.json`), pas
+  `content/banlist.json` : une annonce du comité ne doit casser aucun test (la
+  légalisation de Bastion Protector, banni d'exemple, l'a fait). Seul
+  `BanListTest` charge la vraie, sans y chercher de carte précise.
 - Nouvelle fixture : `curl -A "PDC-Test/1.0" --get "https://api.scryfall.com/cards/named"
   --data-urlencode "exact=Nom" -o tests/fixtures/scryfall/name_<slug>.json`
   (slug = minuscules, non-alphanumériques -> `-`, cf. `pdc_sanitize_key`)

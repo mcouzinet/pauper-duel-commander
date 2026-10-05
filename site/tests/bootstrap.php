@@ -17,7 +17,10 @@ define('PDC_SITE_ROOT', dirname(__DIR__));
 // Throwaway cache, seeded below. Must be defined before config.php.
 define('PDC_CACHE_DIR', sys_get_temp_dir() . '/pdc-test-cache-' . getmypid());
 define('PDC_RATELIMIT_DIR', sys_get_temp_dir() . '/pdc-test-ratelimit-' . getmypid());
-define('PDC_BANLIST_PATH', PDC_SITE_ROOT . '/content/banlist.json');
+// A fixed ban list, not content/banlist.json: the committee changes the real one
+// every two months, and unbanning the card a test bans must not break the suite.
+// BanListTest still loads the real file.
+define('PDC_BANLIST_PATH', PDC_TEST_ROOT . '/fixtures/banlist.json');
 
 if (!is_dir(PDC_CACHE_DIR)) {
     mkdir(PDC_CACHE_DIR, 0777, true);
