@@ -4,9 +4,9 @@
     "location": "Salle Polyvalente",
     "city": "Montluel (Lyon)",
     "playerCount": 0,
-    "actualPlayerCount": 29,
+    "actualPlayerCount": 28,
     "signupUrl": "https://www.pauper-france.fr/paupernation.php",
-    "details": "<p><strong>Le Pauper Duel Commander est au programme de PauperNATION</strong>, l'événement du Pauper français organisé par l'équipe du SIDEBOARD, les 3 et 4 octobre 2026.</p><p>Le tournoi PDC est annoncé le <strong>samedi 3 octobre à 14 h</strong>, avec 10 € d'inscription. Horaires, PAF et lots restent à confirmer par l'organisation.</p><p>Salle Polyvalente, 154 cours de la Portelle, 01120 Montluel — à 15 minutes de Lyon.</p><p>Classement complet et listes des 29 joueurs sur <a href=\"https://topdeck.gg/bracket/pdc-nation\">TopDeck</a>.</p>",
+    "details": "<p><strong>Le Pauper Duel Commander est au programme de PauperNATION</strong>, l'événement du Pauper français organisé par l'équipe du SIDEBOARD, les 3 et 4 octobre 2026.</p><p>Le tournoi PDC est annoncé le <strong>samedi 3 octobre à 14 h</strong>, avec 10 € d'inscription. Horaires, PAF et lots restent à confirmer par l'organisation.</p><p>Salle Polyvalente, 154 cours de la Portelle, 01120 Montluel — à 15 minutes de Lyon.</p><p>Classement complet et listes des joueurs sur <a href=\"https://topdeck.gg/bracket/pdc-nation\">TopDeck</a>.</p>",
     "top8": [
         {
             "place": 1,
@@ -176,18 +176,12 @@
         },
         {
             "place": 27,
-            "playerName": "Luckeyboard",
-            "commanderName": "???",
-            "score": "0-1-0"
-        },
-        {
-            "place": 28,
             "playerName": "Nicolas Castelliti",
             "commanderName": "Juri, Master of the Revue",
             "score": "0-2-0"
         },
         {
-            "place": 29,
+            "place": 28,
             "playerName": "Jordan Poissonnier",
             "commanderName": "???",
             "score": "0-5-0"
@@ -264,7 +258,7 @@
         },
         {
             "name": "???",
-            "count": 5
+            "count": 4
         }
     ]
 }
