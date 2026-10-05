@@ -17,49 +17,49 @@
         },
         {
             "place": 2,
-            "playerName": "Evan Colly",
+            "playerName": "Evan",
             "commanderName": "Crackling Drake",
             "score": "3-1-1",
             "decklistSlug": "crackling-drake-paupernation-2026-2eme"
         },
         {
             "place": 3,
-            "playerName": "Paul Fermé",
+            "playerName": "Paul",
             "commanderName": "Sailors' Bane",
             "score": "4-1-0",
             "decklistSlug": "sailors-bane-paupernation-2026-3eme"
         },
         {
             "place": 4,
-            "playerName": "Mickael Morra",
+            "playerName": "Mickael",
             "commanderName": "Mayhem Devil",
             "score": "3-2-0",
             "decklistSlug": "mayhem-devil-paupernation-2026-4eme"
         },
         {
             "place": 5,
-            "playerName": "Boris Dupire",
+            "playerName": "Boris",
             "commanderName": "Slippery Bogle",
             "score": "4-0-1",
             "decklistSlug": "slippery-bogle-paupernation-2026-5eme"
         },
         {
             "place": 6,
-            "playerName": "Pierre Guyard",
+            "playerName": "Pierre",
             "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
             "score": "4-1-0",
             "decklistSlug": "gut-true-soul-zealot-paupernation-2026-6eme"
         },
         {
             "place": 7,
-            "playerName": "Nathan Lachard",
+            "playerName": "Nathan",
             "commanderName": "Abdel Adrian, Gorion's Ward // Agent of the Iron Throne",
             "score": "3-1-1",
             "decklistSlug": "abdel-adrian-gorion-s-ward-paupernation-2026-7eme"
         },
         {
             "place": 8,
-            "playerName": "Thibault Giboire",
+            "playerName": "Thibault",
             "commanderName": "Queza, Augur of Agonies",
             "score": "3-2-0",
             "decklistSlug": "queza-augur-of-agonies-paupernation-2026-8eme"
@@ -68,42 +68,42 @@
     "standings": [
         {
             "place": 9,
-            "playerName": "Montani Enzo",
+            "playerName": "Enzo",
             "commanderName": "Mayhem Devil",
             "score": "3-1-1",
             "decklistSlug": "mayhem-devil-paupernation-2026-9eme"
         },
         {
             "place": 10,
-            "playerName": "Igor Herrmann",
+            "playerName": "Igor",
             "commanderName": "Palace Jailer",
             "score": "3-2-0",
             "decklistSlug": "palace-jailer-paupernation-2026-10eme"
         },
         {
             "place": 11,
-            "playerName": "Jeremie Pratviel",
+            "playerName": "Jeremie",
             "commanderName": "???",
             "score": "3-2-0",
             "decklistSlug": null
         },
         {
             "place": 12,
-            "playerName": "Kevin Chaussard",
+            "playerName": "Kevin",
             "commanderName": "Wilson, Refined Grizzly // Far Traveler",
             "score": "3-2-0",
             "decklistSlug": "wilson-refined-grizzly-paupernation-2026-12eme"
         },
         {
             "place": 13,
-            "playerName": "Nolan Platre",
+            "playerName": "Nolan",
             "commanderName": "Third Path Iconoclast",
             "score": "2-2-1",
             "decklistSlug": "third-path-iconoclast-paupernation-2026-13eme"
         },
         {
             "place": 14,
-            "playerName": "Martin Labarussias",
+            "playerName": "Martin",
             "commanderName": "Voracious Tome-Skimmer",
             "score": "2-2-1",
             "decklistSlug": "voracious-tome-skimmer-paupernation-2026-14eme"
@@ -117,21 +117,21 @@
         },
         {
             "place": 16,
-            "playerName": "Phil Cronoriel",
+            "playerName": "Phil",
             "commanderName": "Fynn, the Fangbearer",
             "score": "2-2-1",
             "decklistSlug": "fynn-the-fangbearer-paupernation-2026-16eme"
         },
         {
             "place": 17,
-            "playerName": "Borde Martin",
+            "playerName": "Martin",
             "commanderName": "Forsaken Miner",
             "score": "2-3-0",
             "decklistSlug": "forsaken-miner-paupernation-2026-17eme"
         },
         {
             "place": 18,
-            "playerName": "Mickael Couzinet",
+            "playerName": "Mickael",
             "commanderName": "Sailors' Bane",
             "score": "2-2-0",
             "decklistSlug": "sailors-bane-paupernation-2026-18eme"
@@ -145,7 +145,7 @@
         },
         {
             "place": 20,
-            "playerName": "Louis Richez",
+            "playerName": "Louis",
             "commanderName": "Speedball, New Warrior",
             "score": "2-2-0",
             "decklistSlug": "speedball-new-warrior-paupernation-2026-20eme"
@@ -159,49 +159,49 @@
         },
         {
             "place": 22,
-            "playerName": "Thomas Dumoulin",
+            "playerName": "Thomas",
             "commanderName": "Skirmish Rhino",
             "score": "2-3-0",
             "decklistSlug": "skirmish-rhino-paupernation-2026-22eme"
         },
         {
             "place": 23,
-            "playerName": "Thomas Alexandre",
+            "playerName": "Thomas",
             "commanderName": "Ruination Rioter",
             "score": "2-3-0",
             "decklistSlug": "ruination-rioter-paupernation-2026-23eme"
         },
         {
             "place": 24,
-            "playerName": "Bruno Thill",
+            "playerName": "Bruno",
             "commanderName": "Mayhem Devil",
             "score": "2-3-0",
             "decklistSlug": "mayhem-devil-paupernation-2026-24eme"
         },
         {
             "place": 25,
-            "playerName": "Valentin Degrange",
+            "playerName": "Valentin",
             "commanderName": "Fynn, the Fangbearer",
             "score": "1-4-0",
             "decklistSlug": "fynn-the-fangbearer-paupernation-2026-25eme"
         },
         {
             "place": 26,
-            "playerName": "Jean-Raoul Moullard",
+            "playerName": "Jean-Raoul",
             "commanderName": "???",
             "score": "1-4-0",
             "decklistSlug": null
         },
         {
             "place": 27,
-            "playerName": "Nicolas Castelliti",
+            "playerName": "Nicolas",
             "commanderName": "Juri, Master of the Revue",
             "score": "0-2-0",
             "decklistSlug": "juri-master-of-the-revue-paupernation-2026-27eme"
         },
         {
             "place": 28,
-            "playerName": "Jordan Poissonnier",
+            "playerName": "Jordan",
             "commanderName": "???",
             "score": "0-5-0",
             "decklistSlug": null
