@@ -25,13 +25,21 @@ class BanListTest extends TestCase
         return $this->tmp;
     }
 
+    /**
+     * The real file, whatever the committee put in it: no card is named, so an
+     * announcement never breaks this test (the suite runs on a fixed list).
+     */
     public function testLoadsTheRealBanList(): void
     {
-        $names = DeckValidator::get_banned_card_names();
+        $path = PDC_SITE_ROOT . '/content/banlist.json';
+        $names = DeckValidator::get_banned_card_names($path);
 
         $this->assertNotEmpty($names);
-        $this->assertContains('goliath paladin', $names, 'names are lowercased for comparison');
-        $this->assertContains('bastion protector', $names);
+        $this->assertSame(
+            array_map('strtolower', json_decode(file_get_contents($path), true)['cards']),
+            $names,
+            'names are lowercased for comparison'
+        );
     }
 
     /**

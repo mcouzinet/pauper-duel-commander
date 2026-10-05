@@ -1,12 +1,14 @@
 {
-    "lastUpdated": "2026-09-09",
+    "lastUpdated": "2026-10-05",
     "bannedAsCommander": [
-        "Bastion Protector",
         "Loyal Apprentice",
         "Bloodboil Sorcerer",
         "Passageway Seer",
         "Feywild Caretaker",
-        "Rilsa Rael, Kingpin"
+        "Rilsa Rael, Kingpin",
+        "Sailors' Bane",
+        "Speedball, New Warrior",
+        "Crackling Drake"
     ],
     "bannedInDeck": [
         "Goliath Paladin",
@@ -20,13 +22,15 @@
         "Imprisoned in the Moon",
         "Oubliette",
         "Treasure Cruise",
-        "Price of Progress"
+        "Price of Progress",
+        "Campfire"
     ],
     "cards": [
         "Aarakocra Sneak",
         "Avenging Hunter",
-        "Bastion Protector",
         "Bloodboil Sorcerer",
+        "Campfire",
+        "Crackling Drake",
         "Fall from Favor",
         "Feywild Caretaker",
         "Goliath Paladin",
@@ -36,6 +40,8 @@
         "Passageway Seer",
         "Price of Progress",
         "Rilsa Rael, Kingpin",
+        "Sailors' Bane",
+        "Speedball, New Warrior",
         "Stirring Bard",
         "Trailblazer's Torch",
         "Treasure Cruise",

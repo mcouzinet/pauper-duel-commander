@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-05",
+  "source": "Comité PDC",
+  "kind": "update",
+  "changes": [
+    {
+      "card": "Sailors' Bane",
+      "type": "banned"
+    },
+    {
+      "card": "Speedball, New Warrior",
+      "type": "banned"
+    },
+    {
+      "card": "Crackling Drake",
+      "type": "banned"
+    },
+    {
+      "card": "Campfire",
+      "type": "banned"
+    },
+    {
+      "card": "Bastion Protector",
+      "type": "unbanned",
+      "experimental": true
+    }
+  ],
+  "notes": [
+    {
+      "fr": "Sailors' Bane arrive tôt dans la partie, est très difficile à gérer, ne prend pas la gestion de cimetière et se recaste toujours à 2 manas. Le gameplay qu'elle engendre est très linéaire et rend les parties moins intéressantes en termes de prise de décision. Pour toutes ces raisons, Sailors' Bane est maintenant bannie.",
+      "en": "Sailors' Bane comes down early, is very hard to deal with, shrugs off graveyard hate and can always be recast for 2 mana. The gameplay it creates is very linear and makes games less interesting in terms of decision-making. For all these reasons, Sailors' Bane is now banned.",
+      "it": "Sailors' Bane arriva presto in partita, è molto difficile da gestire, non subisce la gestione del cimitero e si rilancia sempre a 2 mana. Il gameplay che genera è molto lineare e rende le partite meno interessanti in termini di decisioni. Per tutte queste ragioni, Sailors' Bane è ora bandita."
+    },
+    {
+      "fr": "Speedball est la deuxième carte de cette banlist avec laquelle il est très difficile d'interagir. Il a en plus accès à la bicolorité Izzet qui possède un très bon arsenal pour se protéger des quelques cartes qui lui seront problématiques. Pour ces raisons, Speedball, New Warrior est maintenant banni.",
+      "en": "Speedball is the second card on this ban list that is very hard to interact with. On top of that, it has access to the Izzet colour pair, which has a very good arsenal to protect itself from the few cards that would trouble it. For these reasons, Speedball, New Warrior is now banned.",
+      "it": "Speedball è la seconda carta di questa banlist con cui è molto difficile interagire. Ha inoltre accesso alla coppia di colori Izzet, che dispone di un ottimo arsenale per proteggersi dalle poche carte che potrebbero metterlo in difficoltà. Per queste ragioni, Speedball, New Warrior è ora bandito."
+    },
+    {
+      "fr": "Crackling Drake : une des seules difficultés des decks Izzet control peut être celle de terminer les parties, mais pas pour Crackling Drake. Énorme body, card advantage, profite de la colorité Izzet, et non impacté par la gestion du cimetière. Les différents tournois, bien que peu nombreux, montrent la dominance du deck. Pour toutes ces raisons, Crackling Drake est maintenant banni.",
+      "en": "Crackling Drake: one of the few difficulties of Izzet control decks can be closing out games, but not with Crackling Drake. A huge body, card advantage, it makes the most of the Izzet colours and is unaffected by graveyard hate. The various tournaments, few as they are, show the deck's dominance. For all these reasons, Crackling Drake is now banned.",
+      "it": "Crackling Drake: una delle poche difficoltà dei mazzi Izzet control può essere chiudere le partite, ma non con Crackling Drake. Un corpo enorme, vantaggio carte, sfrutta i colori Izzet e non risente della gestione del cimitero. I vari tornei, per quanto pochi, mostrano il dominio del mazzo. Per tutte queste ragioni, Crackling Drake è ora bandito."
+    },
+    {
+      "fr": "Campfire s'inclut très facilement dans tous les decks et ne permet plus aux decks agressifs d'exercer la pression qu'ils devraient. La carte augmente considérablement le temps d'une partie et nuit à la bonne santé du format. Pour cette raison, Campfire est maintenant banni.",
+      "en": "Campfire slots very easily into every deck and no longer lets aggressive decks apply the pressure they should. The card considerably lengthens games and harms the health of the format. For this reason, Campfire is now banned.",
+      "it": "Campfire entra con grande facilità in ogni mazzo e non permette più ai mazzi aggressivi di esercitare la pressione che dovrebbero. La carta allunga considerevolmente la durata di una partita e nuoce alla salute del formato. Per questa ragione, Campfire è ora bandito."
+    },
+    {
+      "fr": "Bastion Protector : les créatures monocolores blanches ne sont pas très représentées dans le format et nous donnons à Bastion Protector des possibilités de jeu à l'image des créatures Lieutenant (cf. banlist précédente du 3 août 2026). Pour cette raison et à titre expérimental, Bastion Protector est maintenant légale.",
+      "en": "Bastion Protector: mono-white creatures are not well represented in the format, and we are giving Bastion Protector room to be played, in the same spirit as the Lieutenant creatures (see the previous ban list of 3 August 2026). For this reason, and on an experimental basis, Bastion Protector is now legal.",
+      "it": "Bastion Protector: le creature monocolore bianche sono poco rappresentate nel formato e diamo a Bastion Protector possibilità di gioco sul modello delle creature Luogotenente (cfr. la banlist precedente del 3 agosto 2026). Per questa ragione e a titolo sperimentale, Bastion Protector è ora legale."
+    }
+  ]
+}
