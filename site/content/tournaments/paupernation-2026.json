@@ -4,9 +4,281 @@
     "location": "Salle Polyvalente",
     "city": "Montluel (Lyon)",
     "playerCount": 0,
-    "actualPlayerCount": null,
+    "actualPlayerCount": 28,
     "signupUrl": "https://www.pauper-france.fr/paupernation.php",
-    "details": "<p><strong>Le Pauper Duel Commander est au programme de PauperNATION</strong>, l'événement du Pauper français organisé par l'équipe du SIDEBOARD, les 3 et 4 octobre 2026.</p><p>Le tournoi PDC est annoncé le <strong>samedi 3 octobre à 14 h</strong>, avec 10 € d'inscription. Horaires, PAF et lots restent à confirmer par l'organisation.</p><p>Salle Polyvalente, 154 cours de la Portelle, 01120 Montluel — à 15 minutes de Lyon.</p>",
-    "top8": [],
-    "metaList": []
+    "details": "<p><strong>Le Pauper Duel Commander est au programme de PauperNATION</strong>, l'événement du Pauper français organisé par l'équipe du SIDEBOARD, les 3 et 4 octobre 2026.</p><p>Le tournoi PDC est annoncé le <strong>samedi 3 octobre à 14 h</strong>, avec 10 € d'inscription. Horaires, PAF et lots restent à confirmer par l'organisation.</p><p>Salle Polyvalente, 154 cours de la Portelle, 01120 Montluel — à 15 minutes de Lyon.</p><p>Classement complet et listes des joueurs sur <a href=\"https://topdeck.gg/bracket/pdc-nation\">TopDeck</a>.</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "PLfou",
+            "commanderName": "Crackling Drake",
+            "score": "4-1-0",
+            "decklistSlug": "crackling-drake-paupernation-2026-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Evan Colly",
+            "commanderName": "Crackling Drake",
+            "score": "3-1-1",
+            "decklistSlug": "crackling-drake-paupernation-2026-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Paul Fermé",
+            "commanderName": "Sailors' Bane",
+            "score": "4-1-0",
+            "decklistSlug": "sailors-bane-paupernation-2026-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Mickael Morra",
+            "commanderName": "Mayhem Devil",
+            "score": "3-2-0",
+            "decklistSlug": "mayhem-devil-paupernation-2026-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Boris Dupire",
+            "commanderName": "Slippery Bogle",
+            "score": "4-0-1",
+            "decklistSlug": "slippery-bogle-paupernation-2026-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "Pierre Guyard",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "4-1-0",
+            "decklistSlug": "gut-true-soul-zealot-paupernation-2026-6eme"
+        },
+        {
+            "place": 7,
+            "playerName": "Nathan Lachard",
+            "commanderName": "Abdel Adrian, Gorion's Ward // Agent of the Iron Throne",
+            "score": "3-1-1",
+            "decklistSlug": "abdel-adrian-gorion-s-ward-paupernation-2026-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Thibault Giboire",
+            "commanderName": "Queza, Augur of Agonies",
+            "score": "3-2-0",
+            "decklistSlug": "queza-augur-of-agonies-paupernation-2026-8eme"
+        }
+    ],
+    "standings": [
+        {
+            "place": 9,
+            "playerName": "Montani Enzo",
+            "commanderName": "Mayhem Devil",
+            "score": "3-1-1",
+            "decklistSlug": "mayhem-devil-paupernation-2026-9eme"
+        },
+        {
+            "place": 10,
+            "playerName": "Igor Herrmann",
+            "commanderName": "Palace Jailer",
+            "score": "3-2-0",
+            "decklistSlug": "palace-jailer-paupernation-2026-10eme"
+        },
+        {
+            "place": 11,
+            "playerName": "Jeremie Pratviel",
+            "commanderName": "???",
+            "score": "3-2-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 12,
+            "playerName": "Kevin Chaussard",
+            "commanderName": "Wilson, Refined Grizzly // Far Traveler",
+            "score": "3-2-0",
+            "decklistSlug": "wilson-refined-grizzly-paupernation-2026-12eme"
+        },
+        {
+            "place": 13,
+            "playerName": "Nolan Platre",
+            "commanderName": "Third Path Iconoclast",
+            "score": "2-2-1",
+            "decklistSlug": "third-path-iconoclast-paupernation-2026-13eme"
+        },
+        {
+            "place": 14,
+            "playerName": "Martin Labarussias",
+            "commanderName": "Voracious Tome-Skimmer",
+            "score": "2-2-1",
+            "decklistSlug": "voracious-tome-skimmer-paupernation-2026-14eme"
+        },
+        {
+            "place": 15,
+            "playerName": "LordReivax",
+            "commanderName": "Fynn, the Fangbearer",
+            "score": "2-2-1",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-15eme"
+        },
+        {
+            "place": 16,
+            "playerName": "Phil Cronoriel",
+            "commanderName": "Fynn, the Fangbearer",
+            "score": "2-2-1",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-16eme"
+        },
+        {
+            "place": 17,
+            "playerName": "Borde Martin",
+            "commanderName": "Forsaken Miner",
+            "score": "2-3-0",
+            "decklistSlug": "forsaken-miner-paupernation-2026-17eme"
+        },
+        {
+            "place": 18,
+            "playerName": "Mickael Couzinet",
+            "commanderName": "Sailors' Bane",
+            "score": "2-2-0",
+            "decklistSlug": "sailors-bane-paupernation-2026-18eme"
+        },
+        {
+            "place": 19,
+            "playerName": "Matthias",
+            "commanderName": "Mayhem Devil",
+            "score": "2-3-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 20,
+            "playerName": "Louis Richez",
+            "commanderName": "Speedball, New Warrior",
+            "score": "2-2-0",
+            "decklistSlug": "speedball-new-warrior-paupernation-2026-20eme"
+        },
+        {
+            "place": 21,
+            "playerName": "Cladblaster",
+            "commanderName": "???",
+            "score": "2-3-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 22,
+            "playerName": "Thomas Dumoulin",
+            "commanderName": "Skirmish Rhino",
+            "score": "2-3-0",
+            "decklistSlug": "skirmish-rhino-paupernation-2026-22eme"
+        },
+        {
+            "place": 23,
+            "playerName": "Thomas Alexandre",
+            "commanderName": "Ruination Rioter",
+            "score": "2-3-0",
+            "decklistSlug": "ruination-rioter-paupernation-2026-23eme"
+        },
+        {
+            "place": 24,
+            "playerName": "Bruno Thill",
+            "commanderName": "Mayhem Devil",
+            "score": "2-3-0",
+            "decklistSlug": "mayhem-devil-paupernation-2026-24eme"
+        },
+        {
+            "place": 25,
+            "playerName": "Valentin Degrange",
+            "commanderName": "Fynn, the Fangbearer",
+            "score": "1-4-0",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-25eme"
+        },
+        {
+            "place": 26,
+            "playerName": "Jean-Raoul Moullard",
+            "commanderName": "???",
+            "score": "1-4-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 27,
+            "playerName": "Nicolas Castelliti",
+            "commanderName": "Juri, Master of the Revue",
+            "score": "0-2-0",
+            "decklistSlug": "juri-master-of-the-revue-paupernation-2026-27eme"
+        },
+        {
+            "place": 28,
+            "playerName": "Jordan Poissonnier",
+            "commanderName": "???",
+            "score": "0-5-0",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Mayhem Devil",
+            "count": 4
+        },
+        {
+            "name": "Fynn, the Fangbearer",
+            "count": 3
+        },
+        {
+            "name": "Crackling Drake",
+            "count": 2
+        },
+        {
+            "name": "Sailors' Bane",
+            "count": 2
+        },
+        {
+            "name": "Palace Jailer",
+            "count": 1
+        },
+        {
+            "name": "Speedball, New Warrior",
+            "count": 1
+        },
+        {
+            "name": "Slippery Bogle",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        },
+        {
+            "name": "Abdel Adrian, Gorion's Ward // Agent of the Iron Throne",
+            "count": 1
+        },
+        {
+            "name": "Queza, Augur of Agonies",
+            "count": 1
+        },
+        {
+            "name": "Wilson, Refined Grizzly // Far Traveler",
+            "count": 1
+        },
+        {
+            "name": "Juri, Master of the Revue",
+            "count": 1
+        },
+        {
+            "name": "Third Path Iconoclast",
+            "count": 1
+        },
+        {
+            "name": "Ruination Rioter",
+            "count": 1
+        },
+        {
+            "name": "Forsaken Miner",
+            "count": 1
+        },
+        {
+            "name": "Voracious Tome-Skimmer",
+            "count": 1
+        },
+        {
+            "name": "Skirmish Rhino",
+            "count": 1
+        },
+        {
+            "name": "???",
+            "count": 4
+        }
+    ]
 }

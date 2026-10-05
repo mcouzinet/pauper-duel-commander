@@ -4,8 +4,9 @@
  *
  * A top 8 is a ranking, not a share of anything, so it is drawn as one: the
  * winner raised in the middle and gilded, second and third on either side, each
- * card standing on a step of its height with its place written large on it. Places 4 to 8 follow as compact rows,
- * beside the podium when the screen has room. Names wrap rather than truncate.
+ * card standing on a step of its height with its place written large on it.
+ * Places 4 to 8 follow as compact rows (Standings), beside the podium when the
+ * screen has room. Names wrap rather than truncate.
  * A pair (partners, a commander and its background) shows both cards: fanned on
  * the podium, two overlapping thumbnails in a row.
  *
@@ -17,6 +18,7 @@
 import '@/styles/results.css';
 import { t, type Locale } from '@/lib/i18n';
 import { splitCommanderName } from '@/lib/tournaments';
+import Standings from './Standings.astro';
 
 export interface Top8Entry {
   place: number;
@@ -96,48 +98,5 @@ const rest = places.filter(entry => entry.place > 3);
   </ol>
 )}
 
-{rest.length > 0 && (
-  <ol class="standings" role="list" start={rest[0].place}>
-    {rest.map(entry => {
-      const Row = entry.decklistUrl ? 'a' : 'div';
-      const struck = entry.isBanned && 'line-through decoration-red-500/70';
-      return (
-        <li class="standing">
-          <Row class="standing__row" {...(entry.decklistUrl ? { href: entry.decklistUrl } : {})}>
-            <span class="w-6 flex-shrink-0 text-right font-heading font-bold text-text-muted tabular-nums" aria-hidden="true">{entry.place}</span>
-            <span class:list={['pair-thumb', entry.isBanned && 'grayscale']}>
-              {entry.partnerImage && entry.partner && (
-                <span class="pair-thumb__partner" aria-hidden="true">
-                  <img src={entry.partnerImage} alt="" width="40" height="40" loading="lazy" decoding="async" />
-                </span>
-              )}
-              {entry.commanderImage ? (
-                <span class="pair-thumb__main card-hover-trigger" data-card-name={entry.main} data-card-image={entry.cardImage ?? entry.commanderImage}>
-                  <img src={entry.commanderImage} alt="" width="40" height="40" loading="lazy" decoding="async" />
-                </span>
-              ) : (
-                <span class="pair-thumb__main" aria-hidden="true"></span>
-              )}
-            </span>
-            <span class="flex-1 min-w-0">
-              {entry.isUnknown ? (
-                <span class="block text-sm italic text-text-muted">{entry.main}</span>
-              ) : (
-                <span lang="en" class:list={['block font-beleren text-[15px] leading-snug text-text-primary', struck]}>{entry.main}</span>
-              )}
-              {entry.partner && <span lang="en" class:list={['block font-beleren text-xs leading-snug text-text-secondary', struck]}>+ {entry.partner}</span>}
-              {(entry.playerName || entry.score) && (
-                <span class="block text-sm text-text-secondary">
-                  {entry.playerName}{entry.playerName && entry.score && ' · '}<span class="whitespace-nowrap tabular-nums">{entry.score}</span>
-                </span>
-              )}
-              {entry.isBanned && <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>}
-            </span>
-            {entry.decklistUrl && <span class="standing__deck">{t('tournament.deck', locale)}{' '}<span aria-hidden="true">›</span></span>}
-          </Row>
-        </li>
-      );
-    })}
-  </ol>
-)}
+<Standings entries={rest} locale={locale} class="standings" />
 </div>

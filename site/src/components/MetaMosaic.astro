@@ -42,7 +42,7 @@ const { commanders, total, unattributed, locale, label, limit = 20, eager = fals
 
 const head = commanders.slice(0, limit);
 const tail = commanders.slice(limit);
-const tailCount = tail.reduce((sum, c) => sum + c.count, 0) + unattributed;
+const tailCount = tail.reduce((sum, c) => sum + c.count, 0);
 
 const percent = new Intl.NumberFormat(localeTag(locale), { style: 'percent', maximumFractionDigits: 0 });
 const share = (count: number) => {
@@ -51,10 +51,13 @@ const share = (count: number) => {
 };
 const href = (name: string) => `${route('decklists', locale)}?commander=${encodeURIComponent(name)}`;
 
-type Cell = { commander: CommanderStat } | { tail: true };
+// Entries without a recorded commander get their own box: counted in with the
+// tail, they read as "0 other commanders" when there was no tail at all.
+type Cell = { commander: CommanderStat } | { tail: true } | { unknown: true };
 const items: { value: number; data: Cell }[] = [
   ...head.map(commander => ({ value: commander.count, data: { commander } as Cell })),
   ...(tailCount > 0 ? [{ value: tailCount, data: { tail: true } as Cell }] : []),
+  ...(unattributed > 0 ? [{ value: unattributed, data: { unknown: true } as Cell }] : []),
 ];
 
 // Sizes in CSS pixels at which each layout is drawn: the wide one fills the
@@ -72,6 +75,21 @@ const at = (x: number, y: number, w: number, h: number, W: number, H: number) =>
   <ul class:list={['mosaic', layout.class]} style={`aspect-ratio: ${layout.W} / ${layout.H}`} role="list" aria-label={label}>
     {layout.boxes.map(box => {
       const pos = at(box.x, box.y, box.w, box.h, layout.W, layout.H);
+      if ('unknown' in box.data) {
+        return (
+          <li class="mosaic-tile" style={pos}>
+            <span class="mosaic-tile__face bg-bg-secondary">
+              {/* One line: this box is often a thin strip at the end of the mosaic. */}
+              <span class="mosaic-tile__label">
+                <span class="flex min-w-0 items-baseline gap-2">
+                  <span class="mosaic-tile__share">{share(unattributed)}</span>
+                  <span class="mosaic-tile__others mt-0 min-w-0 truncate">{t('tournament.unknownCommander', locale)}</span>
+                </span>
+              </span>
+            </span>
+          </li>
+        );
+      }
       if ('tail' in box.data) {
         const inner = squarify(tail.map(c => ({ value: c.count, data: c })), box.w, box.h);
         return (

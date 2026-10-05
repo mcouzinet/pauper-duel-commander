@@ -18,6 +18,7 @@
 import type { CollectionEntry } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Top8, { type Top8Entry } from '@/components/Top8.astro';
+import Standings from '@/components/Standings.astro';
 import CommanderTable from '@/components/CommanderTable.astro';
 import MetaMosaic from '@/components/MetaMosaic.astro';
 import GuildGrid from '@/components/GuildGrid.astro';
@@ -49,6 +50,7 @@ const venue = [data.location, data.city].filter(Boolean).join(', ');
 
 const names = [
   ...data.top8.map(entry => entry.commanderName),
+  ...data.standings.map(entry => entry.commanderName),
   ...data.metaList.map(entry => entry.name),
 ].filter(name => !isPlaceholder(name));
 const cards = names.length > 0
@@ -79,27 +81,37 @@ function partnerCardOf(name: string): ScryfallCard | null {
   return second ? cards.get(second.toLowerCase()) ?? null : null;
 }
 
-const top8: Top8Entry[] = data.top8
-  .map(finish => {
-    const unknown = isPlaceholder(finish.commanderName);
-    const card = unknown ? null : resolveCard(finish.commanderName);
-    const partner = unknown ? null : partnerCardOf(finish.commanderName);
-    return {
-      place: finish.place,
-      // Placeholders never reach the UI as a name.
-      playerName: isPlaceholder(finish.playerName) ? '' : finish.playerName,
-      commanderName: unknown ? t('tournament.unknownCommander', locale) : finish.commanderName,
-      isUnknown: unknown,
-      score: finish.score,
-      commanderImage: getCardImage(card, 'art_crop'),
-      cardImage: getCardImage(card, 'normal'),
-      partnerImage: getCardImage(partner, 'art_crop'),
-      partnerCardImage: getCardImage(partner, 'normal'),
-      // The bug: this used to interpolate a route that does not exist.
-      decklistUrl: finish.decklistSlug ? route('decklists', locale, finish.decklistSlug) : null,
-      isBanned: unknown ? false : isBanned(finish.commanderName),
-    };
-  })
+type Finish = { place: number; playerName: string; commanderName: string; score: string; decklistSlug?: string | null };
+
+function toEntry(finish: Finish): Top8Entry {
+  const unknown = isPlaceholder(finish.commanderName);
+  const card = unknown ? null : resolveCard(finish.commanderName);
+  const partner = unknown ? null : partnerCardOf(finish.commanderName);
+  return {
+    place: finish.place,
+    // Placeholders never reach the UI as a name.
+    playerName: isPlaceholder(finish.playerName) ? '' : finish.playerName,
+    commanderName: unknown ? t('tournament.unknownCommander', locale) : finish.commanderName,
+    isUnknown: unknown,
+    score: finish.score,
+    commanderImage: getCardImage(card, 'art_crop'),
+    cardImage: getCardImage(card, 'normal'),
+    partnerImage: getCardImage(partner, 'art_crop'),
+    partnerCardImage: getCardImage(partner, 'normal'),
+    // The bug: this used to interpolate a route that does not exist.
+    decklistUrl: finish.decklistSlug ? route('decklists', locale, finish.decklistSlug) : null,
+    isBanned: unknown ? false : isBanned(finish.commanderName),
+  };
+}
+
+const top8: Top8Entry[] = data.top8.map(toEntry).sort((a, b) => a.place - b.place);
+
+// The rest of the field, when the full standings were published. A place the
+// top 8 already holds is skipped, so a list written from 1 still reads right.
+const inTop8 = new Set(data.top8.map(finish => finish.place));
+const field: Top8Entry[] = data.standings
+  .filter(finish => !inTop8.has(finish.place))
+  .map(toEntry)
   .sort((a, b) => a.place - b.place);
 
 const topLabel = top8.length <= 4 ? 'Top 4' : 'Top 8';
@@ -164,7 +176,7 @@ for (const finish of data.top8) {
 }
 const hasResults = top8.length > 0 || hasMeta;
 const winner = top8.find(finish => finish.place === 1) ?? null;
-const decklistCount = top8.filter(finish => finish.decklistUrl).length;
+const decklistCount = [...top8, ...field].filter(finish => finish.decklistUrl).length;
 
 // `city` is empty for an online event, and all three `seoDetail` templates
 // write "%date%, %city%.": substituting nothing left "28 septembre 2026, .
@@ -291,6 +303,17 @@ const schemas: Record<string, unknown>[] = [
       <section class="py-6 md:py-8 border-t border-white/8" aria-labelledby="tournament-top">
         <h2 id="tournament-top" class="section-title">{topLabel}</h2>
         <Top8 entries={top8} locale={locale} />
+        {field.length > 0 && (
+          <details class="group/fold mt-6">
+            <summary class="cursor-pointer select-none inline-flex items-center min-h-11 px-1 text-sm font-semibold text-brand-orange hover:text-brand-orange-light transition-colors"
+                     data-analytics="tournament_standings_expand">
+              <span class="group-open/fold:hidden">{tf('tournament.showStandings', locale, { n: field.length })}</span>
+              <span class="hidden group-open/fold:inline">{t('tournament.hideStandings', locale)}</span>
+            </summary>
+            <Standings entries={field} locale={locale} class="mt-2 md:columns-2 md:gap-x-10 xl:columns-3" />
+            <p class="mt-3 px-1 text-xs text-text-muted">{t('tournament.standingsNote', locale)}</p>
+          </details>
+        )}
       </section>
     )}
 

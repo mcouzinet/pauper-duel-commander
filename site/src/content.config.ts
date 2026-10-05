@@ -20,6 +20,15 @@ const tournaments = defineCollection({
       score: z.string(),
       decklistSlug: z.string().nullable(),
     })).max(8).default([]),
+    // The rest of the final standings, after the top 8 (which `top8` holds).
+    // Display only: the meta keeps reading `metaList`, which must agree.
+    standings: z.array(z.object({
+      place: z.number().min(1),
+      playerName: z.string(),
+      commanderName: z.string(),
+      score: z.string(),
+      decklistSlug: z.string().nullable().optional(),
+    })).default([]),
     metaList: z.array(z.object({
       name: z.string(),
       count: z.number().min(1),

@@ -113,7 +113,7 @@ async function resultsBySlug(): Promise<Map<string, DecklistResult>> {
 
   for (const entry of tournaments) {
     const t = entry.data;
-    for (const finish of t.top8) {
+    for (const finish of [...t.top8, ...t.standings]) {
       if (!finish.decklistSlug) continue;
       const existing = map.get(finish.decklistSlug);
       if (existing && existing.place <= finish.place) continue;

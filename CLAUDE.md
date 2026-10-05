@@ -134,6 +134,13 @@ c'est **délibéré** : le texte de l'organisateur (horaires, PAF, lots) reste e
 français dans les trois langues. Ne pas le passer en `{fr, en, it}` — cela
 obligerait chaque organisateur à écrire trois versions de son annonce.
 
+Un tournoi peut porter la suite de son classement final dans `standings`
+(facultatif) : les places après le top 8, même forme que `top8` (`decklistSlug`
+facultatif), affichées repliées sous le top 8. Une decklist liée depuis
+`standings` porte son résultat comme celles du top 8 (`resultsBySlug`). C'est de
+l'affichage : la méta lit toujours `metaList`, qui doit compter les mêmes
+généraux. Une place inconnue s'écrit `???`, comme ailleurs.
+
 ## API / Validateur
 
 `POST /api/validate-deck.php` — `commander`, `partner` (optionnel), `decklist`,
@@ -307,8 +314,9 @@ réencodées, pas des sources :
   (`lg:hidden` restait sans effet).
 - Le top 8 d'un tournoi est un podium (`Top8`) : les trois premiers en cartes,
   dans l'ordre des places dans le balisage et dessinés 2-1-3 par CSS, puis les
-  places suivantes en lignes compactes, à côté du podium quand l'écran le
-  permet. Pas de mosaïque ici : un top 8 est un classement, pas une part.
+  places suivantes en lignes compactes (`Standings`, les mêmes lignes servent au
+  reste du classement), à côté du podium quand l'écran le permet. Pas de
+  mosaïque ici : un top 8 est un classement, pas une part.
 - Une paire (partenaires, général et background) montre ses deux cartes partout :
   en éventail sur le podium, deux vignettes superposées dans les lignes et le
   tableau (`pair-thumb`, seule la principale déclenche l'aperçu), une tuile
@@ -318,7 +326,9 @@ réencodées, pas des sources :
   qui l'emporterait.
 - Page méta : la mosaïque (`MetaMosaic`, treemap de `lib/treemap.ts`, contrôle
   `node scripts/check-treemap.mjs`) donne à chaque général une surface égale à
-  sa part ; la traîne remplit la dernière case de petites vignettes. Chaque tuile
+  sa part ; la traîne remplit la dernière case de petites vignettes. Les entrées
+  sans général (`???`) ont leur propre case : fondues dans la traîne, elles
+  s'affichaient « 0 autres généraux » quand il n'y en avait pas. Chaque tuile
   est un conteneur de taille : ses libellés apparaissent selon la place
   (requêtes `@container` dans `results.css`, tailles de police hors utilitaires).
   Identités en grille des guildes (`GuildGrid`), couleurs en colonnes
@@ -345,6 +355,8 @@ réencodées, pas des sources :
   colonnes de `ColorColumns`) doit vivre dans `@theme static` : Tailwind n'émet
   que les variables qu'une classe utilise, et sans `static` ces barres
   s'affichaient sans couleur
+- Pas de virgule entre deux conditions d'un `@container` : la minification du
+  build (Lightning CSS) supprime la règle en silence. Écrire `or`.
 - Titres en blanc (`text-text-primary`), jamais de grand titre en orange :
   `text-magic-gradient` ne sert plus qu'à « Commander » dans le titre d'accueil,
   qui reprend le logo
