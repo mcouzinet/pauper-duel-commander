@@ -201,7 +201,8 @@
     .mosaic-tile__partner { display: block; font-size: 0.875rem; }
   }
 
-  @container (max-width: 2.75rem), (max-height: 2rem) {
+  /* `or`, not a comma: Lightning CSS drops a comma-separated container query. */
+  @container (max-width: 2.75rem) or (max-height: 2rem) {
     .mosaic-tile__label { display: none; }
   }
 
@@ -295,9 +296,10 @@
   }
 
   /* The step it stands on, as high as the place is good, the place written on
-     it in its medal's colour: the first thing read on a podium. */
+     it in its medal's colour: the first thing read on a podium. A square block,
+     so the medal line runs straight across its top edge. */
   .podium__base {
-    @apply flex w-full mt-1 justify-center rounded-t-md border-t-2 pt-1 sm:pt-2;
+    @apply flex w-full mt-1 justify-center border-t-2 pt-1 sm:pt-2;
   }
 
   .podium__rank {

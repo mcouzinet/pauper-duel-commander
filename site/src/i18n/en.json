@@ -268,7 +268,10 @@
     "seoDetail": "%title% · %date%, %city%. Winner: %winner%. Top %top%, metagame and decklists.",
     "winnerDeck": "Winner’s decklist",
     "organizerNotes": "Organizer’s notes",
-    "placeN": "place %n%"
+    "placeN": "place %n%",
+    "showStandings": "Show the full standings (%n% more players)",
+    "hideStandings": "Hide the full standings",
+    "standingsNote": "After the top 8, players are ranked by the Swiss rounds. Record: wins, losses, draws; a bye counts as a win."
   },
   "archive": {
     "decklistTitle": "Some Decklists",

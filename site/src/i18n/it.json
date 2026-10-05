@@ -268,7 +268,10 @@
     "seoDetail": "%title% · %date%, %city%. Vincitore: %winner%. Top %top%, meta e decklist.",
     "winnerDeck": "Decklist del vincitore",
     "organizerNotes": "Note dell’organizzatore",
-    "placeN": "posto %n%"
+    "placeN": "posto %n%",
+    "showStandings": "Mostra la classifica completa (altri %n% giocatori)",
+    "hideStandings": "Nascondi la classifica completa",
+    "standingsNote": "Dopo la top 8, l’ordine è quello dei turni svizzeri. Bilancio: vittorie, sconfitte, pareggi; un bye conta come una vittoria."
   },
   "archive": {
     "decklistTitle": "Alcune decklist",

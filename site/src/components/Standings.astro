@@ -1,0 +1,71 @@
+---
+/**
+ * Standings as compact rows: place, commander (both cards of a pair), player
+ * and record, the whole row linking to the decklist when there is one.
+ *
+ * Places 4 to 8 under the podium (Top8), and the rest of the field, folded,
+ * on a tournament's page. The layout of the list comes from the caller.
+ */
+import '@/styles/results.css';
+import { t, type Locale } from '@/lib/i18n';
+import { splitCommanderName } from '@/lib/tournaments';
+import type { Top8Entry } from './Top8.astro';
+
+interface Props {
+  entries: Top8Entry[];
+  locale: Locale;
+  class?: string;
+}
+
+const { entries, locale, class: className } = Astro.props;
+
+const rows = entries.map(entry => {
+  const [main, partner] = entry.isUnknown ? [entry.commanderName] : splitCommanderName(entry.commanderName);
+  return { ...entry, main, partner: partner ?? null };
+});
+---
+
+{rows.length > 0 && (
+  <ol class={className} role="list" start={rows[0].place}>
+    {rows.map(entry => {
+      const Row = entry.decklistUrl ? 'a' : 'div';
+      const struck = entry.isBanned && 'line-through decoration-red-500/70';
+      return (
+        <li class="standing">
+          <Row class="standing__row" {...(entry.decklistUrl ? { href: entry.decklistUrl } : {})}>
+            <span class="w-6 flex-shrink-0 text-right font-heading font-bold text-text-muted tabular-nums" aria-hidden="true">{entry.place}</span>
+            <span class:list={['pair-thumb', entry.isBanned && 'grayscale']}>
+              {entry.partnerImage && entry.partner && (
+                <span class="pair-thumb__partner" aria-hidden="true">
+                  <img src={entry.partnerImage} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                </span>
+              )}
+              {entry.commanderImage ? (
+                <span class="pair-thumb__main card-hover-trigger" data-card-name={entry.main} data-card-image={entry.cardImage ?? entry.commanderImage}>
+                  <img src={entry.commanderImage} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                </span>
+              ) : (
+                <span class="pair-thumb__main" aria-hidden="true"></span>
+              )}
+            </span>
+            <span class="flex-1 min-w-0">
+              {entry.isUnknown ? (
+                <span class="block text-sm italic text-text-muted">{entry.main}</span>
+              ) : (
+                <span lang="en" class:list={['block font-beleren text-[15px] leading-snug text-text-primary', struck]}>{entry.main}</span>
+              )}
+              {entry.partner && <span lang="en" class:list={['block font-beleren text-xs leading-snug text-text-secondary', struck]}>+ {entry.partner}</span>}
+              {(entry.playerName || entry.score) && (
+                <span class="block text-sm text-text-secondary">
+                  {entry.playerName}{entry.playerName && entry.score && ' · '}<span class="whitespace-nowrap tabular-nums">{entry.score}</span>
+                </span>
+              )}
+              {entry.isBanned && <span class="badge badge--danger uppercase tracking-wider mt-1">{t('meta.banned', locale)}</span>}
+            </span>
+            {entry.decklistUrl && <span class="standing__deck">{t('tournament.deck', locale)}{' '}<span aria-hidden="true">›</span></span>}
+          </Row>
+        </li>
+      );
+    })}
+  </ol>
+)}

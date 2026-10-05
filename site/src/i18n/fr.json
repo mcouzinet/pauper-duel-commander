@@ -268,7 +268,10 @@
     "seoDetail": "%title% · %date%, %city%. Vainqueur : %winner%. Top %top%, méta et decklists.",
     "winnerDeck": "Decklist du vainqueur",
     "organizerNotes": "Infos de l’organisateur",
-    "placeN": "place %n%"
+    "placeN": "place %n%",
+    "showStandings": "Voir le classement complet (%n% autres joueurs)",
+    "hideStandings": "Masquer le classement complet",
+    "standingsNote": "Après le top 8, l’ordre est celui des rondes suisses. Bilan : victoires, défaites, nuls ; une exemption compte comme une victoire."
   },
   "archive": {
     "decklistTitle": "Quelques Decklists",
