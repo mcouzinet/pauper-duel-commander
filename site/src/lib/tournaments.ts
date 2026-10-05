@@ -18,6 +18,14 @@ export interface TournamentEntry {
     score: string;
     decklistSlug: string | null;
   }[];
+  /** The rest of the final standings, after the top 8 (content.config.ts). */
+  standings: {
+    place: number;
+    playerName: string;
+    commanderName: string;
+    score: string;
+    decklistSlug?: string | null;
+  }[];
   metaList: { name: string; count: number }[];
 }
 
