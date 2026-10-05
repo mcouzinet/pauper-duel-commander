@@ -70,121 +70,141 @@
             "place": 9,
             "playerName": "Montani Enzo",
             "commanderName": "Mayhem Devil",
-            "score": "3-1-1"
+            "score": "3-1-1",
+            "decklistSlug": "mayhem-devil-paupernation-2026-9eme"
         },
         {
             "place": 10,
             "playerName": "Igor Herrmann",
             "commanderName": "Palace Jailer",
-            "score": "3-2-0"
+            "score": "3-2-0",
+            "decklistSlug": "palace-jailer-paupernation-2026-10eme"
         },
         {
             "place": 11,
             "playerName": "Jeremie Pratviel",
             "commanderName": "???",
-            "score": "3-2-0"
+            "score": "3-2-0",
+            "decklistSlug": null
         },
         {
             "place": 12,
             "playerName": "Kevin Chaussard",
             "commanderName": "Wilson, Refined Grizzly // Far Traveler",
-            "score": "3-2-0"
+            "score": "3-2-0",
+            "decklistSlug": "wilson-refined-grizzly-paupernation-2026-12eme"
         },
         {
             "place": 13,
             "playerName": "Nolan Platre",
             "commanderName": "Third Path Iconoclast",
-            "score": "2-2-1"
+            "score": "2-2-1",
+            "decklistSlug": "third-path-iconoclast-paupernation-2026-13eme"
         },
         {
             "place": 14,
             "playerName": "Martin Labarussias",
             "commanderName": "Voracious Tome-Skimmer",
-            "score": "2-2-1"
+            "score": "2-2-1",
+            "decklistSlug": "voracious-tome-skimmer-paupernation-2026-14eme"
         },
         {
             "place": 15,
             "playerName": "LordReivax",
             "commanderName": "Fynn, the Fangbearer",
-            "score": "2-2-1"
+            "score": "2-2-1",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-15eme"
         },
         {
             "place": 16,
             "playerName": "Phil Cronoriel",
             "commanderName": "Fynn, the Fangbearer",
-            "score": "2-2-1"
+            "score": "2-2-1",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-16eme"
         },
         {
             "place": 17,
             "playerName": "Borde Martin",
             "commanderName": "Forsaken Miner",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": "forsaken-miner-paupernation-2026-17eme"
         },
         {
             "place": 18,
             "playerName": "Mickael Couzinet",
             "commanderName": "Sailors' Bane",
-            "score": "2-2-0"
+            "score": "2-2-0",
+            "decklistSlug": "sailors-bane-paupernation-2026-18eme"
         },
         {
             "place": 19,
             "playerName": "Matthias",
             "commanderName": "Mayhem Devil",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": null
         },
         {
             "place": 20,
             "playerName": "Louis Richez",
             "commanderName": "Speedball, New Warrior",
-            "score": "2-2-0"
+            "score": "2-2-0",
+            "decklistSlug": "speedball-new-warrior-paupernation-2026-20eme"
         },
         {
             "place": 21,
             "playerName": "Cladblaster",
             "commanderName": "???",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": null
         },
         {
             "place": 22,
             "playerName": "Thomas Dumoulin",
             "commanderName": "Skirmish Rhino",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": "skirmish-rhino-paupernation-2026-22eme"
         },
         {
             "place": 23,
             "playerName": "Thomas Alexandre",
             "commanderName": "Ruination Rioter",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": "ruination-rioter-paupernation-2026-23eme"
         },
         {
             "place": 24,
             "playerName": "Bruno Thill",
             "commanderName": "Mayhem Devil",
-            "score": "2-3-0"
+            "score": "2-3-0",
+            "decklistSlug": "mayhem-devil-paupernation-2026-24eme"
         },
         {
             "place": 25,
             "playerName": "Valentin Degrange",
             "commanderName": "Fynn, the Fangbearer",
-            "score": "1-4-0"
+            "score": "1-4-0",
+            "decklistSlug": "fynn-the-fangbearer-paupernation-2026-25eme"
         },
         {
             "place": 26,
             "playerName": "Jean-Raoul Moullard",
             "commanderName": "???",
-            "score": "1-4-0"
+            "score": "1-4-0",
+            "decklistSlug": null
         },
         {
             "place": 27,
             "playerName": "Nicolas Castelliti",
             "commanderName": "Juri, Master of the Revue",
-            "score": "0-2-0"
+            "score": "0-2-0",
+            "decklistSlug": "juri-master-of-the-revue-paupernation-2026-27eme"
         },
         {
             "place": 28,
             "playerName": "Jordan Poissonnier",
             "commanderName": "???",
-            "score": "0-5-0"
+            "score": "0-5-0",
+            "decklistSlug": null
         }
     ],
     "metaList": [
