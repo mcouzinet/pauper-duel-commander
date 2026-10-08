@@ -25,6 +25,10 @@ class DecklistParser {
      * Converts MTGO format text into a structured array.
      * Each line should be: "quantity card_name"
      *
+     * A card written on several lines is one entry, its quantities added up:
+     * one entry per line let "1 Sacred Peaks" twice pass the singleton rule,
+     * which reads each entry's quantity.
+     *
      * @param string $decklist_text Raw decklist text
      * @return array Array of ['quantity' => int, 'name' => string]
      */
@@ -38,12 +42,18 @@ class DecklistParser {
 
         foreach ($lines as $line) {
             $parsed = self::parse_line($line);
-            if ($parsed) {
-                $cards[] = $parsed;
+            if (!$parsed) {
+                continue;
+            }
+            $key = strtolower($parsed['name']);
+            if (isset($cards[$key])) {
+                $cards[$key]['quantity'] += $parsed['quantity'];
+            } else {
+                $cards[$key] = $parsed;
             }
         }
 
-        return $cards;
+        return array_values($cards);
     }
 
     /**

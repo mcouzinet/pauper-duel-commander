@@ -206,6 +206,10 @@ en place : `docs/external/README.md`.
   20 lookups Scryfall de secours max par requête, 50 Ko max (413). Le coût réel
   n'est pas la taille du corps mais les noms inconnus : chacun déclenche une
   requête Scryfall isolée avec 100 ms d'attente.
+- **Une carte écrite sur plusieurs lignes est une seule entrée** :
+  `DecklistParser::parse()` additionne ses quantités. Une entrée par ligne
+  laissait « 1 Sacred Peaks » deux fois passer la règle 6, qui lit la quantité
+  de chaque entrée.
 - **`X-Forwarded-For` est ignoré volontairement** dans `RateLimiter::client_id()`
   (falsifiable). Le lire nécessiterait une allow-list de proxys de confiance.
 - **Seuls les trois points d'entrée sont joignables** (`validate-deck`,
