@@ -257,6 +257,12 @@ réencodées, pas des sources :
 - **Aucun général à la mode en vedette** : un général qui domine peut être banni.
   L'exemple est Garland, et les cartes montrées avec lui sortent de sa decklist
   d'Artefacts #7.
+- Rien de banni à l'écran hors de la scène de la ban list : le défilé des
+  généraux (`ROLL`) et le mur de cartes en fond (`WALL_BANNED`) sont à revoir à
+  chaque annonce du comité.
+- Le mur de cartes défile sans jamais boucler (assez de rangées pour toute la
+  vidéo) : bouclé, il sautait d'une rangée toutes les 7,7 s, ses rangées étant
+  des cartes différentes.
 - Chaque scène commence sur un temps de la musique (120 BPM, `B(n)`) et ses
   horaires internes sont relatifs à son début : allonger une scène, c'est déplacer
   une borne de `R` ou `W`.

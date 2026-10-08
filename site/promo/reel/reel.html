@@ -532,7 +532,7 @@ const CARD = {
 }
 const img = (name) => SCRY + CARD[name]
 // the roll of generals: no favourite, it stops on a blank card, the viewer's
-const ROLL = ['Heartfire Hero', 'Juri, Master of the Revue', 'Soulherder', 'Palace Jailer', 'Third Path Iconoclast', 'Garland, Knight of Cornelia', 'Satyr Enchanter', 'Mayhem Devil', "Sailors' Bane", 'Black Waltz No. 3', 'Baleful Strix', 'Horrid Shadowspinner', 'Crackling Drake', 'Sphinx of the Guildpact', 'Fireglass Mentor', 'Gut, True Soul Zealot', 'Wilson, Refined Grizzly', 'Tomik, Izzet Sparkmage', 'Siona, Captain of the Pyleas', 'Johann, Apprentice Sorcerer', 'Tor Wauki the Younger']
+const ROLL = ['Heartfire Hero', 'Juri, Master of the Revue', 'Soulherder', 'Palace Jailer', 'Third Path Iconoclast', 'Garland, Knight of Cornelia', 'Satyr Enchanter', 'Mayhem Devil', 'Black Waltz No. 3', 'Baleful Strix', 'Horrid Shadowspinner', 'Sphinx of the Guildpact', 'Fireglass Mentor', 'Gut, True Soul Zealot', 'Wilson, Refined Grizzly', 'Tomik, Izzet Sparkmage', 'Siona, Captain of the Pyleas', 'Johann, Apprentice Sorcerer', 'Tor Wauki the Younger']
 const ROLL_N = ROLL.length + 1, ROLL_TOTAL = 3 * ROLL_N + (ROLL_N - 1), ROLL_PITCH = 300
 // from Garland's list (Artefacts #7), black on the left, red on the right
 const FAN = ['Duress', 'Hymn to Tourach', 'Troll of Khazad-dûm', 'Snuff Out', 'Cast Down', 'Lightning Bolt', 'Terminate', 'Galvanic Discharge', 'Firebolt', 'Fiery Cannonade', 'Faithless Looting']
@@ -659,10 +659,14 @@ if (LANG === 'en') {
   for (const [sel, html] of Object.entries(EN)) $(sel).innerHTML = html
 }
 $$('[data-i]').forEach((el) => { el.innerHTML = ICON[el.dataset.i] })
-// the wall: the format's own cards, blurred into a texture
+// the wall: the format's own cards, blurred into a texture. Banned ones stay out
+// (they are pinned in CARD for the ban scene only). It scrolls without ever
+// looping back, so it holds rows for the whole video: a looped wall jumped a row
+// every 7.7 s, its rows being different cards.
+const WALL_BANNED = ["Sailors' Bane", 'Crackling Drake', 'Treasure Cruise', 'Price of Progress']
 {
-  const names = Object.keys(CARD), R0 = rng(5)
-  for (let k = 0; k < 17 * 7; k++) {
+  const names = Object.keys(CARD).filter((n) => !WALL_BANNED.includes(n)), R0 = rng(5)
+  for (let k = 0; k < 17 * 17; k++) {
     const i = document.createElement('img')
     i.src = img(names[Math.floor(R0() * names.length)])
     $('#wall').appendChild(i)
@@ -864,7 +868,7 @@ function BG(t) {
   // the wall of cards, except over the photo and the cube
   const wo = inR(t, D, T_CUBE) ? P(t, D, D + 0.4) * (1 - P(t, W[3], W[3] + 0.2) + P(t, W[4] - 0.2, W[4])) : t >= T_OUT ? 0.8 * P(t, T_OUT, T_OUT + 0.8) : 0
   $('#wallL').style.opacity = clamp(wo)
-  $('#wall').style.transform = `rotate(-8deg) translateY(${-((t * 30) % 231)}px)`
+  $('#wall').style.transform = `rotate(-8deg) translateY(${-t * 30}px)`
   // the tournament photo, behind "un format vivant"
   const po = inR(t, W[3] - 0.1, W[4]) ? P(t, W[3] - 0.1, W[3] + 0.25) * (1 - P(t, W[4] - 0.25, W[4])) : 0
   vis($('#photoL'), po > 0)
