@@ -236,6 +236,17 @@ class DeckValidatorTest extends TestCase
         $this->assertContains('duplicates', $this->ruleNames($result));
     }
 
+    public function testDuplicateSplitAcrossLinesIsRejected(): void
+    {
+        $text = $this->deck(['Plains' => 97, 'Prophetic Prism' => 1]) . "\n1 Prophetic Prism";
+        $result = DeckValidator::validate(self::COMMANDER, '', $text);
+
+        $this->assertFalse($result['is_valid']);
+        $errors = array_column($result['errors'], null, 'rule');
+        $this->assertArrayHasKey('duplicates', $errors);
+        $this->assertSame(['Prophetic Prism (2 copies)'], $errors['duplicates']['cards']);
+    }
+
     public function testDuplicateBasicLandIsAllowed(): void
     {
         // 99 Plains is the valid deck above — asserted here as the explicit

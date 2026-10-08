@@ -17,6 +17,23 @@ class DecklistParserTest extends TestCase
         );
     }
 
+    /**
+     * Regression: one entry per line let a card written on two lines pass the
+     * singleton rule, which reads one entry's quantity.
+     */
+    public function testSameCardOnTwoLinesIsOneEntry(): void
+    {
+        $cards = DecklistParser::parse("1 Sacred Peaks\n4 Mountain\n1 sacred  peaks");
+
+        $this->assertSame(
+            [
+                ['quantity' => 2, 'name' => 'Sacred Peaks'],
+                ['quantity' => 4, 'name' => 'Mountain'],
+            ],
+            $cards
+        );
+    }
+
     public function testHandlesCarriageReturns(): void
     {
         // The exported decklists in content/decklists/*.json use \r\n.
