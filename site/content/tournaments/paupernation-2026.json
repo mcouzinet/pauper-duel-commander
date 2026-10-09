@@ -202,9 +202,9 @@
         {
             "place": 28,
             "playerName": "Jordan",
-            "commanderName": "???",
+            "commanderName": "Parcelbeast",
             "score": "0-5-0",
-            "decklistSlug": null
+            "decklistSlug": "parcelbeast-paupernation-2026-28eme"
         }
     ],
     "metaList": [
@@ -281,8 +281,12 @@
             "count": 1
         },
         {
+            "name": "Parcelbeast",
+            "count": 1
+        },
+        {
             "name": "???",
-            "count": 3
+            "count": 2
         }
     ]
 }
