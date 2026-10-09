@@ -139,7 +139,7 @@
         {
             "place": 19,
             "playerName": "Matthias",
-            "commanderName": "Mayhem Devil",
+            "commanderName": "Black Waltz No. 3",
             "score": "2-3-0",
             "decklistSlug": null
         },
@@ -153,9 +153,9 @@
         {
             "place": 21,
             "playerName": "Cladblaster",
-            "commanderName": "???",
+            "commanderName": "Heartfire Hero",
             "score": "2-3-0",
-            "decklistSlug": null
+            "decklistSlug": "heartfire-hero-paupernation-2026-21eme"
         },
         {
             "place": 22,
@@ -202,15 +202,15 @@
         {
             "place": 28,
             "playerName": "Jordan",
-            "commanderName": "???",
+            "commanderName": "Parcelbeast",
             "score": "0-5-0",
-            "decklistSlug": null
+            "decklistSlug": "parcelbeast-paupernation-2026-28eme"
         }
     ],
     "metaList": [
         {
             "name": "Mayhem Devil",
-            "count": 4
+            "count": 3
         },
         {
             "name": "Fynn, the Fangbearer",
@@ -281,8 +281,20 @@
             "count": 1
         },
         {
+            "name": "Parcelbeast",
+            "count": 1
+        },
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        },
+        {
+            "name": "Black Waltz No. 3",
+            "count": 1
+        },
+        {
             "name": "???",
-            "count": 3
+            "count": 1
         }
     ]
 }
