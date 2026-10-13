@@ -1,0 +1,68 @@
+{
+    "title": "Endstep #2",
+    "date": "2026-10-12",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 5,
+    "details": "<p>Premier tournoi de la série Pauper Duel Commander sur Endstep.</p><p>Rondes suisses en BO3 · 5 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Ivinos",
+            "commanderName": "Thranduil, Sindarin Liege",
+            "score": "2-0-0",
+            "decklistSlug": "thranduil-sindarin-liege-endstep-2-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "eli",
+            "commanderName": "Captain Ripley Vance",
+            "score": "1-1-0",
+            "decklistSlug": "captain-ripley-vance-endstep-2-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Scratchyx",
+            "commanderName": "Baleful Strix",
+            "score": "0-1-0",
+            "decklistSlug": "baleful-strix-endstep-2-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "4tuna",
+            "commanderName": "Bastion Protector",
+            "score": "0-1-0",
+            "decklistSlug": "bastion-protector-endstep-2-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Teno91",
+            "commanderName": "Tomik, Izzet Sparkmage",
+            "score": "0-0-0",
+            "decklistSlug": "tomik-izzet-sparkmage-endstep-2-5eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Thranduil, Sindarin Liege",
+            "count": 1
+        },
+        {
+            "name": "Captain Ripley Vance",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Bastion Protector",
+            "count": 1
+        },
+        {
+            "name": "Tomik, Izzet Sparkmage",
+            "count": 1
+        }
+    ]
+}
