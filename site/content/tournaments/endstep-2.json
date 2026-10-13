@@ -1,0 +1,68 @@
+{
+    "title": "Endstep #2",
+    "date": "2026-10-12",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 5,
+    "details": "<p>Premier tournoi de la série Pauper Duel Commander sur Endstep.</p><p>Rondes suisses en BO3 · 5 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Na-O-H",
+            "commanderName": "Gretchen Titchwillow",
+            "score": "3-0-0",
+            "decklistSlug": "gretchen-titchwillow-endstep-2-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "eli",
+            "commanderName": "Captain Ripley Vance",
+            "score": "2-1-0",
+            "decklistSlug": "captain-ripley-vance-endstep-2-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Scratchyx",
+            "commanderName": "Baleful Strix",
+            "score": "2-1-0",
+            "decklistSlug": "baleful-strix-endstep-2-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Ivinos",
+            "commanderName": "Thranduil, Sindarin Liege",
+            "score": "1-2-0",
+            "decklistSlug": "thranduil-sindarin-liege-endstep-2-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "4tuna",
+            "commanderName": "Bastion Protector",
+            "score": "1-2-0",
+            "decklistSlug": "bastion-protector-endstep-2-5eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Gretchen Titchwillow",
+            "count": 1
+        },
+        {
+            "name": "Captain Ripley Vance",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Thranduil, Sindarin Liege",
+            "count": 1
+        },
+        {
+            "name": "Bastion Protector",
+            "count": 1
+        }
+    ]
+}
