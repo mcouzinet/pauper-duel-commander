@@ -110,6 +110,17 @@ class RateLimiter {
     }
 
     /**
+     * Validation limit for a client: a trusted server (PDC_RATE_TRUSTED_IPS) gets its own,
+     * higher one, since it relays many players from a single address.
+     *
+     * @param string $client client_id()
+     * @return int
+     */
+    public static function validation_limit($client) {
+        return in_array($client, PDC_RATE_TRUSTED_IPS, true) ? PDC_RATE_LIMIT_TRUSTED : PDC_RATE_LIMIT;
+    }
+
+    /**
      * Delete entries whose window elapsed long ago.
      *
      * @param int $window Window length in seconds
