@@ -114,6 +114,11 @@ const websiteSchema = {
   {schemas.map(schema => (
     <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
   ))}
+  <!-- Audience: Umami, self-hosted, no cookie, so no consent banner. Counts the
+       production domain only (data-domains): previews and dev stay out. -->
+  <script is:inline defer src="https://umami.tolarianstudio.com/script.js"
+          data-website-id="68badb60-150c-49c8-9539-374510cd0518"
+          data-domains="pauperduelcommander.fr,www.pauperduelcommander.fr"></script>
 </head>
 <body>
   <a href="#main" class="skip-link">{t('a11y.skipToContent', locale)}</a>
@@ -127,7 +132,6 @@ const websiteSchema = {
   <Footer locale={locale} />
 
   <!-- Global scripts -->
-  <script src="@/scripts/cookieconsent-config.ts"></script>
   <script src="@/scripts/mobile-menu.ts"></script>
   <script src="@/scripts/card-preview.ts"></script>
   <script src="@/scripts/analytics.ts"></script>

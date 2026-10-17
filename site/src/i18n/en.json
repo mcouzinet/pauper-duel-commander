@@ -890,8 +890,8 @@
         "body": "This is a static website. We do not collect any personal data directly. No user account is required to browse the site."
       },
       {
-        "heading": "Google Analytics",
-        "body": "We use Google Analytics (GA4) to analyze site traffic. Google Analytics uses cookies to collect anonymous information about how visitors use the site. This information is used to improve content and user experience."
+        "heading": "Audience measurement",
+        "body": "We measure the site's audience with Umami, hosted on our own server. Umami sets no cookies, does not follow visitors across sites and does not store IP addresses: it anonymously counts page views and a few actions (opening a decklist, clicking through to the Discord) to improve the site. No data is shared with third parties."
       },
       {
         "heading": "Scryfall API",
