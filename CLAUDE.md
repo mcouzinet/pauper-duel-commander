@@ -319,7 +319,7 @@ réencodées, pas des sources :
   `.seoDescription`. Les composants qui parcourent une branche entière du
   catalogue passent par `messagesFor(locale)`, jamais par un import direct du JSON.
 - Un script client ne peut pas appeler `t()` : il lit `document.documentElement.lang`
-  et se sert d'une table locale (cf. `card-preview.ts`, `cookieconsent-config.ts`)
+  et se sert d'une table locale (cf. `card-preview.ts`)
 - Construire les URL avec `route()` de `lib/routes.ts`, jamais par interpolation :
   c'est une URL en dur qui avait mis les 15 liens « Deck » des top 8 en 404
 - Une nouvelle page = un composant dans `components/pages/`, monté par deux
@@ -366,6 +366,11 @@ réencodées, pas des sources :
   par graphique, 6 % dessinait une barre pleine à côté d'une couleur à 51 % en
   demi-barre. Le classement des généraux n'a pas de barre : à quelques %, elle
   n'aurait été qu'un trait.
+- Audience : Umami auto-hébergé (`umami.tolarianstudio.com`, script dans
+  `Base.astro`), sans cookie, donc sans bandeau de consentement. Il ne compte que
+  le domaine de prod (`data-domains`). Un événement se déclare dans le balisage
+  (`data-analytics="nom"` + `data-analytics-*`) et part par `track()` de
+  `scripts/analytics.ts` : jamais d'appel direct à `umami`.
 - Un contrôle qui ne marche qu'avec JavaScript porte `data-needs-js` : il est
   masqué sans JS (`globals.css`, la classe `js` est posée dans `Base.astro`).
 

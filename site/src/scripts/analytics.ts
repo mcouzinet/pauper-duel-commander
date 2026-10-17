@@ -1,28 +1,26 @@
 /**
  * Journey tracking.
  *
- * GA4 was loaded but only ever recorded page views, so none of the questions the
- * site exists to answer could be measured: does anyone reach the Discord, does
- * the ban list get read, do people search for a deck.
+ * Page views are Umami's own (Base.astro). These are the questions the site
+ * exists to answer: does anyone reach the Discord, does the ban list get read,
+ * do people search for a deck.
  *
  * Markup declares its own events — `data-analytics="discord_click"` plus any
  * `data-analytics-*` attributes as parameters — so adding a tracked control never
- * means editing this file. Everything routes through one `track()` that no-ops
- * until analytics consent is granted, which keeps the consent contract in a
- * single place.
+ * means editing this file. Everything routes through one `track()`, which
+ * no-ops while Umami is not loaded (dev, previews, blocked script). Umami sets
+ * no cookie, so there is no consent to wait for.
  */
 declare global {
   interface Window {
-    dataLayer?: unknown[];
-    gtag?: (...args: unknown[]) => void;
+    umami?: { track: (event: string, data?: Record<string, unknown>) => void };
     pdcTrack?: (event: string, params?: Record<string, unknown>) => void;
   }
 }
 
-/** Send an event, if the visitor allowed analytics. gtag is absent otherwise. */
+/** Send an event to Umami, when its script is there. */
 export function track(event: string, params: Record<string, unknown> = {}): void {
-  if (typeof window.gtag !== 'function') return;
-  window.gtag('event', event, params);
+  window.umami?.track(event, params);
 }
 
 // Exposed for inline handlers in pages (filters, search, export buttons).
