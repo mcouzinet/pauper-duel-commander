@@ -10,6 +10,13 @@ class RateLimiterTest extends TestCase
         return '198.51.100.7|' . $this->getName() . $suffix;
     }
 
+    public function testTrustedServersGetTheirOwnLimit(): void
+    {
+        $this->assertSame(PDC_RATE_LIMIT_TRUSTED, RateLimiter::validation_limit('152.228.240.245'));
+        $this->assertSame(PDC_RATE_LIMIT, RateLimiter::validation_limit('198.51.100.7'));
+        $this->assertGreaterThan(PDC_RATE_LIMIT, PDC_RATE_LIMIT_TRUSTED);
+    }
+
     public function testAllowsRequestsUpToTheLimit(): void
     {
         $client = $this->client();

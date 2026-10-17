@@ -95,6 +95,20 @@ if (!defined('PDC_RATE_WINDOW')) {
 }
 
 /**
+ * Servers that validate on behalf of many players, with their own, higher limit.
+ * 152.228.240.245: PDC Practice (pdcpractice.tolarianstudio.com), which plays PDC in the
+ * browser and validates every deck before a game. All its players share this one address.
+ */
+if (!defined('PDC_RATE_TRUSTED_IPS')) {
+    define('PDC_RATE_TRUSTED_IPS', array('152.228.240.245'));
+}
+
+/** Max validation requests per window for a trusted server */
+if (!defined('PDC_RATE_LIMIT_TRUSTED')) {
+    define('PDC_RATE_LIMIT_TRUSTED', 300);
+}
+
+/**
  * Max distinct card names accepted in one decklist.
  *
  * A legal PDC deck has at most 100 distinct cards. The cap matters because every
