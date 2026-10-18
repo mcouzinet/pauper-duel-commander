@@ -71,8 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Rate limit
 // ---------------------------------------------------------------------------
 
-$rate = RateLimiter::consume(RateLimiter::client_id(), PDC_RATE_LIMIT, PDC_RATE_WINDOW);
-header('X-RateLimit-Limit: ' . PDC_RATE_LIMIT);
+$client = RateLimiter::client_id();
+$limit = RateLimiter::validation_limit($client);
+$rate = RateLimiter::consume($client, $limit, PDC_RATE_WINDOW);
+header('X-RateLimit-Limit: ' . $limit);
 header('X-RateLimit-Remaining: ' . $rate['remaining']);
 
 if (!$rate['allowed']) {
