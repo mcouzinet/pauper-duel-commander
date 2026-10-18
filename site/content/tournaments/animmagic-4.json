@@ -1,0 +1,136 @@
+{
+    "title": "Anim'Magic #4",
+    "date": "2026-10-17",
+    "location": "Anim'Magic",
+    "city": "Wattrelos (Lille)",
+    "playerCount": 36,
+    "actualPlayerCount": 11,
+    "details": "<p>Samedi 17 octobre 2026, ouverture à 14 h, début à 14 h 30. 5 rue Saint-Vincent-de-Paul, Wattrelos. Gratuit.</p><p>Rondes suisses selon le nombre de joueurs, sans top 8 : le classement est celui des rondes.</p><p>Les membres de l'association gagnent des points (3 par victoire, 1 par nul, plus 1 par ronde), échangeables contre ce que propose l'association : 3 points pour 1 euro (un lancer de dé sur le « Mur », 15 points pour un booster, 18 pour un booster Univers Beyond). Adhésion : 20 euros par an.</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "???",
+            "commanderName": "Gut, True Soul Zealot // Inspiring Leader",
+            "score": "4-0-0",
+            "decklistSlug": "gut-true-soul-zealot-animmagic-4-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "???",
+            "commanderName": "Hemosymbic Mite",
+            "score": "3-1-0",
+            "decklistSlug": "hemosymbic-mite-animmagic-4-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "???",
+            "commanderName": "Mayhem Devil",
+            "score": "3-1-0",
+            "decklistSlug": "mayhem-devil-animmagic-4-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "???",
+            "commanderName": "Balmor, Battlemage Captain",
+            "score": "2-1-1",
+            "decklistSlug": "balmor-battlemage-captain-animmagic-4-4eme"
+        }
+    ],
+    "standings": [
+        {
+            "place": 5,
+            "playerName": "???",
+            "commanderName": "Tatyova, Benthic Druid",
+            "score": "2-1-1",
+            "decklistSlug": "tatyova-benthic-druid-animmagic-4-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "???",
+            "commanderName": "Heartfire Hero",
+            "score": "2-2-0",
+            "decklistSlug": "heartfire-hero-animmagic-4-6eme"
+        },
+        {
+            "place": 7,
+            "playerName": "???",
+            "commanderName": "Livaan, Cultist of Tiamat // Sword Coast Sailor",
+            "score": "2-2-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 8,
+            "playerName": "???",
+            "commanderName": "Caparocti Sunborn",
+            "score": "2-2-0",
+            "decklistSlug": "caparocti-sunborn-animmagic-4-8eme"
+        },
+        {
+            "place": 9,
+            "playerName": "???",
+            "commanderName": "Syr Konrad, the Grim",
+            "score": "1-3-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 10,
+            "playerName": "???",
+            "commanderName": "Halsin, Emerald Archdruid // Dragon Cultist",
+            "score": "0-3-1",
+            "decklistSlug": null
+        },
+        {
+            "place": 11,
+            "playerName": "???",
+            "commanderName": "Host of the Hereafter",
+            "score": "0-2-1",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Gut, True Soul Zealot // Inspiring Leader",
+            "count": 1
+        },
+        {
+            "name": "Hemosymbic Mite",
+            "count": 1
+        },
+        {
+            "name": "Mayhem Devil",
+            "count": 1
+        },
+        {
+            "name": "Balmor, Battlemage Captain",
+            "count": 1
+        },
+        {
+            "name": "Tatyova, Benthic Druid",
+            "count": 1
+        },
+        {
+            "name": "Heartfire Hero",
+            "count": 1
+        },
+        {
+            "name": "Livaan, Cultist of Tiamat // Sword Coast Sailor",
+            "count": 1
+        },
+        {
+            "name": "Caparocti Sunborn",
+            "count": 1
+        },
+        {
+            "name": "Syr Konrad, the Grim",
+            "count": 1
+        },
+        {
+            "name": "Halsin, Emerald Archdruid // Dragon Cultist",
+            "count": 1
+        },
+        {
+            "name": "Host of the Hereafter",
+            "count": 1
+        }
+    ]
+}
