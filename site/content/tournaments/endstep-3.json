@@ -1,0 +1,125 @@
+{
+    "title": "Endstep #3",
+    "date": "2026-10-19",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 10,
+    "details": "<p>Tournoi de la série Pauper Duel Commander sur Endstep.</p><p>Rondes suisses en BO3 · 10 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Na-O-H",
+            "commanderName": "Monastery Swiftspear",
+            "score": "3-1-0",
+            "decklistSlug": "monastery-swiftspear-endstep-3-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Titau",
+            "commanderName": "Lagrella, the Magpie",
+            "score": "3-1-0",
+            "decklistSlug": "lagrella-the-magpie-endstep-3-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "4tuna",
+            "commanderName": "Bastion Protector",
+            "score": "3-1-0",
+            "decklistSlug": "bastion-protector-endstep-3-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Teno91",
+            "commanderName": "Tomik, Izzet Sparkmage",
+            "score": "2-2-0",
+            "decklistSlug": "tomik-izzet-sparkmage-endstep-3-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Mikado",
+            "commanderName": "Metastatic Evangel",
+            "score": "2-2-0",
+            "decklistSlug": "metastatic-evangel-endstep-3-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "Efeimh",
+            "commanderName": "Geist of Saint Thalia",
+            "score": "2-2-0",
+            "decklistSlug": "geist-of-saint-thalia-endstep-3-6eme"
+        },
+        {
+            "place": 7,
+            "playerName": "Denis La Limace",
+            "commanderName": "Diamond Weapon",
+            "score": "2-2-0",
+            "decklistSlug": "diamond-weapon-endstep-3-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Mskguizmo",
+            "commanderName": "Shao Jun",
+            "score": "2-2-0",
+            "decklistSlug": "shao-jun-endstep-3-8eme"
+        }
+    ],
+    "standings": [
+        {
+            "place": 9,
+            "playerName": "Scratchyx",
+            "commanderName": "Sedraxis Specter",
+            "score": "1-3-0",
+            "decklistSlug": "sedraxis-specter-endstep-3-9eme"
+        },
+        {
+            "place": 10,
+            "playerName": "Boubouch",
+            "commanderName": "Sarcatog",
+            "score": "0-4-0",
+            "decklistSlug": "sarcatog-endstep-3-10eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Monastery Swiftspear",
+            "count": 1
+        },
+        {
+            "name": "Lagrella, the Magpie",
+            "count": 1
+        },
+        {
+            "name": "Bastion Protector",
+            "count": 1
+        },
+        {
+            "name": "Tomik, Izzet Sparkmage",
+            "count": 1
+        },
+        {
+            "name": "Metastatic Evangel",
+            "count": 1
+        },
+        {
+            "name": "Geist of Saint Thalia",
+            "count": 1
+        },
+        {
+            "name": "Diamond Weapon",
+            "count": 1
+        },
+        {
+            "name": "Shao Jun",
+            "count": 1
+        },
+        {
+            "name": "Sedraxis Specter",
+            "count": 1
+        },
+        {
+            "name": "Sarcatog",
+            "count": 1
+        }
+    ]
+}
