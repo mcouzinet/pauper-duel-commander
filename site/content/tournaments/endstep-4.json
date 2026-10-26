@@ -1,0 +1,136 @@
+{
+    "title": "Endstep #4",
+    "date": "2026-10-26",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 11,
+    "details": "<p>Tournoi de la série Pauper Duel Commander sur Endstep.</p><p>Rondes suisses en BO3 · 11 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "4tuna",
+            "commanderName": "Arnyn, Deathbloom Botanist\r",
+            "score": "4-0-0",
+            "decklistSlug": "arnyn-deathbloom-botanist-endstep-4-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Teno91",
+            "commanderName": "General Kreat, the Boltbringer\r",
+            "score": "3-1-0",
+            "decklistSlug": "general-kreat-the-boltbringer-endstep-4-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "talocho",
+            "commanderName": "Gut, True Soul Zealot\r // Inspiring Leader\r",
+            "score": "3-1-0",
+            "decklistSlug": "gut-true-soul-zealot-endstep-4-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "Scratchyx",
+            "commanderName": "Bastion Protector\r",
+            "score": "3-1-0",
+            "decklistSlug": "bastion-protector-endstep-4-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Mikado",
+            "commanderName": "Long Feng, Grand Secretariat\r",
+            "score": "2-2-0",
+            "decklistSlug": "long-feng-grand-secretariat-endstep-4-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "J'ai plus d'une corde à Monarque",
+            "commanderName": "Baleful Strix\r",
+            "score": "2-2-0",
+            "decklistSlug": "baleful-strix-endstep-4-6eme"
+        },
+        {
+            "place": 7,
+            "playerName": "eli",
+            "commanderName": "Captain Ripley Vance\r",
+            "score": "2-2-0",
+            "decklistSlug": "captain-ripley-vance-endstep-4-7eme"
+        },
+        {
+            "place": 8,
+            "playerName": "Titau",
+            "commanderName": "Lagrella, the Magpie\r",
+            "score": "2-2-0",
+            "decklistSlug": "lagrella-the-magpie-endstep-4-8eme"
+        }
+    ],
+    "standings": [
+        {
+            "place": 9,
+            "playerName": "Brice",
+            "commanderName": "Juri, Master of the Revue\r",
+            "score": "1-3-0",
+            "decklistSlug": "juri-master-of-the-revue-endstep-4-9eme"
+        },
+        {
+            "place": 10,
+            "playerName": "FidelleCast",
+            "commanderName": "Siona, Captain of the Pyleas\r",
+            "score": "1-3-0",
+            "decklistSlug": "siona-captain-of-the-pyleas-endstep-4-10eme"
+        },
+        {
+            "place": 11,
+            "playerName": "ArdenSkales",
+            "commanderName": "Junk Winder\r",
+            "score": "1-3-0",
+            "decklistSlug": "junk-winder-endstep-4-11eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Arnyn, Deathbloom Botanist\r",
+            "count": 1
+        },
+        {
+            "name": "General Kreat, the Boltbringer\r",
+            "count": 1
+        },
+        {
+            "name": "Gut, True Soul Zealot\r // Inspiring Leader\r",
+            "count": 1
+        },
+        {
+            "name": "Bastion Protector\r",
+            "count": 1
+        },
+        {
+            "name": "Long Feng, Grand Secretariat\r",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix\r",
+            "count": 1
+        },
+        {
+            "name": "Captain Ripley Vance\r",
+            "count": 1
+        },
+        {
+            "name": "Lagrella, the Magpie\r",
+            "count": 1
+        },
+        {
+            "name": "Juri, Master of the Revue\r",
+            "count": 1
+        },
+        {
+            "name": "Siona, Captain of the Pyleas\r",
+            "count": 1
+        },
+        {
+            "name": "Junk Winder\r",
+            "count": 1
+        }
+    ]
+}
