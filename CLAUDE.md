@@ -210,6 +210,12 @@ en place : `docs/external/README.md`.
   `DecklistParser::parse()` additionne ses quantités. Une entrée par ligne
   laissait « 1 Sacred Peaks » deux fois passer la règle 6, qui lit la quantité
   de chaque entrée.
+- **Le parseur accepte les exports des deckbuilders** (Moxfield, Archidekt,
+  Arena, TappedOut, Deckstats) : édition et numéro, foil, tags et en-têtes de
+  section sont retirés, la maybeboard et les jetons ignorés, et un exemplaire du
+  général présent dans la liste est retiré (`without_commanders`). Une
+  soumission est enregistrée en lignes « quantité nom » (`to_text`), jamais en
+  texte brut : sinon la page publiée afficherait « (2X2) 117 » comme une carte.
 - **`X-Forwarded-For` est ignoré volontairement** dans `RateLimiter::client_id()`
   (falsifiable). Le lire nécessiterait une allow-list de proxys de confiance.
 - **Seuls les trois points d'entrée sont joignables** (`validate-deck`,
