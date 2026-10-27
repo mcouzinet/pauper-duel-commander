@@ -232,6 +232,8 @@ class DeckValidator {
             return self::build_result(false, $errors, $warnings, null);
         }
 
+        $parsed_cards = DecklistParser::without_commanders($parsed_cards, array($commander_name, $partner_name));
+
         // --- Fetch commander(s) from Scryfall ---
         $commander_data = ScryfallService::get_card_by_name($commander_name);
         if (!$commander_data) {

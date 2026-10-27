@@ -39,8 +39,19 @@ class DecklistParser {
 
         $cards = array();
         $lines = explode("\n", $decklist_text);
+        $skip  = false;
 
         foreach ($lines as $line) {
+            // A section header switches sections: a maybeboard or token list is
+            // not part of the deck, whatever follows it until the next header.
+            $section = self::section_header($line);
+            if ($section !== null) {
+                $skip = in_array($section, self::IGNORED_SECTIONS, true);
+                continue;
+            }
+            if ($skip) {
+                continue;
+            }
             $parsed = self::parse_line($line);
             if (!$parsed) {
                 continue;
@@ -56,59 +67,107 @@ class DecklistParser {
         return array_values($cards);
     }
 
+    /** Section headers written by deckbuilders (Moxfield, Archidekt, Arena...). */
+    const SECTIONS = array(
+        'about', 'artifact', 'artifacts', 'battle', 'battles', 'commander', 'commanders',
+        'companion', 'considering', 'creature', 'creatures', 'deck', 'enchantment',
+        'enchantments', 'instant', 'instants', 'land', 'lands', 'main', 'mainboard',
+        'maindeck', 'maybeboard', 'other', 'planeswalker', 'planeswalkers', 'sideboard',
+        'sorceries', 'sorcery', 'spells', 'tokens',
+    );
+
+    /** Sections whose cards are not in the deck. */
+    const IGNORED_SECTIONS = array('maybeboard', 'considering', 'tokens');
+
     /**
-     * Parse a single line of MTGO format.
+     * Section name if the line is a header ("Creatures (25)", "// Maybeboard",
+     * "SIDEBOARD:"), null otherwise.
+     */
+    private static function section_header($line) {
+        $line = strtolower(trim($line));
+        if (!preg_match('/^(?:\/\/\s*)?([a-z ]+?)\s*(?:\(\d+\))?\s*:?$/', $line, $m)) {
+            return null;
+        }
+        return in_array($m[1], self::SECTIONS, true) ? $m[1] : null;
+    }
+
+    /**
+     * Parse a single line.
      *
-     * Expected format: "quantity card_name"
-     * Examples:
-     *   "1 Lightning Bolt"
-     *   "4 Mountain"
-     *   "2 Counterspell"
+     * Accepts the quantity as "4 Mountain", "4x Mountain" or none (1 copy), and
+     * strips what deckbuilders add around the name: printing ("(2X2) 117",
+     * "[M20]"), foil or role markers ("*F*", "*CMDR*"), tags ("#!Removal",
+     * "[Removal]", "^Have^"). Only the name reaches the validator.
      *
      * @param string $line Single line from decklist
      * @return array|null Parsed card data or null if invalid
      */
     private static function parse_line($line) {
-        $line = trim($line);
+        // Bullets from a copy-paste of a rendered list.
+        $line = trim(preg_replace('/^\s*[-*\x{2022}]\s+/u', '', $line));
 
-        // Skip empty lines
-        if (empty($line)) {
+        if ($line === '' || preg_match('/^(\/\/|#)/', $line)) {
             return null;
         }
 
-        // Skip comment lines (starting with // or #)
-        if (preg_match('/^(\/\/|#)/', $line)) {
+        $quantity = 1;
+        if (preg_match('/^(\d+)\s*[xX]?\s+(.+)$/', $line, $m)) {
+            $quantity = (int) $m[1];
+            $line     = $m[2];
+        } elseif (!preg_match('/^[\p{L}\[]/u', $line)) {
             return null;
         }
 
-        // Skip sideboard / deck section markers
-        $lower = strtolower($line);
-        if ($lower === 'sideboard' || $lower === 'sideboard:' || $lower === 'deck' || $lower === 'deck:' || $lower === 'commander' || $lower === 'commander:') {
+        $name = $line;
+        $name = preg_replace('/^\[[^\]]*\]\s*/', '', $name);           // Deckstats: "[M20] Name"
+        $name = preg_replace('/\s+#.*$/', '', $name);                      // Moxfield / Deckstats tags
+        $name = preg_replace('/\s*\^[^^]*\^/', '', $name);                // Archidekt colour tags
+        $name = preg_replace('/\s*\[[^\]]*\]/', '', $name);              // Archidekt categories
+        $name = preg_replace('/\s*\*[A-Za-z]+\*/', '', $name);            // *F*, *E*, *CMDR*
+        $name = preg_replace('/\s+\([A-Za-z0-9]{2,6}\)(\s+\S+)?\s*$/', '', $name); // (SET) 123
+        $name = self::normalize_card_name($name);
+
+        if ($quantity <= 0 || $name === '') {
             return null;
         }
+        return array('quantity' => $quantity, 'name' => $name);
+    }
 
-        // Parse "quantity card_name" (e.g. "1 Lightning Bolt")
-        if (preg_match('/^(\d+)\s+(.+)$/', $line, $matches)) {
-            $quantity  = (int) $matches[1];
-            $card_name = trim($matches[2]);
-
-            if ($quantity > 0 && !empty($card_name)) {
-                return array(
-                    'quantity' => $quantity,
-                    'name'     => self::normalize_card_name($card_name),
-                );
+    /**
+     * Drop one copy of each commander from parsed cards.
+     *
+     * Deckbuilder exports list the commander with the deck: that copy is the
+     * commander slot, not a 100th card.
+     *
+     * @param array $cards Array from parse()
+     * @param array $names Commander and partner names (empty ones ignored)
+     * @return array
+     */
+    public static function without_commanders($cards, $names) {
+        foreach ($names as $name) {
+            $key = strtolower(self::normalize_card_name((string) $name));
+            foreach ($cards as $i => $card) {
+                if ($key !== '' && strtolower($card['name']) === $key) {
+                    if (--$cards[$i]['quantity'] === 0) {
+                        unset($cards[$i]);
+                    }
+                    break;
+                }
             }
         }
+        return array_values($cards);
+    }
 
-        // Fallback: line without quantity prefix (assume 1 copy)
-        if (preg_match('/^[A-Za-z]/', $line)) {
-            return array(
-                'quantity' => 1,
-                'name'     => self::normalize_card_name($line),
-            );
-        }
-
-        return null;
+    /**
+     * The deck as plain "quantity name" lines, whatever format it came in.
+     *
+     * @param array $cards Array from parse()
+     * @return string
+     */
+    public static function to_text($cards) {
+        return implode("\n", array_map(function ($c) {
+            return $c['quantity'] . ' ' . $c['name'];
+        }, $cards));
     }
 
     /**
@@ -159,8 +218,8 @@ class DecklistParser {
     public static function normalize_card_name($card_name) {
         $card_name = trim($card_name);
         $card_name = preg_replace('/\s+/', ' ', $card_name);
-        // Normalize split card separator: "Fire // Ice"
-        $card_name = preg_replace('/\s*\/\/\s*/', ' // ', $card_name);
+        // Normalize split / double-faced separator: "Fire // Ice", "Delver / Insectile"
+        $card_name = preg_replace('/\s*\/\/\s*|\s+\/\s+/', ' // ', $card_name);
         return $card_name;
     }
 

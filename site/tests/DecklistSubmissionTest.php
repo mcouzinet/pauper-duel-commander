@@ -68,4 +68,14 @@ class DecklistSubmissionTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         DecklistSubmission::from_input(array('commander' => 'Mother of Runes', 'decklist' => '   '));
     }
+
+    public function testDeckbuilderExportIsStoredAsPlainLines(): void
+    {
+        $d = DecklistSubmission::from_input(array(
+            'commander' => 'Mother of Runes',
+            'decklist'  => "Commander\n1 Mother of Runes (DMR) 15\n\nDeck\n1x Lightning Bolt (2X2) 117 *F*\n98 Plains",
+        ))->decklist_text();
+
+        $this->assertSame("1 Lightning Bolt\n98 Plains", $d);
+    }
 }
