@@ -3,10 +3,100 @@
     "date": "2026-11-01",
     "location": "Life is a Game",
     "city": "Marcq-en-Barœul (Lille)",
-    "playerCount": 16,
-    "actualPlayerCount": null,
-    "signupUrl": "https://www.lig-lifeisagame.fr/event/magic-duel-commander-pauper-159/register",
-    "details": "<p>Dimanche 1er novembre, de 14 h 30 à 18 h 30, à la boutique Life is a Game, 91 rue Nationale, Marcq-en-Barœul.</p><p>Parties en BO3, nombre de rondes selon les inscrits. PAF : 10 €, réglée sur place. Des lots pour l'ensemble des participants.</p><p>Réservation gratuite en ligne, sans compte ni paiement. 16 places.</p>",
-    "top8": [],
-    "metaList": []
+    "playerCount": 11,
+    "actualPlayerCount": 8,
+    "signupUrl": "",
+    "details": "<p>Dimanche 1er novembre, à la boutique Life is a Game, 91 rue Nationale, Marcq-en-Barœul.</p><p>3 rondes en BO3, 11 préinscrits pour 8 joueurs présents.</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Wizard of the Low Cost",
+            "commanderName": "Arnyn, Deathbloom Botanist",
+            "score": "3-0-0",
+            "decklistSlug": "arnyn-deathbloom-botanist-life-is-a-game-2-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "Yanis",
+            "commanderName": "Tomik, Izzet Sparkmage",
+            "score": "2-1-0",
+            "decklistSlug": "tomik-izzet-sparkmage-life-is-a-game-2-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Jean François",
+            "commanderName": "Baleful Strix",
+            "score": "2-1-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 4,
+            "playerName": "Hervé",
+            "commanderName": "Balmor, Battlemage Captain",
+            "score": "2-1-0",
+            "decklistSlug": "balmor-battlemage-captain-life-is-a-game-2-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "Nathaniel",
+            "commanderName": "Spider-Man India",
+            "score": "1-2-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 6,
+            "playerName": "Rolan",
+            "commanderName": "Gloryscale Viashino",
+            "score": "1-2-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 7,
+            "playerName": "Justin",
+            "commanderName": "Dina, Soul Steeper",
+            "score": "1-2-0",
+            "decklistSlug": null
+        },
+        {
+            "place": 8,
+            "playerName": "Ton",
+            "commanderName": "Adeliz, the Cinder Wind",
+            "score": "0-3-0",
+            "decklistSlug": null
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Arnyn, Deathbloom Botanist",
+            "count": 1
+        },
+        {
+            "name": "Tomik, Izzet Sparkmage",
+            "count": 1
+        },
+        {
+            "name": "Baleful Strix",
+            "count": 1
+        },
+        {
+            "name": "Balmor, Battlemage Captain",
+            "count": 1
+        },
+        {
+            "name": "Spider-Man India",
+            "count": 1
+        },
+        {
+            "name": "Gloryscale Viashino",
+            "count": 1
+        },
+        {
+            "name": "Dina, Soul Steeper",
+            "count": 1
+        },
+        {
+            "name": "Adeliz, the Cinder Wind",
+            "count": 1
+        }
+    ]
 }
