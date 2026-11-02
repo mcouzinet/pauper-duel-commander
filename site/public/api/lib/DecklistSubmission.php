@@ -61,13 +61,21 @@ final class DecklistSubmission {
         if ($cards === '') {
             throw new InvalidArgumentException('La decklist est obligatoire.');
         }
-        // Normalise line endings; the parser and renderer accept \n.
-        $cards = str_replace("\r\n", "\n", $cards);
-        $cards = mb_substr($cards, 0, self::MAX_CARDS);
+        $partner = $clean(isset($in['partner']) ? $in['partner'] : '', self::MAX_FIELD);
+        // Stored as plain "quantity name" lines: a Moxfield or Archidekt export
+        // would otherwise publish its printings, tags and headers as card names.
+        $parsed = DecklistParser::without_commanders(
+            DecklistParser::parse(mb_substr($cards, 0, self::MAX_CARDS)),
+            array($commander, $partner)
+        );
+        if (empty($parsed)) {
+            throw new InvalidArgumentException('La decklist est obligatoire.');
+        }
+        $cards = DecklistParser::to_text($parsed);
 
         $s = new self();
         $s->commander = $commander;
-        $s->partner   = $clean(isset($in['partner']) ? $in['partner'] : '', self::MAX_FIELD);
+        $s->partner   = $partner;
         $s->author    = $clean(isset($in['author']) ? $in['author'] : '', self::MAX_FIELD);
         $s->archetype = $clean(isset($in['archetype']) ? $in['archetype'] : '', self::MAX_FIELD);
         $s->cards     = $cards;

@@ -89,6 +89,16 @@ class DeckValidatorTest extends TestCase
         $this->assertSame(98, $result['stats']['total_cards']);
     }
 
+    public function testCommanderListedInTheDeckIsNotCounted(): void
+    {
+        // Moxfield or Arena exports put the commander in the list: 1 + 99 is legal.
+        $text = "Commander\n1 " . self::COMMANDER . " (SET) 1\n\nDeck\n" . $this->validDeck();
+        $result = DeckValidator::validate(self::COMMANDER, '', $text);
+
+        $this->assertSame([], $result['errors']);
+        $this->assertSame(99, $result['stats']['total_cards']);
+    }
+
     public function testCardLegalUnderPartnerColorIdentity(): void
     {
         // Lightning Bolt is illegal under a mono-W commander but legal once a red

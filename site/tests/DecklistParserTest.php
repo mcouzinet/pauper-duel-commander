@@ -86,4 +86,41 @@ class DecklistParserTest extends TestCase
         $this->assertSame(5, DecklistParser::count_cards($text));
         $this->assertSame(2, DecklistParser::count_unique($text));
     }
+
+    /**
+     * One line per deckbuilder export format: only the name and quantity survive.
+     */
+    public function testAcceptsDeckbuilderExportFormats(): void
+    {
+        $text = implode("\n", [
+            '1 Lightning Bolt (2X2) 117',          // Moxfield, Arena
+            '1 Counterspell (PLST) MH1-130 *F*',   // Moxfield foil, The List
+            '1x Ponder (M12) 73 [Cantrip] ^Have,#37d67a^', // Archidekt
+            '1x Preordain *F*',                    // TappedOut
+            '1 [M20] Opt',                         // Deckstats
+            '1 Brainstorm #!Draw',                 // Moxfield tag
+            '1 Delver of Secrets / Insectile Aberration', // single slash
+            '- 1 Island',                          // bullet
+            '2 x Mountain',
+        ]);
+
+        $this->assertSame(
+            ['Lightning Bolt', 'Counterspell', 'Ponder', 'Preordain', 'Opt', 'Brainstorm',
+             'Delver of Secrets // Insectile Aberration', 'Island', 'Mountain'],
+            array_column(DecklistParser::parse($text), 'name')
+        );
+        $this->assertSame(10, DecklistParser::count_cards($text));
+    }
+
+    public function testSectionHeadersAreSkippedAndMaybeboardIgnored(): void
+    {
+        $text = "Commander (1)\n1 Garland, Knight of Cornelia\nCreatures (2)\n1 Wall of Omens\n"
+            . "1 Mulldrifter\nLands\n1 Island\n\nMaybeboard (1)\n1 Ninja of the Deep Hours\n"
+            . "// Tokens\n1 Drake\nSIDEBOARD:\n1 Ponder";
+
+        $this->assertSame(
+            ['Garland, Knight of Cornelia', 'Wall of Omens', 'Mulldrifter', 'Island', 'Ponder'],
+            array_column(DecklistParser::parse($text), 'name')
+        );
+    }
 }
