@@ -173,6 +173,7 @@
     "rankingLabel": "Ranking",
     "allPlayers": "All players",
     "top4Short": "Top 4",
+    "hideBanned": "Hide banned commanders",
     "colorPresence": "Color presence",
     "colorPresenceHelp": "Share of players whose commander includes the color. A two-color commander counts for both.",
     "glanceTitle": "The meta at a glance",
