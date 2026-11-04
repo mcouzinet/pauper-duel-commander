@@ -234,3 +234,33 @@ function aggregate(
 
   return { commanders, colorCounts, ciCounts, tournamentCount, total, unattributed };
 }
+
+/**
+ * The same ranking without the commanders banned today: their entries leave the
+ * denominator too, so the shares read as the field a player can still meet.
+ */
+export function withoutBanned(a: Aggregate): Aggregate {
+  const commanders = a.commanders.filter(c => !c.isBanned);
+  const total = a.unattributed + commanders.reduce((sum, c) => sum + c.count, 0);
+  const colorCounts: Record<string, number> = {};
+  const ciCounts: Record<string, number> = {};
+
+  for (const c of commanders) {
+    for (const color of c.colors.length > 0 ? c.colors : ['C']) {
+      colorCounts[color] = (colorCounts[color] ?? 0) + c.count;
+    }
+    ciCounts[c.ciKey] = (ciCounts[c.ciKey] ?? 0) + c.count;
+  }
+
+  return {
+    ...a,
+    commanders: commanders.map((c, i) => ({
+      ...c,
+      rank: i + 1,
+      percentage: total > 0 ? Math.round((c.count / total) * 100) : 0,
+    })),
+    colorCounts,
+    ciCounts,
+    total,
+  };
+}

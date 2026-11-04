@@ -363,6 +363,10 @@ réencodées, pas des sources :
   (requêtes `@container` dans `results.css`, tailles de police hors utilitaires).
   Identités en grille des guildes (`GuildGrid`), couleurs en colonnes
   (`ColorColumns`), chiffres exacts dans `CommanderTable`.
+- Page méta, « Masquer les généraux bannis » : chaque classement existe en deux
+  exemplaires pré-rendus (`withoutBanned`), sans bannis dans le dénominateur non
+  plus. Le treemap et les parts dépendent du champ : masquer des lignes côté
+  navigateur les laisserait faux.
 - Page d'un tournoi : son plateau suit le même schéma (mosaïque, tableau, guildes,
   couleurs) ; la meilleure place de chaque général au top 8 est marquée sur sa
   tuile (`places`, clé sur le nom complet et sur la carte principale, car un top 8

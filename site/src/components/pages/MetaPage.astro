@@ -16,6 +16,11 @@
  *     colour columns.
  * A row of chips shows one ranking at a time. Without JavaScript the chips are
  * hidden and both rankings read one after the other.
+ *
+ * "Hide banned commanders" swaps in a second copy of each panel, built at build
+ * time: the mosaic's layout and every share depend on who is in the field, so
+ * hiding rows in the browser would leave them wrong. The copies start hidden,
+ * and their images are lazy, so they cost nothing until asked for.
  */
 import Base from '@/layouts/Base.astro';
 import MetaMosaic from '@/components/MetaMosaic.astro';
@@ -25,7 +30,7 @@ import ColorColumns from '@/components/ColorColumns.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import { t, tf, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
-import { getMeta, type Aggregate } from '@/lib/meta';
+import { getMeta, withoutBanned, type Aggregate } from '@/lib/meta';
 import { formatBanlistDate } from '@/lib/banlist';
 
 interface Props {
@@ -37,9 +42,10 @@ const meta = await getMeta();
 
 const hasData = meta.global.commanders.length > 0;
 const top4HasData = meta.top4.commanders.length > 0;
+const hasBanned = [...meta.global.commanders, ...meta.top4.commanders].some(c => c.isBanned);
 
 interface Panel {
-  id: 'global' | 'top4';
+  id: string;
   aggregate: Aggregate;
   glance: string;
   glanceHelp: string;
@@ -50,7 +56,7 @@ interface Panel {
   colorTitle: string;
 }
 
-const panels: Panel[] = [
+const rankings: Panel[] = [
   {
     id: 'global',
     aggregate: meta.global,
@@ -63,7 +69,7 @@ const panels: Panel[] = [
     colorTitle: t('meta.colorPresence', locale),
   },
   ...(top4HasData ? [{
-    id: 'top4' as const,
+    id: 'top4',
     aggregate: meta.top4,
     glance: t('meta.top4GlanceTitle', locale),
     glanceHelp: t('meta.top4GlanceHelp', locale),
@@ -74,6 +80,19 @@ const panels: Panel[] = [
     colorTitle: t('meta.top4Colors', locale),
   }] : []),
 ];
+
+const legalPanels = hasBanned
+  ? rankings.map(p => {
+      const aggregate = withoutBanned(p.aggregate);
+      return {
+        ...p,
+        id: `${p.id}-legal`,
+        aggregate,
+        intro: p.id === 'top4' ? `${t('meta.top4Desc', locale)} ${aggregate.tournamentCount} ${t('meta.tournaments', locale)} · ${aggregate.total} ${t('meta.top4Spots', locale)}` : p.intro,
+      };
+    })
+  : [];
+const panels = [...rankings, ...legalPanels];
 
 const title = t('meta.seoTitle', locale);
 const description = hasData
@@ -113,24 +132,34 @@ const description = hasData
 
     {hasData ? (
       <>
-        {panels.length > 1 && (
-          <div class="flex flex-wrap items-center gap-1.5 py-3 border-t border-white/8" role="radiogroup" aria-labelledby="meta-ranking-label" data-needs-js>
-            <span id="meta-ranking-label" class="mr-1 text-sm text-text-muted">{t('meta.rankingLabel', locale)}</span>
-            <label class="choice" data-analytics="meta_scope" data-analytics-scope="global">
-              <input type="radio" name="meta-ranking" value="global" checked class="sr-only" />
-              <span class="choice__box">{t('meta.allPlayers', locale)}</span>
-            </label>
-            <label class="choice" data-analytics="meta_scope" data-analytics-scope="top4">
-              <input type="radio" name="meta-ranking" value="top4" class="sr-only" />
-              <span class="choice__box">{t('meta.top4Short', locale)}</span>
-            </label>
+        {(rankings.length > 1 || hasBanned) && (
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 border-t border-white/8" data-needs-js>
+            {rankings.length > 1 && (
+              <div class="flex flex-wrap items-center gap-1.5" role="radiogroup" aria-labelledby="meta-ranking-label">
+                <span id="meta-ranking-label" class="mr-1 text-sm text-text-muted">{t('meta.rankingLabel', locale)}</span>
+                <label class="choice" data-analytics="meta_scope" data-analytics-scope="global">
+                  <input type="radio" name="meta-ranking" value="global" checked class="sr-only" />
+                  <span class="choice__box">{t('meta.allPlayers', locale)}</span>
+                </label>
+                <label class="choice" data-analytics="meta_scope" data-analytics-scope="top4">
+                  <input type="radio" name="meta-ranking" value="top4" class="sr-only" />
+                  <span class="choice__box">{t('meta.top4Short', locale)}</span>
+                </label>
+              </div>
+            )}
+            {hasBanned && (
+              <label class="choice" data-analytics="meta_hide_banned">
+                <input type="checkbox" id="meta-hide-banned" class="sr-only" />
+                <span class="choice__box">{t('meta.hideBanned', locale)}</span>
+              </label>
+            )}
           </div>
         )}
 
         {panels.map((panel, index) => {
           const a = panel.aggregate;
           return (
-            <section class="scroll-mt-24 border-t border-white/8 pt-6 md:pt-8 pb-8" aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id}>
+            <section class="scroll-mt-24 border-t border-white/8 pt-6 md:pt-8 pb-8" aria-labelledby={`meta-${panel.id}-title`} data-meta-panel={panel.id} hidden={panel.id.endsWith('-legal')}>
               <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1 mb-4">
                 <h2 id={`meta-${panel.id}-title`} class="section-title !mb-0">{panel.glance}</h2>
                 <p class="text-sm text-text-secondary">{panel.glanceHelp}</p>
@@ -169,23 +198,31 @@ const description = hasData
   <script>
     /**
      * One ranking at a time. Both are in the HTML (they read one after the
-     * other without JavaScript); the radios hide the other. A browser that
-     * restores the radio on "back" gets the matching panel.
+     * other without JavaScript); the radios hide the other, and the checkbox
+     * picks the copy without banned commanders. A browser that restores the
+     * controls on "back" gets the matching panel.
      */
     const radios = [...document.querySelectorAll<HTMLInputElement>('input[name="meta-ranking"]')];
+    const hideBanned = document.querySelector<HTMLInputElement>('#meta-hide-banned');
     const panels = [...document.querySelectorAll<HTMLElement>('[data-meta-panel]')];
 
-    function show(id: string) {
-      for (const panel of panels) panel.hidden = panel.dataset.metaPanel !== id;
+    function current() {
+      const ranking = radios.find(radio => radio.checked)?.value ?? 'global';
+      return hideBanned?.checked ? `${ranking}-legal` : ranking;
     }
 
-    if (radios.length > 0) {
-      show(radios.find(radio => radio.checked)?.value ?? 'global');
-      for (const radio of radios) {
-        radio.addEventListener('change', () => {
-          show(radio.value);
+    function show() {
+      const id = current();
+      for (const panel of panels) panel.hidden = panel.dataset.metaPanel !== id;
+      return panels.find(p => p.dataset.metaPanel === id);
+    }
+
+    if (radios.length > 0 || hideBanned) {
+      show();
+      for (const control of [...radios, ...(hideBanned ? [hideBanned] : [])]) {
+        control.addEventListener('change', () => {
           // Switching from far down the page: start the new ranking at its top.
-          const panel = panels.find(p => p.dataset.metaPanel === radio.value);
+          const panel = show();
           if (panel && panel.getBoundingClientRect().top < 0) panel.scrollIntoView({ block: 'start' });
         });
       }

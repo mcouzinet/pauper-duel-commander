@@ -173,6 +173,7 @@
     "rankingLabel": "Classifica",
     "allPlayers": "Tutti i giocatori",
     "top4Short": "Top 4",
+    "hideBanned": "Nascondi i comandanti banditi",
     "colorPresence": "Presenza dei colori",
     "colorPresenceHelp": "Quota di giocatori il cui comandante include il colore. Un comandante bicolore conta per entrambi.",
     "glanceTitle": "Il meta in un colpo d’occhio",
