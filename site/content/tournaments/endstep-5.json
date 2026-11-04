@@ -1,0 +1,79 @@
+{
+    "title": "Endstep #5",
+    "date": "2026-11-02",
+    "location": "Endstep",
+    "city": "",
+    "playerCount": 0,
+    "actualPlayerCount": 6,
+    "details": "<p>Tournoi de la série Pauper Duel Commander sur Endstep.</p><p>Rondes suisses en BO3 · 6 joueurs</p>",
+    "top8": [
+        {
+            "place": 1,
+            "playerName": "Scratchyx",
+            "commanderName": "Diamond Weapon",
+            "score": "2-1-0",
+            "decklistSlug": "diamond-weapon-endstep-5-1er"
+        },
+        {
+            "place": 2,
+            "playerName": "ReaDynn",
+            "commanderName": "Quintorius, Field Historian",
+            "score": "2-1-0",
+            "decklistSlug": "quintorius-field-historian-endstep-5-2eme"
+        },
+        {
+            "place": 3,
+            "playerName": "Corisko",
+            "commanderName": "Sanar, Unfinished Genius",
+            "score": "2-1-0",
+            "decklistSlug": "sanar-unfinished-genius-endstep-5-3eme"
+        },
+        {
+            "place": 4,
+            "playerName": "4tuna",
+            "commanderName": "Arnyn, Deathbloom Botanist",
+            "score": "2-1-0",
+            "decklistSlug": "arnyn-deathbloom-botanist-endstep-5-4eme"
+        },
+        {
+            "place": 5,
+            "playerName": "FidelleCast",
+            "commanderName": "Siona, Captain of the Pyleas",
+            "score": "1-2-0",
+            "decklistSlug": "siona-captain-of-the-pyleas-endstep-5-5eme"
+        },
+        {
+            "place": 6,
+            "playerName": "EVT",
+            "commanderName": "Tatyova, Benthic Druid",
+            "score": "0-3-0",
+            "decklistSlug": "tatyova-benthic-druid-endstep-5-6eme"
+        }
+    ],
+    "metaList": [
+        {
+            "name": "Diamond Weapon",
+            "count": 1
+        },
+        {
+            "name": "Quintorius, Field Historian",
+            "count": 1
+        },
+        {
+            "name": "Sanar, Unfinished Genius",
+            "count": 1
+        },
+        {
+            "name": "Arnyn, Deathbloom Botanist",
+            "count": 1
+        },
+        {
+            "name": "Siona, Captain of the Pyleas",
+            "count": 1
+        },
+        {
+            "name": "Tatyova, Benthic Druid",
+            "count": 1
+        }
+    ]
+}
