@@ -71,6 +71,7 @@ class DecklistParserTest extends TestCase
 
         $this->assertSame('Fire // Ice', $cards[0]['name']);
         $this->assertSame('Lightning Bolt', $cards[1]['name']);
+        $this->assertSame('Fire // Ice', DecklistParser::parse('1 Fire/Ice')[0]['name']);
     }
 
     public function testEmptyInputReturnsNoCards(): void
