@@ -218,8 +218,8 @@ class DecklistParser {
     public static function normalize_card_name($card_name) {
         $card_name = trim($card_name);
         $card_name = preg_replace('/\s+/', ' ', $card_name);
-        // Normalize split / double-faced separator: "Fire // Ice", "Delver / Insectile"
-        $card_name = preg_replace('/\s*\/\/\s*|\s+\/\s+/', ' // ', $card_name);
+        // Normalize split / double-faced separator: "Fire // Ice", "Delver / Insectile", "Fire/Ice"
+        $card_name = preg_replace('/\s*\/\/?\s*/', ' // ', $card_name);
         return $card_name;
     }
 
