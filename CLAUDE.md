@@ -8,7 +8,7 @@ Tout vit dans `site/`. La racine ne contient que la documentation, plus
 `deploy-staging.sh` (prévisualisation d'une branche sur Surge, cf. `DEPLOY.md`).
 
 ## Stack Technique
-- **Framework**: Astro 5, `output: 'static'` (aucun adaptateur, aucun SSR)
+- **Framework**: Astro 7 (Node 22.23.4 ou plus ; la CI est en 24), `output: 'static'` (aucun adaptateur, aucun SSR)
 - **CSS**: Tailwind CSS 4 via `@tailwindcss/vite` — config CSS-first, pas de `tailwind.config.js`
 - **Polices**: auto-hébergées (`site/public/fonts/`) — aucun CDN tiers
 - **JS**: TypeScript vanilla, aucun framework UI
@@ -88,7 +88,7 @@ site/
 cd site
 npm run dev       # Dev (copie la ban list + réchauffe le cache Scryfall au préalable)
 npm run build     # Build -> site/dist/  (même prélude que dev)
-npm run check     # astro check : propre (0 erreur, 0 avertissement, 7 hints)
+npm run check     # astro check : propre (0 erreur, 0 avertissement, 2 hints)
 npm test          # PHPUnit (API)
 ```
 
@@ -412,15 +412,17 @@ réencodées, pas des sources :
   le build parallèle d'Astro se fait rate-limiter par Scryfall et les cartes
   s'affichent sans illustration, en silence. Le cache expire à 30 j — le script
   rafraîchit aussi les entrées périmées.
-- **`npm run check` est propre** : 0 erreur, 0 avertissement, 7 hints (variables
-  inutilisées, scripts traités comme `is:inline`). `npm run lint` y ajoute
-  `tsc --noEmit`, tout aussi propre (mesuré le 1er octobre 2026). C'est la
-  référence : une erreur qui apparaît est une régression du changement en cours,
-  pas un héritage. La dernière « erreur préexistante » connue, celle
-  d'`astro.config.ts` (conflit de types entre deux majeures de Vite), a été
-  neutralisée par 812c0d7 via le cast `tailwindcss() as any` ; son commentaire sur
-  place dit pourquoi. Chiffre à remesurer avant de le citer : l'ancienne note
-  « 42 erreurs » n'a jamais correspondu à l'état du dépôt.
+- **`npm run check` est propre** : 0 erreur, 0 avertissement, 2 hints. `npm run lint`
+  y ajoute `tsc --noEmit`, tout aussi propre (mesuré le 5 novembre 2026, Astro 7).
+  C'est la référence : une erreur qui apparaît est une régression du changement en
+  cours, pas un héritage. Chiffre à remesurer avant de le citer.
+- **`compressHTML: true` est voulu** (`astro.config.ts`) : la valeur par défaut
+  d'Astro 7, `'jsx'`, retire les espaces entre éléments écrits sur des lignes
+  séparées, et les libellés se collaient (« RèglesBanlist »).
+- **`npm install` ou `npm audit fix` peut retirer du lockfile les binaires de
+  rolldown** (bug npm des dépendances optionnelles), et le build échoue avec
+  « Cannot find native binding ». Vérifier que `node_modules/@rolldown` contient un
+  `binding-*` ; sinon `rm -rf node_modules package-lock.json && npm install`.
 - **Redirections** : `public/.htaccess` (racine) redirige en 301 les anciennes
   URLs WordPress non préfixées vers les routes `/fr/…`. Apache uniquement
   (OVH mutualisé) ; équivalent nginx en commentaire.

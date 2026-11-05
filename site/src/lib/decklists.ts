@@ -98,7 +98,9 @@ async function build(): Promise<EnrichedDecklist[]> {
     } satisfies EnrichedDecklist;
   }));
 
-  return decklists.sort((a, b) => (b.date ?? '').localeCompare(a.date ?? ''));
+  // `slug` settles equal dates: the collection's load order is not a contract.
+  return decklists.sort((a, b) =>
+    (b.date ?? '').localeCompare(a.date ?? '') || a.slug.localeCompare(b.slug));
 }
 
 /**
