@@ -184,11 +184,9 @@ script prévient.
 - **Un fichier modifié à la main sur le serveur ne sera pas réparé** par le
   déploiement suivant : le manifeste le croit conforme. C'est le prix de
   l'incrémental. *Tout renvoyer* remet tout d'aplomb.
-- **Le typage est vérifié sur PR, pas au déploiement.** `npm run check` est propre
-  — **0 erreur, 0 avertissement, 8 hints** (mesuré sur `main` le 18 août 2026 ;
-  `npm run lint`, qui y ajoute `tsc --noEmit`, l'est aussi). La dernière « erreur
-  préexistante » connue, celle d'`astro.config.ts`, a été neutralisée par 812c0d7
-  (cast `tailwindcss() as any`, le commentaire sur place explique le pourquoi).
+- **Le typage est vérifié sur PR, pas au déploiement.** `npm run check` est propre :
+  **0 erreur, 0 avertissement, 2 hints** (mesuré le 5 novembre 2026, Astro 7 ;
+  `npm run lint`, qui y ajoute `tsc --noEmit`, l'est aussi).
   `deploy.yml` ne lance pas `check` : c'est l'étape « Type check » de `ci.yml` qui
   le fait, et **une erreur de typage bloque le merge** — le job « build & test »
   est dans les required status checks du ruleset « Protect main » (depuis le

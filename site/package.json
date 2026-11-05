@@ -15,16 +15,13 @@
     "test": "composer install --quiet && vendor/bin/phpunit"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^5.8.0"
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.6"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.0",
+    "@astrojs/check": "^0.9.12",
     "@tailwindcss/vite": "^4.1.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.7.0"
-  },
-  "overrides": {
-    "sharp": "^0.35.5"
   }
 }

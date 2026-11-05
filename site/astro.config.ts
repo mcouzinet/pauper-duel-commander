@@ -7,6 +7,9 @@ export default defineConfig({
   site: 'https://pauperduelcommander.fr',
   output: 'static',
   trailingSlash: 'always',
+  // Astro 7 defaults to 'jsx', which drops the whitespace between inline elements
+  // written on separate lines: nav labels and card text ran together.
+  compressHTML: true,
   integrations: [
     sitemap({
       // Emit hreflang alternates so search engines pair the localised routes.
@@ -38,11 +41,6 @@ export default defineConfig({
     }),
   ],
   vite: {
-    // Two majors of Vite are installed: Astro resolves its own pinned 6.x, while
-    // @tailwindcss/vite pulls 8.x, whose Plugin type differs in an internal
-    // `hotUpdate` signature. The plugin is fine at runtime — only the nominal
-    // types clash. This was the long-standing "1 pre-existing error"; deduping
-    // Vite would mean overriding a build dependency to silence a type.
-    plugins: [tailwindcss() as any],
+    plugins: [tailwindcss()],
   },
 });
