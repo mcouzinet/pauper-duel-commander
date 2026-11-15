@@ -10,6 +10,7 @@
 import { t, type Locale } from '@/lib/i18n';
 import { route, homeRoute } from '@/lib/routes';
 import { DISCORD_URL } from '@/lib/site';
+import OtherProjects from '@/components/OtherProjects.astro';
 
 interface Props {
   locale: Locale;
@@ -46,27 +47,6 @@ const columns = [
   },
 ];
 
-// The author's other projects. Whozic has a page per language, Endstep Tracker
-// only an English one. The utm tags let both sites count what comes from here.
-const utm = 'utm_source=pauperduelcommander&utm_medium=footer';
-// A Record, not a test on the locale: a new language fails the type check here.
-const WHOZIC_PATH: Record<Locale, string> = { fr: '', en: 'en/', it: 'it/' };
-const projects = [
-  {
-    id: 'endstep-tracker',
-    name: 'Endstep Tracker',
-    pitch: t('footer.endstepTrackerPitch', locale),
-    href: `https://endstep-tracker.tolarianstudio.com/?${utm}`,
-    icon: '/img/projects/endstep-tracker.png',
-  },
-  {
-    id: 'whozic',
-    name: 'Whozic',
-    pitch: t('footer.whozicPitch', locale),
-    href: `https://whozic.party/${WHOZIC_PATH[locale]}?${utm}`,
-    icon: '/img/projects/whozic.png',
-  },
-];
 ---
 
 <!--
@@ -122,28 +102,7 @@ const projects = [
     </div>
 
     <div class="mt-10 pt-6 border-t border-card-border/25">
-      <ul class="grid gap-3 sm:grid-cols-2 max-w-3xl">
-        {projects.map(project => (
-          <li>
-            <a href={project.href}
-               target="_blank" rel="noopener"
-               data-analytics="sister_project_click"
-               data-analytics-project={project.id}
-               class="group flex items-center gap-3 h-full rounded-lg border border-card-border/30 bg-bg-primary/40 p-3 hover:border-brand-orange/60 transition-colors">
-              <img src={project.icon} alt="" width="40" height="40" loading="lazy" class="w-10 h-10 shrink-0 rounded-lg" />
-              <span class="min-w-0">
-                <span class="flex items-center gap-1.5 text-sm font-semibold text-text-primary group-hover:text-brand-orange transition-colors">
-                  {project.name}
-                  <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </span>
-                <span class="block text-xs text-text-secondary leading-snug mt-0.5">{project.pitch}</span>
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <OtherProjects locale={locale} placement="footer" />
     </div>
 
     <div class="mt-8 pt-6 border-t border-card-border/25 space-y-2">

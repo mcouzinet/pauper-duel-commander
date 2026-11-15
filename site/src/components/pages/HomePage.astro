@@ -28,6 +28,7 @@ import FormatComparison from '@/components/FormatComparison.astro';
 import CommanderRanking from '@/components/CommanderRanking.astro';
 import DeckCard from '@/components/DeckCard.astro';
 import DiscordCta from '@/components/DiscordCta.astro';
+import OtherProjects from '@/components/OtherProjects.astro';
 import { t, type Locale } from '@/lib/i18n';
 import { route } from '@/lib/routes';
 import { getMeta } from '@/lib/meta';
@@ -193,6 +194,13 @@ const heroImage = topCommanders.find(c => c.image)?.image ?? null;
           <span class="quick-tile__hint">{meta.global.total} {t('quick.metaHint', locale)}</span>
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- 2b. The author's other projects: high on the page, the footer hid them. -->
+  <section class="border-b border-card-border/25">
+    <div class="container mx-auto px-4 md:px-6 py-6">
+      <OtherProjects locale={locale} placement="home" />
     </div>
   </section>
 
