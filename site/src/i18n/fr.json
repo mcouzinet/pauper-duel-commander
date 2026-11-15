@@ -20,7 +20,9 @@
     "colPlay": "Jouer",
     "colCommunity": "Communauté",
     "privacy": "Confidentialité",
-    "cadence": "Le comité publie une annonce sur le format tous les deux mois, le premier lundi des mois pairs."
+    "cadence": "Le comité publie une annonce sur le format tous les deux mois, le premier lundi des mois pairs.",
+    "endstepTrackerPitch": "Vos parties sur endstep.cc enregistrées toutes seules : taux de victoire par deck et par matchup.",
+    "whozicPitch": "Le jeu de soirée où chacun devine qui a choisi quelle chanson."
   },
   "header": {
     "language": "Langue"

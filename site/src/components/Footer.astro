@@ -10,6 +10,7 @@
 import { t, type Locale } from '@/lib/i18n';
 import { route, homeRoute } from '@/lib/routes';
 import { DISCORD_URL } from '@/lib/site';
+import OtherProjects from '@/components/OtherProjects.astro';
 
 interface Props {
   locale: Locale;
@@ -45,6 +46,7 @@ const columns = [
     ],
   },
 ];
+
 ---
 
 <!--
@@ -99,7 +101,11 @@ const columns = [
       ))}
     </div>
 
-    <div class="mt-10 pt-6 border-t border-card-border/25 space-y-2">
+    <div class="mt-10 pt-6 border-t border-card-border/25">
+      <OtherProjects locale={locale} placement="footer" />
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-card-border/25 space-y-2">
       <p class="text-text-muted text-sm">
         &copy; {year} Pauper Duel Commander. {t('footer.rights', locale)}
       </p>
