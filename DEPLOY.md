@@ -1,9 +1,9 @@
 # Déploiement
 
-Le site est hébergé sur **OVH mutualisé** (Apache + PHP 8, racine web `www/`) et
-déployé **automatiquement par GitHub Actions en SFTP**. Le domaine
-`pauperduelcommander.fr` sert déjà la version Astro (la bascule depuis WordPress
-est faite).
+Le site est hébergé sur le **VPS Tolarian** (Dokploy, Traefik, HTTPS Let's
+Encrypt), dans une image Docker **Apache + PHP 8.3** construite depuis le
+`Dockerfile` du dépôt. Il a quitté l'hébergement mutualisé OVH en novembre 2026.
+Fiche du serveur : `~/Developer/infra/README.md`.
 
 ## Vue d'ensemble
 
@@ -11,83 +11,73 @@ est faite).
 merge sur main / cron hebdo / déclenchement manuel
         │
         ▼
-GitHub Actions (.github/workflows/deploy.yml)
-   1. build Astro (Node 24)         → site/dist/  (contient déjà api/)
-   2. tests PHPUnit de l'API        → bloquants
-   3. envoi SFTP de dist/ → www/    → OVH
+Dokploy (application `pauperduelcommander`, projet « Pauper Duel Commander »)
+   docker build (Dockerfile) :
+   1. étape Node 24 : npm ci + npm run build   → site/dist/ (contient api/)
+   2. étape php:8.3-apache : dist/ → /var/www/html
         │
         ▼
    https://pauperduelcommander.fr
 ```
 
-- **Runtime prod** : PHP 8 uniquement (`/api/validate-deck.php`,
-  `/api/submit-decklist.php`, `/api/submit-tournament.php`). Pas de Node en prod.
-- **Écriture disque** : `api/cache/` doit rester inscriptible (cache Scryfall +
-  état du rate limit). Sur OVH mutualisé, PHP tourne sous le compte FTP, donc les
-  fichiers déposés sont inscriptibles par défaut.
+- **Les tests ne tournent pas au déploiement** : ils tournent sur la PR
+  (`ci.yml`), et le ruleset « Protect main » interdit de merger sans eux.
+- **Apache lit les `.htaccess`** comme sur OVH : redirections, en-têtes de cache,
+  fermeture de `api/lib`, `api/cache`, `api/data`. Réglages du serveur dans
+  `docker/zz-pdc.conf`.
+- **Adresse des visiteurs** : Traefik est devant. `mod_remoteip` remplace
+  `REMOTE_ADDR` par l'adresse de `X-Forwarded-For`, mais seulement quand la
+  requête vient des réseaux Docker : le rate limit de l'API voit donc chaque
+  visiteur, sans faire confiance à un en-tête envoyé de l'extérieur.
+- **Écriture disque** : `api/cache/` (cache Scryfall + état du rate limit) est le
+  volume `pdc-api-cache`, il survit aux déploiements.
+- **Cache Scryfall du build** : gardé entre deux builds dans un cache BuildKit
+  (`id=pdc-scryfall`). Le premier build télécharge tout, les suivants seulement
+  ce qui manque ou a expiré. Le build et le validateur partagent l'adresse du VPS
+  auprès de Scryfall : un build complet peut faire répondre 429 au validateur
+  pendant une minute.
 
 ## Déclencher un déploiement
 
-Trois déclencheurs, dont **deux automatiques** :
-
 | Déclencheur | Quand |
 |---|---|
-| `push` sur `main` touchant `site/**` | **à chaque merge de PR** qui change le site |
-| `schedule` | tous les lundis 05:00 UTC (rebuild hebdomadaire) |
-| `workflow_dispatch` | à la demande |
+| push sur `main` | **à chaque merge de PR** : Dokploy construit et remplace le conteneur |
+| `schedule` (`deploy.yml`) | tous les lundis 05:00 UTC (rebuild hebdomadaire) |
+| `workflow_dispatch` (`deploy.yml`) | à la demande |
 
-Autrement dit, **merger une PR qui touche le site suffit à déployer** — c'est ce
-qui met en ligne une soumission acceptée, sans geste manuel. Une PR qui ne touche
-que la documentation ne déclenche rien.
-
-L'environnement `production` du workflow n'a aujourd'hui **aucune règle
-d'approbation** : le déploiement part sans validation humaine supplémentaire (voir
-le garde-fou optionnel plus bas pour en ajouter une).
-
-Pour un déploiement à la demande — republier sans nouveau commit, par exemple
-après avoir posé un secret sur le serveur :
+Merger une PR suffit donc à mettre en ligne une soumission acceptée. Le
+workflow `deploy.yml` déclenche le build par le webhook Dokploy quand aucun
+commit ne le fait, puis contrôle la production (`site/scripts/smoke-check.sh`).
 
 ```bash
-gh workflow run deploy.yml     # depuis un terminal (ou lancé par Claude)
-gh run watch                   # suivre le run en cours
+gh workflow run deploy.yml     # rebuild à la demande
+gh run watch                   # suivre le contrôle
 ```
 
-ou depuis GitHub : onglet **Actions → Deploy to OVH → Run workflow**.
+## Configuration
 
-## Configuration (déjà en place)
+**Variables de build** (Dokploy, onglet Environment → Build-time arguments),
+publiques : `PUBLIC_TURNSTILE_SITE_KEY`, `PUBLIC_SUBMISSIONS_ENABLED`.
 
-**Secrets** (GitHub → dépôt → Settings → Secrets and variables → Actions),
-issus de l'espace client OVH → Hébergements → onglet **FTP-SSH** :
+**Secrets de l'API** (Dokploy, variables d'environnement), lus par
+`pdc_secret()` : `PDC_GITHUB_TOKEN`, `PDC_TURNSTILE_SECRET`,
+`PDC_ORGANIZER_CODE`. Absents, les formulaires répondent 503. Les poser sans les
+afficher :
 
-| Secret | Valeur |
-|---|---|
-| `OVH_FTP_SERVER` | hôte FTP OVH (ex. `ftp.cluster0XX.hosting.ovh.net`) |
-| `OVH_FTP_USERNAME` | login FTP-SSH |
-| `OVH_FTP_PASSWORD` | mot de passe FTP-SSH |
+```bash
+read -rs V && printf %s "$V" | node ~/Developer/infra/dokploy.mjs env q7_GNl1ITUGW2tIsjM3TI PDC_GITHUB_TOKEN=-
+```
 
-Le transfert se fait en **SFTP (port 22)** avec ces mêmes identifiants — le mot
-de passe ne transite pas en clair. Ces secrets restent chez GitHub, chiffrés.
+puis redéployer.
 
-**Garde-fou d'approbation (optionnel, recommandé)** : GitHub → Settings →
-Environments → `production` → *required reviewer*. Chaque déploiement attend alors
-une approbation avant de partir.
+**Secret GitHub** `DOKPLOY_DEPLOY_URL` : l'URL du webhook de déploiement de
+l'application (onglet Deployments de Dokploy), utilisée par `deploy.yml`.
 
 ## Rollback
 
-La bascule est faite, mais l'ancien WordPress reste récupérable tant qu'on n'a
-pas supprimé sa sauvegarde (dump SQL + fichiers, hors dépôt).
-
-- **Revenir à une version précédente du site Astro** : repartir d'un commit sain
-  et redéployer.
-  ```bash
-  git checkout <commit-sain> -- .        # ou git revert <commit-fautif>
-  gh workflow run deploy.yml
-  ```
-  Le déploiement écrase les fichiers dont le contenu diffère et ne supprime
-  rien côté serveur.
-- **Revenir à WordPress** (cas extrême) : restaurer les fichiers WP dans `www/`
-  et la base depuis la sauvegarde. À ne faire que si la version Astro pose un
-  problème majeur non corrigeable rapidement.
+Revenir à un commit sain sur `main` (`git revert <commit-fautif>`, PR, merge) :
+Dokploy redéploie. En urgence, Dokploy garde les déploiements précédents
+(onglet Deployments → Rollback).
 
 ## Vérifications post-déploiement (smoke tests)
 
@@ -127,13 +117,10 @@ Si le validateur renvoie **503**, la ban list n'est pas trouvée
 
 ## Déploiement manuel de secours
 
-Si GitHub Actions est indisponible, on peut déployer à la main : build local puis
-envoi SFTP du contenu de `site/dist/` vers `www/` (client SFTP type FileZilla, ou
-`scp`/`sftp` sur le port 22 avec les identifiants FTP-SSH OVH).
+Si GitHub ne prévient pas Dokploy, relancer le build depuis le Mac :
 
 ```bash
-cd site && npm ci && npm run build
-# puis envoyer le CONTENU de site/dist/ dans www/ via SFTP
+node ~/Developer/infra/dokploy.mjs application.deploy applicationId=q7_GNl1ITUGW2tIsjM3TI
 ```
 
 ## Prévisualisation (staging)
@@ -156,34 +143,6 @@ script prévient.
 
 ## Limites connues
 
-- **Le déploiement n'envoie que ce qui a changé.** `site/scripts/deploy-sftp.sh`
-  garde sur le serveur un manifeste d'empreintes SHA-256, `www/.ht-deploy-manifest`,
-  et ne transfère que les fichiers dont l'empreinte diffère. Sans manifeste
-  (premier passage, fichier perdu, `force_full`), il envoie tout : un raté se
-  paie en temps, jamais en fichiers manquants. Pour forcer : onglet Actions →
-  *Deploy to OVH* → *Run workflow* → cocher **Tout renvoyer**.
-
-  Le manifeste s'appelle `.ht-…` pour que la configuration Apache par défaut
-  refuse de le servir : la liste des fichiers du site n'est pas publique.
-
-  Comparaison sur l'empreinte et pas sur la date, parce que le runner
-  reconstruit tout à chaque fois : chaque fichier local est plus récent que son
-  homologue distant même quand ses octets sont identiques, et une comparaison
-  sur la date renverrait tout. Pas sur la taille non plus — un score « 2-1 »
-  corrigé en « 3-0 » ne change pas la taille du HTML.
-
-  `site/scripts/deploy-sftp.test.sh` vérifie tout ça contre un faux serveur
-  local, puisqu'on ne peut pas se brancher sur OVH depuis une PR.
-- **Les fichiers cachés partent maintenant tout seuls.** L'ancienne étape
-  utilisait le glob `dist/*`, qui les ignorait, et un `.htaccess` modifié devait
-  être poussé à la main. Ce n'est plus le cas : le script parcourt l'arbre et
-  prend les dotfiles.
-- **Rien n'est supprimé à distance.** Comme avant : `api/cache/` et l'état du
-  rate limit vivent sur le serveur et ne sont pas dans `dist/`. Un fichier retiré
-  du site reste donc en ligne jusqu'à suppression manuelle.
-- **Un fichier modifié à la main sur le serveur ne sera pas réparé** par le
-  déploiement suivant : le manifeste le croit conforme. C'est le prix de
-  l'incrémental. *Tout renvoyer* remet tout d'aplomb.
 - **Le typage est vérifié sur PR, pas au déploiement.** `npm run check` est propre :
   **0 erreur, 0 avertissement, 2 hints** (mesuré le 5 novembre 2026, Astro 7 ;
   `npm run lint`, qui y ajoute `tsc --noEmit`, l'est aussi).

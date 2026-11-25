@@ -1,5 +1,8 @@
 # Étude : decklists et tournois à 1 000 listes
 
+> Novembre 2026 : le site a quitté OVH pour le VPS (Dokploy, cf. `DEPLOY.md`).
+> Le goulot SFTP décrit ici n'existe plus ; l'étude est gardée pour son analyse.
+
 Octobre 2026. Question posée : le site statique (Astro, JSON dans le dépôt, envoi SFTP
 vers OVH) tiendra-t-il quand il y aura 1 000 decklists, et faut-il passer par la base
 de données disponible chez OVH (la MySQL de l'époque WordPress, inutilisée) ?

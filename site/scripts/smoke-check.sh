@@ -65,7 +65,7 @@ EOF
 if [ "$fail" -ne 0 ]; then
   echo
   echo "Le site ne répond pas comme prévu. Le déploiement est parti, mais quelque"
-  echo "chose ne va pas en ligne — commencer par www/.htaccess, c'est le fichier"
+  echo "chose ne va pas en ligne — commencer par le .htaccess, c'est le fichier"
   echo "qui casse tout d'un coup."
   exit 1
 fi
