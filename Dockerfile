@@ -22,7 +22,7 @@ FROM php:8.3-apache
 RUN a2enmod rewrite headers expires remoteip setenvif deflate \
  && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
  && echo 'expose_php = Off' > "$PHP_INI_DIR/conf.d/pdc.ini"
-COPY docker/apache-pdc.conf /etc/apache2/conf-enabled/pdc.conf
+COPY docker/zz-pdc.conf /etc/apache2/conf-enabled/zz-pdc.conf
 COPY --from=build /app/site/dist/ /var/www/html/
 # Scryfall cache and rate-limit state: a volume in Dokploy, writable by PHP.
 RUN mkdir -p /var/www/html/api/cache && chown -R www-data:www-data /var/www/html/api/cache

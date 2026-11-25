@@ -27,7 +27,8 @@ qui s'exécute à l'exécution** : la prod n'a besoin que de PHP, pas de Node.
 
 ## Structure du Projet
 ```
-.github/workflows/deploy.yml     # CI/CD : build + tests PHPUnit + envoi SFTP -> OVH
+Dockerfile, docker/              # image du VPS : build Astro puis Apache + PHP 8.3
+.github/workflows/deploy.yml     # rebuild hebdo / manuel (webhook Dokploy) + contrôle de la prod
 site/
 ├── astro.config.ts              # static, trailingSlash always, site, sitemap, Tailwind
 ├── content/                     # SOURCE DE VÉRITÉ du contenu
@@ -77,7 +78,6 @@ site/
 │   ├── warm-scryfall-cache.mjs  # pré-remplit le cache Scryfall avant le build
 │   ├── check-commander-names.mjs # audit des généraux des tournois (nom exact, peu commune)
 │   ├── subset-mana-font.mjs     # réduit la police mana aux glyphes utilisés (à la main)
-│   ├── deploy-sftp.sh (+ .test.sh) # envoi incrémental de dist/ vers OVH (CI)
 │   ├── smoke-check.sh           # vérifie la prod après déploiement (CI)
 │   └── encode-video.sh          # master vidéo -> public/video + poster
 └── tests/                       # PHPUnit + fixtures Scryfall
@@ -95,8 +95,9 @@ npm test          # PHPUnit (API)
 `npm run dev` ne sert pas le PHP. Pour tester le validateur en local, lancer
 `php -S 127.0.0.1:8000` depuis `site/public/`.
 
-**Déploiement** : GitHub Actions (`gh workflow run deploy.yml`) — build, tests,
-puis envoi SFTP de `dist/` vers OVH `www/`. Détails dans `DEPLOY.md`.
+**Déploiement** : VPS Tolarian (Dokploy), qui construit le `Dockerfile` à chaque
+push sur `main` ; les tests tournent sur la PR. `gh workflow run deploy.yml`
+relance un build. Détails dans `DEPLOY.md`.
 
 ## Contenu
 
@@ -183,9 +184,9 @@ sans PR.
 `decklistSlug` câblé entre les deux.
 Réponse : `{success, pr_url, included[], rejected[]}`.
 
-Les secrets (`GITHUB_TOKEN`, `TURNSTILE_SECRET`, `ORGANIZER_CODE`) vivent hors
-`www/` et sont lus par `pdc_secret()` ; absents, l'endpoint répond **503**. Mise
-en place : `docs/external/README.md`.
+Les secrets (`GITHUB_TOKEN`, `TURNSTILE_SECRET`, `ORGANIZER_CODE`) sont des
+variables d'environnement Dokploy préfixées `PDC_`, lues par `pdc_secret()` ;
+absents, l'endpoint répond **503**. Mise en place : `DEPLOY.md`.
 
 ### Invariants à ne pas casser
 
@@ -425,14 +426,14 @@ réencodées, pas des sources :
   `binding-*` ; sinon `rm -rf node_modules package-lock.json && npm install`.
 - **Redirections** : `public/.htaccess` (racine) redirige en 301 les anciennes
   URLs WordPress non préfixées vers les routes `/fr/…`. Apache uniquement
-  (OVH mutualisé) ; équivalent nginx en commentaire.
-- **Le déploiement n'envoie que ce qui a changé** (`site/scripts/deploy-sftp.sh`) :
-  un manifeste d'empreintes SHA-256 vit sur le serveur et seuls les fichiers qui
-  en diffèrent partent. Sans manifeste, tout part — un raté coûte du temps, pas
-  des fichiers manquants. Les dotfiles sont inclus, donc un `.htaccess` modifié
-  n'a plus besoin d'être poussé à la main. Rien n'est supprimé à distance, et un
-  fichier retouché directement sur le serveur ne sera pas réparé : relancer le
-  workflow avec *Tout renvoyer*. Test : `site/scripts/deploy-sftp.test.sh`.
+  (l'image Docker du VPS) ; équivalent nginx en commentaire.
+- **Le VPS et Scryfall partagent une adresse** : le build et le validateur
+  appellent Scryfall depuis la même IP. Le cache du build est gardé entre deux
+  builds (cache BuildKit), mais un build qui doit tout retélécharger peut faire
+  répondre 429 au validateur pendant une minute.
+- **`mod_remoteip` fait confiance à `X-Forwarded-For` seulement depuis les
+  réseaux Docker** (`docker/zz-pdc.conf`) : c'est l'allow-list de proxys qui
+  permet au rate limit de voir l'adresse du visiteur derrière Traefik.
 - Le site est **entièrement généré au build**, « aujourd'hui » compris : un
   tournoi passé reste « à venir » jusqu'au prochain build. D'où le rebuild
   hebdomadaire (cron dans `deploy.yml`) en plus du déploiement au push.

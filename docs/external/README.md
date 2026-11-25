@@ -31,34 +31,14 @@ Cloudflare Dashboard → **Turnstile** → Add site :
 
 On obtient **deux** clés :
 - **Site key** (publique) → variable de build (étape 4).
-- **Secret key** → fichier de secrets (étape 3).
+- **Secret key** → variable `PDC_TURNSTILE_SECRET` dans Dokploy (étape 3).
 
-## 3. Poser le fichier de secrets sur OVH (hors `www/`)
+## 3. Poser les secrets dans Dokploy
 
-Copier `docs/external/secrets.sample.php` en **`pdc-secrets.php`**, y mettre les
-vraies valeurs, et le déposer par SFTP dans le dossier qui **contient** `www/`
-(la racine du compte OVH) — **pas** dans `www/`.
-
-```
-/home/<compte>/
-├── pdc-secrets.php     ← ici (hors www/, non servi, non déployé)
-└── www/                ← racine web
-```
-
-`pdc_secret()` le trouve tout seul (un cran au-dessus de `www/`). Layout
-différent ? Définir la variable d'env `PDC_SECRETS_FILE` vers son chemin absolu.
-
-> Le déploiement SFTP n'écrase **que** le contenu de `www/` (et saute les
-> dotfiles), donc ce fichier reste intact d'un déploiement à l'autre.
-
-### 3 bis. Autoriser l'endpoint dans `api/.htaccess` (une fois)
-
-Le SFTP **ne déploie pas les dotfiles**, donc le `www/api/.htaccess` du serveur
-est resté celui qui n'autorise que `validate-deck.php` — les nouveaux endpoints
-de soumission y sont bloqués (403). **Une fois**, uploader par SFTP le fichier
-`site/public/api/.htaccess` du dépôt vers `www/api/.htaccess` (il autorise
-`validate-deck.php`, `submit-decklist.php`, `submit-tournament.php`). À refaire
-uniquement si on ajoute un endpoint.
+Variables d'environnement de l'application Dokploy (`PDC_GITHUB_TOKEN`,
+`PDC_TURNSTILE_SECRET`, `PDC_ORGANIZER_CODE`), posées sans les afficher : voir
+`DEPLOY.md`, section Configuration. `pdc_secret()` lit aussi un fichier
+`PDC_SECRETS_FILE` s'il est défini (modèle : `secrets.sample.php`).
 
 ## 4. Variables de build (publiques) sur GitHub
 
@@ -99,7 +79,7 @@ En pratique, la vérification se fait via le formulaire lui-même sur
 valide doit ouvrir une PR dans le dépôt.
 
 Pour le formulaire **tournoi** (`/fr/soumettre-tournoi/`), il faut en plus que
-`ORGANIZER_CODE` soit posé dans `pdc-secrets.php` : sans lui l'endpoint répond
+`PDC_ORGANIZER_CODE` soit posé dans Dokploy : sans lui l'endpoint répond
 **503**, et avec un mauvais code **403**. Une soumission valide ouvre **une seule**
 PR contenant le tournoi *et* les decklists légales du top 8.
 

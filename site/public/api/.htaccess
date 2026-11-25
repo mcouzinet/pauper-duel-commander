@@ -6,9 +6,6 @@
 # ever misconfigured for this directory the sources would be served as plain
 # text, and these rules are what stop that.
 #
-# NOTE: the SFTP deploy skips dotfiles, so changes here do NOT auto-deploy —
-# upload this file manually to www/api/.htaccess once after adding an endpoint.
-#
 # Apache only. On nginx, use the equivalent in the server block:
 #
 #   location ^~ /api/ { return 404; }

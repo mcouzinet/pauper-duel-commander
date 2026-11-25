@@ -1,30 +1,28 @@
-name: Deploy to OVH
+name: Deploy (VPS)
 
-# Déclenchement MANUEL par défaut : rien ne part en prod sans une action délibérée.
-#   - depuis GitHub : onglet Actions → "Deploy to OVH" → "Run workflow"
-#   - depuis un terminal (ou par Claude) : `gh workflow run deploy.yml`
-# Pour déployer automatiquement à chaque push sur main, décommenter le bloc `push`.
+# Le site est construit et servi par Dokploy sur le VPS Tolarian, à partir du
+# Dockerfile du dépôt (Apache + PHP, cf. DEPLOY.md). Dokploy redéploie seul à
+# chaque push sur main, par son application GitHub. Les tests ont déjà tourné sur
+# la PR : « build & test » (ci.yml) est requis par le ruleset « Protect main ».
+#
+# Ce workflow ne fait donc que deux choses :
+#   - déclencher un build quand aucun commit ne le fait : le rebuild hebdomadaire
+#     et le déclenchement manuel (`gh workflow run deploy.yml`) ;
+#   - contrôler la production après chaque déploiement.
 on:
   workflow_dispatch:
-    inputs:
-      force_full:
-        description: "Tout renvoyer, sans tenir compte du manifeste"
-        type: boolean
-        default: false
-  # Auto-deploy when the site changes (e.g. a merged submission PR). Doc-only
-  # changes don't trigger a deploy.
   push:
     branches: [main]
     paths:
       - 'site/**'
-  # Weekly rebuild. The whole site is generated at build time, including
-  # "upcoming vs past" and the ban list freshness date, so an un-rebuilt site
-  # keeps showing a finished tournament as upcoming until someone pushes.
-  # Monday 05:00 UTC, before anyone looks.
+      - 'Dockerfile'
+      - 'docker/**'
+  # Le site entier est généré au build, « aujourd'hui » compris : sans rebuild,
+  # un tournoi terminé resterait « à venir » jusqu'au prochain push.
+  # Lundi 05:00 UTC.
   schedule:
     - cron: '0 5 * * 1'
 
-# Ne jamais interrompre un envoi FTP en cours (éviterait un déploiement partiel).
 concurrency:
   group: deploy-production
   cancel-in-progress: false
@@ -32,84 +30,25 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Ajoute un "required reviewer" sur cet environnement (GitHub → Settings →
-    # Environments → production) pour exiger ton approbation avant chaque mise en ligne.
-    environment: production
-
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: site/package-lock.json
-
-      # Cache des données Scryfall du build : évite de re-télécharger chaque carte
-      # à chaque déploiement (et ménage l'API Scryfall).
-      - uses: actions/cache@v6
-        with:
-          path: site/.cache/scryfall
-          key: scryfall-${{ hashFiles('site/content/**/*.json') }}
-          restore-keys: scryfall-
-
-      - name: Install & build
-        working-directory: site
-        # Variables PUBLIQUES (non secrètes) : clé de site Turnstile + activation
-        # des formulaires de soumission. À définir dans Settings → Secrets and
-        # variables → Actions → Variables. Absentes = captcha de test + formulaires masqués.
+      # Webhook de déploiement de l'application Dokploy (URL secrète, contient
+      # son jeton). Dokploy n'accepte un appel que s'il ressemble à un push
+      # GitHub sur la branche suivie, d'où l'en-tête et le `ref`.
+      - name: Déclencher le build Dokploy
+        if: github.event_name != 'push'
         env:
-          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
-          PUBLIC_SUBMISSIONS_ENABLED: ${{ vars.PUBLIC_SUBMISSIONS_ENABLED }}
-        # Le `|| …` contourne le bug npm des dépendances optionnelles (@rolldown)
-        # déjà rencontré sur ce dépôt ; sans effet si `npm ci` réussit.
+          DEPLOY_URL: ${{ secrets.DOKPLOY_DEPLOY_URL }}
         run: |
-          npm ci || { rm -rf node_modules package-lock.json && npm install; }
-          npm run build
+          curl -fsS -X POST "$DEPLOY_URL" \
+            -H 'content-type: application/json' -H 'x-github-event: push' \
+            -d '{"ref":"refs/heads/main"}'
 
-      # Tests de l'API PHP — bloquent le déploiement s'ils échouent.
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-      - name: API tests
-        working-directory: site
-        run: |
-          composer install --no-interaction --quiet
-          vendor/bin/phpunit
+      # Un build prend une à deux minutes (cache Scryfall gardé entre deux
+      # builds) ; Dokploy ne remplace le conteneur qu'une fois le nouveau prêt.
+      - name: Attendre la fin du déploiement
+        run: sleep 240
 
-      # Envoi SFTP de dist/ vers la racine web OVH (www/), sur le port 22 avec les
-      # mêmes identifiants FTP-SSH. Le mot de passe ne transite pas en clair.
-      #
-      # Script maison plutôt que wlixcc/SFTP-Deploy-Action : cette action ne
-      # peut pas être incrémentale, son entrypoint se résume à un
-      # `sftp -b "put -r dist/* www/"` qui renvoie tout à chaque fois. Avec les
-      # deux vidéos, c'est 53 Mo et 585 fichiers par déploiement, dont 28 Mo qui
-      # ne bougent jamais. Le script compare un manifeste d'empreintes SHA-256
-      # gardé sur le serveur et n'envoie que ce qui diffère. Sans manifeste il
-      # envoie tout, donc l'échec se paie en temps, jamais en fichiers manquants.
-      #
-      # Il ne supprime rien à distance, comme l'étape précédente : api/cache/ et
-      # l'état du rate limit vivent sur le serveur et ne sont pas dans dist/. Il
-      # envoie en revanche les dotfiles, que le glob `dist/*` laissait de côté :
-      # .htaccess part donc tout seul, plus besoin de le pousser à la main.
-      - name: Install sshpass
-        run: sudo apt-get install -y --no-install-recommends sshpass
-
-      - name: Deploy to OVH (SFTP incrémental)
-        env:
-          SFTP_HOST: ${{ secrets.OVH_FTP_SERVER }}
-          SFTP_USER: ${{ secrets.OVH_FTP_USERNAME }}
-          SFTP_PASSWORD: ${{ secrets.OVH_FTP_PASSWORD }}
-          FORCE_FULL: ${{ inputs.force_full }}
-        run: ./site/scripts/deploy-sftp.sh
-
-      # Le seul contrôle qui regarde le site. Le build et PHPUnit ne parlent
-      # jamais au serveur : ils étaient tous les deux au vert pendant que la
-      # production répondait 500 à toutes les URL, parce qu'un .htaccess portant
-      # un <LocationMatch> — interdit dans ce fichier — venait de partir. Le
-      # workflow affichait « success » au-dessus d'un site mort.
-      #
-      # Ne répare rien, fait échouer le job. Un run rouge se voit, pas une prod
-      # qu'on ne pense pas à ouvrir.
       - name: Contrôle post-déploiement
         run: ./site/scripts/smoke-check.sh
