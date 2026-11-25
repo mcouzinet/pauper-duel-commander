@@ -1,0 +1,8 @@
+.git
+**/node_modules
+site/dist
+site/.cache
+site/vendor
+site/public/api/cache
+site/public/api/data
+site/promo/reel/out
